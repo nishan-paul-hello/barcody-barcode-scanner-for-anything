@@ -5,5 +5,13 @@ export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOp
   type: 'postgres',
   url: configService.get<string>('DATABASE_URL'),
   entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
-  synchronize: configService.get<string>('NODE_ENV') !== 'production',
+  migrations: [`${__dirname}/../database/migrations/*{.ts,.js}`],
+  synchronize: false, // Always false for production-ready, use migrations
+  logging: configService.get<string>('NODE_ENV') === 'development',
+  extra: {
+    max: 50,
+    min: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  },
 });
