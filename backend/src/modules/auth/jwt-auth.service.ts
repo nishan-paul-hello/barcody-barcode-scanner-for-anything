@@ -5,7 +5,6 @@ import { RedisService } from '@modules/redis/redis.service';
 
 export interface JwtPayload {
   sub: string;
-  userId: string;
   email: string;
   type?: 'access' | 'refresh';
 }
@@ -21,7 +20,7 @@ export class JwtAuthService {
   ) {}
 
   async generateAccessToken(userId: string, email: string): Promise<string> {
-    const payload: JwtPayload = { sub: userId, userId, email, type: 'access' };
+    const payload: JwtPayload = { sub: userId, email, type: 'access' };
     return this.jwtService.signAsync(payload, {
       expiresIn: '15m',
       secret: this.configService.get<string>('JWT_SECRET'),
@@ -29,7 +28,7 @@ export class JwtAuthService {
   }
 
   async generateRefreshToken(userId: string, email: string): Promise<string> {
-    const payload: JwtPayload = { sub: userId, userId, email, type: 'refresh' };
+    const payload: JwtPayload = { sub: userId, email, type: 'refresh' };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '7d',
       secret: this.configService.get<string>('JWT_SECRET'),

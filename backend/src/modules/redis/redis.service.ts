@@ -61,11 +61,7 @@ export class RedisService implements OnModuleInit {
   async flush(): Promise<void> {
     if (!this.isAvailable) return;
     try {
-      // For cache-manager v6+, reset() was renamed to clear()
-      const cache = this.cacheManager as unknown as { clear: () => Promise<void> };
-      if (typeof cache.clear === 'function') {
-        await cache.clear();
-      }
+      await (this.cacheManager as unknown as { clear: () => Promise<void> }).clear();
     } catch (error) {
       this.logger.error('Error flushing Redis cache', error);
     }

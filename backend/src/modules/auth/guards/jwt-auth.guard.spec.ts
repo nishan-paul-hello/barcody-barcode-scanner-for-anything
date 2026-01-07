@@ -29,7 +29,7 @@ describe('JwtAuthGuard', () => {
   });
 
   it('should return true if token is valid', async () => {
-    const payload = { sub: 'user-id', userId: 'user-id', email: 'test@example.com' };
+    const payload = { sub: 'user-id', email: 'test@example.com' };
     (jwtAuthService.validateAccessToken as jest.Mock).mockResolvedValue(payload);
 
     const context = {

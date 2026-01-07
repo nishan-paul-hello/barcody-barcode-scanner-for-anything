@@ -121,7 +121,7 @@ describe('AuthController', () => {
   describe('POST /auth/logout', () => {
     it('should invalidate refresh token', async () => {
       const mockRequest = {
-        user: { sub: 'user-id', userId: 'user-id', email: 'test@example.com' } as JwtPayload,
+        user: { sub: 'user-id', email: 'test@example.com' } as JwtPayload,
       } as any;
 
       mockAuthService.logout.mockResolvedValue(undefined);
@@ -135,7 +135,7 @@ describe('AuthController', () => {
   describe('GET /auth/me', () => {
     it('should return current user profile', async () => {
       const mockRequest = {
-        user: { sub: 'user-id', userId: 'user-id', email: 'test@example.com' } as JwtPayload,
+        user: { sub: 'user-id', email: 'test@example.com' } as JwtPayload,
       } as any;
 
       const expectedUser: UserDto = {
@@ -146,7 +146,7 @@ describe('AuthController', () => {
 
       mockAuthService.getUser.mockResolvedValue(expectedUser);
 
-      const result = await controller.getProfile(mockRequest);
+      const result = await controller.getMe(mockRequest);
 
       expect(result).toEqual(expectedUser);
       expect(authService.getUser).toHaveBeenCalledWith('user-id');
@@ -154,12 +154,12 @@ describe('AuthController', () => {
 
     it('should throw UnauthorizedException if user not found', async () => {
       const mockRequest = {
-        user: { sub: 'user-id', userId: 'user-id', email: 'test@example.com' } as JwtPayload,
+        user: { sub: 'user-id', email: 'test@example.com' } as JwtPayload,
       } as any;
 
       mockAuthService.getUser.mockRejectedValue(new UnauthorizedException('User not found'));
 
-      await expect(controller.getProfile(mockRequest)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.getMe(mockRequest)).rejects.toThrow(UnauthorizedException);
     });
   });
 });

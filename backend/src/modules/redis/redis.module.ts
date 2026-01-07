@@ -11,7 +11,7 @@ import { RedisService } from './redis.service';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         store: redisStore,
-        url: configService.get<string>('REDIS_URL') || configService.get<string>('redis.url'),
+        url: configService.getOrThrow<string>('redis.url'),
         ttl: configService.get<number>('redis.ttl'),
         // Connection pooling settings (ioredis options)
         max: configService.get<number>('redis.max'),

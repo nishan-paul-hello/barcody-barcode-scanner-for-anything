@@ -39,10 +39,10 @@ async function seed() {
   for (let i = 0; i < 50; i++) {
     const scan = scanRepository.create({
       userId: user.id,
-      barcodeData: Math.random().toString(36).substring(7).toUpperCase(),
+      barcodeData: `BARCODE-${1000 + i}`,
       barcodeType: barcodeTypes[i % barcodeTypes.length],
       rawData: `Raw data for scan ${i}`,
-      scannedAt: new Date(Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 30), // Random date in last 30 days
+      scannedAt: new Date(Date.now() - i * 1000 * 60 * 60), // One hour intervals starting from now backwards
       deviceType: deviceTypes[i % deviceTypes.length],
       metadata: {
         location: 'New York',

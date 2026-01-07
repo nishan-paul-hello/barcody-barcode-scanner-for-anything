@@ -56,7 +56,10 @@ export class AuthService {
         },
       };
     } catch (error) {
-      this.logger.error(`Google authentication failed: ${error}`);
+      this.logger.error(
+        'Google authentication failed',
+        error instanceof Error ? error.stack : error,
+      );
       throw new UnauthorizedException('Google authentication failed');
     }
   }

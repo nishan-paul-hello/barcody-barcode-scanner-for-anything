@@ -9,6 +9,10 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
+/**
+ * Session entity for future use (WebSocket sessions, device management, and audit logs).
+ * Currently, JWT tokens with Redis-stored refresh tokens are used for authentication.
+ */
 @Entity('sessions')
 export class Session {
   @PrimaryGeneratedColumn('uuid')

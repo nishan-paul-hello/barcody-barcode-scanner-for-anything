@@ -77,7 +77,7 @@ export class AuthController {
     description: 'User profile',
     type: UserDto,
   })
-  async getProfile(@Req() req: Request): Promise<UserDto> {
+  async getMe(@Req() req: Request): Promise<UserDto> {
     const user = req['user'] as JwtPayload;
     return this.authService.getUser(user.sub);
   }
