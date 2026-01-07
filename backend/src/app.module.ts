@@ -12,12 +12,17 @@ import { getDatabaseConfig } from '@/config/database.config';
 import { envSchema } from '@/config/env.schema';
 import { winstonConfig } from '@/config/winston.config';
 import { HealthModule } from '@/modules/health/health.module';
+import { RedisModule } from '@/modules/redis/redis.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { UsersModule } from '@/modules/users/users.module';
+import redisConfig from '@/config/redis.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
+      load: [redisConfig],
       validationSchema: envSchema,
       validationOptions: {
         allowUnknown: true,
@@ -33,7 +38,10 @@ import { HealthModule } from '@/modules/health/health.module';
       useFactory: getDatabaseConfig,
       inject: [ConfigService],
     }),
+    RedisModule,
     HealthModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
