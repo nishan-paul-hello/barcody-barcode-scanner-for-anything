@@ -12,6 +12,7 @@ import { BarcodeType } from '../../common/enums/barcode-type.enum';
 import { DeviceType } from '../../common/enums/device-type.enum';
 
 @Entity('scans')
+@Index('idx_scans_user_id_scanned_at', ['userId', 'scannedAt']) // Optimized for fetching user scan history ordered by date
 export class Scan {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -23,7 +24,7 @@ export class Scan {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @Index()
+  @Index('idx_scans_barcode_data') // Optimized for looking up products by barcode across all scans
   @Column({ name: 'barcode_data' })
   barcodeData!: string;
 
@@ -38,7 +39,6 @@ export class Scan {
   @Column({ name: 'raw_data', type: 'text' })
   rawData!: string;
 
-  @Index()
   @CreateDateColumn({ name: 'scanned_at', type: 'timestamptz' })
   scannedAt!: Date;
 

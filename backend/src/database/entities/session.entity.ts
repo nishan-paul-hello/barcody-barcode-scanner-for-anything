@@ -21,7 +21,7 @@ export class Session {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @Index({ unique: true })
+  @Index('idx_sessions_token', { unique: true }) // Fast session validation on every request
   @Column({ name: 'session_token', unique: true })
   sessionToken!: string;
 

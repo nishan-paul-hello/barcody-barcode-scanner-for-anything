@@ -14,7 +14,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Index({ unique: true })
+  @Index('idx_users_google_id', { unique: true }) // Fast lookup for OAuth login
   @Column({ name: 'google_id', unique: true })
   googleId!: string;
 
