@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import { User } from '../entities/user.entity';
-import { Scan } from '../entities/scan.entity';
-import { BarcodeType } from '../../common/enums/barcode-type.enum';
-import { DeviceType } from '../../common/enums/device-type.enum';
-import { dataSourceOptions } from '../../config/typeorm.config';
+import { User } from '@database/entities/user.entity';
+import { Scan } from '@database/entities/scan.entity';
+import { BarcodeType } from '@common/enums/barcode-type.enum';
+import { DeviceType } from '@common/enums/device-type.enum';
+import { dataSourceOptions } from '@config/typeorm.config';
 
 const logger = new Logger('Seed');
 

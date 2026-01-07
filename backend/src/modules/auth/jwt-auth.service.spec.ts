@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtAuthService } from './jwt-auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { RedisService } from '../redis/redis.service';
+import { RedisService } from '@modules/redis/redis.service';
 import { UnauthorizedException } from '@nestjs/common';
 
 describe('JwtAuthService', () => {
