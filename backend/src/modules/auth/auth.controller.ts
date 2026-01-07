@@ -1,43 +1,109 @@
-import { Controller, Get, UseGuards, Req, Res, HttpStatus, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Res,
+  HttpStatus,
+  HttpCode,
+  Logger,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
+import { GoogleAuthDto } from './dtos/google-auth.dto';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { AuthResponseDto } from './dtos/auth-response.dto';
+import { UserDto } from './dtos/user.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtPayload } from './jwt-auth.service';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { User } from '@/database/entities/user.entity';
 
-interface RequestWithUser extends Request {
-  user: User;
-}
-
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('google')
+  @ApiOperation({ summary: 'Exchange Google OAuth code for JWT tokens' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Tokens generated successfully',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Invalid code' })
+  @HttpCode(HttpStatus.OK)
+  async googleLogin(@Body() dto: GoogleAuthDto): Promise<AuthResponseDto> {
+    return this.authService.loginWithGoogle(dto.code);
+  }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'New tokens generated',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Invalid refresh token',
+  })
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body() dto: RefreshTokenDto): Promise<AuthResponseDto> {
+    return this.authService.refreshToken(dto.refreshToken);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Invalidate refresh token' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Logged out successfully' })
+  @HttpCode(HttpStatus.OK)
+  async logout(@Req() req: Request): Promise<void> {
+    const user = req['user'] as JwtPayload;
+    await this.authService.logout(user.sub);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User profile',
+    type: UserDto,
+  })
+  async getProfile(@Req() req: Request): Promise<UserDto> {
+    const user = req['user'] as JwtPayload;
+    return this.authService.getUser(user.sub);
+  }
+
   @Get('google')
   @UseGuards(GoogleAuthGuard)
-  async googleAuth() {
+  @ApiOperation({ summary: 'Initiate Google OAuth flow (Web Redirect)' })
+  async googleAuthRedirectInitiate() {
     // Guard initiates the Google OAuth flow
   }
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleAuthRedirect(@Req() req: RequestWithUser, @Res() res: Response) {
+  @ApiOperation({ summary: 'Google OAuth Callback (Web Redirect)' })
+  async googleAuthRedirectCallback(@Req() req: Request, @Res() res: Response) {
     const user = req.user;
 
     if (!user) {
-      this.logger.error('Authentication failed, no user object found after callback');
+      this.logger.error('Authentication failed, no user object found');
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'Authentication failed',
       });
     }
 
-    this.logger.log(`User successfully authenticated via Google: ${JSON.stringify(user)}`);
-
-    // In Task 3.5 we will generate JWT. For now, we return the user or a success message.
-    // The requirements say "Wait for Task 3.5 for JWT production".
-    // For now, let's just return a placeholder or redirect if needed.
-    // Usually, we redirect back to the frontend with tokens or set cookies.
-
     return res.status(HttpStatus.OK).json({
-      message: 'User authenticated successfully',
+      message: 'Authenticated',
       user,
     });
   }
