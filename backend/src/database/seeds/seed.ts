@@ -1,15 +1,18 @@
 import { DataSource } from 'typeorm';
+import { Logger } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { Scan } from '../entities/scan.entity';
 import { BarcodeType } from '../../common/enums/barcode-type.enum';
 import { DeviceType } from '../../common/enums/device-type.enum';
 import { dataSourceOptions } from '../../config/typeorm.config';
 
+const logger = new Logger('Seed');
+
 async function seed() {
   const dataSource = new DataSource(dataSourceOptions);
   await dataSource.initialize();
 
-  console.log('Seeding database...');
+  logger.log('Seeding database...');
 
   const userRepository = dataSource.getRepository(User);
   const scanRepository = dataSource.getRepository(Scan);
@@ -26,7 +29,7 @@ async function seed() {
   });
   await userRepository.save(user);
 
-  console.log('User seeded:', user.email);
+  logger.log(`User seeded: ${user.email}`);
 
   // Create Scans
   const scans: Scan[] = [];
@@ -51,13 +54,13 @@ async function seed() {
   }
 
   await scanRepository.save(scans);
-  console.log(`Seeded ${scans.length} scans.`);
+  logger.log(`Seeded ${scans.length} scans.`);
 
   await dataSource.destroy();
-  console.log('Seeding complete.');
+  logger.log('Seeding complete.');
 }
 
 seed().catch((error) => {
-  console.error('Error seeding database:', error);
+  logger.error('Error seeding database:', error);
   process.exit(1);
 });

@@ -50,5 +50,5 @@ export class Scan {
   deviceType!: DeviceType;
 
   @Column({ type: 'jsonb', nullable: true })
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }

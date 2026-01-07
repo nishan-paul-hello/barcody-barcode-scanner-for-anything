@@ -13,6 +13,8 @@ import { envSchema } from '@/config/env.schema';
 import { winstonConfig } from '@/config/winston.config';
 import { HealthModule } from '@/modules/health/health.module';
 import { RedisModule } from '@/modules/redis/redis.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { UsersModule } from '@/modules/users/users.module';
 import redisConfig from '@/config/redis.config';
 
 @Module({
@@ -38,6 +40,8 @@ import redisConfig from '@/config/redis.config';
     }),
     RedisModule,
     HealthModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
