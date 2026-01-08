@@ -15,20 +15,22 @@ import {
 } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 
+import { useAuthStore } from '@/store/useAuthStore';
+
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const login = useAuthStore((state) => state.login);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthLoading = useAuthStore((state) => state.isLoading);
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
   useEffect(() => {
-    // Simple client-side check for existing session
-    // Task 4.5 will implement robust middleware protection
-    const token = localStorage.getItem('accessToken');
-    if (token) {
+    if (!isAuthLoading && isAuthenticated) {
       router.replace(callbackUrl);
     }
-  }, [router, callbackUrl]);
+  }, [isAuthLoading, isAuthenticated, router, callbackUrl]);
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     setIsLoading(true);
@@ -47,9 +49,8 @@ function LoginContent() {
 
       const { accessToken, refreshToken, user } = response.data;
 
-      // TODO: Store tokens securely (Task 4.2 will handle state management)
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      // Store tokens and user state via Zustand
+      login(user, accessToken, refreshToken);
 
       toast.success(`Welcome back, ${user?.email || 'User'}!`);
 

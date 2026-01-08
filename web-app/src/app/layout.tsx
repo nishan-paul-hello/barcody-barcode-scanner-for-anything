@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { GoogleAuthProvider } from '@/components/providers/google-auth-provider';
+import { AuthInitializer } from '@/components/auth-initializer';
 
 export default function RootLayout({
   children,
@@ -32,6 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GoogleAuthProvider>
+          <AuthInitializer />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
