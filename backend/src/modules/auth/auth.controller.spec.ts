@@ -56,7 +56,7 @@ describe('AuthController', () => {
 
   describe('POST /auth/google', () => {
     it('should return tokens on successful Google authentication', async () => {
-      const dto: GoogleAuthDto = { code: 'test-code' };
+      const dto: GoogleAuthDto = { token: 'test-code' };
       const expectedResponse: AuthResponseDto = {
         accessToken: 'access-token',
         refreshToken: 'refresh-token',
@@ -72,11 +72,11 @@ describe('AuthController', () => {
       const result = await controller.googleLogin(dto);
 
       expect(result).toEqual(expectedResponse);
-      expect(authService.loginWithGoogle).toHaveBeenCalledWith(dto.code);
+      expect(authService.loginWithGoogle).toHaveBeenCalledWith(dto.token);
     });
 
     it('should throw UnauthorizedException on invalid code', async () => {
-      const dto: GoogleAuthDto = { code: 'invalid-code' };
+      const dto: GoogleAuthDto = { token: 'invalid-code' };
 
       mockAuthService.loginWithGoogle.mockRejectedValue(
         new UnauthorizedException('Google authentication failed'),
