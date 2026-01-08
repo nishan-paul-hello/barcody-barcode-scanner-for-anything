@@ -25,13 +25,14 @@ function LoginContent() {
   const login = useAuthStore((state) => state.login);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isAuthLoading = useAuthStore((state) => state.isLoading);
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const rawRedirect = searchParams.get('redirect') || '/dashboard';
+  const redirectUrl = rawRedirect.startsWith('/') ? rawRedirect : '/dashboard';
 
   useEffect(() => {
     if (!isAuthLoading && isAuthenticated) {
-      router.replace(callbackUrl);
+      router.replace(redirectUrl);
     }
-  }, [isAuthLoading, isAuthenticated, router, callbackUrl]);
+  }, [isAuthLoading, isAuthenticated, router, redirectUrl]);
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     setIsLoading(true);
@@ -51,7 +52,7 @@ function LoginContent() {
       toast.success(`Welcome back, ${user?.email || 'User'}!`);
 
       // Redirect to dashboard
-      router.push(callbackUrl);
+      router.push(redirectUrl);
     } catch (error: unknown) {
       console.error('Login Error:', error);
       let message = 'Failed to authenticate with Google';
