@@ -3,7 +3,8 @@
 import { useState, Suspense, useEffect } from 'react';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { toast } from 'sonner';
-import axios from 'axios';
+import { api } from '@/lib/api/client';
+import type { ApiErrorResponse } from '@/lib/api/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Card,
@@ -40,14 +41,9 @@ function LoginContent() {
       }
 
       // Send the token to the backend
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
-        {
-          token: credentialResponse.credential,
-        }
-      );
-
-      const { accessToken, refreshToken, user } = response.data;
+      const { accessToken, refreshToken, user } = await api.auth.login({
+        token: credentialResponse.credential,
+      });
 
       // Store tokens and user state via Zustand
       login(user, accessToken, refreshToken);
@@ -60,8 +56,14 @@ function LoginContent() {
       console.error('Login Error:', error);
       let message = 'Failed to authenticate with Google';
 
-      if (axios.isAxiosError(error) && error.response?.data?.message) {
-        message = error.response.data.message;
+      const apiError = error as ApiErrorResponse;
+      if (apiError?.message) {
+        const potentialMessage = Array.isArray(apiError.message)
+          ? apiError.message[0]
+          : apiError.message;
+        if (potentialMessage) {
+          message = potentialMessage;
+        }
       } else if (error instanceof Error) {
         message = error.message;
       }
