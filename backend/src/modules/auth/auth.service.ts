@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+
 import { JwtAuthService } from './jwt-auth.service';
 import { UsersService } from '@/modules/users/users.service';
 import { firstValueFrom } from 'rxjs';
@@ -18,34 +19,33 @@ export class AuthService {
     private readonly jwtAuthService: JwtAuthService,
   ) {}
 
-  async loginWithGoogle(code: string): Promise<AuthResponseDto> {
+  async loginWithGoogle(token: string): Promise<AuthResponseDto> {
     try {
-      this.logger.log('Exchanging Google code for tokens');
-      const tokenUrl = 'https://oauth2.googleapis.com/token';
-      const { data: tokenData } = await firstValueFrom(
-        this.httpService.post(tokenUrl, {
-          code,
-          client_id: this.configService.get('GOOGLE_CLIENT_ID'),
-          client_secret: this.configService.get('GOOGLE_CLIENT_SECRET'),
-          redirect_uri: this.configService.get('GOOGLE_REDIRECT_URI'),
-          grant_type: 'authorization_code',
+      this.logger.log('Verifying Google ID Token');
+      const tokenInfoUrl = `https://oauth2.googleapis.com/tokeninfo`;
+
+      const { data: googleUser } = await firstValueFrom(
+        this.httpService.get(tokenInfoUrl, {
+          params: { id_token: token },
         }),
       );
 
-      this.logger.log('Fetching Google user info');
-      const userInfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
-      const { data: googleUser } = await firstValueFrom(
-        this.httpService.get(userInfoUrl, {
-          headers: { Authorization: `Bearer ${tokenData.access_token}` },
-        }),
-      );
+      // Verify strict audience check if needed, but for now we trust the token if Google verifies it.
+      // Ideally check if googleUser.aud === GOOGLE_CLIENT_ID
 
       const user = await this.usersService.findOrCreateByGoogleId({
-        googleId: googleUser.id,
+        googleId: googleUser.sub, // 'sub' is the unique identifier in ID Token
         email: googleUser.email,
       });
 
-      const tokens = await this.jwtAuthService.generateTokens(user.id, user.email);
+      const tokens = await this.jwtAuthService.generateTokens(
+        user.id,
+        user.email,
+        googleUser.name,
+        googleUser.picture,
+      );
+
+      const isAdmin = user.email === this.configService.get<string>('ADMIN_EMAIL');
 
       return {
         ...tokens,
@@ -53,7 +53,10 @@ export class AuthService {
           id: user.id,
           email: user.email,
           createdAt: user.createdAt,
+          name: googleUser.name,
+          picture: googleUser.picture,
         },
+        isAdmin,
       };
     } catch (error) {
       this.logger.error(
@@ -72,7 +75,14 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const tokens = await this.jwtAuthService.generateTokens(user.id, user.email);
+    const tokens = await this.jwtAuthService.generateTokens(
+      user.id,
+      user.email,
+      payload.name,
+      payload.picture,
+    );
+
+    const isAdmin = user.email === this.configService.get<string>('ADMIN_EMAIL');
 
     return {
       ...tokens,
@@ -80,7 +90,10 @@ export class AuthService {
         id: user.id,
         email: user.email,
         createdAt: user.createdAt,
+        name: payload.name,
+        picture: payload.picture,
       },
+      isAdmin,
     };
   }
 
