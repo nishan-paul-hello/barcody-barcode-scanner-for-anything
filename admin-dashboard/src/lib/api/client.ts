@@ -87,23 +87,32 @@ export const authApi = {
 };
 
 export const adminApi = {
-  getAnalyticsOverview: async () => {
-    const response = await apiClient.get('/admin/analytics/overview');
+  getAnalyticsOverview: async (params?: { start: string; end: string }) => {
+    const response = await apiClient.get('/admin/analytics/overview', {
+      params,
+    });
     return response.data;
   },
-  getAnalyticsTrends: async () => {
-    const response = await apiClient.get('/admin/analytics/trends');
+  getAnalyticsTrends: async (params?: {
+    start: string;
+    end: string;
+    metric?: string;
+  }) => {
+    const response = await apiClient.get('/admin/analytics/trends', { params });
     return response.data;
   },
   getBarcodeTypes: async () => {
     const response = await apiClient.get('/admin/analytics/barcode-types');
     return response.data;
   },
-  getDevices: async () => {
+  getDeviceBreakdown: async () => {
     const response = await apiClient.get('/admin/analytics/devices');
     return response.data;
   },
-  getUsers: async (page = 1, limit = 10) => {
+  getUsers: async ({
+    page = 1,
+    limit = 10,
+  }: { page?: number; limit?: number } = {}) => {
     const response = await apiClient.get('/admin/users', {
       params: { page, limit },
     });
@@ -115,4 +124,9 @@ export const adminApi = {
     const response = await apiClient.get('/admin/scans', { params });
     return response.data;
   },
+};
+
+export const api = {
+  auth: authApi,
+  admin: adminApi,
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '@/stores/authStore';
@@ -13,10 +13,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, BarChart3, ShieldCheck } from 'lucide-react';
+import { AlertCircle, BarChart3, ShieldCheck, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setAuth, isAuthenticated, isAdmin, setError, error, setLoading } =
@@ -125,10 +125,23 @@ export default function LoginPage() {
               <ShieldCheck className="h-4 w-4 text-blue-500" />
               <span>Secure access reserved for authorized administrators.</span>
             </div>
-          </CardContent>{' '}
-          CardFooter maybe? No, keep it simple.
+          </CardContent>
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a]">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }

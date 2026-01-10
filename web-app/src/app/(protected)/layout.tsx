@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { ProtectedRoute } from '@/components/auth/protected-route';
 
 export default function ProtectedLayout({
@@ -7,5 +8,9 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ProtectedRoute>{children}</ProtectedRoute>;
+  return (
+    <Suspense fallback={null}>
+      <ProtectedRoute>{children}</ProtectedRoute>
+    </Suspense>
+  );
 }

@@ -36,7 +36,7 @@ export const useAnalyticsTrends = (
 ) => {
   return useQuery({
     queryKey: adminQueryKeys.trends(dateRange.start, dateRange.end, metric),
-    queryFn: () => api.admin.getAnalyticsTrends(dateRange, metric),
+    queryFn: () => api.admin.getAnalyticsTrends({ ...dateRange, metric }),
     staleTime: 1000 * 60, // 1 minute
     refetchInterval: 1000 * 60, // 1 minute auto-refetch
   });
