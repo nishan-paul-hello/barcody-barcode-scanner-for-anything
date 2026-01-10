@@ -65,6 +65,7 @@ describe('AuthController', () => {
           email: 'test@example.com',
           createdAt: new Date(),
         },
+        isAdmin: false,
       };
 
       mockAuthService.loginWithGoogle.mockResolvedValue(expectedResponse);
@@ -97,6 +98,7 @@ describe('AuthController', () => {
           email: 'test@example.com',
           createdAt: new Date(),
         },
+        isAdmin: false,
       };
 
       mockAuthService.refreshToken.mockResolvedValue(expectedResponse);
