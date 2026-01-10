@@ -54,8 +54,8 @@
 - ⏳ [4.9 Mobile API Client Service](#task-49-mobile-api-client-service)
 - ⏳ [4.10 Mobile Data Fetching Setup](#task-410-mobile-data-fetching-setup)
 - ⏳ [4.11 Mobile Auth - Protected Navigation](#task-411-mobile-auth---protected-navigation)
-- ⏳ [4.12 Admin Dashboard Data Fetching](#task-412-admin-dashboard-data-fetching)
-- ⏳ [4.13 Admin Dashboard Authentication](#task-413-admin-dashboard-authentication)
+- ✅ [4.12 Admin Dashboard Data Fetching](#task-412-admin-dashboard-data-fetching)
+- ✅ [4.13 Admin Dashboard Authentication](#task-413-admin-dashboard-authentication)
 
 ### Phase 5: Scanning Backend (Tasks 36-38)
 
