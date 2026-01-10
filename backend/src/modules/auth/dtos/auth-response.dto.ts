@@ -10,4 +10,7 @@ export class AuthResponseDto {
 
   @ApiProperty({ type: UserDto, description: 'Authenticated user details' })
   user!: UserDto;
+
+  @ApiProperty({ description: 'True if user is an admin' })
+  isAdmin!: boolean;
 }

@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 import { JwtAuthService } from './jwt-auth.service';
 import { UsersService } from '@/modules/users/users.service';
@@ -13,7 +14,7 @@ export class AuthService {
 
   constructor(
     private readonly httpService: HttpService,
-    // configService removed as it is no longer used for manual code exchange
+    private readonly configService: ConfigService,
     private readonly usersService: UsersService,
     private readonly jwtAuthService: JwtAuthService,
   ) {}
@@ -37,7 +38,14 @@ export class AuthService {
         email: googleUser.email,
       });
 
-      const tokens = await this.jwtAuthService.generateTokens(user.id, user.email);
+      const tokens = await this.jwtAuthService.generateTokens(
+        user.id,
+        user.email,
+        googleUser.name,
+        googleUser.picture,
+      );
+
+      const isAdmin = user.email === this.configService.get<string>('ADMIN_EMAIL');
 
       return {
         ...tokens,
@@ -45,7 +53,10 @@ export class AuthService {
           id: user.id,
           email: user.email,
           createdAt: user.createdAt,
+          name: googleUser.name,
+          picture: googleUser.picture,
         },
+        isAdmin,
       };
     } catch (error) {
       this.logger.error(
@@ -64,7 +75,14 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const tokens = await this.jwtAuthService.generateTokens(user.id, user.email);
+    const tokens = await this.jwtAuthService.generateTokens(
+      user.id,
+      user.email,
+      payload.name,
+      payload.picture,
+    );
+
+    const isAdmin = user.email === this.configService.get<string>('ADMIN_EMAIL');
 
     return {
       ...tokens,
@@ -72,7 +90,10 @@ export class AuthService {
         id: user.id,
         email: user.email,
         createdAt: user.createdAt,
+        name: payload.name,
+        picture: payload.picture,
       },
+      isAdmin,
     };
   }
 

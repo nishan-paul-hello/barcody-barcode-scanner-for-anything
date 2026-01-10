@@ -6,6 +6,8 @@ import { RedisService } from '@modules/redis/redis.service';
 export interface JwtPayload {
   sub: string;
   email: string;
+  name?: string;
+  picture?: string;
   type?: 'access' | 'refresh';
 }
 
@@ -19,16 +21,26 @@ export class JwtAuthService {
     private readonly redisService: RedisService,
   ) {}
 
-  async generateAccessToken(userId: string, email: string): Promise<string> {
-    const payload: JwtPayload = { sub: userId, email, type: 'access' };
+  async generateAccessToken(
+    userId: string,
+    email: string,
+    name?: string,
+    picture?: string,
+  ): Promise<string> {
+    const payload: JwtPayload = { sub: userId, email, name, picture, type: 'access' };
     return this.jwtService.signAsync(payload, {
       expiresIn: '15m',
       secret: this.configService.get<string>('JWT_SECRET'),
     });
   }
 
-  async generateRefreshToken(userId: string, email: string): Promise<string> {
-    const payload: JwtPayload = { sub: userId, email, type: 'refresh' };
+  async generateRefreshToken(
+    userId: string,
+    email: string,
+    name?: string,
+    picture?: string,
+  ): Promise<string> {
+    const payload: JwtPayload = { sub: userId, email, name, picture, type: 'refresh' };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '7d',
       secret: this.configService.get<string>('JWT_SECRET'),
@@ -41,10 +53,10 @@ export class JwtAuthService {
     return token;
   }
 
-  async generateTokens(userId: string, email: string) {
+  async generateTokens(userId: string, email: string, name?: string, picture?: string) {
     const [accessToken, refreshToken] = await Promise.all([
-      this.generateAccessToken(userId, email),
-      this.generateRefreshToken(userId, email),
+      this.generateAccessToken(userId, email, name, picture),
+      this.generateRefreshToken(userId, email, name, picture),
     ]);
     return { accessToken, refreshToken };
   }
