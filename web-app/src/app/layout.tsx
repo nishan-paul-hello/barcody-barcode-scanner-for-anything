@@ -19,6 +19,10 @@ export const metadata: Metadata = {
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { GoogleAuthProvider } from '@/components/providers/google-auth-provider';
+import { AuthInitializer } from '@/components/auth-initializer';
+import { QueryProvider } from '@/components/providers/query-provider';
+import { ErrorBoundary } from '@/components/common/error-boundary';
 
 export default function RootLayout({
   children,
@@ -30,15 +34,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <QueryProvider>
+          <GoogleAuthProvider>
+            <AuthInitializer />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <ErrorBoundary>{children}</ErrorBoundary>
+              <Toaster />
+            </ThemeProvider>
+          </GoogleAuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

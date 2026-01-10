@@ -38,7 +38,7 @@ export class AuthController {
   @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Invalid code' })
   @HttpCode(HttpStatus.OK)
   async googleLogin(@Body() dto: GoogleAuthDto): Promise<AuthResponseDto> {
-    return this.authService.loginWithGoogle(dto.code);
+    return this.authService.loginWithGoogle(dto.token);
   }
 
   @Post('refresh')
