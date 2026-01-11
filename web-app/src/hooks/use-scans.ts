@@ -17,7 +17,7 @@ export const scanKeys = {
   detail: (id: string) => [...scanKeys.details(), id] as const,
 };
 
-export function useScans(params: PaginationParams = { page: 1, limit: 10 }) {
+export function useScans(params: PaginationParams = { page: 1, limit: 20 }) {
   return useQuery({
     queryKey: scanKeys.list(params),
     queryFn: () => api.scans.getScans(params),
@@ -36,7 +36,7 @@ export function useScan(id: string) {
 
 export function useCreateScan() {
   const queryClient = useQueryClient();
-  const firstPageKey = scanKeys.list({ page: 1, limit: 10 });
+  const firstPageKey = scanKeys.list({ page: 1, limit: 20 });
 
   return useMutation({
     mutationFn: (dto: CreateScanDto) => api.scans.createScan(dto),
@@ -55,7 +55,7 @@ export function useCreateScan() {
       if (previousScans) {
         queryClient.setQueryData(firstPageKey, {
           ...previousScans,
-          data: [
+          items: [
             {
               id: 'temp-id-' + Date.now(),
               userId: 'me',
@@ -68,9 +68,12 @@ export function useCreateScan() {
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
             },
-            ...previousScans.data,
+            ...previousScans.items,
           ],
-          total: previousScans.total + 1,
+          meta: {
+            ...previousScans.meta,
+            total: previousScans.meta.total + 1,
+          },
         });
       }
 
@@ -98,7 +101,7 @@ export function useDeleteScan() {
     onMutate: async (id) => {
       // This is a bit complex for paginated data as the item could be on any page.
       // For simplicity, we'll try to remove it from the first page if it exists there.
-      const firstPageKey = scanKeys.list({ page: 1, limit: 10 });
+      const firstPageKey = scanKeys.list({ page: 1, limit: 20 });
       await queryClient.cancelQueries({ queryKey: scanKeys.all });
 
       const previousScans =
@@ -109,15 +112,18 @@ export function useDeleteScan() {
       if (previousScans) {
         queryClient.setQueryData(firstPageKey, {
           ...previousScans,
-          data: previousScans.data.filter((scan) => scan.id !== id),
-          total: previousScans.total - 1,
+          items: previousScans.items.filter((scan) => scan.id !== id),
+          meta: {
+            ...previousScans.meta,
+            total: previousScans.meta.total - 1,
+          },
         });
       }
 
       return { previousScans };
     },
     onError: (_err, _id, context) => {
-      const firstPageKey = scanKeys.list({ page: 1, limit: 10 });
+      const firstPageKey = scanKeys.list({ page: 1, limit: 20 });
       if (context?.previousScans) {
         queryClient.setQueryData(firstPageKey, context.previousScans);
       }
@@ -139,6 +145,19 @@ export function useBulkCreateScans() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.lists() });
       toast.success('Batch scans uploaded successfully');
+    },
+  });
+}
+export function useBulkDeleteScans() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => api.scans.bulkDeleteScans(ids),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: scanKeys.all });
+    },
+    onSuccess: () => {
+      toast.success('Scans deleted successfully');
     },
   });
 }

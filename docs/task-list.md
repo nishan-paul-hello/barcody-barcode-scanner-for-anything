@@ -59,15 +59,15 @@
 
 ### Phase 5: Scanning Backend (Tasks 36-38)
 
-- ⏳ [5.1 Scans Database Operations](#task-51-backend-scans---database-operations)
-- ⏳ [5.2 Scans API](#task-52-backend-scans---api)
-- ⏳ [5.3 WebSocket Gateway](#task-53-backend-scans---websocket-gateway)
+- ✅ [5.1 Scans Database Operations](#task-51-backend-scans---database-operations)
+- ✅ [5.2 Scans API](#task-52-backend-scans---api)
+- ✅ [5.3 WebSocket Gateway](#task-53-backend-scans---websocket-gateway)
 
 ### Phase 6: Scanning Web (Tasks 39-42)
 
-- ⏳ [6.1 Web Scanner](#task-61-web-scanner---camera-integration)
-- ⏳ [6.2 Web File Upload](#task-62-web-scanner---file-upload)
-- ⏳ [6.3 Web History](#task-63-web-scanner---history--management)
+- ✅ [6.1 Web Scanner](#task-61-web-scanner---camera-integration)
+- ✅ [6.2 Web File Upload](#task-62-web-scanner---file-upload)
+- ✅ [6.3 Web History](#task-63-web-scanner---history--management)
 - ⏳ [6.4 Web PWA Configuration](#task-64-web-pwa-configuration)
 
 ### Phase 7: Scanning Mobile (Tasks 43-46)
