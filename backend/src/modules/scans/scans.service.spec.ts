@@ -6,6 +6,7 @@ import { Scan } from '@database/entities/scan.entity';
 import { BarcodeType } from '@common/enums/barcode-type.enum';
 import { DeviceType } from '@common/enums/device-type.enum';
 import { NotFoundException } from '@nestjs/common';
+import { ScansGateway } from './scans.gateway';
 
 describe('ScansService', () => {
   let service: ScansService;
@@ -17,6 +18,11 @@ describe('ScansService', () => {
     findAndCount: jest.fn(),
     findOne: jest.fn(),
     delete: jest.fn(),
+  };
+
+  const mockScansGateway = {
+    emitScanCreated: jest.fn(),
+    emitScanDeleted: jest.fn(),
   };
 
   const mockQueryRunner = {
@@ -45,6 +51,10 @@ describe('ScansService', () => {
         {
           provide: DataSource,
           useValue: mockDataSource,
+        },
+        {
+          provide: ScansGateway,
+          useValue: mockScansGateway,
         },
       ],
     }).compile();
@@ -83,6 +93,7 @@ describe('ScansService', () => {
         userId,
       });
       expect(mockScanRepository.save).toHaveBeenCalledWith(expectedScan);
+      expect(mockScansGateway.emitScanCreated).toHaveBeenCalledWith(userId, expectedScan);
     });
   });
 
@@ -153,6 +164,7 @@ describe('ScansService', () => {
       await service.delete('user-1', 'scan-1');
 
       expect(mockScanRepository.delete).toHaveBeenCalled();
+      expect(mockScansGateway.emitScanDeleted).toHaveBeenCalledWith('user-1', 'scan-1');
     });
 
     it('should throw NotFoundException if scan to delete is not found', async () => {
@@ -177,6 +189,7 @@ describe('ScansService', () => {
       expect(mockQueryRunner.startTransaction).toHaveBeenCalled();
       expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
       expect(mockQueryRunner.release).toHaveBeenCalled();
+      expect(mockScansGateway.emitScanCreated).toHaveBeenCalledTimes(2);
     });
 
     it('should rollback on error', async () => {

@@ -4,6 +4,7 @@ import { Repository, Between, DataSource, FindOptionsWhere, MoreThanOrEqual } fr
 import { Scan } from '@database/entities/scan.entity';
 import { CreateScanDto } from './dto/create-scan.dto';
 import { ScanQueryDto } from './dto/scan-query.dto';
+import { ScansGateway } from './scans.gateway';
 
 @Injectable()
 export class ScansService {
@@ -13,6 +14,7 @@ export class ScansService {
     @InjectRepository(Scan)
     private readonly scanRepository: Repository<Scan>,
     private readonly dataSource: DataSource,
+    private readonly scansGateway: ScansGateway,
   ) {}
 
   async create(userId: string, createScanDto: CreateScanDto): Promise<Scan> {
@@ -23,7 +25,9 @@ export class ScansService {
       userId,
     });
 
-    return await this.scanRepository.save(scan);
+    const savedScan = await this.scanRepository.save(scan);
+    this.scansGateway.emitScanCreated(userId, savedScan);
+    return savedScan;
   }
 
   async findAll(userId: string, query: ScanQueryDto) {
@@ -117,6 +121,8 @@ export class ScansService {
     if (result.affected === 0) {
       throw new NotFoundException(`Scan with ID ${id} not found`);
     }
+
+    this.scansGateway.emitScanDeleted(userId, id);
   }
 
   async bulkCreate(userId: string, scanDtos: CreateScanDto[]): Promise<Scan[]> {
@@ -136,6 +142,12 @@ export class ScansService {
 
       const savedScans = await queryRunner.manager.save(Scan, scans);
       await queryRunner.commitTransaction();
+
+      // Emit events for all created scans
+      savedScans.forEach((scan) => {
+        this.scansGateway.emitScanCreated(userId, scan);
+      });
+
       return savedScans;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
