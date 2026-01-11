@@ -16,6 +16,7 @@ import { RedisModule } from '@/modules/redis/redis.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { ScansModule } from '@/modules/scans/scans.module';
+import { TailscaleModule } from '@/modules/tailscale/tailscale.module';
 import redisConfig from '@/config/redis.config';
 
 @Module({
@@ -44,6 +45,7 @@ import redisConfig from '@/config/redis.config';
     UsersModule,
     AuthModule,
     ScansModule,
+    TailscaleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
