@@ -120,3 +120,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes scan-line {
+  0% {
+    top: 10%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    top: 90%;
+    opacity: 0;
+  }
+}
+
+@utility animate-scan-line {
+  animation: scan-line 2.5s ease-in-out infinite;
+}

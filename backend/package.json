@@ -37,10 +37,12 @@
     "@nestjs/microservices": "^11.1.9",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/platform-socket.io": "^11.1.11",
     "@nestjs/serve-static": "^5.0.4",
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@nestjs/websockets": "^11.1.11",
     "@types/cache-manager-redis-store": "^2.0.4",
     "@types/passport-google-oauth20": "^2.0.17",
     "cache-manager": "^7.2.7",
@@ -56,6 +58,7 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.3",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.28",
     "winston": "^3.19.0"
@@ -106,8 +109,12 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/$1",
+      "^@app/(.*)$": "<rootDir>/$1",
+      "^@config/(.*)$": "<rootDir>/config/$1",
       "^@modules/(.*)$": "<rootDir>/modules/$1",
-      "^@common/(.*)$": "<rootDir>/common/$1"
+      "^@common/(.*)$": "<rootDir>/common/$1",
+      "^@database/(.*)$": "<rootDir>/database/$1",
+      "^@shared/(.*)$": "<rootDir>/shared/$1"
     }
   }
 }

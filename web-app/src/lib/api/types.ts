@@ -3,17 +3,43 @@ export type { User };
 
 // --- Pagination ---
 
+export enum BarcodeType {
+  EAN13 = 'EAN13',
+  EAN8 = 'EAN8',
+  UPCA = 'UPCA',
+  UPCE = 'UPCE',
+  QR = 'QR',
+  CODE128 = 'CODE128',
+  CODE39 = 'CODE39',
+  ITF = 'ITF',
+  UNKNOWN = 'UNKNOWN',
+}
+
+export enum DeviceType {
+  WEB = 'web',
+  MOBILE = 'mobile',
+}
+
 export interface PaginationParams {
   page?: number;
   limit?: number;
+  search?: string;
+  barcodeType?: BarcodeType;
+  deviceType?: DeviceType;
+  startDate?: string;
+  endDate?: string;
+  sortBy?: string;
+  order?: 'ASC' | 'DESC';
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  items: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 // --- Auth ---
@@ -37,7 +63,7 @@ export interface AuthResponseDto {
 export interface CreateScanDto {
   barcodeData: string;
   barcodeType: string;
-  rawData?: string;
+  rawData: string;
   deviceType?: string;
   metadata?: Record<string, unknown>;
   scannedAt?: string;
