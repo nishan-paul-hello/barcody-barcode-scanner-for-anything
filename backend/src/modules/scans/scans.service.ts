@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, DataSource, FindOptionsWhere } from 'typeorm';
+import { Repository, Between, DataSource, FindOptionsWhere, MoreThanOrEqual } from 'typeorm';
 import { Scan } from '@database/entities/scan.entity';
 import { CreateScanDto } from './dto/create-scan.dto';
 import { ScanQueryDto } from './dto/scan-query.dto';
@@ -49,6 +49,31 @@ export class ScansService {
     const [items, total] = await this.scanRepository.findAndCount({
       where,
       order: { [sortBy]: order } as never,
+      take: limit,
+      skip,
+    });
+
+    return {
+      items,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async findAllSince(userId: string, timestamp: string, query: ScanQueryDto) {
+    const { page = 1, limit = 50 } = query;
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await this.scanRepository.findAndCount({
+      where: {
+        userId,
+        scannedAt: MoreThanOrEqual(new Date(timestamp)),
+      },
+      order: { scannedAt: 'ASC' },
       take: limit,
       skip,
     });

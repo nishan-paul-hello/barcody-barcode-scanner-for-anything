@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsObject } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsObject, IsDateString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { BarcodeType } from '@common/enums/barcode-type.enum';
 import { DeviceType } from '@common/enums/device-type.enum';
@@ -32,6 +32,14 @@ export class CreateScanDto {
   })
   @IsEnum(DeviceType)
   deviceType!: DeviceType;
+
+  @ApiPropertyOptional({
+    description: 'Timestamp when the scan occurred',
+    example: '2023-01-01T12:00:00Z',
+  })
+  @IsOptional()
+  @IsDateString()
+  scannedAt?: string;
 
   @ApiPropertyOptional({
     description: 'Additional metadata',
