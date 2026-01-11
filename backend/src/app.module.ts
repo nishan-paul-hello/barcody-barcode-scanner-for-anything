@@ -15,6 +15,7 @@ import { HealthModule } from '@/modules/health/health.module';
 import { RedisModule } from '@/modules/redis/redis.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UsersModule } from '@/modules/users/users.module';
+import { ScansModule } from '@/modules/scans/scans.module';
 import redisConfig from '@/config/redis.config';
 
 @Module({
@@ -42,6 +43,7 @@ import redisConfig from '@/config/redis.config';
     HealthModule,
     UsersModule,
     AuthModule,
+    ScansModule,
   ],
   controllers: [AppController],
   providers: [AppService],

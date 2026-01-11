@@ -1,4 +1,4 @@
-# Barcody - Complete Prompt List Index
+# Barcody - Complete Prompt List
 
 > **All 76 Tasks - Fully Detailed Implementation Prompts**
 >
