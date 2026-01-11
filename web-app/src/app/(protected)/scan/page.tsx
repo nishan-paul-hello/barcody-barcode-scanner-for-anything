@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
+import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Card,
   CardContent,
@@ -9,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Scan, Info } from 'lucide-react';
+import { Scan, Info, Camera, FileUp } from 'lucide-react';
 
 export default function ScanPage() {
   const [lastResult, setLastResult] = useState<string | null>(null);
@@ -19,15 +21,41 @@ export default function ScanPage() {
       <div className="flex flex-col space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Scanner</h1>
         <p className="text-muted-foreground">
-          Scan any barcode or QR code using your device camera.
+          Scan any barcode or QR code using your device camera or by uploading
+          an image.
         </p>
       </div>
 
       <div className="grid gap-8 md:grid-cols-[1fr_300px]">
         <div className="space-y-6">
-          <BarcodeScanner
-            onScanSuccess={(result) => setLastResult(result.getText())}
-          />
+          <Tabs defaultValue="camera" className="w-full">
+            <TabsList className="mb-4 grid w-full grid-cols-2 rounded-2xl bg-white/5 p-1">
+              <TabsTrigger
+                value="camera"
+                className="flex items-center gap-2 rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+              >
+                <Camera className="h-4 w-4" />
+                Camera
+              </TabsTrigger>
+              <TabsTrigger
+                value="file"
+                className="flex items-center gap-2 rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+              >
+                <FileUp className="h-4 w-4" />
+                File Upload
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="camera" className="mt-0 outline-none">
+              <BarcodeScanner
+                onScanSuccess={(result) => setLastResult(result.getText())}
+              />
+            </TabsContent>
+            <TabsContent value="file" className="mt-0 outline-none">
+              <BarcodeFileScanner
+                onScanSuccess={(result) => setLastResult(result.getText())}
+              />
+            </TabsContent>
+          </Tabs>
 
           <Card className="border-white/5 bg-white/[0.02] backdrop-blur-sm">
             <CardHeader className="pb-3">
@@ -86,6 +114,9 @@ export default function ScanPage() {
                 'Code 128',
                 'DataMatrix',
                 'PDF417',
+                'ITF',
+                'EAN-8',
+                'Code 39',
               ].map((f) => (
                 <div
                   key={f}
