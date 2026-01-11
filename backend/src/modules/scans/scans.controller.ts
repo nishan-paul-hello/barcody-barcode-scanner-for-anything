@@ -18,6 +18,7 @@ import { ScansService } from './scans.service';
 import { CreateScanDto } from './dto/create-scan.dto';
 import { BulkCreateScansDto } from './dto/bulk-create-scans.dto';
 import { ScanQueryDto } from './dto/scan-query.dto';
+import { BulkDeleteScansDto } from './dto/bulk-delete-scans.dto';
 import { Scan } from '@database/entities/scan.entity';
 
 @ApiTags('scans')
@@ -108,5 +109,15 @@ export class ScansController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<void> {
     return this.scansService.delete(userId, id);
+  }
+
+  @Delete()
+  @ApiOperation({ summary: 'Bulk delete scans' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Scans deleted successfully' })
+  async bulkRemove(
+    @CurrentUser('sub') userId: string,
+    @Body() bulkDeleteDto: BulkDeleteScansDto,
+  ): Promise<void> {
+    return this.scansService.bulkDelete(userId, bulkDeleteDto.ids);
   }
 }

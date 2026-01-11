@@ -20,6 +20,11 @@ export class ScanQueryDto {
   @Max(100)
   limit?: number = 50;
 
+  @ApiPropertyOptional({ description: 'Search by barcode data' })
+  @IsOptional()
+  @IsString()
+  search?: string;
+
   @ApiPropertyOptional({ enum: BarcodeType, description: 'Filter by barcode type' })
   @IsOptional()
   @IsEnum(BarcodeType)

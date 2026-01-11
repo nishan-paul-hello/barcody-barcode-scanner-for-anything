@@ -63,9 +63,14 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           createScanMutation.mutate({
             barcodeData,
             barcodeType: mapZxingFormatToReadable(result.getBarcodeFormat()),
-            deviceType: 'web_upload',
+            rawData: barcodeData,
+            deviceType: 'web',
             scannedAt: new Date().toISOString(),
-            metadata: { format: formatName, timestamp: Date.now() },
+            metadata: {
+              format: formatName,
+              method: 'upload',
+              timestamp: Date.now(),
+            },
           });
 
           toast.success(`Barcode detected: ${barcodeData}`, {

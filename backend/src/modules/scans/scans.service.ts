@@ -1,6 +1,14 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, DataSource, FindOptionsWhere, MoreThanOrEqual } from 'typeorm';
+import {
+  Repository,
+  Between,
+  DataSource,
+  FindOptionsWhere,
+  MoreThanOrEqual,
+  Like,
+  In,
+} from 'typeorm';
 import { Scan } from '@database/entities/scan.entity';
 import { CreateScanDto } from './dto/create-scan.dto';
 import { ScanQueryDto } from './dto/scan-query.dto';
@@ -40,6 +48,7 @@ export class ScansService {
       endDate,
       sortBy = 'scannedAt',
       order = 'DESC',
+      search,
     } = query;
 
     const skip = (page - 1) * limit;
@@ -47,6 +56,11 @@ export class ScansService {
 
     if (barcodeType) where.barcodeType = barcodeType;
     if (deviceType) where.deviceType = deviceType;
+    if (search) {
+      // Use ILIKE for case-insensitive search if supported by DB (PostgreSQL)
+      // For TypeORM, we can use the repository.find with Like operator
+      where.barcodeData = Like(`%${search}%`);
+    }
 
     this.applyDateFilters(where, startDate, endDate);
 
@@ -123,6 +137,23 @@ export class ScansService {
     }
 
     this.scansGateway.emitScanDeleted(userId, id);
+  }
+
+  async bulkDelete(userId: string, ids: string[]): Promise<void> {
+    this.logger.log(`User ${userId} bulk deleting ${ids.length} scans`);
+    const result = await this.scanRepository.delete({
+      id: In(ids),
+      userId,
+    });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`No scans found for the provided IDs`);
+    }
+
+    // Emit events for all deleted scans
+    ids.forEach((id) => {
+      this.scansGateway.emitScanDeleted(userId, id);
+    });
   }
 
   async bulkCreate(userId: string, scanDtos: CreateScanDto[]): Promise<Scan[]> {

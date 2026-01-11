@@ -188,6 +188,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 barcodeType: mapZxingFormatToReadable(
                   result.getBarcodeFormat()
                 ),
+                rawData: barcodeData,
                 deviceType: 'web',
                 scannedAt: new Date().toISOString(),
                 metadata: { format: formatName, timestamp: Date.now() },
