@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { ProductInfo } from '../interfaces/product-info.interface';
+import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 
 interface OFFProduct {
   product_name?: string;

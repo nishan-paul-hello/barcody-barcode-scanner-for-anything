@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
-import { JwtAuthService } from '@/modules/auth/jwt-auth.service';
+import { JwtAuthService } from '@modules/auth/jwt-auth.service';
 import { Scan } from '@database/entities/scan.entity';
 
 @WebSocketGateway({

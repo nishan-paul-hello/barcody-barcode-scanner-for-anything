@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ScansController } from './scans.controller';
-import { ScansService } from './scans.service';
+import { ScansController } from '@modules/scans/scans.controller';
+import { ScansService } from '@modules/scans/scans.service';
 import { BarcodeType } from '@common/enums/barcode-type.enum';
 import { DeviceType } from '@common/enums/device-type.enum';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { ProductLookupService } from './product-lookup.service';
-import { ProductsController } from './products.controller';
-import { RedisModule } from '../redis/redis.module';
-import { AuthModule } from '../auth/auth.module';
+import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
+import { ProductsController } from '@modules/product-lookup/products.controller';
+import { RedisModule } from '@modules/redis/redis.module';
+import { AuthModule } from '@modules/auth/auth.module';
 import { UserThrottlerGuard } from '@/common/guards/user-throttler.guard';
 
 @Module({

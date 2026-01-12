@@ -2,11 +2,11 @@ import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 
-import { JwtAuthService } from './jwt-auth.service';
-import { UsersService } from '@/modules/users/users.service';
+import { JwtAuthService } from '@modules/auth/jwt-auth.service';
+import { UsersService } from '@modules/users/users.service';
 import { firstValueFrom } from 'rxjs';
-import { AuthResponseDto } from './dtos/auth-response.dto';
-import { UserDto } from './dtos/user.dto';
+import { AuthResponseDto } from '@modules/auth/dtos/auth-response.dto';
+import { UserDto } from '@modules/auth/dtos/user.dto';
 
 @Injectable()
 export class AuthService {

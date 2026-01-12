@@ -22,7 +22,7 @@ import type {
   User,
   ApiErrorResponse,
   TailscaleInfoDto,
-} from './types';
+} from '@/lib/api/types';
 
 // Define custom property for retry in request config
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {

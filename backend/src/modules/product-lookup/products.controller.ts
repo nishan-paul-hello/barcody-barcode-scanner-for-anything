@@ -7,7 +7,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { ProductLookupService } from './product-lookup.service';
+import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AdminGuard } from '@modules/auth/guards/admin.guard';

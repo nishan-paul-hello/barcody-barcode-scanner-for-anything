@@ -14,11 +14,11 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@modules/auth/decorators/current-user.decorator';
-import { ScansService } from './scans.service';
-import { CreateScanDto } from './dto/create-scan.dto';
-import { BulkCreateScansDto } from './dto/bulk-create-scans.dto';
-import { ScanQueryDto } from './dto/scan-query.dto';
-import { BulkDeleteScansDto } from './dto/bulk-delete-scans.dto';
+import { ScansService } from '@modules/scans/scans.service';
+import { CreateScanDto } from '@modules/scans/dto/create-scan.dto';
+import { BulkCreateScansDto } from '@modules/scans/dto/bulk-create-scans.dto';
+import { ScanQueryDto } from '@modules/scans/dto/scan-query.dto';
+import { BulkDeleteScansDto } from '@modules/scans/dto/bulk-delete-scans.dto';
 import { Scan } from '@database/entities/scan.entity';
 
 @ApiTags('scans')

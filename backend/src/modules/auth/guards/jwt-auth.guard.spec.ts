@@ -1,5 +1,5 @@
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { JwtAuthService } from '../jwt-auth.service';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { JwtAuthService } from '@modules/auth/jwt-auth.service';
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 

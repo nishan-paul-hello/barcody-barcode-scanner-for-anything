@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisService } from '../redis/redis.service';
-import { OpenFoodFactsClient } from './clients/open-food-facts.client';
-import { UpcDatabaseClient } from './clients/upc-database.client';
-import { BarcodeLookupClient } from './clients/barcode-lookup.client';
-import { ProductInfo } from './interfaces/product-info.interface';
+import { RedisService } from '@modules/redis/redis.service';
+import { OpenFoodFactsClient } from '@modules/product-lookup/clients/open-food-facts.client';
+import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.client';
+import { BarcodeLookupClient } from '@modules/product-lookup/clients/barcode-lookup.client';
+import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 
 @Injectable()
 export class ProductLookupService {

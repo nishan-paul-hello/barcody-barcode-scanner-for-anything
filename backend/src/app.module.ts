@@ -8,17 +8,17 @@ import { WinstonModule } from 'nest-winston';
 
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
-import { getDatabaseConfig } from '@/config/database.config';
-import { envSchema } from '@/config/env.schema';
-import { winstonConfig } from '@/config/winston.config';
-import { HealthModule } from '@/modules/health/health.module';
-import { RedisModule } from '@/modules/redis/redis.module';
-import { AuthModule } from '@/modules/auth/auth.module';
-import { UsersModule } from '@/modules/users/users.module';
-import { ScansModule } from '@/modules/scans/scans.module';
-import { TailscaleModule } from '@/modules/tailscale/tailscale.module';
-import { ProductLookupModule } from '@/modules/product-lookup/product-lookup.module';
-import redisConfig from '@/config/redis.config';
+import { getDatabaseConfig } from '@config/database.config';
+import { envSchema } from '@config/env.schema';
+import { winstonConfig } from '@config/winston.config';
+import { HealthModule } from '@modules/health/health.module';
+import { RedisModule } from '@modules/redis/redis.module';
+import { AuthModule } from '@modules/auth/auth.module';
+import { UsersModule } from '@modules/users/users.module';
+import { ScansModule } from '@modules/scans/scans.module';
+import { TailscaleModule } from '@modules/tailscale/tailscale.module';
+import { ProductLookupModule } from '@modules/product-lookup/product-lookup.module';
+import redisConfig from '@config/redis.config';
 
 @Module({
   imports: [
