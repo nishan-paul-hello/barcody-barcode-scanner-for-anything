@@ -17,11 +17,13 @@ Tailscale creates a secure, private network (called a "tailnet") between your de
 ### 1. Install Tailscale
 
 **On Linux (Ubuntu/Debian):**
+
 ```bash
 curl -fsSL https://tailscale.com/install.sh | sh
 ```
 
 **On macOS:**
+
 ```bash
 brew install tailscale
 ```
@@ -50,10 +52,12 @@ This will output something like `100.x.y.z` - this is your Tailscale IP address.
 The backend will **automatically detect** your Tailscale IP when it starts. However, you can also manually configure it:
 
 **Option A: Automatic Detection (Recommended)**
+
 - No configuration needed! The backend runs `tailscale ip -4` on startup.
 
 **Option B: Manual Configuration**
 Edit your `.env` file:
+
 ```bash
 TAILSCALE_IP=100.x.y.z  # Replace with your actual IP
 TAILSCALE_HOSTNAME=barcody-backend  # Optional: custom hostname
@@ -62,11 +66,13 @@ TAILSCALE_HOSTNAME=barcody-backend  # Optional: custom hostname
 ### 5. Verify Backend Configuration
 
 Start your backend and check the logs:
+
 ```bash
 make rebuild-dev
 ```
 
 You should see:
+
 ```
 [TailscaleService] Tailscale IP auto-detected: 100.x.y.z
 ```
@@ -87,6 +93,7 @@ Once your backend is running with Tailscale configured:
 ### 2. Test the Connection
 
 Click the **"Test Connection"** button to verify:
+
 - ✅ The backend is reachable via Tailscale IP
 - ✅ The health endpoint responds
 - ✅ Connection latency is acceptable
@@ -114,6 +121,7 @@ Click the **"Test Connection"** button to verify:
 ### 4. Verify Mobile Connection
 
 The mobile app should automatically test the connection and display:
+
 - ✅ Connected to backend
 - ✅ Backend version
 - ✅ Connection latency
@@ -125,6 +133,7 @@ The mobile app should automatically test the connection and display:
 **Cause**: Tailscale is not installed or not running.
 
 **Solution**:
+
 ```bash
 # Check if Tailscale is running
 tailscale status
@@ -138,6 +147,7 @@ sudo tailscale up
 **Cause**: Backend is not running or Tailscale is not configured.
 
 **Solution**:
+
 1. Ensure backend is running: `docker ps | grep barcody_backend`
 2. Check backend logs: `docker logs barcody_backend`
 3. Verify Tailscale IP: `docker exec barcody_backend tailscale ip -4`
@@ -147,6 +157,7 @@ sudo tailscale up
 **Cause**: Mobile device is not on the same Tailscale network.
 
 **Solution**:
+
 1. Open Tailscale app on mobile
 2. Ensure you're connected (toggle should be ON)
 3. Verify you see your backend device in the device list
@@ -157,6 +168,7 @@ sudo tailscale up
 **Cause**: Your browser's computer is not on the Tailscale network.
 
 **Solution**:
+
 - Install Tailscale on your computer and connect to the same tailnet
 - OR: The test will work from mobile devices that are on Tailscale
 
