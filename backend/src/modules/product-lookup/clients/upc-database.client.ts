@@ -1,6 +1,15 @@
 import axios, { AxiosInstance } from 'axios';
 import { ProductInfo } from '../interfaces/product-info.interface';
 
+interface UpcDatabaseItem {
+  title: string;
+  brand: string;
+  category: string;
+  description: string;
+  publisher?: string;
+  images?: string[];
+}
+
 export class UpcDatabaseClient {
   private axiosInstance: AxiosInstance;
 
@@ -24,30 +33,36 @@ export class UpcDatabaseClient {
         return null;
       }
 
-      const item = data.items[0];
-
-      return {
-        barcode,
-        name: item.title,
-        brand: item.brand,
-        category: item.category,
-        description: item.description,
-        manufacturer: item.publisher || item.brand,
-        images: item.images || [],
-        source: 'upcdatabase',
-        lastUpdated: new Date(),
-      };
+      return this.mapToProductInfo(barcode, data.items[0]);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          return null;
-        }
-        if (error.response?.status === 429) {
-          // Rate limit exceeded
-          throw new Error('UPC Database rate limit exceeded');
-        }
-      }
-      throw error;
+      return this.handleLookupError(error);
     }
+  }
+
+  private mapToProductInfo(barcode: string, item: UpcDatabaseItem): ProductInfo {
+    return {
+      barcode,
+      name: item.title,
+      brand: item.brand,
+      category: item.category,
+      description: item.description,
+      manufacturer: item.publisher || item.brand,
+      images: item.images || [],
+      source: 'upcdatabase',
+      lastUpdated: new Date(),
+    };
+  }
+
+  private handleLookupError(error: unknown): never | null {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      if (status === 404) {
+        return null;
+      }
+      if (status === 429) {
+        throw new Error('UPC Database rate limit exceeded');
+      }
+    }
+    throw error;
   }
 }
