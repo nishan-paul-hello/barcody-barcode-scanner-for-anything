@@ -17,6 +17,7 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { ScansModule } from '@/modules/scans/scans.module';
 import { TailscaleModule } from '@/modules/tailscale/tailscale.module';
+import { ProductLookupModule } from '@/modules/product-lookup/product-lookup.module';
 import redisConfig from '@/config/redis.config';
 
 @Module({
@@ -46,6 +47,7 @@ import redisConfig from '@/config/redis.config';
     AuthModule,
     ScansModule,
     TailscaleModule,
+    ProductLookupModule,
   ],
   controllers: [AppController],
   providers: [AppService],
