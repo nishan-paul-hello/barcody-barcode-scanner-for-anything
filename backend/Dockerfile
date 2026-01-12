@@ -13,7 +13,8 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     python3 \
-    make
+    make \
+    util-linux-dev
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY backend/package.json ./backend/
@@ -41,7 +42,10 @@ RUN apk add --no-cache \
     jpeg \
     freetype \
     fontconfig \
-    ttf-freefont
+    ttf-freefont \
+    util-linux \
+    libstdc++ \
+    libgcc
 WORKDIR /app/backend
 
 ENV NODE_ENV=production

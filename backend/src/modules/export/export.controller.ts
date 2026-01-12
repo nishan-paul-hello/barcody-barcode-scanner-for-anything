@@ -100,11 +100,12 @@ export class ExportController {
 
     const filename = `scans-report-${new Date().toISOString().split('T')[0]}.pdf`;
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
-
     try {
       const pdfBuffer = await this.exportService.generatePdf(userId, query);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+      res.setHeader('Content-Length', pdfBuffer.length.toString());
       res.send(pdfBuffer);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -127,14 +128,15 @@ export class ExportController {
 
     const filename = `scans-analysis-${new Date().toISOString().split('T')[0]}.xlsx`;
 
-    res.setHeader(
-      'Content-Type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    );
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
-
     try {
       const excelBuffer = await this.exportService.generateExcel(userId, query);
+
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+      res.setHeader('Content-Length', excelBuffer.length.toString());
       res.send(excelBuffer);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';

@@ -214,21 +214,68 @@ export const api = {
 
   // Export
   export: {
-    exportCSV: (scanIds?: string[]) =>
+    exportCSV: (params?: PaginationParams, onProgress?: (p: number) => void) =>
       apiClient
-        .post('/export/csv', { scanIds }, { responseType: 'blob' })
+        .get('/export/csv', {
+          params,
+          responseType: 'blob',
+          onDownloadProgress: (progressEvent) => {
+            if (onProgress && progressEvent.total) {
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              onProgress(progress);
+            }
+          },
+        })
         .then((r) => r.data),
-    exportJSON: (scanIds?: string[]) =>
+    exportJSON: (params?: PaginationParams, onProgress?: (p: number) => void) =>
       apiClient
-        .post('/export/json', { scanIds }, { responseType: 'blob' })
+        .get('/export/json', {
+          params,
+          responseType: 'blob',
+          onDownloadProgress: (progressEvent) => {
+            if (onProgress && progressEvent.total) {
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              onProgress(progress);
+            }
+          },
+        })
         .then((r) => r.data),
-    exportPDF: (scanIds?: string[]) =>
+    exportPDF: (params?: PaginationParams, onProgress?: (p: number) => void) =>
       apiClient
-        .post('/export/pdf', { scanIds }, { responseType: 'blob' })
+        .get('/export/pdf', {
+          params,
+          responseType: 'blob',
+          onDownloadProgress: (progressEvent) => {
+            if (onProgress && progressEvent.total) {
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              onProgress(progress);
+            }
+          },
+        })
         .then((r) => r.data),
-    exportExcel: (scanIds?: string[]) =>
+    exportExcel: (
+      params?: PaginationParams,
+      onProgress?: (p: number) => void
+    ) =>
       apiClient
-        .post('/export/excel', { scanIds }, { responseType: 'blob' })
+        .get('/export/excel', {
+          params,
+          responseType: 'blob',
+          onDownloadProgress: (progressEvent) => {
+            if (onProgress && progressEvent.total) {
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              onProgress(progress);
+            }
+          },
+        })
         .then((r) => r.data),
   },
 
