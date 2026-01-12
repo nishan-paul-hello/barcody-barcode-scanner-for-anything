@@ -11,13 +11,25 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Scan, Info, Camera, FileUp } from 'lucide-react';
+import {
+  Scan,
+  Info,
+  Camera,
+  FileUp,
+  PackageSearch,
+  AlertCircle,
+} from 'lucide-react';
+import { useProduct } from '@/hooks/use-product';
+import { ProductDetail } from '@/components/products/ProductDetail';
+import { ProductSkeleton } from '@/components/products/ProductSkeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function ScanPage() {
   const [lastResult, setLastResult] = useState<string | null>(null);
+  const { data: productData, isLoading, error } = useProduct(lastResult);
 
   return (
-    <div className="animate-in fade-in container max-w-4xl space-y-8 py-6 duration-500">
+    <div className="animate-in fade-in container max-w-5xl space-y-8 py-6 duration-500">
       <div className="flex flex-col space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Scanner</h1>
         <p className="text-muted-foreground">
@@ -26,8 +38,8 @@ export default function ScanPage() {
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-[1fr_300px]">
-        <div className="space-y-6">
+      <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
+        <div className="space-y-8">
           <Tabs defaultValue="camera" className="w-full">
             <TabsList className="mb-4 grid w-full grid-cols-2 rounded-2xl bg-white/5 p-1">
               <TabsTrigger
@@ -57,24 +69,51 @@ export default function ScanPage() {
             </TabsContent>
           </Tabs>
 
-          <Card className="border-white/5 bg-white/[0.02] backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Info className="h-5 w-5 text-cyan-500" />
-                Scanning Tips
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-muted-foreground list-disc space-y-2 pl-4 text-sm">
-                <li>Ensure there is enough light on the barcode.</li>
-                <li>
-                  Hold the device steady and center the barcode in the frame.
-                </li>
-                <li>Try switching cameras if detection is slow.</li>
-                <li>Keep the barcode at a medium distance (about 10-15cm).</li>
-              </ul>
-            </CardContent>
-          </Card>
+          {/* Product Result Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <PackageSearch className="h-5 w-5 text-cyan-500" />
+              <h2 className="text-lg font-semibold">Product Information</h2>
+            </div>
+
+            {isLoading && <ProductSkeleton />}
+
+            {error && (
+              <Alert
+                variant="destructive"
+                className="border-red-500/20 bg-red-500/10 text-red-400"
+              >
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Product Not Found</AlertTitle>
+                <AlertDescription>
+                  We couldn&apos;t find any information for this barcode in our
+                  databases. Code: {lastResult}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {productData?.success && (
+              <ProductDetail
+                product={productData.data}
+                cacheStatus={productData.cacheStatus}
+              />
+            )}
+
+            {!lastResult && !isLoading && (
+              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/5 bg-white/[0.01] py-12 text-center">
+                <div className="mb-4 rounded-full bg-white/5 p-4">
+                  <PackageSearch className="h-10 w-10 text-white/20" />
+                </div>
+                <h3 className="text-lg font-medium text-white/40">
+                  Ready to Scan
+                </h3>
+                <p className="text-muted-foreground mt-1 max-w-xs text-sm">
+                  Product details will appear here automatically after a
+                  successful scan.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-6">
@@ -96,6 +135,24 @@ export default function ScanPage() {
                   <p className="text-muted-foreground text-xs">No scans yet</p>
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-white/5 bg-white/[0.02] backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Info className="h-5 w-5 text-cyan-500" />
+                Scanning Tips
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="text-muted-foreground list-disc space-y-2 pl-4 text-sm">
+                <li>Ensure there is enough light on the barcode.</li>
+                <li>
+                  Hold the device steady and center the barcode in the frame.
+                </li>
+                <li>Keep the barcode at a medium distance (10-15cm).</li>
+              </ul>
             </CardContent>
           </Card>
 
