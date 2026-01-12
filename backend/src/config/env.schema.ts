@@ -16,4 +16,5 @@ export const envSchema = Joi.object({
   LOG_LEVEL: Joi.string().valid('error', 'warn', 'info', 'debug', 'verbose').default('info'),
   UPC_DATABASE_API_KEY: Joi.string().allow('').optional(),
   BARCODE_LOOKUP_API_KEY: Joi.string().allow('').optional(),
+  ADMIN_EMAIL: Joi.string().required(),
 });

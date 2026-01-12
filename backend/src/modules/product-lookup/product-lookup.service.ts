@@ -36,12 +36,16 @@ export class ProductLookupService {
     );
   }
 
-  async lookup(barcode: string): Promise<ProductInfo | null> {
+  async lookup(
+    barcode: string,
+  ): Promise<{ data: ProductInfo | null; cacheStatus: 'hit' | 'miss' }> {
     this.logger.log(`Looking up barcode: ${barcode}`);
 
     // 1. Check Caches
     const cached = await this.checkCaches(barcode);
-    if (cached !== undefined) return cached;
+    if (cached !== undefined) {
+      return { data: cached, cacheStatus: 'hit' };
+    }
 
     await this.incrementStat('cache_miss');
 
@@ -55,7 +59,7 @@ export class ProductLookupService {
       await this.cacheNotFound(barcode);
     }
 
-    return result;
+    return { data: result, cacheStatus: 'miss' };
   }
 
   private async checkCaches(barcode: string): Promise<ProductInfo | null | undefined> {
