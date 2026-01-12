@@ -1,7 +1,6 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TailscaleService } from './tailscale.service';
-import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 
 @Controller('setup')
 export class TailscaleController {
@@ -11,16 +10,23 @@ export class TailscaleController {
   ) {}
 
   @Get('tailscale-info')
-  @UseGuards(JwtAuthGuard)
   async getTailscaleInfo() {
     const ip = await this.tailscaleService.detectTailscaleIp();
     const port = this.configService.get<number>('PORT', 8000);
+    const hostname = this.configService.get<string>('TAILSCALE_HOSTNAME', 'barcody-backend');
+
+    if (!ip) {
+      throw new Error(
+        'Tailscale is not configured. Please install Tailscale and connect to your network.',
+      );
+    }
 
     return {
       ip,
-      port,
-      url: ip ? `http://${ip}:${port}` : null,
-      isConnected: !!ip,
+      hostname,
+      backendUrl: `http://${ip}:${port}`,
+      magicDNS: `${hostname}.ts.net`,
+      nodeName: hostname,
     };
   }
 }

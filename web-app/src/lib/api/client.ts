@@ -21,6 +21,7 @@ import type {
   RefreshTokenDto,
   User,
   ApiErrorResponse,
+  TailscaleInfoDto,
 } from './types';
 
 // Define custom property for retry in request config
@@ -260,6 +261,14 @@ export const api = {
         })
         .then((r) => r.data);
     },
+  },
+
+  // Setup
+  setup: {
+    getTailscaleInfo: () =>
+      apiClient
+        .get<TailscaleInfoDto>('/setup/tailscale-info')
+        .then((r) => r.data),
   },
 
   // Generic Pagination Helper

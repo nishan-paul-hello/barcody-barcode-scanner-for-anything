@@ -24,15 +24,21 @@ async function bootstrap() {
         return callback(null, true);
       }
 
+      // Parse the origin URL
+      const url = new URL(origin);
+      const hostname = url.hostname;
+
+      // Allow Tailscale MagicDNS hostnames (*.ts.net)
+      if (hostname.endsWith('.ts.net')) {
+        return callback(null, true);
+      }
+
       // Allow Tailscale IPs (100.64.0.0/10)
       // Range: 100.64.0.0 - 100.127.255.255
-      const url = new URL(origin);
-      const ip = url.hostname;
-
-      if (ip.startsWith('100.')) {
+      if (hostname.startsWith('100.')) {
         // Simple prefix check for 100.x.x.x which covers the Class A-ish block
         // For more precision we could parse the IP parts
-        const parts = ip.split('.').map(Number);
+        const parts = hostname.split('.').map(Number);
         if (parts[0] === 100 && parts[1] !== undefined && parts[1] >= 64 && parts[1] <= 127) {
           return callback(null, true);
         }

@@ -73,11 +73,12 @@ services:
       context: .
       dockerfile: web-app/Dockerfile
       target: runner
+      args:
+        - NEXT_PUBLIC_API_URL=http://barcody-backend.tail2894e4.ts.net:8000/api/v1
     container_name: barcody_web
     ports:
       - '3000:3000'
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
       PORT: 3000
     depends_on:
       backend:
@@ -97,11 +98,12 @@ services:
       context: .
       dockerfile: admin-dashboard/Dockerfile
       target: runner
+      args:
+        - NEXT_PUBLIC_API_URL=http://barcody-backend.tail2894e4.ts.net:8000/api/v1
     container_name: barcody_admin
     ports:
       - '3001:3001'
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
       PORT: 3001
     depends_on:
       backend:
