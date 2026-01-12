@@ -21,6 +21,7 @@ import type {
   RefreshTokenDto,
   User,
   ApiErrorResponse,
+  TailscaleInfoDto,
 } from './types';
 
 // Define custom property for retry in request config
@@ -115,7 +116,7 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { refreshAccessToken, logout } = useAuthStore.getState();
+        const { refreshAccessToken } = useAuthStore.getState();
         const newToken = await refreshAccessToken();
 
         if (newToken) {
@@ -123,11 +124,14 @@ apiClient.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return apiClient(originalRequest);
         } else {
+          // Refresh failed - this is expected when session expires
+          // The refreshAccessToken method already handles logout silently
           processQueue(error, null);
-          logout();
           return Promise.reject(error);
         }
       } catch (refreshError) {
+        // Unexpected error during refresh (not a 401/403)
+        // The refreshAccessToken method will log unexpected errors
         processQueue(refreshError, null);
         useAuthStore.getState().logout();
         return Promise.reject(refreshError);
@@ -260,6 +264,14 @@ export const api = {
         })
         .then((r) => r.data);
     },
+  },
+
+  // Setup
+  setup: {
+    getTailscaleInfo: () =>
+      apiClient
+        .get<TailscaleInfoDto>('/setup/tailscale-info')
+        .then((r) => r.data),
   },
 
   // Generic Pagination Helper
