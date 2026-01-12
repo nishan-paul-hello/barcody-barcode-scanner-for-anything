@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { JwtAuthService } from './jwt-auth.service';
+import { JwtAuthService } from '@modules/auth/jwt-auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@modules/redis/redis.service';

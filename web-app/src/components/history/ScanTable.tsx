@@ -178,9 +178,9 @@ export function ScanTable({
               <TableCell>
                 {scan.product ? (
                   <div className="flex items-center gap-2">
-                    {scan.product.imageUrl && (
+                    {scan.product.images && scan.product.images.length > 0 && (
                       <img
-                        src={scan.product.imageUrl}
+                        src={scan.product.images[0]}
                         alt=""
                         className="h-6 w-6 rounded-sm border bg-white object-contain"
                       />

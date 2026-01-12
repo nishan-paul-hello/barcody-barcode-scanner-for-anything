@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { ScansService } from './scans.service';
+import { ScansService } from '@modules/scans/scans.service';
 import { Scan } from '@database/entities/scan.entity';
 import { BarcodeType } from '@common/enums/barcode-type.enum';
 import { DeviceType } from '@common/enums/device-type.enum';
 import { NotFoundException } from '@nestjs/common';
-import { ScansGateway } from './scans.gateway';
+import { ScansGateway } from '@modules/scans/scans.gateway';
 
 describe('ScansService', () => {
   let service: ScansService;

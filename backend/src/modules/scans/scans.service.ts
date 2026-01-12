@@ -10,9 +10,9 @@ import {
   In,
 } from 'typeorm';
 import { Scan } from '@database/entities/scan.entity';
-import { CreateScanDto } from './dto/create-scan.dto';
-import { ScanQueryDto } from './dto/scan-query.dto';
-import { ScansGateway } from './scans.gateway';
+import { CreateScanDto } from '@modules/scans/dto/create-scan.dto';
+import { ScanQueryDto } from '@modules/scans/dto/scan-query.dto';
+import { ScansGateway } from '@modules/scans/scans.gateway';
 
 @Injectable()
 export class ScansService {

@@ -89,20 +89,36 @@ export interface ScanResponseDto {
 
 // --- Products ---
 
+export interface ProductNutrition {
+  grade?: 'A' | 'B' | 'C' | 'D' | 'E';
+  calories?: number;
+  fat?: number;
+  carbs?: number;
+  protein?: number;
+  sugar?: number;
+  fiber?: number;
+  salt?: number;
+  allergens?: string[];
+  ingredients?: string;
+}
+
 export interface ProductResponseDto {
-  id: string;
-  barcodeData: string;
-  name: string;
+  barcode: string;
+  name?: string;
   brand?: string;
-  description?: string;
-  imageUrl?: string;
   category?: string;
+  description?: string;
   manufacturer?: string;
-  ingredients?: string[];
-  nutritionFacts?: Record<string, unknown>;
-  source: string;
-  createdAt: string;
-  updatedAt: string;
+  images?: string[];
+  nutrition?: ProductNutrition;
+  source: 'openfoodfacts' | 'upcdatabase' | 'barcodelookup';
+  lastUpdated: string;
+}
+
+export interface ProductLookupResponse {
+  success: boolean;
+  data: ProductResponseDto;
+  cacheStatus: 'hit' | 'miss';
 }
 
 export interface ProductComparisonDto {
