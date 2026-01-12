@@ -98,7 +98,18 @@ export const useAuthStore = create<AuthStore>()(
 
           return data.accessToken;
         } catch (error) {
-          console.error('Failed to refresh token', error);
+          // Check if it's an expected auth error (401/403) vs network error
+          if (axios.isAxiosError(error) && error.response) {
+            const status = error.response.status;
+            if (status === 401 || status === 403) {
+              // Expected: refresh token expired or invalid - silently logout
+              // This is normal behavior when a user's session has expired
+              get().logout();
+              return null;
+            }
+          }
+          // Unexpected error (network, 5xx, etc.) - log it
+          console.error('Unexpected error during token refresh:', error);
           get().logout();
           return null;
         }
@@ -119,18 +130,18 @@ export const useAuthStore = create<AuthStore>()(
           const timeLeft = decoded.exp * 1000 - currentTime;
 
           if (timeLeft < REFRESH_THRESHOLD) {
-            // Token expired or about to expire
+            // Token expired or about to expire - try to refresh
             const newToken = await refreshAccessToken();
             if (!newToken) {
-              // Refresh failed (already handled in refreshAccessToken but safe to double check)
-              // logout() called in refreshAccessToken catches
+              // Refresh failed - user will be logged out by refreshAccessToken
+              // No need to do anything here, state is already updated
             }
           } else {
-            // Token valid
+            // Token still valid
             set({ isAuthenticated: true });
           }
         } catch {
-          // Invalid token format
+          // Invalid token format or decode error - clear session
           logout();
         } finally {
           set({ isLoading: false });
