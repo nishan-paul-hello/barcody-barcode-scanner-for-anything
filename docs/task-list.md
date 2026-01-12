@@ -86,8 +86,8 @@
 
 ### Phase 9: Tailscale Integration (Tasks 51-53)
 
-- ⏳ [9.1 Backend Tailscale Configuration](#task-91-backend-tailscale-configuration)
-- ⏳ [9.2 Web Tailscale Setup](#task-92-web-tailscale-setup-guide)
+- ✅ [9.1 Backend Tailscale Configuration](#task-91-backend-tailscale-configuration)
+- ✅ [9.2 Web Tailscale Setup](#task-92-web-tailscale-setup-guide)
 - ⏳ [9.3 Mobile Tailscale Integration](#task-93-mobile-tailscale-integration)
 
 ### Phase 10: Product Lookup (Tasks 54-57)

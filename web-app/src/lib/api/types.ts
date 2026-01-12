@@ -134,3 +134,13 @@ export interface ApiErrorResponse {
   error: string;
   statusCode: number;
 }
+
+// --- Setup ---
+
+export interface TailscaleInfoDto {
+  ip: string;
+  hostname: string;
+  backendUrl: string;
+  magicDNS?: string;
+  nodeName?: string;
+}
