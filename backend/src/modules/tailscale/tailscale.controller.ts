@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TailscaleService } from './tailscale.service';
+import { TailscaleService } from '@modules/tailscale/tailscale.service';
 
 @Controller('setup')
 export class TailscaleController {

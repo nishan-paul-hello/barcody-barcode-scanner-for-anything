@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ScansGateway } from './scans.gateway';
-import { JwtAuthService } from '@/modules/auth/jwt-auth.service';
+import { ScansGateway } from '@modules/scans/scans.gateway';
+import { JwtAuthService } from '@modules/auth/jwt-auth.service';
 import { Server, Socket } from 'socket.io';
 
 describe('ScansGateway', () => {

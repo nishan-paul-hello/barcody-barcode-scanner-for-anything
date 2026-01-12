@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { AuthService } from './auth.service';
-import { GoogleAuthDto } from './dtos/google-auth.dto';
-import { RefreshTokenDto } from './dtos/refresh-token.dto';
-import { AuthResponseDto } from './dtos/auth-response.dto';
-import { UserDto } from './dtos/user.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtPayload } from './jwt-auth.service';
-import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { AuthService } from '@modules/auth/auth.service';
+import { GoogleAuthDto } from '@modules/auth/dtos/google-auth.dto';
+import { RefreshTokenDto } from '@modules/auth/dtos/refresh-token.dto';
+import { AuthResponseDto } from '@modules/auth/dtos/auth-response.dto';
+import { UserDto } from '@modules/auth/dtos/user.dto';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { JwtPayload } from '@modules/auth/jwt-auth.service';
+import { GoogleAuthGuard } from '@modules/auth/guards/google-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')

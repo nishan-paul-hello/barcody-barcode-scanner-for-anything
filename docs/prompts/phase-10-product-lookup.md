@@ -1,6 +1,6 @@
 # Phase 10: Product Lookup - AI Implementation Prompts
 
-> **4 Tasks**: API clients, caching strategy, lookup endpoint, frontend display
+> **5 Tasks**: API clients, caching strategy, lookup endpoint, frontend display (web), frontend display (mobile)
 >
 > **No Code Snippets** - Requirements-driven approach for intelligent implementation
 
@@ -249,16 +249,14 @@ SUCCESS METRIC: Product lookup endpoint functional with rate limiting and fast c
 
 ---
 
-## Task 10.4: Frontend Product Display
+## Task 10.4: Frontend Product Display - Web
 
 ```
-TASK: Create product detail UI for web and mobile platforms with nutrition visualization and allergen warnings.
+TASK: Create product detail UI for web platform with nutrition visualization and allergen warnings.
 
 SYSTEM CONTEXT: Display rich product information to users after scanning. Show nutrition facts, allergen warnings, and product images in user-friendly format.
 
 REQUIREMENTS:
-
-WEB IMPLEMENTATION:
 
 1. Product Detail Component: Create product detail component
 2. Product Info Display: Show:
@@ -280,34 +278,15 @@ WEB IMPLEMENTATION:
 7. Error Handling: Show message if product not found
 8. Responsive Design: Mobile-friendly layout
 
-MOBILE IMPLEMENTATION:
-
-1. Product Detail Screen: Create dedicated screen
-2. Product Information: Display same data as web
-3. Nutrition Facts Card: Create card component with:
-   - Nutrition grade visualization
-   - Macronutrient breakdown
-   - Serving size information
-4. Allergen Badges: Show allergen information with icons
-5. SQLite Caching: Cache product data locally:
-   - Store in product_cache table
-   - 30-day expiry
-   - Offline access to previously viewed products
-
-7. Loading States: Show loading indicator
-8. Error Handling: Handle not found and network errors
-
 CONSTRAINTS:
 - Fast rendering
 - Responsive design
-- Offline support (mobile)
 - Clear visual hierarchy
 - Accessible
 
 INTEGRATION POINTS:
 - Backend product endpoint (Task 10.3)
-- Scan result screens (Task 6.3, 7.3)
-- SQLite cache (Task 8.1)
+- Scan result screens (Task 6.3)
 
 TESTING REQUIREMENTS:
 1. Product details display correctly
@@ -317,16 +296,12 @@ TESTING REQUIREMENTS:
 5. Loading states show
 6. Error handling works
 7. Responsive on all screen sizes
-8. Mobile caching works
-9. Offline access functional
 
 ACCEPTANCE CRITERIA:
 - ✅ Web product component created
-- ✅ Mobile product screen created
 - ✅ Nutrition visualization working
 - ✅ Allergen warnings displayed
 - ✅ Images displayed
-- ✅ SQLite caching implemented
 - ✅ Responsive design
 - ✅ Error handling robust
 
@@ -339,15 +314,93 @@ QUALITY STANDARDS:
 
 DELIVERABLES:
 - Web product detail component
+- Nutrition visualization
+- Allergen warning badges
+- Loading/error states
+
+SUCCESS METRIC: Users can view comprehensive product information with nutrition facts and allergen warnings on web platform.
+```
+
+---
+
+## Task 10.5: Frontend Product Display - Mobile
+
+```
+TASK: Create product detail UI for mobile platform with nutrition visualization, allergen warnings, and offline caching.
+
+SYSTEM CONTEXT: Display rich product information to users after scanning. Show nutrition facts, allergen warnings, and product images in user-friendly format with offline support.
+
+REQUIREMENTS:
+
+1. Product Detail Screen: Create dedicated screen
+2. Product Information: Display:
+   - Product name and brand
+   - Product image (if available)
+   - Barcode number
+   - Category
+3. Nutrition Facts Card: Create card component with:
+   - Nutrition grade (A-E) with color coding
+   - Calories per serving
+   - Macronutrient breakdown (protein, carbs, fat) with bar charts
+   - Key nutrients (sodium, sugar, fiber)
+   - Serving size information
+4. Allergen Badges: Show allergen information with icons:
+   - Common allergens (nuts, dairy, gluten, soy, eggs)
+   - Color-coded warnings (red for present, green for absent)
+   - Clear visual indicators
+5. Product Images: Display product images
+6. SQLite Caching: Cache product data locally:
+   - Store in product_cache table
+   - 30-day expiry
+   - Offline access to previously viewed products
+7. Loading States: Show loading indicator
+8. Error Handling: Handle not found and network errors
+
+CONSTRAINTS:
+- Fast rendering
+- Offline support
+- Clear visual hierarchy
+- Accessible
+
+INTEGRATION POINTS:
+- Backend product endpoint (Task 10.3)
+- Scan result screens (Task 7.3)
+- SQLite cache (Task 8.1)
+
+TESTING REQUIREMENTS:
+1. Product details display correctly
+2. Nutrition visualization renders
+3. Allergen warnings show
+4. Images display and zoom works
+5. Loading states show
+6. Error handling works
+7. Mobile caching works
+8. Offline access functional
+
+ACCEPTANCE CRITERIA:
+- ✅ Mobile product screen created
+- ✅ Nutrition visualization working
+- ✅ Allergen warnings displayed
+- ✅ Images displayed
+- ✅ SQLite caching implemented
+- ✅ Error handling robust
+
+QUALITY STANDARDS:
+- User-friendly interface
+- Clear visual design
+- Accessible components
+- Smooth UX
+- Efficient rendering
+
+DELIVERABLES:
 - Mobile product detail screen
 - Nutrition visualization
 - Allergen warning badges
 - SQLite caching logic
 - Loading/error states
 
-SUCCESS METRIC: Users can view comprehensive product information with nutrition facts and allergen warnings on both platforms.
+SUCCESS METRIC: Users can view comprehensive product information with nutrition facts and allergen warnings on mobile platform with offline support.
 ```
 
 ---
-
 END OF PHASE 10

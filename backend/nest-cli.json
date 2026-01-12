@@ -7,7 +7,7 @@
     "tsConfigPath": "tsconfig.build.json",
     "assets": [
       {
-        "include": "../public/**/*",
+        "include": "public/**/*",
         "outDir": "dist/public",
         "watchAssets": true
       },

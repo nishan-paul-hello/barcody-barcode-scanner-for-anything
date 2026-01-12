@@ -74,9 +74,9 @@ export function ScanDetailsDialog({
                 {scan.product.brand && (
                   <p className="text-muted-foreground">{scan.product.brand}</p>
                 )}
-                {scan.product.imageUrl && (
+                {scan.product.images && scan.product.images.length > 0 && (
                   <img
-                    src={scan.product.imageUrl}
+                    src={scan.product.images[0]}
                     alt={scan.product.name}
                     className="mt-2 h-20 w-20 rounded-md border object-contain text-xs"
                   />

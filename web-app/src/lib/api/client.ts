@@ -14,6 +14,7 @@ import type {
   BulkCreateScansDto,
   ScanResponseDto,
   ProductResponseDto,
+  ProductLookupResponse,
   TrackEventDto,
   PaginatedResponse,
   PaginationParams,
@@ -22,7 +23,7 @@ import type {
   User,
   ApiErrorResponse,
   TailscaleInfoDto,
-} from './types';
+} from '@/lib/api/types';
 
 // Define custom property for retry in request config
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -201,7 +202,7 @@ export const api = {
   products: {
     getProduct: (barcode: string) =>
       apiClient
-        .get<ProductResponseDto>(`/products/${barcode}`)
+        .get<ProductLookupResponse>(`/products/${barcode}`)
         .then((r) => r.data),
     compareProducts: (barcodes: string[]) =>
       apiClient

@@ -115,6 +115,23 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     const listDevices = async () => {
       try {
+        // Check for secure context and mediaDevices support
+        if (
+          !navigator.mediaDevices ||
+          !navigator.mediaDevices.enumerateDevices
+        ) {
+          if (!window.isSecureContext) {
+            setError(
+              'Camera access requires a secure connection (HTTPS). Please ensure you are using HTTPS or localhost.'
+            );
+            return;
+          }
+          setError(
+            'Your browser does not support camera access. Please try a modern browser like Chrome, Firefox, or Safari.'
+          );
+          return;
+        }
+
         const videoDevices =
           await BrowserMultiFormatReader.listVideoInputDevices();
         setDevices(videoDevices);
@@ -128,14 +145,22 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           );
         } else {
           setError(
-            'No camera devices found. Please ensure your camera is connected.'
+            'No camera devices found. Please ensure your camera is connected and you have granted permission.'
           );
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Error listing devices:', err);
-        setError(
-          'Camera permission denied or no devices available. Please check your browser settings.'
-        );
+        const errorMessage = err instanceof Error ? err.message : String(err);
+
+        if (errorMessage.includes('method not supported')) {
+          setError(
+            'Camera initialization is not supported in this environment. If you are using Tailscale or another environment, ensure you are using HTTPS.'
+          );
+        } else {
+          setError(
+            'Camera permission denied or initialization failed. Please check your browser settings and refresh.'
+          );
+        }
       }
     };
 

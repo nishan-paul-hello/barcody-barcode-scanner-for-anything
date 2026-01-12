@@ -1,6 +1,6 @@
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import type { ApiErrorResponse } from './api/types';
+import type { ApiErrorResponse } from '@/lib/api/types';
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({

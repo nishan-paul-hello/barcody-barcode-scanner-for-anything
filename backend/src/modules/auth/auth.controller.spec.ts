@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { GoogleAuthDto } from './dtos/google-auth.dto';
-import { RefreshTokenDto } from './dtos/refresh-token.dto';
-import { AuthResponseDto } from './dtos/auth-response.dto';
-import { UserDto } from './dtos/user.dto';
+import { AuthController } from '@modules/auth/auth.controller';
+import { AuthService } from '@modules/auth/auth.service';
+import { GoogleAuthDto } from '@modules/auth/dtos/google-auth.dto';
+import { RefreshTokenDto } from '@modules/auth/dtos/refresh-token.dto';
+import { AuthResponseDto } from '@modules/auth/dtos/auth-response.dto';
+import { UserDto } from '@modules/auth/dtos/user.dto';
 import { UnauthorizedException } from '@nestjs/common';
-import { JwtPayload } from './jwt-auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtPayload } from '@modules/auth/jwt-auth.service';
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 
 const mockJwtAuthGuard = {
   canActivate: jest.fn(() => true),
