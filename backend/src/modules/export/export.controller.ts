@@ -87,4 +87,61 @@ export class ExportController {
       }
     }
   }
+
+  @Get('pdf')
+  @ApiOperation({ summary: 'Export scans as PDF' })
+  @ApiResponse({ status: 200, description: 'Generated PDF file' })
+  async exportPdf(
+    @CurrentUser('sub') userId: string,
+    @Query() query: ExportQueryDto,
+    @Res() res: Response,
+  ) {
+    this.logger.log(`Exporting PDF for user ${userId}`);
+
+    const filename = `scans-report-${new Date().toISOString().split('T')[0]}.pdf`;
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+    try {
+      const pdfBuffer = await this.exportService.generatePdf(userId, query);
+      res.send(pdfBuffer);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to generate PDF export: ${errorMessage}`);
+      if (!res.headersSent) {
+        res.status(500).json({ message: 'Failed to generate PDF' });
+      }
+    }
+  }
+
+  @Get('excel')
+  @ApiOperation({ summary: 'Export scans as Excel' })
+  @ApiResponse({ status: 200, description: 'Generated Excel file' })
+  async exportExcel(
+    @CurrentUser('sub') userId: string,
+    @Query() query: ExportQueryDto,
+    @Res() res: Response,
+  ) {
+    this.logger.log(`Exporting Excel for user ${userId}`);
+
+    const filename = `scans-analysis-${new Date().toISOString().split('T')[0]}.xlsx`;
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+    try {
+      const excelBuffer = await this.exportService.generateExcel(userId, query);
+      res.send(excelBuffer);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to generate Excel export: ${errorMessage}`);
+      if (!res.headersSent) {
+        res.status(500).json({ message: 'Failed to generate Excel' });
+      }
+    }
+  }
 }

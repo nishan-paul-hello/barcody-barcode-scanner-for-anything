@@ -177,12 +177,12 @@ SUCCESS METRIC: Professional PDF and Excel exports with charts and branding.
 
 ---
 
-## Task 11.3: Frontend Export UI
+## Task 11.3: Frontend Export UI - Web
 
 ```
-TASK: Create export interface for web and mobile with format selection, filters, and progress indicators.
+TASK: Create export interface for web with format selection, filters, and progress indicators.
 
-SYSTEM CONTEXT: User-friendly export interface allowing users to choose format, apply filters, and download/share exported data. Must handle large exports gracefully with progress indication.
+SYSTEM CONTEXT: User-friendly export interface allowing users to choose format, apply filters, and download exported data. Must handle large exports gracefully with progress indication.
 
 REQUIREMENTS:
 
@@ -209,29 +209,95 @@ WEB IMPLEMENTATION:
 7. Download Handling: Trigger browser download when complete
 8. Error Handling: Display errors with retry option
 
+CONSTRAINTS:
+- Intuitive UI/UX
+- Clear progress indication
+- Handle large exports (show warning)
+- Proper error messages
+- Responsive design
+
+INTEGRATION POINTS:
+- Export endpoints from Tasks 11.1 and 11.2
+- Scan filters from scan API
+
+TESTING REQUIREMENTS:
+1. Export modal displays correctly
+2. All format options work
+3. Filters apply correctly
+4. Date range validation works
+5. Progress indicator shows
+6. Files download successfully
+7. Error handling displays messages
+8. Responsive on all screen sizes
+
+ACCEPTANCE CRITERIA:
+- ✅ Web export modal functional
+- ✅ All 4 formats export
+- ✅ Filters apply correctly
+- ✅ Progress indication working
+- ✅ Download successful
+- ✅ Error handling robust
+
+QUALITY STANDARDS:
+- User-friendly interface
+- Clear visual feedback
+- Smooth UX flow
+- Accessible components
+- Responsive design
+
+DELIVERABLES:
+- Web export modal component
+- Format selection UI
+- Filter components
+- Progress indicators
+- Download logic
+- Error handling UI
+
+SUCCESS METRIC: Users can easily export scans in any format with filters on web platform.
+```
+
+---
+
+## Task 11.4: Frontend Export UI - Mobile
+
+```
+TASK: Create export interface for mobile with format selection, filters, and progress indicators.
+
+SYSTEM CONTEXT: User-friendly export interface allowing users to choose format, apply filters, and share exported data. Must handle large exports gracefully with progress indication.
+
+REQUIREMENTS:
 
 MOBILE IMPLEMENTATION:
 
 1. Dependencies: Install expo-file-system for file operations, expo-sharing for sharing
 2. Export Screen: Create dedicated export screen
-3. Format Selection: Same as web (CSV, JSON, PDF, Excel)
-4. Filters: Same filter options as web
-5. Export Button: Trigger export with loading state
-6. Progress Indicator: Show progress with percentage
-7. File Download: Save file to device storage using expo-file-system
-8. Share Functionality: Use expo-sharing to share exported file:
+3. Format Selection: Radio buttons or dropdown for format:
+   - CSV (for spreadsheets)
+   - JSON (for developers)
+   - PDF (for reports)
+   - Excel (for analysis)
+4. Date Range Picker: Implement date range selector:
+   - Predefined ranges (Last 7 days, Last 30 days, All time)
+   - Custom date range picker
+   - Validation (start date < end date)
+5. Filter Options: Add filter checkboxes:
+   - Barcode type filter (QR, EAN, UPC, etc.)
+   - Device type filter (web, mobile)
+6. Export Button: Trigger export with loading state
+7. Progress Indicator: Show progress with percentage
+8. File Download: Save file to device storage using expo-file-system
+9. Share Functionality: Use expo-sharing to share exported file:
    - Share via email, messaging apps
    - Save to cloud storage
-9. Storage Permissions: Request storage permissions on Android
-10. Error Handling: Display errors with retry option
+10. Storage Permissions: Request storage permissions on Android
+11. Error Handling: Display errors with retry option
 
 CONSTRAINTS:
 - Intuitive UI/UX
 - Clear progress indication
 - Handle large exports (show warning)
 - Proper error messages
-- Responsive design (web)
-- Platform-appropriate UI (mobile)
+- Platform-appropriate UI
 
 INTEGRATION POINTS:
 - Export endpoints from Tasks 11.1 and 11.2
@@ -239,25 +305,22 @@ INTEGRATION POINTS:
 - File system APIs (mobile)
 
 TESTING REQUIREMENTS:
-1. Export modal/screen displays correctly
+1. Export screen displays correctly
 2. All format options work
 3. Filters apply correctly
 4. Date range validation works
 5. Progress indicator shows
-6. Files download/save successfully
-7. Sharing works (mobile)
+6. Files save successfully
+7. Sharing works
 8. Error handling displays messages
 
-10. Responsive on all screen sizes (web)
-
 ACCEPTANCE CRITERIA:
-- ✅ Web export modal functional
 - ✅ Mobile export screen functional
 - ✅ All 4 formats export
 - ✅ Filters apply correctly
 - ✅ Progress indication working
-- ✅ Download/save successful
-- ✅ Sharing functional (mobile)
+- ✅ Save successful
+- ✅ Sharing functional
 - ✅ Error handling robust
 
 QUALITY STANDARDS:
@@ -268,15 +331,14 @@ QUALITY STANDARDS:
 - Platform-appropriate design
 
 DELIVERABLES:
-- Web export modal component
 - Mobile export screen
 - Format selection UI
 - Filter components
 - Progress indicators
-- Download/share logic
+- Save/share logic
 - Error handling UI
 
-SUCCESS METRIC: Users can easily export scans in any format with filters on both platforms.
+SUCCESS METRIC: Users can easily export scans in any format with filters on mobile platform.
 ```
 
 ---

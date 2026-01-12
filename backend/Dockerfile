@@ -2,6 +2,18 @@ FROM node:20-alpine AS base
 
 # 1. Install dependencies
 FROM base AS deps
+RUN apk add --no-cache \
+    build-base \
+    g++ \
+    cairo-dev \
+    pango-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    python3 \
+    make
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY backend/package.json ./backend/
@@ -21,6 +33,15 @@ RUN npm run build
 
 # 3. Production runner
 FROM base AS runner
+RUN apk add --no-cache \
+    cairo \
+    pango \
+    giflib \
+    pixman \
+    jpeg \
+    freetype \
+    fontconfig \
+    ttf-freefont
 WORKDIR /app/backend
 
 ENV NODE_ENV=production
