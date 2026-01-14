@@ -11,6 +11,14 @@
 - `make restart-prod`: Restart production environment
 - `make rebuild-dev`: Rebuild dev environment (use if deps change)
 
+## Environment Setup
+
+1. Copy `.env.example` to `.env` in `backend/` and `web-app/` directories.
+2. Generate a secure secret for `ANALYTICS_HASH_SECRET` in `backend/.env`:
+   ```bash
+   openssl rand -hex 32
+   ```
+
 ## Access
 
 - **Web App**: http://localhost:3000

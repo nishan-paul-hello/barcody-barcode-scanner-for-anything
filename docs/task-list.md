@@ -1537,20 +1537,20 @@
 
 **Scope**: Implement analytics event collection
 
-- [ ] Create `AnalyticsModule`
-- [ ] Implement `POST /analytics/event` endpoint
-- [ ] Create event processor
-- [ ] Implement user ID hashing:
-  - Use SHA-256 algorithm
-  - Add global pepper from ANALYTICS_HASH_SECRET env var
-  - Hash format: SHA-256(userId + ANALYTICS_HASH_SECRET)
-  - Ensure consistent hashing across events
-- [ ] Send events to Supabase
+- [x] Create `AnalyticsModule`
+- [x] Implement `POST /analytics/event` endpoint
+- [x] Create event processor
+- [x] Implement user ID hashing:
+  - [x] Use SHA-256 algorithm
+  - [x] Add global pepper from ANALYTICS_HASH_SECRET env var
+  - [x] Hash format: SHA-256(userId + ANALYTICS_HASH_SECRET)
+  - [x] Ensure consistent hashing across events
+- [x] Save events to Local PostgreSQL (`analytics_events` table)
 - [ ] Test: Events tracked correctly
 - [ ] Test: User IDs are hashed consistently
 - [ ] Test: Same user ID produces same hash
 
-**Acceptance**: Analytics events sent to Supabase
+**Acceptance**: Analytics events saved to local PostgreSQL
 
 ---
 

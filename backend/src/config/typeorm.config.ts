@@ -7,7 +7,10 @@ config({ path: '.env' });
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  entities: [`${__dirname}/../database/entities/*.entity{.ts,.js}`],
+  entities: [
+    `${__dirname}/../database/entities/*.entity{.ts,.js}`,
+    `${__dirname}/../modules/**/entities/*.entity{.ts,.js}`,
+  ],
   migrations: [`${__dirname}/../database/migrations/*{.ts,.js}`],
   synchronize: process.env.NODE_ENV === 'development',
   logging: process.env.NODE_ENV === 'development',

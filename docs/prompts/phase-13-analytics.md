@@ -102,7 +102,7 @@ SUCCESS METRIC: Admin endpoints accessible only to authorized email with efficie
 ```
 TASK: Implement analytics event tracking with privacy-preserving user ID hashing.
 
-SYSTEM CONTEXT: Track user behavior for product improvement while protecting privacy. Use SHA-256 hashing to anonymize user IDs before sending to analytics platform (Supabase). Enables behavioral analysis without compromising user privacy.
+SYSTEM CONTEXT: Track user behavior for product improvement while protecting privacy. Use SHA-256 hashing to anonymize user IDs before saving to local database (analytics_events table). Enables behavioral analysis without compromising user privacy.
 
 REQUIREMENTS:
 
