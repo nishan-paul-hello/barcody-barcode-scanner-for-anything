@@ -6,7 +6,7 @@ export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOp
   url: configService.get<string>('DATABASE_URL'),
   entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
   migrations: [`${__dirname}/../database/migrations/*{.ts,.js}`],
-  synchronize: false, // Always false for production-ready, use migrations
+  synchronize: configService.get<string>('NODE_ENV') === 'development', // Always false for production-ready, use migrations
   logging: configService.get<string>('NODE_ENV') === 'development',
   extra: {
     max: 50,

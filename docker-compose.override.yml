@@ -1,4 +1,4 @@
-version: '3.9'
+
 
 services:
   backend:
@@ -8,14 +8,14 @@ services:
       target: deps
     environment:
       NODE_ENV: development
-      PORT: 8000
+      PORT: 3002
     working_dir: /app/backend
     volumes:
       - .:/app
       - /app/node_modules
     command: npm run start:dev
     ports:
-      - '8000:8000'
+      - '3002:3002'
 
   web:
     build:

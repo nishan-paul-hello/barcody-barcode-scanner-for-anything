@@ -1,31 +1,25 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TailscaleService } from '@modules/tailscale/tailscale.service';
 
 @Controller('setup')
 export class TailscaleController {
-  constructor(
-    private readonly tailscaleService: TailscaleService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   @Get('tailscale-info')
   async getTailscaleInfo() {
-    const ip = await this.tailscaleService.detectTailscaleIp();
-    const port = this.configService.get<number>('PORT', 8000);
-    const hostname = this.configService.get<string>('TAILSCALE_HOSTNAME', 'barcody-backend');
+    const hostname = this.configService.get<string>('TAILSCALE_HOSTNAME', 'api-barcody');
 
-    if (!ip) {
-      throw new Error(
-        'Tailscale is not configured. Please install Tailscale and connect to your network.',
-      );
-    }
+    // For professional sidecars, the domain is usually hostname.tailnet.ts.net
+    const tailnet = 'tamarin-ph';
+    const magicDNS = hostname.includes('.')
+      ? `${hostname}.ts.net`
+      : `${hostname}.${tailnet}.ts.net`;
+    const backendUrl = `https://${magicDNS}/api/v1`;
 
     return {
-      ip,
       hostname,
-      backendUrl: `http://${ip}:${port}`,
-      magicDNS: `${hostname}.ts.net`,
+      backendUrl,
+      magicDNS,
       nodeName: hostname,
     };
   }

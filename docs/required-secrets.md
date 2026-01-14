@@ -6,18 +6,18 @@ To enable the automated CI/CD pipelines, the following secrets must be configure
 
 These are required for building and pushing Docker images to Docker Hub.
 
-| Secret Name | Description |
-| ----------- | ----------- |
-| `DOCKERHUB_USERNAME` | Your Docker Hub username. |
-| `DOCKERHUB_TOKEN` | Your Docker Hub Personal Access Token (PAT). It is recommended to use a token with read/write access instead of your password. |
-| `NEXT_PUBLIC_API_URL` | The production API URL for the backend (used during web and admin-dashboard builds). |
+| Secret Name           | Description                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `DOCKERHUB_USERNAME`  | Your Docker Hub username.                                                                                                      |
+| `DOCKERHUB_TOKEN`     | Your Docker Hub Personal Access Token (PAT). It is recommended to use a token with read/write access instead of your password. |
+| `NEXT_PUBLIC_API_URL` | The production API URL for the backend (used during web and admin-dashboard builds).                                           |
 
 ## Expo Secrets (Mobile)
 
 Required for building and releasing the mobile application via EAS.
 
-| Secret Name | Description |
-| ----------- | ----------- |
+| Secret Name  | Description                                    |
+| ------------ | ---------------------------------------------- |
 | `EXPO_TOKEN` | Your Expo access token for EAS build services. |
 
 ---
@@ -25,6 +25,7 @@ Required for building and releasing the mobile application via EAS.
 ## Workflow Integration
 
 The workflows are configured to use these secrets automatically:
+
 - **Backend Build**: Uses `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 - **Web Build**: Uses `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, and `NEXT_PUBLIC_API_URL`.
 - **Admin Dashboard Build**: Uses `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, and `NEXT_PUBLIC_API_URL`.

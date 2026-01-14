@@ -7,11 +7,10 @@ export const envSchema = Joi.object({
   GOOGLE_CLIENT_ID: Joi.string().required(),
   GOOGLE_CLIENT_SECRET: Joi.string().required(),
   GOOGLE_REDIRECT_URI: Joi.string().required(),
-  SENTRY_DSN: Joi.string().required(),
   NODE_ENV: Joi.string()
     .valid('development', 'production', 'test', 'provision')
     .default('development'),
-  PORT: Joi.number().default(8000),
+  PORT: Joi.number().default(3002),
   API_VERSION: Joi.string().default('v1'),
   LOG_LEVEL: Joi.string().valid('error', 'warn', 'info', 'debug', 'verbose').default('info'),
   UPC_DATABASE_API_KEY: Joi.string().allow('').optional(),
