@@ -64,7 +64,7 @@ export class AdminService {
 
     return {
       data: rawData.map((row) => ({
-        date: row.date.toISOString().split('T')[0],
+        date: new Date(row.date).toISOString().split('T')[0] || '',
         count: parseInt(row.count, 10),
       })),
     };

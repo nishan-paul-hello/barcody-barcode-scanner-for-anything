@@ -399,102 +399,210 @@ SUCCESS METRIC: Interactive analytics dashboard with real-time charts providing 
 
 ---
 
-## Task 13.5: Frontend Analytics Integration
+## Task 13.5: Frontend Analytics Integration - Web
 
 ```
-TASK: Add analytics tracking to web and mobile apps for user behavior monitoring.
+TASK: Add analytics tracking to web app for user behavior monitoring.
 
 SYSTEM CONTEXT: Track user interactions for product improvement. Send events to backend analytics endpoint. Respect user privacy while gathering insights.
 
 REQUIREMENTS:
 
-WEB IMPLEMENTATION:
-
 1. Analytics Service: Create lib/analytics.service.ts
-2. Page View Tracking: Track page views:
+   - Singleton service for event tracking
+   - Type-safe event definitions
+   - Async event queue management
+
+2. Page View Tracking: Track page views
    - Use useEffect in root layout
    - Track on route changes
    - Send page_view event with URL
-3. Scan Event Tracking: Track scan events:
+   - Include referrer information
+
+3. Scan Event Tracking: Track scan events
    - Track scan_created (success, barcode type)
    - Track scan_failed (error type)
    - Track scan_deleted
-4. User Action Tracking: Track user actions:
+   - Include scan metadata
+
+4. User Action Tracking: Track user actions
    - Track export_generated (format)
    - Track search_performed (query)
    - Track filter_applied (filter type)
-5. Event Sending: Send events to POST /analytics/event:
+   - Track settings_changed
+
+5. Event Sending: Send events to POST /analytics/event
    - Include event_type, metadata, timestamp
    - User ID from auth store
    - Async sending (don't block UI)
+   - Batch events when possible
+
 6. Error Handling: Handle failed event sends gracefully
-
-MOBILE IMPLEMENTATION:
-
-1. Analytics Service: Create services/analytics.service.ts
-2. Screen View Tracking: Track screen views:
-   - Use navigation listener
-   - Track on screen focus
-   - Send screen_view event with screen name
-3. Scan Event Tracking: Same as web
-4. Session Tracking: Track session metrics:
-   - Session start/end
-   - Session length
-
-5. Device Info Tracking: Track anonymized device info:
-   - OS version (iOS 16, Android 13)
-   - Device model (anonymized)
-   - App version
-6. Event Sending: Send to backend analytics endpoint
-7. Offline Queueing: Queue events when offline, send when online
+   - Retry logic with exponential backoff
+   - Silent failures (log but don't alert user)
+   - Drop events after max retries
 
 CONSTRAINTS:
 - Privacy-respecting (no PII)
-- Minimal performance impact
+- Minimal performance impact (<5ms overhead)
 - Async event sending
-- Offline support (mobile)
 - No blocking of user actions
+- TypeScript strict mode
 
 INTEGRATION POINTS:
 - Analytics backend from Task 13.2
-- Auth stores (Tasks 4.2, 4.7)
-- Navigation systems
+- Auth store from Task 4.2
+- React Router for navigation tracking
 
 TESTING REQUIREMENTS:
-1. Events sent to backend from web
-2. Events sent to backend from mobile
-3. Correct event data structure
-4. User ID included
-5. Privacy respected (no PII)
-6. Offline queueing works (mobile)
-7. No performance impact
-8. Failed sends don't crash app
+1. Events sent to backend correctly
+2. Correct event data structure
+3. User ID included when authenticated
+4. Privacy respected (no PII in events)
+5. No performance impact on UI
+6. Failed sends don't crash app
+7. Page views tracked on navigation
+8. User actions tracked correctly
 
 ACCEPTANCE CRITERIA:
 - ✅ Web analytics service created
-- ✅ Mobile analytics service created
-- ✅ Page/screen views tracked
+- ✅ Page views tracked automatically
 - ✅ Scan events tracked
 - ✅ User actions tracked
-- ✅ Events sent to backend
-- ✅ Privacy respected
-- ✅ Offline support (mobile)
+- ✅ Events sent to backend asynchronously
+- ✅ Privacy respected (no PII)
+- ✅ Error handling implemented
+- ✅ Tests passing
 
 QUALITY STANDARDS:
 - Privacy-first design
 - Minimal performance impact
 - Clean service architecture
 - Proper error handling
-- Async operations
+- Type-safe event definitions
+- Async operations only
 
 DELIVERABLES:
-- Web analytics service
-- Mobile analytics service
-- Event tracking logic
-- Offline queue (mobile)
+- lib/analytics.service.ts
+- Event type definitions
+- Page view tracking in layout
+- Event tracking in components
 - Privacy safeguards
+- Unit tests for analytics service
 
-SUCCESS METRIC: User behavior tracked efficiently from all platforms with privacy protection and reliable event delivery.
+SUCCESS METRIC: User behavior tracked efficiently on web with privacy protection and reliable event delivery without impacting user experience.
+```
+
+---
+
+## Task 13.6: Frontend Analytics Integration - Mobile
+
+```
+TASK: Add analytics tracking to mobile app for user behavior monitoring.
+
+SYSTEM CONTEXT: Track user interactions for product improvement. Send events to backend analytics endpoint. Respect user privacy while gathering insights. Support offline usage.
+
+REQUIREMENTS:
+
+1. Analytics Service: Create services/analytics.service.ts
+   - Singleton service for event tracking
+   - Type-safe event definitions
+   - Offline queue management
+   - Background event processing
+
+2. Screen View Tracking: Track screen views
+   - Use React Navigation listener
+   - Track on screen focus
+   - Send screen_view event with screen name
+   - Include navigation parameters (sanitized)
+
+3. Scan Event Tracking: Track scan events
+   - Track scan_created (success, barcode type)
+   - Track scan_failed (error type)
+   - Track scan_deleted
+   - Include scan metadata
+
+4. Session Tracking: Track session metrics
+   - Session start/end timestamps
+   - Session length calculation
+   - App foreground/background events
+   - Session ID generation
+
+5. Device Info Tracking: Track anonymized device info
+   - OS version (iOS 16, Android 13)
+   - Device model (anonymized, e.g., "iPhone", "Android Phone")
+   - App version
+   - Screen dimensions (for UI optimization)
+
+6. Event Sending: Send to POST /analytics/event
+   - Include event_type, metadata, timestamp
+   - User ID from auth store
+   - Async sending (don't block UI)
+   - Batch events for efficiency
+
+7. Offline Queueing: Queue events when offline
+   - Store events in AsyncStorage
+   - Send queued events when online
+   - Network state monitoring
+   - Queue size limits
+
+CONSTRAINTS:
+- Privacy-respecting (no PII)
+- Minimal battery impact
+- Async event sending
+- Offline support required
+- No blocking of user actions
+- Minimal storage usage
+
+INTEGRATION POINTS:
+- Analytics backend from Task 13.2
+- Auth store from Task 4.7
+- React Navigation for screen tracking
+- NetInfo for connectivity status
+
+TESTING REQUIREMENTS:
+1. Events sent to backend from mobile
+2. Correct event data structure
+3. User ID included when authenticated
+4. Privacy respected (no PII)
+5. Offline queueing works correctly
+6. Queued events sent when online
+7. No performance/battery impact
+8. Failed sends don't crash app
+9. Session tracking accurate
+10. Device info anonymized
+
+ACCEPTANCE CRITERIA:
+- ✅ Mobile analytics service created
+- ✅ Screen views tracked automatically
+- ✅ Scan events tracked
+- ✅ Session tracking implemented
+- ✅ Device info tracked (anonymized)
+- ✅ Events sent to backend asynchronously
+- ✅ Offline support with queueing
+- ✅ Privacy respected (no PII)
+- ✅ Tests passing
+
+QUALITY STANDARDS:
+- Privacy-first design
+- Minimal battery/performance impact
+- Clean service architecture
+- Proper error handling
+- Type-safe event definitions
+- Async operations only
+- Efficient offline queue
+
+DELIVERABLES:
+- services/analytics.service.ts
+- Event type definitions
+- Screen view tracking integration
+- Session tracking logic
+- Offline event queue
+- Device info collection (anonymized)
+- Privacy safeguards
+- Unit tests for analytics service
+
+SUCCESS METRIC: User behavior tracked efficiently on mobile with privacy protection, reliable offline support, and event delivery without impacting battery life or user experience.
 ```
 
 ---

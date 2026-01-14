@@ -87,15 +87,18 @@ export const authApi = {
 };
 
 export const adminApi = {
-  getAnalyticsOverview: async (params?: { start: string; end: string }) => {
+  getAnalyticsOverview: async (params?: {
+    startDate?: string;
+    endDate?: string;
+  }) => {
     const response = await apiClient.get('/admin/analytics/overview', {
       params,
     });
     return response.data;
   },
   getAnalyticsTrends: async (params?: {
-    start: string;
-    end: string;
+    startDate?: string;
+    endDate?: string;
     metric?: string;
   }) => {
     const response = await apiClient.get('/admin/analytics/trends', { params });
