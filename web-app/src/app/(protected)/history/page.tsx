@@ -1,5 +1,6 @@
 'use client';
 
+import { analytics } from '@/lib/analytics.service';
 import { useState, useEffect } from 'react';
 import { useScans, useDeleteScan, useBulkDeleteScans } from '@/hooks/use-scans';
 import { ScanTable } from '@/components/history/ScanTable';
@@ -49,6 +50,9 @@ export default function HistoryPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchValue);
+      if (searchValue) {
+        analytics.trackSearch(searchValue);
+      }
       // Reset page when search changes
       setFilters((prev) => ({ ...prev, page: 1 }));
     }, 500);
@@ -61,6 +65,7 @@ export default function HistoryPage() {
       setSearchValue(value as string);
       return;
     }
+    analytics.trackFilter(key, String(value));
     setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
   };
 
@@ -112,22 +117,20 @@ export default function HistoryPage() {
   };
 
   const handleDelete = async (id: string) => {
-    // Optimistic delete is handled by hook, but we might want a confirm here too?
-    // Requirement says "Delete individual scans with confirmation".
-    // For individual, browser confirm is okay or a small dialog.
-    // I'll skip confirm for single click delete in the dropdown to be fast,
-    // OR add a quick confirm. Let's rely on the dropdown interaction being intentional enough
-    // or add a toast undo.
-    // Re-reading: "Delete individual scans with confirmation".
-    // Okay, I'll use window.confirm for now to save complexity of managing another dialog state for single delete.
     if (window.confirm('Are you sure you want to delete this scan?')) {
-      deleteScanMutation.mutate(id);
+      deleteScanMutation.mutate(id, {
+        onSuccess: () => {
+          analytics.trackScanDeleted(1);
+        },
+      });
     }
   };
 
   const handleBulkDelete = () => {
+    const count = selectedIds.length;
     bulkDeleteMutation.mutate(selectedIds, {
       onSuccess: () => {
+        analytics.trackScanDeleted(count);
         setSelectedIds([]);
         setShowBulkDeleteConfirm(false);
       },

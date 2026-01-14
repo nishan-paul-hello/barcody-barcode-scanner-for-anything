@@ -19,6 +19,9 @@ import { ScansModule } from '@modules/scans/scans.module';
 import { TailscaleModule } from '@modules/tailscale/tailscale.module';
 import { ProductLookupModule } from '@modules/product-lookup/product-lookup.module';
 import { ExportModule } from '@modules/export/export.module';
+import { AdminModule } from '@modules/admin/admin.module';
+import { BullModule } from '@nestjs/bull';
+import { AnalyticsModule } from '@modules/analytics/analytics.module';
 import redisConfig from '@config/redis.config';
 
 @Module({
@@ -50,6 +53,25 @@ import redisConfig from '@config/redis.config';
     TailscaleModule,
     ProductLookupModule,
     ExportModule,
+    AdminModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const redisUrl = configService.getOrThrow<string>('redis.url');
+        const url = new URL(redisUrl);
+        return {
+          redis: {
+            host: url.hostname,
+            port: parseInt(url.port),
+            password: url.password || undefined,
+            username: url.username || undefined,
+            db: url.pathname ? parseInt(url.pathname.substring(1)) : undefined,
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -24,6 +24,7 @@ import { AuthInitializer } from '@/components/auth-initializer';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { SocketProvider } from '@/components/providers/SocketProvider';
 import { ErrorBoundary } from '@/components/common/error-boundary';
+import { AnalyticsTracker } from '@/components/analytics-tracker';
 
 export default function RootLayout({
   children,
@@ -45,6 +46,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <SocketProvider>
+                <AnalyticsTracker />
                 <ErrorBoundary>{children}</ErrorBoundary>
               </SocketProvider>
               <Toaster />

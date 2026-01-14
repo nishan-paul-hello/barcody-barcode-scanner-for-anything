@@ -22,7 +22,11 @@ export const useAnalyticsOverview = (dateRange: {
 }) => {
   return useQuery({
     queryKey: adminQueryKeys.overview(dateRange.start, dateRange.end),
-    queryFn: () => api.admin.getAnalyticsOverview(dateRange),
+    queryFn: () =>
+      api.admin.getAnalyticsOverview({
+        startDate: dateRange.start,
+        endDate: dateRange.end,
+      }),
     staleTime: 1000 * 60, // 1 minute
     refetchInterval: 1000 * 60, // 1 minute auto-refetch
     refetchOnWindowFocus: true,
@@ -36,7 +40,12 @@ export const useAnalyticsTrends = (
 ) => {
   return useQuery({
     queryKey: adminQueryKeys.trends(dateRange.start, dateRange.end, metric),
-    queryFn: () => api.admin.getAnalyticsTrends({ ...dateRange, metric }),
+    queryFn: () =>
+      api.admin.getAnalyticsTrends({
+        startDate: dateRange.start,
+        endDate: dateRange.end,
+        metric,
+      }),
     staleTime: 1000 * 60, // 1 minute
     refetchInterval: 1000 * 60, // 1 minute auto-refetch
   });

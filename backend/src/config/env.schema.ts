@@ -16,4 +16,5 @@ export const envSchema = Joi.object({
   UPC_DATABASE_API_KEY: Joi.string().allow('').optional(),
   BARCODE_LOOKUP_API_KEY: Joi.string().allow('').optional(),
   ADMIN_EMAIL: Joi.string().required(),
+  ANALYTICS_HASH_SECRET: Joi.string().required(),
 });

@@ -1,5 +1,7 @@
 'use client';
 
+import { analytics } from '@/lib/analytics.service';
+
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
@@ -60,6 +62,11 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
 
           onScanSuccess?.(result);
 
+          analytics.trackScanCreated(
+            mapZxingFormatToReadable(result.getBarcodeFormat()),
+            'file'
+          );
+
           createScanMutation.mutate({
             barcodeData,
             barcodeType: mapZxingFormatToReadable(result.getBarcodeFormat()),
@@ -82,6 +89,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         const errorMessage =
           'No barcode found in this image. Try a clearer photo.';
         setError(errorMessage);
+        analytics.trackScanFailed(errorMessage, 'file');
         onScanError?.(err);
         toast.error('Scan failed', { description: errorMessage });
       } finally {
