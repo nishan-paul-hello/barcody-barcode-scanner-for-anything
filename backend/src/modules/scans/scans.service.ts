@@ -1,14 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Repository,
-  Between,
-  DataSource,
-  FindOptionsWhere,
-  MoreThanOrEqual,
-  Like,
-  In,
-} from 'typeorm';
+import { Repository, DataSource, MoreThanOrEqual, In, SelectQueryBuilder } from 'typeorm';
 import { Scan } from '@database/entities/scan.entity';
 import { CreateScanDto } from '@modules/scans/dto/create-scan.dto';
 import { ScanQueryDto } from '@modules/scans/dto/scan-query.dto';
@@ -39,36 +31,29 @@ export class ScansService {
   }
 
   async findAll(userId: string, query: ScanQueryDto) {
-    const {
-      page = 1,
-      limit = 50,
-      barcodeType,
-      deviceType,
-      startDate,
-      endDate,
-      sortBy = 'scannedAt',
-      order = 'DESC',
-      search,
-    } = query;
+    const { page = 1, limit = 50, sortBy = 'scannedAt', order = 'DESC', search } = query;
 
     const skip = (page - 1) * limit;
-    const where: FindOptionsWhere<Scan> = { userId };
+    const queryBuilder = this.scanRepository.createQueryBuilder('scan');
 
-    if (barcodeType) where.barcodeType = barcodeType;
-    if (deviceType) where.deviceType = deviceType;
-    if (search) {
-      // Use ILIKE for case-insensitive search if supported by DB (PostgreSQL)
-      // For TypeORM, we can use the repository.find with Like operator
-      where.barcodeData = Like(`%${search}%`);
+    queryBuilder.where('scan.userId = :userId', { userId });
+
+    this.applyFilters(queryBuilder, query);
+    this.applySearch(queryBuilder, search, sortBy, order);
+
+    if (sortBy !== 'relevance') {
+      this.applySorting(queryBuilder, sortBy, order);
     }
 
-    this.applyDateFilters(where, startDate, endDate);
+    const total = await queryBuilder.getCount();
+    const rawAndEntities = await queryBuilder.offset(skip).limit(limit).getRawAndEntities();
 
-    const [items, total] = await this.scanRepository.findAndCount({
-      where,
-      order: { [sortBy]: order } as never,
-      take: limit,
-      skip,
+    const items = rawAndEntities.entities.map((entity, index) => {
+      const relevance = rawAndEntities.raw[index]?.relevance;
+      return {
+        ...entity,
+        relevance: relevance ? parseFloat(relevance) : undefined,
+      };
     });
 
     return {
@@ -80,6 +65,83 @@ export class ScansService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  private applyFilters(queryBuilder: SelectQueryBuilder<Scan>, query: ScanQueryDto) {
+    const { barcodeType, deviceType, category, nutritionGrade, startDate, endDate } = query;
+
+    if (barcodeType) {
+      queryBuilder.andWhere('scan.barcodeType = :barcodeType', { barcodeType });
+    }
+
+    if (deviceType) {
+      queryBuilder.andWhere('scan.deviceType = :deviceType', { deviceType });
+    }
+
+    if (category) {
+      queryBuilder.andWhere('scan.category = :category', { category });
+    }
+
+    if (nutritionGrade) {
+      queryBuilder.andWhere('scan.nutritionGrade = :nutritionGrade', { nutritionGrade });
+    }
+
+    if (startDate && endDate) {
+      queryBuilder.andWhere('scan.scannedAt BETWEEN :startDate AND :endDate', {
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+      });
+    } else if (startDate) {
+      queryBuilder.andWhere('scan.scannedAt >= :startDate', { startDate: new Date(startDate) });
+    } else if (endDate) {
+      queryBuilder.andWhere('scan.scannedAt <= :endDate', { endDate: new Date(endDate) });
+    }
+  }
+
+  private applySearch(
+    queryBuilder: SelectQueryBuilder<Scan>,
+    search: string | undefined,
+    sortBy: string,
+    order: 'ASC' | 'DESC',
+  ) {
+    if (!search) return;
+
+    const tsQuery = search
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((t) => `${t}:*`)
+      .join(' & ');
+
+    if (tsQuery) {
+      queryBuilder.addSelect(
+        "ts_rank(to_tsvector('english', scan.barcode_data || ' ' || COALESCE(scan.product_name, '')), to_tsquery('english', :tsQuery))",
+        'relevance',
+      );
+      queryBuilder.andWhere(
+        "to_tsvector('english', scan.barcode_data || ' ' || COALESCE(scan.product_name, '')) @@ to_tsquery('english', :tsQuery)",
+        { tsQuery },
+      );
+
+      if (sortBy === 'relevance') {
+        queryBuilder.orderBy('relevance', order);
+      }
+    }
+  }
+
+  private applySorting(
+    queryBuilder: SelectQueryBuilder<Scan>,
+    sortBy: string,
+    order: 'ASC' | 'DESC',
+  ) {
+    const sortMap: Record<string, string> = {
+      scannedAt: 'scan.scannedAt',
+      barcodeType: 'scan.barcodeType',
+      productName: 'scan.productName',
+      nutritionGrade: 'scan.nutritionGrade',
+    };
+    const sortColumn = sortMap[sortBy] || 'scan.scannedAt';
+    queryBuilder.orderBy(sortColumn, order);
   }
 
   async findAllSince(userId: string, timestamp: string, query: ScanQueryDto) {
@@ -107,16 +169,6 @@ export class ScansService {
     };
   }
 
-  private applyDateFilters(where: FindOptionsWhere<Scan>, startDate?: string, endDate?: string) {
-    if (startDate && endDate) {
-      where.scannedAt = Between(new Date(startDate), new Date(endDate));
-    } else if (startDate) {
-      where.scannedAt = Between(new Date(startDate), new Date());
-    } else if (endDate) {
-      where.scannedAt = Between(new Date(0), new Date(endDate));
-    }
-  }
-
   async findOne(userId: string, id: string): Promise<Scan> {
     const scan = await this.scanRepository.findOne({
       where: { id, userId },
@@ -139,21 +191,19 @@ export class ScansService {
     this.scansGateway.emitScanDeleted(userId, id);
   }
 
-  async bulkDelete(userId: string, ids: string[]): Promise<void> {
+  async bulkDelete(userId: string, ids: string[]): Promise<{ count: number }> {
     this.logger.log(`User ${userId} bulk deleting ${ids.length} scans`);
     const result = await this.scanRepository.delete({
       id: In(ids),
       userId,
     });
 
-    if (result.affected === 0) {
-      throw new NotFoundException(`No scans found for the provided IDs`);
-    }
-
     // Emit events for all deleted scans
     ids.forEach((id) => {
       this.scansGateway.emitScanDeleted(userId, id);
     });
+
+    return { count: result.affected || 0 };
   }
 
   async bulkCreate(userId: string, scanDtos: CreateScanDto[]): Promise<Scan[]> {

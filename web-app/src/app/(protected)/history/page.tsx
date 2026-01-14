@@ -1,12 +1,17 @@
 'use client';
 
-import { analytics } from '@/lib/analytics.service';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useScans, useDeleteScan, useBulkDeleteScans } from '@/hooks/use-scans';
 import { ScanTable } from '@/components/history/ScanTable';
 import { ScanFilters } from '@/components/history/ScanFilters';
 import { ScanDetailsDialog } from '@/components/history/ScanDetailsDialog';
-import { type ScanResponseDto, type PaginationParams } from '@/lib/api/types';
+import type {
+  BarcodeType,
+  DeviceType,
+  ScanResponseDto,
+  PaginationParams,
+} from '@/lib/api/types';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -24,19 +29,64 @@ import {
   Download,
 } from 'lucide-react';
 import { ExportModal } from '@/components/export/ExportModal';
+import { analytics } from '@/lib/analytics.service';
 
 export default function HistoryPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   // State for filters and pagination
-  const [filters, setFilters] = useState<PaginationParams>({
-    page: 1,
-    limit: 20,
-    sortBy: 'scannedAt',
-    order: 'DESC',
+  const [filters, setFilters] = useState<PaginationParams>(() => {
+    const params: PaginationParams = {
+      page: parseInt(searchParams.get('page') || '1'),
+      limit: parseInt(searchParams.get('limit') || '20'),
+      sortBy: searchParams.get('sortBy') || 'scannedAt',
+      order: (searchParams.get('order') as 'ASC' | 'DESC') || 'DESC',
+      barcodeType:
+        (searchParams.get('barcodeType') as BarcodeType) || undefined,
+      deviceType: (searchParams.get('deviceType') as DeviceType) || undefined,
+      category: searchParams.get('category') || undefined,
+      nutritionGrade: searchParams.get('nutritionGrade') || undefined,
+      startDate: searchParams.get('startDate') || undefined,
+      endDate: searchParams.get('endDate') || undefined,
+    };
+    return params;
   });
 
   // Debounced search state
-  const [searchValue, setSearchValue] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get('search') || ''
+  );
+  const [debouncedSearch, setDebouncedSearch] = useState(
+    searchParams.get('search') || ''
+  );
+
+  // Recent searches
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('recentSearches');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          return [];
+        }
+      }
+    }
+    return [];
+  });
+
+  const addRecentSearch = useCallback((term: string) => {
+    if (!term || term.trim() === '') return;
+    setRecentSearches((prev) => {
+      const newSearches = [term, ...prev.filter((s) => s !== term)].slice(0, 5);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('recentSearches', JSON.stringify(newSearches));
+      }
+      return newSearches;
+    });
+  }, []);
 
   // Selection state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -46,20 +96,40 @@ export default function HistoryPage() {
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
 
+  // Sync URL with filters and search
+  useEffect(() => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        key !== 'search'
+      ) {
+        params.set(key, String(value));
+      }
+    });
+    if (debouncedSearch) {
+      params.set('search', debouncedSearch);
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [filters, debouncedSearch, pathname, router]);
+
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchValue);
       if (searchValue) {
         analytics.trackSearch(searchValue);
+        addRecentSearch(searchValue);
       }
       // Reset page when search changes
       setFilters((prev) => ({ ...prev, page: 1 }));
-    }, 500);
+    }, 300);
     return () => clearTimeout(timer);
-  }, [searchValue]);
+  }, [searchValue, addRecentSearch]);
 
-  // Reset page when filters change (except page/search handled above)
+  // Reset page when filters change
   const handleFilterChange = (key: keyof PaginationParams, value: unknown) => {
     if (key === 'search') {
       setSearchValue(value as string);
@@ -137,6 +207,28 @@ export default function HistoryPage() {
     });
   };
 
+  const handleCompare = () => {
+    if (data?.items) {
+      const selectedBarcodes = data.items
+        .filter((s) => selectedIds.includes(s.id))
+        .map((s) => s.barcodeData);
+
+      const uniqueBarcodes = Array.from(new Set(selectedBarcodes));
+
+      if (uniqueBarcodes.length < 2) {
+        alert('Please select at least 2 different products to compare.');
+        return;
+      }
+
+      if (uniqueBarcodes.length > 5) {
+        alert('You can compare up to 5 products at once.');
+        return;
+      }
+
+      router.push(`/compare?barcodes=${uniqueBarcodes.join(',')}`);
+    }
+  };
+
   return (
     <div className="container mx-auto max-w-7xl space-y-6 py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -156,6 +248,7 @@ export default function HistoryPage() {
         filters={{ ...filters, search: searchValue }}
         onFilterChange={handleFilterChange}
         onClearFilters={handleClearFilters}
+        recentSearches={recentSearches}
       />
 
       {/* Bulk Actions Bar */}
@@ -172,6 +265,14 @@ export default function HistoryPage() {
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete Selected
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleCompare}
+            disabled={selectedIds.length < 2 || selectedIds.length > 5}
+          >
+            Compare Selected
           </Button>
           <div className="flex-1" />
           <Button variant="ghost" size="sm" onClick={() => setSelectedIds([])}>

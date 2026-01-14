@@ -42,12 +42,17 @@ export class Scan {
   @CreateDateColumn({ name: 'scanned_at', type: 'timestamptz' })
   scannedAt!: Date;
 
-  @Column({
-    name: 'device_type',
-    type: 'enum',
-    enum: DeviceType,
-  })
+  @Column({ name: 'device_type', type: 'enum', enum: DeviceType })
   deviceType!: DeviceType;
+
+  @Column({ name: 'product_name', nullable: true })
+  productName?: string;
+
+  @Column({ nullable: true })
+  category?: string;
+
+  @Column({ name: 'nutrition_grade', nullable: true })
+  nutritionGrade?: string;
 
   @Column({ type: 'jsonb', nullable: true })
   metadata?: Record<string, unknown>;

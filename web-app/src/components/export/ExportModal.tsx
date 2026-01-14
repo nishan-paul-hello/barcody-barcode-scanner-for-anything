@@ -34,6 +34,8 @@ interface ExportModalProps {
     deviceType?: DeviceType;
     startDate?: string;
     endDate?: string;
+    category?: string;
+    nutritionGrade?: string;
   };
 }
 
@@ -49,6 +51,8 @@ export function ExportModal({
     deviceType: (defaultFilters?.deviceType as string) || 'ALL',
     startDate: defaultFilters?.startDate?.split('T')[0] || '',
     endDate: defaultFilters?.endDate?.split('T')[0] || '',
+    category: defaultFilters?.category || 'ALL',
+    nutritionGrade: defaultFilters?.nutritionGrade || 'ALL',
   });
 
   const [progress, setProgress] = React.useState<number | null>(null);
@@ -62,6 +66,8 @@ export function ExportModal({
         deviceType: (defaultFilters?.deviceType as string) || 'ALL',
         startDate: defaultFilters?.startDate?.split('T')[0] || '',
         endDate: defaultFilters?.endDate?.split('T')[0] || '',
+        category: defaultFilters?.category || 'ALL',
+        nutritionGrade: defaultFilters?.nutritionGrade || 'ALL',
       });
       setProgress(null);
     }
@@ -97,6 +103,9 @@ export function ExportModal({
         endDate: filters.endDate
           ? new Date(filters.endDate).toISOString()
           : undefined,
+        category: filters.category === 'ALL' ? undefined : filters.category,
+        nutritionGrade:
+          filters.nutritionGrade === 'ALL' ? undefined : filters.nutritionGrade,
       },
       onProgress: (p: number) => setProgress(p),
     };
@@ -285,6 +294,59 @@ export function ExportModal({
                         className="capitalize"
                       >
                         {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-muted-foreground pl-1 text-[10px] font-medium tracking-wider uppercase">
+                  Category
+                </label>
+                <Select
+                  value={filters.category}
+                  onValueChange={(val) =>
+                    setFilters({ ...filters, category: val })
+                  }
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Categories</SelectItem>
+                    {[
+                      'food',
+                      'beverage',
+                      'personal care',
+                      'health',
+                      'other',
+                    ].map((cat) => (
+                      <SelectItem key={cat} value={cat} className="capitalize">
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-muted-foreground pl-1 text-[10px] font-medium tracking-wider uppercase">
+                  Nutrition Grade
+                </label>
+                <Select
+                  value={filters.nutritionGrade}
+                  onValueChange={(val) =>
+                    setFilters({ ...filters, nutritionGrade: val })
+                  }
+                >
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="All Grades" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Grades</SelectItem>
+                    {['A', 'B', 'C', 'D', 'E'].map((grade) => (
+                      <SelectItem key={grade} value={grade}>
+                        Grade {grade}
                       </SelectItem>
                     ))}
                   </SelectContent>
