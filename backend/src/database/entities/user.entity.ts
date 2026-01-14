@@ -6,8 +6,8 @@ import {
   Index,
   OneToMany,
 } from 'typeorm';
-import { Session } from '@database/entities/session.entity';
-import { Scan } from '@database/entities/scan.entity';
+import { Session } from './session.entity';
+import { Scan } from './scan.entity';
 
 @Entity('users')
 export class User {

@@ -1,5 +1,7 @@
 'use client';
 
+import { analytics } from '@/lib/analytics.service';
+
 import * as React from 'react';
 import {
   Dialog,
@@ -101,6 +103,7 @@ export function ExportModal({
 
     exportMutation.mutate(exportParams, {
       onSuccess: () => {
+        analytics.trackExport(format, 0); // 0 as count is unknown until response or not returned
         onClose();
       },
       onError: () => {

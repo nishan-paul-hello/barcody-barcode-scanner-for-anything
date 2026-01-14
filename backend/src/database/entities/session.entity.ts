@@ -7,7 +7,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { User } from '@database/entities/user.entity';
+import { User } from './user.entity';
 
 /**
  * Session entity for future use (WebSocket sessions, device management, and audit logs).
