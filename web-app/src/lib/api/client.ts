@@ -13,7 +13,6 @@ import type {
   CreateScanDto,
   BulkCreateScansDto,
   ScanResponseDto,
-  ProductResponseDto,
   ProductLookupResponse,
   TrackEventDto,
   PaginatedResponse,
@@ -23,6 +22,7 @@ import type {
   User,
   ApiErrorResponse,
   TailscaleInfoDto,
+  ProductComparisonResponse,
 } from '@/lib/api/types';
 
 // Define custom property for retry in request config
@@ -206,9 +206,7 @@ export const api = {
         .then((r) => r.data),
     compareProducts: (barcodes: string[]) =>
       apiClient
-        .get<
-          ProductResponseDto[]
-        >('/products/compare', { params: { barcodes: barcodes.join(',') } })
+        .post<ProductComparisonResponse>('/products/compare', { barcodes })
         .then((r) => r.data),
   },
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { ScansService } from '@modules/scans/scans.service';
 import { Scan } from '@database/entities/scan.entity';
 import { BarcodeType } from '@common/enums/barcode-type.enum';
@@ -10,7 +10,21 @@ import { ScansGateway } from '@modules/scans/scans.gateway';
 
 describe('ScansService', () => {
   let service: ScansService;
-  let repository: Repository<Scan>;
+
+  const mockQueryBuilder = {
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    offset: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    addOrderBy: jest.fn().mockReturnThis(),
+    addSelect: jest.fn().mockReturnThis(),
+    getCount: jest.fn().mockResolvedValue(0),
+    getRawAndEntities: jest.fn().mockResolvedValue({ entities: [], raw: [] }),
+  };
 
   const mockScanRepository = {
     create: jest.fn(),
@@ -18,6 +32,7 @@ describe('ScansService', () => {
     findAndCount: jest.fn(),
     findOne: jest.fn(),
     delete: jest.fn(),
+    createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
   };
 
   const mockScansGateway = {
@@ -60,7 +75,6 @@ describe('ScansService', () => {
     }).compile();
 
     service = module.get<ScansService>(ScansService);
-    repository = module.get<Repository<Scan>>(getRepositoryToken(Scan));
   });
 
   afterEach(() => {
@@ -104,13 +118,20 @@ describe('ScansService', () => {
       const scans = [{ id: '1' }, { id: '2' }];
       const total = 2;
 
-      mockScanRepository.findAndCount.mockResolvedValue([scans, total]);
+      mockQueryBuilder.getCount.mockResolvedValue(total);
+      mockQueryBuilder.getRawAndEntities.mockResolvedValue({
+        entities: scans,
+        raw: scans.map(() => ({})),
+      });
 
       const result = await service.findAll(userId, query as any);
 
       expect(result.items).toEqual(scans);
       expect(result.meta.total).toBe(total);
-      expect(repository.findAndCount).toHaveBeenCalled();
+      expect(mockScanRepository.createQueryBuilder).toHaveBeenCalledWith('scan');
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith('scan.userId = :userId', { userId });
+      expect(mockQueryBuilder.offset).toHaveBeenCalledWith(0);
+      expect(mockQueryBuilder.limit).toHaveBeenCalledWith(10);
     });
 
     it('should apply filters correctly', async () => {
@@ -121,18 +142,20 @@ describe('ScansService', () => {
         endDate: '2023-01-31',
       };
 
-      mockScanRepository.findAndCount.mockResolvedValue([[], 0]);
+      mockQueryBuilder.getCount.mockResolvedValue(0);
+      mockQueryBuilder.getRawAndEntities.mockResolvedValue({ entities: [], raw: [] });
 
       await service.findAll(userId, query as any);
 
-      expect(mockScanRepository.findAndCount).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({
-            userId,
-            barcodeType: BarcodeType.QR,
-            scannedAt: expect.anything(),
-          }),
-        }),
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('scan.barcodeType = :barcodeType', {
+        barcodeType: BarcodeType.QR,
+      });
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'scan.scannedAt BETWEEN :startDate AND :endDate',
+        {
+          startDate: expect.any(Date),
+          endDate: expect.any(Date),
+        },
       );
     });
   });

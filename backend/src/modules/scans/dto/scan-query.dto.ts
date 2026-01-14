@@ -45,6 +45,16 @@ export class ScanQueryDto {
   @IsDateString()
   endDate?: string;
 
+  @ApiPropertyOptional({ description: 'Filter by category' })
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @ApiPropertyOptional({ description: 'Filter by nutrition grade', example: 'A' })
+  @IsOptional()
+  @IsString()
+  nutritionGrade?: string;
+
   @ApiPropertyOptional({ description: 'Sort field', default: 'scannedAt' })
   @IsOptional()
   @IsString()

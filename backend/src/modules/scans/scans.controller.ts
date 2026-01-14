@@ -111,13 +111,13 @@ export class ScansController {
     return this.scansService.delete(userId, id);
   }
 
-  @Delete()
-  @ApiOperation({ summary: 'Bulk delete scans' })
-  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Scans deleted successfully' })
+  @Delete('batch')
+  @ApiOperation({ summary: 'Batch delete scans' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Scans deleted successfully' })
   async bulkRemove(
     @CurrentUser('sub') userId: string,
     @Body() bulkDeleteDto: BulkDeleteScansDto,
-  ): Promise<void> {
+  ): Promise<{ count: number }> {
     return this.scansService.bulkDelete(userId, bulkDeleteDto.ids);
   }
 }

@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 interface ScanTableProps {
   scans: ScanResponseDto[];
@@ -63,9 +64,10 @@ export function ScanTable({
               <TableHead className="w-[50px]">
                 <Skeleton className="h-4 w-4" />
               </TableHead>
-              <TableHead>Barcode</TableHead>
-              <TableHead>Type</TableHead>
               <TableHead>Product</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Grade</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Device</TableHead>
               <TableHead className="w-[80px]"></TableHead>
@@ -78,13 +80,19 @@ export function ScanTable({
                   <Skeleton className="h-4 w-4" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-4 w-32" />
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-6 w-6 rounded-sm" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-4 w-16" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-20" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-8" />
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-4 w-32" />
@@ -118,11 +126,13 @@ export function ScanTable({
     );
   }
 
+  const hasRelevance = scans.some((s) => s.relevance !== undefined);
+
   return (
-    <div className="bg-card rounded-md border">
+    <div className="bg-card overflow-hidden rounded-md border shadow-sm">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-muted/30">
             <TableHead className="w-[50px]">
               <Checkbox
                 checked={
@@ -133,9 +143,9 @@ export function ScanTable({
             </TableHead>
             <TableHead
               className="hover:bg-muted/50 cursor-pointer transition-colors"
-              onClick={() => onSortChange('barcodeData')}
+              onClick={() => onSortChange('productName')}
             >
-              Barcode {renderSortIcon('barcodeData')}
+              Product {renderSortIcon('productName')}
             </TableHead>
             <TableHead
               className="hover:bg-muted/50 cursor-pointer transition-colors"
@@ -143,7 +153,21 @@ export function ScanTable({
             >
               Type {renderSortIcon('barcodeType')}
             </TableHead>
-            <TableHead>Product</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead
+              className="hover:bg-muted/50 cursor-pointer transition-colors"
+              onClick={() => onSortChange('nutritionGrade')}
+            >
+              Grade {renderSortIcon('nutritionGrade')}
+            </TableHead>
+            {hasRelevance && (
+              <TableHead
+                className="hover:bg-muted/50 cursor-pointer transition-colors"
+                onClick={() => onSortChange('relevance')}
+              >
+                Match {renderSortIcon('relevance')}
+              </TableHead>
+            )}
             <TableHead
               className="hover:bg-muted/50 cursor-pointer transition-colors"
               onClick={() => onSortChange('scannedAt')}
@@ -158,7 +182,7 @@ export function ScanTable({
           {scans.map((scan) => (
             <TableRow
               key={scan.id}
-              className="hover:bg-muted/30 cursor-pointer"
+              className="hover:bg-muted/20 group cursor-pointer"
               onClick={() => onView(scan)}
             >
               <TableCell onClick={(e) => e.stopPropagation()}>
@@ -167,46 +191,98 @@ export function ScanTable({
                   onCheckedChange={(checked) => onSelectOne(scan.id, !!checked)}
                 />
               </TableCell>
-              <TableCell className="font-mono text-sm font-medium">
-                {scan.barcodeData}
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <div className="bg-muted/20 h-10 w-10 flex-shrink-0 overflow-hidden rounded-md border">
+                    {scan.product?.images && scan.product.images.length > 0 ? (
+                      <img
+                        src={scan.product.images[0]}
+                        alt=""
+                        className="h-full w-full object-contain p-1"
+                      />
+                    ) : (
+                      <div className="text-muted-foreground flex h-full w-full items-center justify-center text-[10px] uppercase">
+                        No Img
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col overflow-hidden">
+                    <span
+                      className="max-w-[200px] truncate font-medium"
+                      title={scan.product?.name || scan.barcodeData}
+                    >
+                      {scan.product?.name || 'Unknown Product'}
+                    </span>
+                    <span className="text-muted-foreground font-mono text-[11px]">
+                      {scan.barcodeData}
+                    </span>
+                  </div>
+                </div>
               </TableCell>
               <TableCell>
-                <Badge variant="secondary" className="font-mono text-xs">
+                <Badge
+                  variant="outline"
+                  className="font-mono text-[10px] uppercase"
+                >
                   {scan.barcodeType}
                 </Badge>
               </TableCell>
               <TableCell>
-                {scan.product ? (
-                  <div className="flex items-center gap-2">
-                    {scan.product.images && scan.product.images.length > 0 && (
-                      <img
-                        src={scan.product.images[0]}
-                        alt=""
-                        className="h-6 w-6 rounded-sm border bg-white object-contain"
-                      />
-                    )}
-                    <span
-                      className="block max-w-[150px] truncate"
-                      title={scan.product.name}
-                    >
-                      {scan.product.name}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-muted-foreground text-xs italic">
-                    Unknown
-                  </span>
-                )}
-              </TableCell>
-              <TableCell className="text-muted-foreground text-sm whitespace-nowrap">
-                {new Date(scan.scannedAt).toLocaleString()}
+                <span className="block max-w-[120px] truncate text-sm capitalize">
+                  {scan.product?.category || '-'}
+                </span>
               </TableCell>
               <TableCell>
-                <div className="text-muted-foreground flex items-center gap-1.5 text-xs capitalize">
+                {scan.product?.nutrition?.grade ? (
+                  <Badge
+                    className={cn(
+                      'font-bold',
+                      scan.product.nutrition.grade === 'A' &&
+                        'bg-green-600 hover:bg-green-700',
+                      scan.product.nutrition.grade === 'B' &&
+                        'bg-green-500 hover:bg-green-600',
+                      scan.product.nutrition.grade === 'C' &&
+                        'bg-yellow-500 hover:bg-yellow-600',
+                      scan.product.nutrition.grade === 'D' &&
+                        'bg-orange-500 hover:bg-orange-600',
+                      scan.product.nutrition.grade === 'E' &&
+                        'bg-red-500 hover:bg-red-600'
+                    )}
+                  >
+                    {scan.product.nutrition.grade}
+                  </Badge>
+                ) : (
+                  <span className="text-muted-foreground">-</span>
+                )}
+              </TableCell>
+              {hasRelevance && (
+                <TableCell>
+                  <div className="bg-muted h-1.5 w-12 overflow-hidden rounded-full">
+                    <div
+                      className="bg-primary h-full"
+                      style={{
+                        width: `${Math.min(100, Math.max(0, (scan.relevance || 0) * 100))}%`,
+                      }}
+                    />
+                  </div>
+                </TableCell>
+              )}
+              <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
+                {new Date(scan.scannedAt).toLocaleDateString()}
+                <br />
+                <span className="text-[10px] opacity-70">
+                  {new Date(scan.scannedAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+              </TableCell>
+              <TableCell>
+                <div className="text-muted-foreground flex items-center gap-1 text-[11px] capitalize">
                   {scan.deviceType === 'mobile' ? (
-                    <Smartphone className="h-3.5 w-3.5" />
+                    <Smartphone className="h-3 w-3" />
                   ) : (
-                    <Monitor className="h-3.5 w-3.5" />
+                    <Monitor className="h-3 w-3" />
                   )}
                   {scan.deviceType}
                 </div>

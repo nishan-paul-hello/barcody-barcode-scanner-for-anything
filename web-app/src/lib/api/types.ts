@@ -26,6 +26,8 @@ export interface PaginationParams {
   search?: string;
   barcodeType?: BarcodeType;
   deviceType?: DeviceType;
+  category?: string;
+  nutritionGrade?: string;
   startDate?: string;
   endDate?: string;
   sortBy?: string;
@@ -84,6 +86,7 @@ export interface ScanResponseDto {
   metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
+  relevance?: number;
   product?: ProductResponseDto;
 }
 
@@ -122,8 +125,31 @@ export interface ProductLookupResponse {
 }
 
 export interface ProductComparisonDto {
+  barcodes: string[];
+}
+
+export interface ProductComparisonResponse {
   products: ProductResponseDto[];
-  comparisonAt: string;
+  comparison: {
+    nutrients: Record<
+      string,
+      {
+        min: number;
+        max: number;
+        values: Record<string, number>;
+        best: string[];
+        worst: string[];
+      }
+    >;
+    allergens: {
+      common: string[];
+      byProduct: Record<string, string[]>;
+    };
+    nutritionGrades: Record<string, string>;
+    nutritionGradesSummary?: {
+      best: string[];
+    };
+  };
 }
 
 // --- Export ---
