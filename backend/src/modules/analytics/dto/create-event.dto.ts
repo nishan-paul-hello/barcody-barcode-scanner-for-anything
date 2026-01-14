@@ -2,14 +2,17 @@ import { IsString, IsNotEmpty, IsOptional, IsObject, IsEnum, IsDateString } from
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum AnalyticsEventType {
+  PAGE_VIEW = 'page_view',
   SCAN_CREATED = 'scan_created',
+  SCAN_FAILED = 'scan_failed',
   SCAN_DELETED = 'scan_deleted',
+  SEARCH_PERFORMED = 'search_performed',
+  FILTER_APPLIED = 'filter_applied',
+  EXPORT_GENERATED = 'export_generated',
+  SETTINGS_CHANGED = 'settings_changed',
   USER_LOGIN = 'user_login',
   USER_LOGOUT = 'user_logout',
-  EXPORT_GENERATED = 'export_generated',
   ERROR_OCCURRED = 'error_occurred',
-  PAGE_VIEW = 'page_view',
-  SCREEN_VIEW = 'screen_view',
 }
 
 export class CreateEventDto {

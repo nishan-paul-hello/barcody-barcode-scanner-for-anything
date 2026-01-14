@@ -137,9 +137,25 @@ export enum ExportFormat {
 
 // --- Analytics ---
 
+export enum AnalyticsEventType {
+  SCAN_CREATED = 'scan_created',
+  SCAN_DELETED = 'scan_deleted',
+  USER_LOGIN = 'user_login',
+  USER_LOGOUT = 'user_logout',
+  EXPORT_GENERATED = 'export_generated',
+  ERROR_OCCURRED = 'error_occurred',
+  PAGE_VIEW = 'page_view',
+  SCREEN_VIEW = 'screen_view',
+  SEARCH_PERFORMED = 'search_performed',
+  FILTER_APPLIED = 'filter_applied',
+  SETTINGS_CHANGED = 'settings_changed',
+  SCAN_FAILED = 'scan_failed',
+}
+
 export interface TrackEventDto {
-  event: string;
-  properties?: Record<string, unknown>;
+  event_type: AnalyticsEventType;
+  user_id: string;
+  metadata?: Record<string, unknown>;
   timestamp?: string;
 }
 

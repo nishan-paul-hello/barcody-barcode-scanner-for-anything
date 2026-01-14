@@ -1,5 +1,7 @@
 'use client';
 
+import { analytics, AnalyticsEventType } from '@/lib/analytics.service';
+
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   BrowserMultiFormatReader,
@@ -208,6 +210,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
               onScanSuccess?.(result);
 
+              analytics.trackScanCreated(
+                mapZxingFormatToReadable(result.getBarcodeFormat()),
+                'camera'
+              );
+
               createScanMutation.mutate({
                 barcodeData,
                 barcodeType: mapZxingFormatToReadable(
@@ -225,6 +232,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             }
             if (err && !(err.name === 'NotFoundException')) {
               console.error('Scan error:', err);
+              analytics.trackScanFailed(
+                err instanceof Error ? err.message : String(err),
+                'camera'
+              );
               if (isMounted) onScanError?.(err);
             }
           }
@@ -332,7 +343,14 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSoundEnabled(!soundEnabled)}
+            onClick={() => {
+              const newValue = !soundEnabled;
+              setSoundEnabled(newValue);
+              analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
+                setting: 'sound_enabled',
+                value: newValue,
+              });
+            }}
             className="rounded-xl text-white hover:bg-white/10"
           >
             {soundEnabled ? (

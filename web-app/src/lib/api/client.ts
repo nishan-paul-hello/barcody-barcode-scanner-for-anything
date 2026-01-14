@@ -282,7 +282,7 @@ export const api = {
   // Analytics
   analytics: {
     trackEvent: (dto: TrackEventDto) =>
-      apiClient.post('/analytics/track', dto).then((r) => r.data),
+      apiClient.post('/analytics/event', dto).then((r) => r.data),
     getAnalytics: (params?: { startDate?: string; endDate?: string }) =>
       apiClient.get('/analytics/dashboard', { params }).then((r) => r.data),
   },
