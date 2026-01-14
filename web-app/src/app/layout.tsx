@@ -22,6 +22,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { GoogleAuthProvider } from '@/components/providers/google-auth-provider';
 import { AuthInitializer } from '@/components/auth-initializer';
 import { QueryProvider } from '@/components/providers/query-provider';
+import { SocketProvider } from '@/components/providers/SocketProvider';
 import { ErrorBoundary } from '@/components/common/error-boundary';
 
 export default function RootLayout({
@@ -43,7 +44,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <ErrorBoundary>{children}</ErrorBoundary>
+              <SocketProvider>
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </SocketProvider>
               <Toaster />
             </ThemeProvider>
           </GoogleAuthProvider>
