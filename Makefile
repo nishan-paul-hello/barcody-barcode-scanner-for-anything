@@ -1,7 +1,7 @@
 # Default configuration
 WEB_PORT ?= 3000
-BACKEND_PORT ?= 8000
 ADMIN_PORT ?= 3001
+BACKEND_PORT ?= 3002
 
 DC_DEV := docker-compose.yml
 DC_PROD := docker-compose.yml -f docker-compose.prod.yml

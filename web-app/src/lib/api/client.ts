@@ -31,7 +31,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 const baseURL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api/v1';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL,

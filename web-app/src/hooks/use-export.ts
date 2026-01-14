@@ -53,17 +53,19 @@ export function useExportData() {
       const link = document.createElement('a');
       link.href = url;
       link.download = `scans-export-${new Date().toISOString().split('T')[0]}.${extension}`;
+      link.style.display = 'none';
 
       // Trigger download
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
 
-      // Cleanup blob URL after download completes
-      // Using a reasonable delay to ensure browser has time to process the download
+      // Cleanup after a delay to ensure the browser has registered the download
       setTimeout(() => {
+        if (document.body.contains(link)) {
+          document.body.removeChild(link);
+        }
         window.URL.revokeObjectURL(url);
-      }, 1000);
+      }, 10000); // 10 seconds is much safer
     },
     onSuccess: () => {
       toast.success('Export completed successfully');

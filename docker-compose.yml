@@ -1,4 +1,4 @@
-version: '3.9'
+
 
 services:
   postgres:
@@ -46,13 +46,13 @@ services:
       target: runner
     container_name: barcody_backend
     ports:
-      - '8000:8000'
+      - '3002:3002'
     env_file:
       - ./backend/.env
     environment:
       DATABASE_URL: postgresql://${DB_USERNAME:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_DATABASE:-barcody}
       REDIS_URL: redis://redis:6379
-      PORT: 8000
+      PORT: 3002
     depends_on:
       postgres:
         condition: service_healthy
@@ -61,7 +61,7 @@ services:
     networks:
       - barcody-network
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:8000/api/v1/health']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3002/api/v1/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -74,7 +74,7 @@ services:
       dockerfile: web-app/Dockerfile
       target: runner
       args:
-        - NEXT_PUBLIC_API_URL=http://barcody-backend.tail2894e4.ts.net:8000/api/v1
+        - NEXT_PUBLIC_API_URL=https://api-barcody.tamarin-ph.ts.net/api/v1
     container_name: barcody_web
     ports:
       - '3000:3000'
@@ -99,7 +99,7 @@ services:
       dockerfile: admin-dashboard/Dockerfile
       target: runner
       args:
-        - NEXT_PUBLIC_API_URL=http://barcody-backend.tail2894e4.ts.net:8000/api/v1
+        - NEXT_PUBLIC_API_URL=https://api-barcody.tamarin-ph.ts.net/api/v1
     container_name: barcody_admin
     ports:
       - '3001:3001'
@@ -118,6 +118,57 @@ services:
       start_period: 60s
     restart: unless-stopped
 
+  ts-web:
+    image: tailscale/tailscale:latest
+    hostname: barcody
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/web.json
+    volumes:
+      - ./infra/tailscale/web.json:/config/web.json
+      - ts_web_state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - barcody-network
+    restart: unless-stopped
+
+  ts-admin:
+    image: tailscale/tailscale:latest
+    hostname: admin-barcody
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/admin.json
+    volumes:
+      - ./infra/tailscale/admin.json:/config/admin.json
+      - ts_admin_state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - barcody-network
+    restart: unless-stopped
+
+  ts-api:
+    image: tailscale/tailscale:latest
+    hostname: api-barcody
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/api.json
+    volumes:
+      - ./infra/tailscale/api.json:/config/api.json
+      - ts_api_state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - barcody-network
+    restart: unless-stopped
+
 networks:
   barcody-network:
     driver: bridge
@@ -125,3 +176,6 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  ts_web_state:
+  ts_admin_state:
+  ts_api_state:
