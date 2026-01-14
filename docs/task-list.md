@@ -100,9 +100,10 @@
 
 ### Phase 11: Export Functionality (Tasks 58-60)
 
-- ⏳ [11.1 CSV & JSON Export](#task-111-backend-export---csv--json)
-- ⏳ [11.2 PDF & Excel Export](#task-112-backend-export---pdf--excel)
-- ⏳ [11.3 Frontend Export UI](#task-113-frontend-export-ui)
+- ✅ [11.1 CSV & JSON Export](#task-111-backend-export---csv--json)
+- ✅ [11.2 PDF & Excel Export](#task-112-backend-export---pdf--excel)
+- ✅ [11.3 Frontend Export UI - Web](#task-113-frontend-export-ui-web)
+- ⏳ [11.4: Frontend Export UI - Mobile](#task-113-frontend-export-ui-mobile)
 
 ### Phase 12: Real-Time Sync (Tasks 61-62)
 
