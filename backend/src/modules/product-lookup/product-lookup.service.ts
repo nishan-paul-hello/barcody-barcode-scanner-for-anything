@@ -6,7 +6,7 @@ import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.
 import { BarcodeLookupClient } from '@modules/product-lookup/clients/barcode-lookup.client';
 import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 
-interface ProductComparison {
+export interface ProductComparison {
   nutrients: Record<
     string,
     {
@@ -216,7 +216,9 @@ export class ProductLookupService {
     }
   }
 
-  async compare(barcodes: string[]) {
+  async compare(
+    barcodes: string[],
+  ): Promise<{ products: ProductInfo[]; comparison: ProductComparison }> {
     this.logger.log(`Comparing barcodes: ${barcodes.join(', ')}`);
 
     const productsData = await Promise.all(

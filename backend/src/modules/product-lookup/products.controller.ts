@@ -10,7 +10,11 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
+import {
+  ProductLookupService,
+  ProductComparison,
+} from '@modules/product-lookup/product-lookup.service';
+import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AdminGuard } from '@modules/auth/guards/admin.guard';
@@ -70,7 +74,9 @@ export class ProductsController {
   @ApiOperation({ summary: 'Compare multiple products' })
   @ApiResponse({ status: 200, description: 'Comparison result' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  async compare(@Body() compareDto: CompareProductsDto) {
+  async compare(
+    @Body() compareDto: CompareProductsDto,
+  ): Promise<{ products: ProductInfo[]; comparison: ProductComparison }> {
     return this.productLookupService.compare(compareDto.barcodes);
   }
 }
