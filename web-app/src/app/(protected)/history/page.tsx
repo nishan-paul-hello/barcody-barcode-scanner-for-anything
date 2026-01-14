@@ -15,7 +15,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Trash2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import {
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Download,
+} from 'lucide-react';
+import { ExportModal } from '@/components/export/ExportModal';
 
 export default function HistoryPage() {
   // State for filters and pagination
@@ -36,6 +43,7 @@ export default function HistoryPage() {
   // Modal state
   const [viewScan, setViewScan] = useState<ScanResponseDto | null>(null);
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   // Debounce search input
   useEffect(() => {
@@ -128,11 +136,17 @@ export default function HistoryPage() {
 
   return (
     <div className="container mx-auto max-w-7xl space-y-6 py-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Scan History</h1>
-        <p className="text-muted-foreground">
-          View and manage your scan history, filter by type, and export data.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-bold tracking-tight">Scan History</h1>
+          <p className="text-muted-foreground">
+            View and manage your scan history, filter by type, and export data.
+          </p>
+        </div>
+        <Button onClick={() => setShowExportModal(true)} className="sm:w-auto">
+          <Download className="mr-2 h-4 w-4" />
+          Export Data
+        </Button>
       </div>
 
       <ScanFilters
@@ -255,6 +269,14 @@ export default function HistoryPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        defaultFilters={{
+          ...filters,
+          search: searchValue,
+        }}
+      />
     </div>
   );
 }

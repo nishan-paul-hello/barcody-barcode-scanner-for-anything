@@ -1,0 +1,16 @@
+{
+  "TCP": {
+    "443": {
+      "HTTPS": true
+    }
+  },
+  "Web": {
+    "${TS_HOSTNAME}.tamarin-ph.ts.net:443": {
+      "Handlers": {
+        "/": {
+          "Proxy": "http://${TS_DEST}:3000"
+        }
+      }
+    }
+  }
+}

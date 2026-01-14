@@ -307,11 +307,13 @@ export default function TailscaleSetupPage() {
 
             <div className="mt-8 border-t border-gray-200 pt-6">
               <p className="text-center text-xs text-gray-400">
-                Tailscale IP:{' '}
-                <span className="font-mono text-gray-600">{info?.ip}</span> •
                 Host:{' '}
                 <span className="font-mono text-gray-600">
                   {info?.hostname}
+                </span>{' '}
+                • MagicDNS:{' '}
+                <span className="font-mono text-gray-600">
+                  {info?.magicDNS}
                 </span>
               </p>
             </div>
