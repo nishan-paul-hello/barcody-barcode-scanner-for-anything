@@ -46,8 +46,9 @@ export default function ComparePage() {
         <div className="bg-destructive/10 text-destructive rounded-lg border p-6 text-center">
           <h2 className="text-xl font-bold">Comparison Failed</h2>
           <p className="mt-2">
-            {(error as any)?.message ||
-              'An error occurred while comparing products.'}
+            {error instanceof Error
+              ? error.message
+              : 'An error occurred while comparing products.'}
           </p>
           <Button asChild className="mt-4">
             <Link href="/history">Back to History</Link>

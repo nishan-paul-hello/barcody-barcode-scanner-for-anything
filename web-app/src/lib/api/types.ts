@@ -26,6 +26,8 @@ export interface PaginationParams {
   search?: string;
   barcodeType?: BarcodeType;
   deviceType?: DeviceType;
+  category?: string;
+  nutritionGrade?: string;
   startDate?: string;
   endDate?: string;
   sortBy?: string;
@@ -84,6 +86,7 @@ export interface ScanResponseDto {
   metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
+  relevance?: number;
   product?: ProductResponseDto;
 }
 

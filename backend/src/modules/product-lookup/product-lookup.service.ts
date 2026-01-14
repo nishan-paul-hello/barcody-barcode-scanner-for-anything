@@ -6,6 +6,27 @@ import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.
 import { BarcodeLookupClient } from '@modules/product-lookup/clients/barcode-lookup.client';
 import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 
+interface ProductComparison {
+  nutrients: Record<
+    string,
+    {
+      min: number;
+      max: number;
+      values: Record<string, number>;
+      best: string[];
+      worst: string[];
+    }
+  >;
+  allergens: {
+    common: string[];
+    byProduct: Record<string, string[]>;
+  };
+  nutritionGrades: Record<string, string | undefined>;
+  nutritionGradesSummary?: {
+    best: string[];
+  };
+}
+
 @Injectable()
 export class ProductLookupService {
   private readonly logger = new Logger(ProductLookupService.name);
@@ -213,7 +234,7 @@ export class ProductLookupService {
 
     const nutrientsToCompare = ['calories', 'fat', 'carbs', 'protein', 'sugar', 'fiber', 'salt'];
 
-    const comparison: any = {
+    const comparison: ProductComparison = {
       nutrients: {},
       allergens: {
         common: [],
@@ -227,7 +248,7 @@ export class ProductLookupService {
       const values = products
         .map((p: ProductInfo) => ({
           barcode: p.barcode,
-          value: (p.nutrition as any)?.[nutrient] as number | undefined,
+          value: p.nutrition?.[nutrient as keyof typeof p.nutrition] as number | undefined,
         }))
         .filter((v): v is { barcode: string; value: number } => v.value !== undefined);
 

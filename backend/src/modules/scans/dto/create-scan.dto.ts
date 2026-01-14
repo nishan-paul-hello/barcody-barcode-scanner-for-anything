@@ -41,6 +41,21 @@ export class CreateScanDto {
   @IsDateString()
   scannedAt?: string;
 
+  @ApiPropertyOptional({ description: 'The product name', example: 'Chocolate Milk' })
+  @IsOptional()
+  @IsString()
+  productName?: string;
+
+  @ApiPropertyOptional({ description: 'The product category', example: 'Beverages' })
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @ApiPropertyOptional({ description: 'The nutrition grade', example: 'A' })
+  @IsOptional()
+  @IsString()
+  nutritionGrade?: string;
+
   @ApiPropertyOptional({
     description: 'Additional metadata',
     example: { location: 'New York', accuracy: 0.95 },

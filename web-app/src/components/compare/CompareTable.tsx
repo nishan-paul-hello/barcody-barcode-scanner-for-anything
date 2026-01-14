@@ -118,7 +118,7 @@ export function CompareTable({ products, comparison }: CompareTableProps) {
                 </TableCell>
                 {products.map((p) => {
                   const status = getNutrientStatus(p.barcode, key);
-                  const value = (p.nutrition as any)?.[key];
+                  const value = p.nutrition?.[key as keyof typeof p.nutrition];
                   return (
                     <TableCell key={p.barcode} className="text-center">
                       <span

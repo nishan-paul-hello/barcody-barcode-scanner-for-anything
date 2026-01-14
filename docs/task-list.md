@@ -121,8 +121,8 @@
 
 ### Phase 14: Advanced Features (Tasks 68-69)
 
-- ⏳ [14.1 Product Comparison](#task-141-product-comparison)
-- ⏳ [14.2 Advanced Search & Filters](#task-142-advanced-search--filters)
+- ✅ [14.1 Product Comparison](#task-141-product-comparison)
+- ✅ [14.2 Advanced Search & Filters](#task-142-advanced-search--filters)
 
 ### Phase 15: Testing & Quality (Tasks 70-74)
 
