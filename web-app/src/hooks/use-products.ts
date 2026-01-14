@@ -15,3 +15,12 @@ export function useProduct(barcode: string) {
     staleTime: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
 }
+
+export function useCompareProducts(barcodes: string[]) {
+  return useQuery({
+    queryKey: ['products', 'compare', barcodes.join(',')],
+    queryFn: () => api.products.compareProducts(barcodes),
+    enabled: barcodes.length >= 2,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+  });
+}

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@modules/redis/redis.service';
 import { OpenFoodFactsClient } from '@modules/product-lookup/clients/open-food-facts.client';
@@ -193,6 +193,108 @@ export class ProductLookupService {
     if (newValue === 1) {
       await this.redisService.set(key, newValue, 86400 * 7); // Keep stats for 7 days
     }
+  }
+
+  async compare(barcodes: string[]) {
+    this.logger.log(`Comparing barcodes: ${barcodes.join(', ')}`);
+
+    const productsData = await Promise.all(
+      barcodes.map(async (barcode) => {
+        const { data } = await this.lookup(barcode);
+        return data;
+      }),
+    );
+
+    const products = productsData.filter((p): p is ProductInfo => p !== null);
+
+    if (products.length < 2) {
+      throw new BadRequestException('At least 2 valid products are required for comparison');
+    }
+
+    const nutrientsToCompare = ['calories', 'fat', 'carbs', 'protein', 'sugar', 'fiber', 'salt'];
+
+    const comparison: any = {
+      nutrients: {},
+      allergens: {
+        common: [],
+        byProduct: {},
+      },
+      nutritionGrades: {},
+    };
+
+    // 1. Compare Nutrients
+    for (const nutrient of nutrientsToCompare) {
+      const values = products
+        .map((p: ProductInfo) => ({
+          barcode: p.barcode,
+          value: (p.nutrition as any)?.[nutrient] as number | undefined,
+        }))
+        .filter((v): v is { barcode: string; value: number } => v.value !== undefined);
+
+      if (values.length > 0) {
+        const numericValues = values.map((v) => v.value);
+        const min = Math.min(...numericValues);
+        const max = Math.max(...numericValues);
+
+        comparison.nutrients[nutrient] = {
+          min,
+          max,
+          values: values.reduce(
+            (acc: Record<string, number>, v) => ({ ...acc, [v.barcode]: v.value }),
+            {},
+          ),
+          // For these nutrients, lower is generally better
+          best: ['calories', 'fat', 'sugar', 'salt'].includes(nutrient)
+            ? values.filter((v) => v.value === min).map((v) => v.barcode)
+            : values.filter((v) => v.value === max).map((v) => v.barcode),
+          worst: ['calories', 'fat', 'sugar', 'salt'].includes(nutrient)
+            ? values.filter((v) => v.value === max).map((v) => v.barcode)
+            : values.filter((v) => v.value === min).map((v) => v.barcode),
+        };
+      }
+    }
+
+    // 2. Compare Allergens
+    const allAllergenSets = products.map(
+      (p: ProductInfo) => new Set<string>(p.nutrition?.allergens || []),
+    );
+
+    if (allAllergenSets.length > 0) {
+      const commonAllergens = Array.from(allAllergenSets[0]!).filter((a) =>
+        allAllergenSets.every((set) => set.has(a)),
+      );
+      comparison.allergens.common = commonAllergens;
+    }
+
+    products.forEach((p: ProductInfo) => {
+      comparison.allergens.byProduct[p.barcode] = p.nutrition?.allergens || [];
+    });
+
+    // 3. Compare Nutrition Grades
+    const gradeScores = { A: 5, B: 4, C: 3, D: 2, E: 1 };
+    products.forEach((p: ProductInfo) => {
+      comparison.nutritionGrades[p.barcode] = p.nutrition?.grade;
+    });
+
+    const gradeValues = products
+      .map((p: ProductInfo) => ({
+        barcode: p.barcode,
+        grade: p.nutrition?.grade,
+        score: gradeScores[(p.nutrition?.grade as keyof typeof gradeScores) || 'C'] || 0,
+      }))
+      .filter((v) => v.grade);
+
+    if (gradeValues.length > 0) {
+      const maxScore = Math.max(...gradeValues.map((v) => v.score));
+      comparison.nutritionGradesSummary = {
+        best: gradeValues.filter((v) => v.score === maxScore).map((v) => v.barcode),
+      };
+    }
+
+    return {
+      products,
+      comparison,
+    };
   }
 
   async getStats(): Promise<{

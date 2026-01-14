@@ -5,12 +5,16 @@ import {
   UseGuards,
   NotFoundException,
   BadRequestException,
+  Post,
+  Body,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AdminGuard } from '@modules/auth/guards/admin.guard';
+import { CompareProductsDto } from './dto/compare-products.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -58,5 +62,15 @@ export class ProductsController {
       data,
       cacheStatus,
     };
+  }
+
+  @Post('compare')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Compare multiple products' })
+  @ApiResponse({ status: 200, description: 'Comparison result' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  async compare(@Body() compareDto: CompareProductsDto) {
+    return this.productLookupService.compare(compareDto.barcodes);
   }
 }

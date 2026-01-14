@@ -2,6 +2,7 @@
 
 import { analytics } from '@/lib/analytics.service';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useScans, useDeleteScan, useBulkDeleteScans } from '@/hooks/use-scans';
 import { ScanTable } from '@/components/history/ScanTable';
 import { ScanFilters } from '@/components/history/ScanFilters';
@@ -26,6 +27,7 @@ import {
 import { ExportModal } from '@/components/export/ExportModal';
 
 export default function HistoryPage() {
+  const router = useRouter();
   // State for filters and pagination
   const [filters, setFilters] = useState<PaginationParams>({
     page: 1,
@@ -137,6 +139,28 @@ export default function HistoryPage() {
     });
   };
 
+  const handleCompare = () => {
+    if (data?.items) {
+      const selectedBarcodes = data.items
+        .filter((s) => selectedIds.includes(s.id))
+        .map((s) => s.barcodeData);
+
+      const uniqueBarcodes = Array.from(new Set(selectedBarcodes));
+
+      if (uniqueBarcodes.length < 2) {
+        alert('Please select at least 2 different products to compare.');
+        return;
+      }
+
+      if (uniqueBarcodes.length > 5) {
+        alert('You can compare up to 5 products at once.');
+        return;
+      }
+
+      router.push(`/compare?barcodes=${uniqueBarcodes.join(',')}`);
+    }
+  };
+
   return (
     <div className="container mx-auto max-w-7xl space-y-6 py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -172,6 +196,14 @@ export default function HistoryPage() {
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete Selected
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleCompare}
+            disabled={selectedIds.length < 2 || selectedIds.length > 5}
+          >
+            Compare Selected
           </Button>
           <div className="flex-1" />
           <Button variant="ghost" size="sm" onClick={() => setSelectedIds([])}>
