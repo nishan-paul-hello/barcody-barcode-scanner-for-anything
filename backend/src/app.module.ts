@@ -19,6 +19,7 @@ import { ScansModule } from '@modules/scans/scans.module';
 import { TailscaleModule } from '@modules/tailscale/tailscale.module';
 import { ProductLookupModule } from '@modules/product-lookup/product-lookup.module';
 import { ExportModule } from '@modules/export/export.module';
+import { AdminModule } from '@modules/admin/admin.module';
 import redisConfig from '@config/redis.config';
 
 @Module({
@@ -50,6 +51,7 @@ import redisConfig from '@config/redis.config';
     TailscaleModule,
     ProductLookupModule,
     ExportModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
