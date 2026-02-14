@@ -59,10 +59,15 @@ COPY --from=deps --chown=nestjs:nodejs /app/backend/node_modules /app/backend/no
 # Copy built dist
 COPY --from=builder --chown=nestjs:nodejs /app/backend/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/backend/package.json ./package.json
+COPY --from=builder --chown=nestjs:nodejs /app/backend/docker-entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nestjs
 EXPOSE 3002
 ENV PORT=3002
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Health check using the correct endpoint
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
