@@ -24,17 +24,24 @@ export class AuthService {
       this.logger.log('Verifying Google ID Token');
       const tokenInfoUrl = `https://oauth2.googleapis.com/tokeninfo`;
 
-      const { data: googleUser } = await firstValueFrom(
+      const response = await firstValueFrom(
         this.httpService.get(tokenInfoUrl, {
           params: { id_token: token },
         }),
       );
 
-      // Verify strict audience check if needed, but for now we trust the token if Google verifies it.
-      // Ideally check if googleUser.aud === GOOGLE_CLIENT_ID
+      const googleUser = response.data;
+      this.logger.debug(`Google user verified: ${googleUser.email}`);
+
+      // Verify strict audience check
+      const expectedClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+      if (googleUser.aud !== expectedClientId) {
+        this.logger.error(`Audience mismatch: expected ${expectedClientId}, got ${googleUser.aud}`);
+        throw new UnauthorizedException('Google authentication failed: audience mismatch');
+      }
 
       const user = await this.usersService.findOrCreateByGoogleId({
-        googleId: googleUser.sub, // 'sub' is the unique identifier in ID Token
+        googleId: googleUser.sub,
         email: googleUser.email,
       });
 
@@ -58,12 +65,17 @@ export class AuthService {
         },
         isAdmin,
       };
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response?.data) {
+        this.logger.error('Google verification failed with response:', error.response.data);
+      }
       this.logger.error(
         'Google authentication failed',
         error instanceof Error ? error.stack : error,
       );
-      throw new UnauthorizedException('Google authentication failed');
+      throw new UnauthorizedException(
+        error.response?.data?.error_description || 'Google authentication failed',
+      );
     }
   }
 

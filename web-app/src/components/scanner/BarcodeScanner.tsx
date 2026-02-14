@@ -14,11 +14,13 @@ import {
   AlertCircle,
   Volume2,
   VolumeX,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BarcodeScannerProps {
   onScanSuccess?: (result: Result) => void;
@@ -42,9 +44,13 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [flashActive, setFlashActive] = useState(false);
   const createScanMutation = useCreateScan();
 
   const drawFeedback = useCallback(() => {
+    setFlashActive(true);
+    setTimeout(() => setFlashActive(false), 200);
+
     if (!canvasRef.current || !videoRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -53,8 +59,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     canvas.width = videoRef.current.clientWidth;
     canvas.height = videoRef.current.clientHeight;
 
-    ctx.strokeStyle = '#00f2ff';
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(34, 211, 238, 0.8)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
     ctx.strokeRect(
       canvas.width * 0.2,
       canvas.height * 0.3,
@@ -64,7 +71,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     setTimeout(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 200);
+    }, 300);
   }, []);
 
   const playBeep = useCallback(() => {
@@ -117,7 +124,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     const listDevices = async () => {
       try {
-        // Check for secure context and mediaDevices support
         if (
           !navigator.mediaDevices ||
           !navigator.mediaDevices.enumerateDevices
@@ -167,10 +173,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     };
 
     listDevices();
-
-    return () => {
-      // Background cleanup is handled by the main lifecycle effect
-    };
   }, []);
 
   // Main scanner lifecycle effect
@@ -190,7 +192,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       }
 
       try {
-        // Defer state update to avoid lint error and ensure stability
         timer = setTimeout(() => {
           if (isMounted) setIsScanning(true);
         }, 0);
@@ -267,7 +268,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       }
       setIsScanning(false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     active,
     selectedDeviceId,
@@ -275,6 +275,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     drawFeedback,
     onScanSuccess,
     onScanError,
+    createScanMutation,
   ]);
 
   const switchCamera = useCallback(() => {
@@ -290,104 +291,181 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   }, [devices, selectedDeviceId]);
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-4">
-      <Card className="group relative aspect-video w-full overflow-hidden rounded-3xl border-2 border-white/10 bg-black sm:aspect-square md:aspect-video">
-        <video
-          ref={videoRef}
-          className="h-full w-full object-cover"
-          muted
-          playsInline
-        />
-        <canvas
-          ref={canvasRef}
-          className="pointer-events-none absolute inset-0"
-        />
+    <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full"
+      >
+        <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
+          <video
+            ref={videoRef}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            muted
+            playsInline
+          />
+          <canvas
+            ref={canvasRef}
+            className="pointer-events-none absolute inset-0 z-10"
+          />
 
-        {isScanning && (
-          <div className="pointer-events-none absolute inset-0">
-            <div className="animate-scan-line absolute top-0 left-0 h-1 w-full bg-cyan-400/50 shadow-[0_0_15px_rgba(0,242,255,0.8)]" />
-            <div className="absolute top-8 left-8 h-12 w-12 rounded-tl-xl border-t-4 border-l-4 border-cyan-400 opacity-80" />
-            <div className="absolute top-8 right-8 h-12 w-12 rounded-tr-xl border-t-4 border-r-4 border-cyan-400 opacity-80" />
-            <div className="absolute bottom-8 left-8 h-12 w-12 rounded-bl-xl border-b-4 border-l-4 border-cyan-400 opacity-80" />
-            <div className="absolute right-8 bottom-8 h-12 w-12 rounded-br-xl border-r-4 border-b-4 border-cyan-400 opacity-80" />
-          </div>
-        )}
-
-        {!isScanning && !error && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="animate-pulse rounded-full bg-white/10 p-4">
-              <Camera className="h-12 w-12 text-white/50" />
-            </div>
-            <p className="mt-4 font-medium text-white/70">
-              Initializing Camera...
-            </p>
-          </div>
-        )}
-
-        {error && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 p-6 text-center backdrop-blur-md">
-            <AlertCircle className="text-destructive mb-4 h-16 w-16" />
-            <h3 className="mb-2 text-xl font-bold text-white">Camera Error</h3>
-            <p className="mb-6 max-w-xs text-white/60">{error}</p>
-            <Button
-              variant="outline"
-              onClick={() => window.location.reload()}
-              className="border-white/20 bg-white/10 text-white hover:bg-white/20"
-            >
-              Try Again
-            </Button>
-          </div>
-        )}
-
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center space-x-2 rounded-2xl border border-white/10 bg-black/50 p-2 opacity-0 backdrop-blur-xl transition-opacity group-hover:opacity-100">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              const newValue = !soundEnabled;
-              setSoundEnabled(newValue);
-              analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
-                setting: 'sound_enabled',
-                value: newValue,
-              });
-            }}
-            className="rounded-xl text-white hover:bg-white/10"
-          >
-            {soundEnabled ? (
-              <Volume2 className="h-5 w-5" />
-            ) : (
-              <VolumeX className="h-5 w-5" />
+          {/* Flash Effect on Success */}
+          <AnimatePresence>
+            {flashActive && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.3 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-20 bg-cyan-400"
+              />
             )}
-          </Button>
+          </AnimatePresence>
 
-          {devices.length > 1 && (
+          <AnimatePresence>
+            {isScanning && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="pointer-events-none absolute inset-0 z-10"
+              >
+                {/* Advanced Scan Line */}
+                <div className="animate-scan-line absolute top-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_20px_rgba(34,211,238,0.8)]" />
+
+                {/* Corner Brackets */}
+                <div className="absolute top-10 left-10 h-16 w-16 rounded-tl-3xl border-t-2 border-l-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:left-8 group-hover:border-cyan-400" />
+                <div className="absolute top-10 right-10 h-16 w-16 rounded-tr-3xl border-t-2 border-r-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:right-8 group-hover:border-cyan-400" />
+                <div className="absolute bottom-10 left-10 h-16 w-16 rounded-bl-3xl border-b-2 border-l-2 border-cyan-400/60 transition-all group-hover:bottom-8 group-hover:left-8 group-hover:border-cyan-400" />
+                <div className="absolute right-10 bottom-10 h-16 w-16 rounded-br-3xl border-r-2 border-b-2 border-cyan-400/60 transition-all group-hover:right-8 group-hover:bottom-8 group-hover:border-cyan-400" />
+
+                {/* Vignette */}
+                <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {!isScanning && !error && (
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl">
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="rounded-full bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
+              >
+                <div className="relative">
+                  <Camera className="h-12 w-12 text-cyan-400" />
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
+                    className="absolute -inset-2 rounded-full border-b-2 border-cyan-400/30"
+                  />
+                </div>
+              </motion.div>
+              <p className="mt-6 text-sm font-medium tracking-widest text-cyan-400/80 uppercase">
+                Initializing Lens
+              </p>
+            </div>
+          )}
+
+          {error && (
+            <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
+              <div className="mb-6 rounded-full bg-red-500/10 p-4 ring-1 ring-red-500/20">
+                <AlertCircle className="h-12 w-12 text-red-400" />
+              </div>
+              <h3 className="mb-3 text-2xl font-bold text-white">
+                Vision Blocked
+              </h3>
+              <p className="mb-8 max-w-xs text-sm leading-relaxed text-white/50">
+                {error}
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => window.location.reload()}
+                className="h-12 rounded-full border-white/10 bg-white/5 px-8 text-white transition-all hover:bg-white/10 hover:ring-2 hover:ring-white/20"
+              >
+                Restore Connection
+              </Button>
+            </div>
+          )}
+
+          {/* Controls Bar */}
+          <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
             <Button
               variant="ghost"
               size="icon"
-              onClick={switchCamera}
-              className="rounded-xl text-white hover:bg-white/10"
+              onClick={() => {
+                const newValue = !soundEnabled;
+                setSoundEnabled(newValue);
+                analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
+                  setting: 'sound_enabled',
+                  value: newValue,
+                });
+              }}
+              className="h-10 w-10 rounded-full text-white/70 hover:bg-white/10 hover:text-white"
             >
-              <RefreshCcw className="h-5 w-5" />
+              {soundEnabled ? (
+                <Volume2 className="h-5 w-5" />
+              ) : (
+                <VolumeX className="h-5 w-5" />
+              )}
             </Button>
-          )}
-        </div>
-      </Card>
 
-      <div className="flex w-full items-center justify-between px-2">
-        <div className="flex items-center space-x-2">
-          <div
-            className={`h-2 w-2 rounded-full ${isScanning ? 'animate-pulse bg-emerald-500' : 'bg-red-500'}`}
+            {devices.length > 1 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={switchCamera}
+                className="h-10 w-10 rounded-full text-white/70 hover:bg-white/10 hover:text-white"
+              >
+                <RefreshCcw className="h-5 w-5" />
+              </Button>
+            )}
+
+            <div className="mx-1 h-4 w-[1px] bg-white/10" />
+
+            <div className="flex items-center gap-2 px-3 py-2">
+              <Zap className="h-4 w-4 text-cyan-400" />
+              <span className="text-[10px] font-bold tracking-widest text-white/80 uppercase">
+                Active
+              </span>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      <div className="flex w-full items-center justify-between px-4">
+        <div className="flex items-center space-x-3">
+          <motion.div
+            animate={
+              isScanning
+                ? {
+                    scale: [1, 1.2, 1],
+                    opacity: [1, 0.7, 1],
+                  }
+                : {}
+            }
+            transition={{ duration: 2, repeat: Infinity }}
+            className={`h-2.5 w-2.5 rounded-full ${isScanning ? 'bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-red-500'}`}
           />
-          <span className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-            {isScanning ? 'Scanner Active' : 'Scanner Paused'}
+          <span className="text-[11px] font-bold tracking-[0.2em] text-white/40 uppercase">
+            {isScanning ? 'System Online' : 'System Standby'}
           </span>
         </div>
 
         {devices.length > 0 && (
-          <span className="text-muted-foreground max-w-[200px] truncate text-xs">
-            {devices.find((d) => d.deviceId === selectedDeviceId)?.label ||
-              'Primary Camera'}
-          </span>
+          <div className="group flex items-center gap-2">
+            <div className="h-1 w-1 rounded-full bg-white/20 transition-colors group-hover:bg-cyan-500" />
+            <span className="max-w-[150px] truncate text-[11px] font-medium text-white/30 transition-colors group-hover:text-white/60">
+              {devices.find((d) => d.deviceId === selectedDeviceId)?.label ||
+                'Standard Input'}
+            </span>
+          </div>
         )}
       </div>
     </div>

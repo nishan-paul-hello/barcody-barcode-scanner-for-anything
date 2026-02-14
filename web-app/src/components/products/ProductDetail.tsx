@@ -17,8 +17,11 @@ import {
   Flame,
   Zap,
   Leaf,
+  Layers,
+  Search,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface ProductDetailProps {
   product: ProductResponseDto;
@@ -26,11 +29,15 @@ interface ProductDetailProps {
 }
 
 const NUTRITION_GRADES = {
-  A: { color: 'bg-green-600', text: 'Excellent' },
-  B: { color: 'bg-green-500', text: 'Good' },
-  C: { color: 'bg-yellow-500', text: 'Fair' },
-  D: { color: 'bg-orange-500', text: 'Poor' },
-  E: { color: 'bg-red-600', text: 'Very Poor' },
+  A: {
+    color: 'bg-emerald-500',
+    text: 'Excellent',
+    glow: 'shadow-emerald-500/20',
+  },
+  B: { color: 'bg-green-500', text: 'Good', glow: 'shadow-green-500/20' },
+  C: { color: 'bg-yellow-500', text: 'Fair', glow: 'shadow-yellow-500/20' },
+  D: { color: 'bg-orange-500', text: 'Poor', glow: 'shadow-orange-500/20' },
+  E: { color: 'bg-red-500', text: 'Very Poor', glow: 'shadow-red-500/20' },
 };
 
 const ALLERGEN_ICONS: Record<string, LucideIcon> = {
@@ -58,72 +65,83 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
   } = product;
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-8"
+    >
       {/* Product Hero */}
-      <Card className="overflow-hidden border-white/5 bg-white/[0.02] backdrop-blur-md">
+      <Card className="group overflow-hidden rounded-[2.5rem] border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl">
         <div className="flex flex-col md:flex-row">
-          <div className="relative h-64 w-full flex-shrink-0 bg-white/5 md:w-64">
+          <div className="relative aspect-square w-full flex-shrink-0 bg-white/[0.03] p-12 md:w-80">
             {images && images.length > 0 && images[0] ? (
-              <Image
-                src={images[0]}
-                alt={name || 'Product'}
-                fill
-                className="object-contain p-4 transition-transform duration-500 hover:scale-105"
-              />
+              <div className="relative h-full w-full">
+                <Image
+                  src={images[0]}
+                  alt={name || 'Product'}
+                  fill
+                  className="object-contain transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
+                  unoptimized
+                />
+              </div>
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-xs font-black tracking-widest text-white/10 uppercase">
-                No Image
+              <div className="flex h-full w-full flex-col items-center justify-center gap-4 text-center">
+                <div className="rounded-full bg-white/5 p-4">
+                  <Search className="h-8 w-8 text-white/10" />
+                </div>
+                <span className="text-[10px] font-black tracking-widest text-white/10 uppercase">
+                  No Image Found
+                </span>
               </div>
             )}
             {cacheStatus === 'hit' && (
-              <div className="absolute top-2 right-2">
-                <Badge
-                  variant="secondary"
-                  className="border-cyan-500/30 bg-cyan-500/20 text-cyan-400 backdrop-blur-md"
-                >
+              <div className="absolute top-6 right-6">
+                <Badge className="border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[10px] font-bold tracking-widest text-cyan-400 uppercase ring-1 ring-cyan-500/20 backdrop-blur-md">
+                  <Layers className="mr-1.5 h-3 w-3" />
                   Cached
                 </Badge>
               </div>
             )}
           </div>
-          <div className="flex-1 space-y-4 p-6">
-            <div>
-              <div className="mb-1 flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className="border-white/10 text-[10px] tracking-wider text-white/50 uppercase"
-                >
+          <div className="flex flex-1 flex-col justify-center space-y-6 p-10">
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <Badge className="rounded-full border-cyan-500/10 bg-cyan-500/5 px-4 py-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase backdrop-blur-sm">
                   {category || 'Uncategorized'}
                 </Badge>
-                <Badge
-                  variant="outline"
-                  className="border-white/10 text-[10px] tracking-wider text-white/50 uppercase"
-                >
-                  {barcode}
+                <Badge className="rounded-full border-white/5 bg-white/5 px-4 py-1 font-mono text-[10px] font-bold tracking-wider text-white/30 uppercase">
+                  # {barcode}
                 </Badge>
               </div>
-              <h2 className="text-2xl font-bold tracking-tight text-white">
-                {name || 'Unknown Product'}
+              <h2 className="text-3xl font-black tracking-tight text-white lg:text-4xl">
+                {name || 'Unknown Entity'}
               </h2>
-              <p className="text-muted-foreground font-medium">
-                {brand || 'Generic Brand'}
+              <p className="text-xl font-medium tracking-wide text-white/40">
+                {brand || 'Generic Source'}
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-2">
-              <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                <Database className="h-3 w-3" />
-                <span>
-                  Source:{' '}
-                  <span className="text-white/70 capitalize">{source}</span>
+            <div className="flex flex-wrap items-center gap-6 border-t border-white/5 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-full bg-white/5 p-2">
+                  <Database className="h-3.5 w-3.5 text-white/30" />
+                </div>
+                <span className="text-[11px] font-bold tracking-widest text-white/30 uppercase">
+                  Provider: <span className="ml-1 text-white/60">{source}</span>
                 </span>
               </div>
-              <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                <History className="h-3 w-3" />
-                <span>
-                  Updated:{' '}
-                  <span className="text-white/70">
-                    {new Date(lastUpdated).toLocaleDateString()}
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-full bg-white/5 p-2">
+                  <History className="h-3.5 w-3.5 text-white/30" />
+                </div>
+                <span className="text-[11px] font-bold tracking-widest text-white/30 uppercase">
+                  Last Sync:{' '}
+                  <span className="ml-1 text-white/60">
+                    {new Date(lastUpdated).toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
                   </span>
                 </span>
               </div>
@@ -132,39 +150,40 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
         </div>
       </Card>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         {/* Nutrition Visualization */}
-        <Card className="border-white/5 bg-white/[0.02] backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Zap className="h-5 w-5 text-yellow-500" />
-              Nutrition Facts
+        <Card className="rounded-[2.5rem] border-white/5 bg-black/40 shadow-xl backdrop-blur-3xl">
+          <CardHeader className="pb-8">
+            <CardTitle className="flex items-center gap-4 text-xl font-bold tracking-tight">
+              <div className="rounded-full bg-yellow-500/10 p-2.5 ring-1 ring-yellow-500/20">
+                <Zap className="h-6 w-6 text-yellow-500" />
+              </div>
+              Macronutrient Profile
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             {nutrition ? (
               <>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-muted-foreground text-sm font-medium">
-                      Nutri-Score
+                <div className="flex items-center justify-between rounded-3xl border border-white/5 bg-white/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-white/[0.05]">
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-black tracking-[0.2em] text-white/30 uppercase">
+                      Analysis Grade
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       {['A', 'B', 'C', 'D', 'E'].map((g) => (
                         <div
                           key={g}
                           className={cn(
-                            'flex h-8 w-8 items-center justify-center rounded-md text-xs font-bold transition-all duration-300',
+                            'flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black ring-1 transition-all duration-500',
                             nutrition.grade === g
                               ? NUTRITION_GRADES[
                                   g as keyof typeof NUTRITION_GRADES
                                 ].color +
-                                  ' shadow- scale-110 shadow-lg' +
+                                  ' text-white shadow-lg ring-white/20 ' +
                                   NUTRITION_GRADES[
                                     g as keyof typeof NUTRITION_GRADES
-                                  ].color +
-                                  '/20'
-                              : 'bg-white/5 text-white/20'
+                                  ].glow
+                              : 'bg-white/5 text-white/10 ring-transparent hover:bg-white/10'
                           )}
                         >
                           {g}
@@ -173,19 +192,19 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="flex items-center justify-end gap-1 text-orange-400">
-                      <Flame className="h-4 w-4" />
-                      <span className="text-2xl font-black">
+                    <div className="flex items-center justify-end gap-1.5 text-orange-400">
+                      <Flame className="h-5 w-5 animate-pulse" />
+                      <span className="text-3xl font-black tracking-tighter">
                         {nutrition.calories || 0}
                       </span>
                     </div>
-                    <p className="text-muted-foreground text-[10px] tracking-widest uppercase">
-                      kcal / 100g
+                    <p className="text-[10px] font-bold tracking-[0.3em] text-white/20 uppercase">
+                      Energy Units
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-4 pt-2">
+                <div className="space-y-6 px-2">
                   <MacroRow
                     label="Carbohydrates"
                     value={nutrition.carbs}
@@ -195,56 +214,74 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                   <MacroRow
                     label="Proteins"
                     value={nutrition.protein}
-                    color="bg-green-500"
+                    color="bg-emerald-500"
                     total={100}
                   />
                   <MacroRow
                     label="Fats"
                     value={nutrition.fat}
-                    color="bg-yellow-500"
+                    color="bg-amber-500"
                     total={100}
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 pt-2">
+                <div className="grid grid-cols-3 gap-4">
                   <NutrientStat
                     label="Sugar"
                     value={nutrition.sugar}
                     unit="g"
+                    color="text-pink-400"
                   />
                   <NutrientStat
                     label="Fiber"
                     value={nutrition.fiber}
                     unit="g"
+                    color="text-indigo-400"
                   />
-                  <NutrientStat label="Salt" value={nutrition.salt} unit="g" />
+                  <NutrientStat
+                    label="Salt"
+                    value={nutrition.salt}
+                    unit="g"
+                    color="text-rose-400"
+                  />
                 </div>
               </>
             ) : (
-              <div className="text-muted-foreground flex flex-col items-center justify-center py-8 text-center">
-                <Info className="mb-2 h-8 w-8 opacity-20" />
-                <p className="text-sm">Nutrition data unavailable</p>
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="mb-6 rounded-full border border-white/5 bg-white/5 p-6">
+                  <Info className="h-10 w-10 text-white/10" />
+                </div>
+                <p className="text-sm font-bold tracking-widest text-white/20 uppercase">
+                  Data Stream Empty
+                </p>
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Allergen Warnings */}
-        <Card className="border-white/5 bg-white/[0.02] backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
-              Allergen Advisory
+        <Card className="rounded-[2.5rem] border-white/5 bg-black/40 shadow-xl backdrop-blur-3xl">
+          <CardHeader className="pb-8">
+            <CardTitle className="flex items-center gap-4 text-xl font-bold tracking-tight">
+              <div className="rounded-full bg-red-500/10 p-2.5 ring-1 ring-red-500/20">
+                <AlertTriangle className="h-6 w-6 text-red-500" />
+              </div>
+              Safety Protocol
             </CardTitle>
           </CardHeader>
           <CardContent>
             {nutrition?.allergens && nutrition.allergens.length > 0 ? (
-              <div className="space-y-4">
-                <p className="text-muted-foreground text-xs">
-                  Based on the product&apos;s ingredient list, the following
-                  allergens are present or potentially present:
-                </p>
-                <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-6">
+                <div className="flex items-start gap-4 rounded-[2rem] border border-red-500/10 bg-red-500/[0.03] p-6">
+                  <div className="shrink-0 rounded-full bg-red-500/20 p-2">
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                  </div>
+                  <p className="text-xs leading-relaxed font-medium text-red-400/80">
+                    Analysis detected high-risk molecules. Please observe the
+                    following warnings before processing for consumption.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   {nutrition.allergens.map((allergen) => {
                     const cleanAllergen = allergen.replace('en:', '').trim();
                     const Icon =
@@ -253,12 +290,12 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                     return (
                       <div
                         key={allergen}
-                        className="flex items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-red-400"
+                        className="group flex flex-col items-center gap-4 rounded-3xl border border-white/5 bg-white/[0.03] p-6 text-center transition-all hover:scale-105 hover:bg-white/[0.08]"
                       >
-                        <div className="rounded-lg bg-red-500/20 p-2">
-                          <Icon className="h-4 w-4" />
+                        <div className="rounded-full bg-red-500/10 p-4 ring-1 ring-red-500/20 transition-all group-hover:bg-red-500/20">
+                          <Icon className="h-6 w-6 text-red-500" />
                         </div>
-                        <span className="text-sm font-semibold capitalize">
+                        <span className="text-xs font-black tracking-widest text-white/80 uppercase">
                           {cleanAllergen}
                         </span>
                       </div>
@@ -267,26 +304,36 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="mb-4 animate-pulse rounded-full border border-green-500/20 bg-green-500/10 p-4">
-                  <CheckCircle2 className="h-8 w-8 text-green-500" />
-                </div>
-                <p className="font-semibold text-white">
-                  No Common Allergens Detected
-                </p>
-                <p className="text-muted-foreground mt-1 max-w-[200px] text-xs">
-                  Always check the physical label before consuming if you have
-                  severe allergies.
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.8, 1, 0.8],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="mb-8 rounded-full border border-emerald-500/20 bg-emerald-500/10 p-8 ring-1 ring-emerald-500/30"
+                >
+                  <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+                </motion.div>
+                <h3 className="text-lg font-bold tracking-tight text-white/90">
+                  Clean Signature
+                </h3>
+                <p className="mt-4 max-w-[240px] text-xs leading-relaxed text-white/40">
+                  No common high-risk triggers identified in the current scan
+                  layer.
                 </p>
               </div>
             )}
 
             {nutrition?.ingredients && (
-              <div className="mt-6 border-t border-white/5 pt-6">
-                <p className="text-muted-foreground mb-2 text-[10px] font-bold tracking-widest uppercase">
-                  Ingredients List
-                </p>
-                <p className="text-muted-foreground line-clamp-4 text-xs leading-relaxed transition-all duration-300 hover:line-clamp-none">
+              <div className="mt-10 border-t border-white/5 pt-8">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="h-0.5 w-4 bg-cyan-500/50" />
+                  <p className="text-[10px] font-black tracking-[0.3em] text-white/20 uppercase">
+                    Composition Matrix
+                  </p>
+                </div>
+                <p className="text-muted-foreground line-clamp-4 text-xs leading-relaxed font-medium transition-all duration-500 hover:line-clamp-none hover:text-white/60">
                   {nutrition.ingredients}
                 </p>
               </div>
@@ -294,7 +341,7 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -312,18 +359,24 @@ function MacroRow({
   const percentage = value ? Math.min((value / total) * 100, 100) : 0;
 
   return (
-    <div className="space-y-1.5">
-      <div className="flex justify-between text-xs">
-        <span className="font-medium text-white/70">{label}</span>
-        <span className="font-mono font-bold text-white">{value || 0}g</span>
+    <div className="space-y-3">
+      <div className="flex items-baseline justify-between">
+        <span className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
+          {label}
+        </span>
+        <span className="font-mono text-xs font-black text-white">
+          {value || 0}g
+        </span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
-        <div
+      <div className="h-2 w-full overflow-hidden rounded-full bg-white/5 ring-1 ring-white/[0.02]">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
           className={cn(
-            'h-full rounded-full transition-all duration-1000 ease-out',
+            'h-full rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]',
             color
           )}
-          style={{ width: `${percentage}%` }}
         />
       </div>
     </div>
@@ -334,21 +387,28 @@ function NutrientStat({
   label,
   value,
   unit,
+  color,
 }: {
   label: string;
   value?: number;
   unit: string;
+  color?: string;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-xl border border-white/5 bg-white/5 p-3">
-      <p className="text-muted-foreground mb-1 text-[10px] font-bold tracking-wider uppercase">
+    <div className="group flex flex-col items-center rounded-3xl border border-white/5 bg-white/[0.03] p-5 transition-all hover:bg-white/[0.08]">
+      <p className="mb-2 text-[10px] font-black tracking-widest text-white/20 uppercase transition-colors group-hover:text-white/40">
         {label}
       </p>
-      <div className="flex items-baseline gap-0.5">
-        <span className="text-lg font-black text-white">{value || 0}</span>
-        <span className="text-muted-foreground text-[10px] font-medium">
-          {unit}
+      <div className="flex items-baseline gap-1">
+        <span
+          className={cn(
+            'text-xl font-black transition-all group-hover:scale-110',
+            color || 'text-white'
+          )}
+        >
+          {value || 0}
         </span>
+        <span className="text-[10px] font-bold text-white/20">{unit}</span>
       </div>
     </div>
   );
