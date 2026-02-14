@@ -56,8 +56,13 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = videoRef.current.clientWidth;
-    canvas.height = videoRef.current.clientHeight;
+    const width = videoRef.current.clientWidth;
+    const height = videoRef.current.clientHeight;
+
+    if (width === 0 || height === 0) return;
+
+    canvas.width = width;
+    canvas.height = height;
 
     ctx.strokeStyle = 'rgba(34, 211, 238, 0.8)';
     ctx.lineWidth = 2;
@@ -197,6 +202,23 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         }, 0);
 
         setError(null);
+
+        // Wait for video dimensions to be available to prevent IndexSizeError in ZXing internal canvas
+        const video = videoRef.current;
+        if (video.videoWidth === 0 || video.videoHeight === 0) {
+          await new Promise<void>((resolve) => {
+            const onLoaded = () => {
+              video.removeEventListener('loadedmetadata', onLoaded);
+              video.removeEventListener('playing', onLoaded);
+              resolve();
+            };
+            video.addEventListener('loadedmetadata', onLoaded);
+            video.addEventListener('playing', onLoaded);
+
+            // Safety timeout
+            setTimeout(resolve, 3000);
+          });
+        }
 
         const newControls = await readerRef.current.decodeFromVideoDevice(
           selectedDeviceId,

@@ -65,6 +65,20 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
       const reader = new BrowserMultiFormatReader(hints);
 
       try {
+        // Pre-validate image dimensions to prevent IndexSizeError in ZXing internal canvas
+        await new Promise<void>((resolve, reject) => {
+          const img = new window.Image();
+          img.onload = () => {
+            if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+              reject(new Error('Image has no dimensions'));
+            } else {
+              resolve();
+            }
+          };
+          img.onerror = () => reject(new Error('Failed to load image'));
+          img.src = url;
+        });
+
         const result = await reader.decodeFromImageUrl(url);
 
         if (result) {
