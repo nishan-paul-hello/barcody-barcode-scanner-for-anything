@@ -39,13 +39,13 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/web-app/public ./public
+COPY --from=builder /app/web-app/public ./web-app/public
 
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 COPY --from=builder --chown=nextjs:nodejs /app/web-app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/web-app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/web-app/.next/static ./web-app/.next/static
 
 USER nextjs
 EXPOSE 3000
@@ -55,4 +55,4 @@ ENV HOSTNAME=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
   CMD wget --spider -q http://localhost:3000/api/health || exit 1
 
-CMD ["node", "server.js"]
+CMD ["node", "web-app/server.js"]
