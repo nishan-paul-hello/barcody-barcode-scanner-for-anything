@@ -104,18 +104,27 @@ export const Header: React.FC = () => {
                   variant="ghost"
                   className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400/50"
                 >
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
-                    <span className="text-sm font-bold text-cyan-400">
-                      {user.email.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
+                  {user.picture ? (
+                    <Image
+                      src={user.picture}
+                      alt={user.name || 'User Profile'}
+                      fill
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
+                      <span className="text-sm font-bold text-cyan-400">
+                        {(user.name || user.email).charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm leading-none font-medium">
-                      {user.email.split('@')[0]}
+                      {user.name || 'User'}
                     </p>
                     <p className="text-muted-foreground text-xs leading-none">
                       {user.email}
