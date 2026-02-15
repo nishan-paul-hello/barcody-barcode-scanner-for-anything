@@ -13,7 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Barcody',
+  title: {
+    default: 'Barcody',
+    template: 'Barcody - %s',
+  },
   description: 'The ultimate barcode scanner for anything',
   icons: {
     icon: '/brand-logo.svg',
