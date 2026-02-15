@@ -9,8 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
@@ -102,7 +100,7 @@ export const Header: React.FC = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400/50"
+                  className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400 data-[state=open]:ring-cyan-400"
                 >
                   {user.picture ? (
                     <Image
@@ -120,25 +118,31 @@ export const Header: React.FC = () => {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm leading-none font-medium">
+              <DropdownMenuContent
+                className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#1a1a1a] p-0 text-white shadow-xl"
+                align="end"
+                forceMount
+              >
+                <div className="p-5">
+                  <div className="flex flex-col gap-1">
+                    <p className="truncate text-base font-bold tracking-tight text-white">
                       {user.name || 'User'}
                     </p>
-                    <p className="text-muted-foreground text-xs leading-none">
+                    <p className="truncate text-xs font-medium text-white/50">
                       {user.email}
                     </p>
                   </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
+                </div>
+
+                <div className="p-2">
+                  <DropdownMenuItem
+                    onClick={logout}
+                    className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                  >
+                    <LogOut className="h-4 w-4 transition-colors group-hover:text-white" />
+                    <span className="text-sm font-bold">Log out</span>
+                  </DropdownMenuItem>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
