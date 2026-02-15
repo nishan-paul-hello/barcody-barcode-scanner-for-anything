@@ -31,35 +31,35 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-2xl transition-all duration-300">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-12">
-          <Link href="/" className="outline-none">
+        <Link href="/" className="outline-none">
+          <motion.div
+            className="group flex cursor-pointer items-center space-x-3 transition-all"
+            whileHover="hover"
+            initial="initial"
+          >
             <motion.div
-              className="group flex items-center space-x-3 transition-all"
-              whileHover="hover"
-              initial="initial"
+              variants={{
+                initial: { scale: 1 },
+                hover: { scale: 1.1 },
+              }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+              className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl"
             >
-              <motion.div
-                variants={{
-                  initial: { scale: 1 },
-                  hover: { scale: 1.1 },
-                }}
-                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl"
-              >
-                <Image
-                  src="/brand-logo.svg"
-                  alt="Barcody Logo"
-                  width={40}
-                  height={40}
-                  className="h-full w-full object-contain"
-                />
-              </motion.div>
-              <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block">
-                Barcody
-              </span>
+              <Image
+                src="/brand-logo.svg"
+                alt="Barcody Logo"
+                width={40}
+                height={40}
+                className="h-full w-full object-contain"
+              />
             </motion.div>
-          </Link>
+            <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block">
+              Barcody
+            </span>
+          </motion.div>
+        </Link>
 
+        <div className="flex items-center gap-6">
           <nav className="hidden items-center gap-2 md:flex">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -68,7 +68,7 @@ export const Header: React.FC = () => {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'relative flex h-10 items-center gap-2 px-4 text-xs font-bold tracking-widest uppercase transition-all hover:text-white',
+                    'relative flex h-10 cursor-pointer items-center gap-2 px-4 text-xs font-bold tracking-widest uppercase transition-all hover:text-white',
                     isActive ? 'text-white' : 'text-white/40'
                   )}
                 >
@@ -94,17 +94,15 @@ export const Header: React.FC = () => {
               );
             })}
           </nav>
-        </div>
 
-        <div className="flex items-center gap-6">
-          <div className="h-4 w-[1px] bg-white/10" />
+
 
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-10 w-10 overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400/50"
+                  className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400/50"
                 >
                   <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
                     <span className="text-sm font-bold text-cyan-400">
