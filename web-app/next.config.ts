@@ -2,6 +2,11 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['barcody.tamarin-ph.ts.net', 'localhost:3000'],
+    },
+  },
   images: {
     remotePatterns: [
       {

@@ -20,6 +20,9 @@ COPY backend/package.json ./backend/
 COPY web-app/package.json ./web-app/
 COPY admin-dashboard/package.json ./admin-dashboard/
 COPY mobile-app/package.json ./mobile-app/
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000
 RUN npm ci
 
 FROM base AS builder

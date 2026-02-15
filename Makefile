@@ -1,4 +1,4 @@
-.PHONY: build up down rebuild logs help
+.PHONY: build up down rebuild logs help dev infra
 
 ifneq (,$(wildcard ./.env))
     include .env
@@ -15,6 +15,13 @@ build:
 up:
 	docker compose up -d
 
+dev:
+	docker compose -f docker-compose.yml -f docker-compose.local-proxy.yml up -d postgres redis ts-web ts-admin ts-api
+	npm run dev
+
+infra:
+	docker compose -f docker-compose.yml -f docker-compose.local-proxy.yml up -d postgres redis ts-web ts-admin ts-api
+
 down:
 	docker compose down
 
@@ -28,8 +35,10 @@ logs:
 	docker compose logs -f
 
 help:
-	@echo "  build       - Start production environment (always builds images)"
-	@echo "  up          - Start development environment (hot reload)"
+	@echo "  build       - Start production environment (Docker)"
+	@echo "  up          - Start full development environment (Docker)"
+	@echo "  dev         - Start local development (Apps local, DB in Docker)"
+	@echo "  infra       - Start only DB and Redis in Docker"
 	@echo "  down        - Stop all containers"
 	@echo "  restart     - Restart all containers"
 	@echo "  refresh     - Deep rebuild of dev (use if deps change)"
