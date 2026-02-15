@@ -32,22 +32,32 @@ export const Header: React.FC = () => {
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-2xl transition-all duration-300">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-12">
-          <Link
-            href="/dashboard"
-            className="group flex items-center space-x-3 transition-all"
-          >
-            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl transition-transform group-hover:scale-105">
-              <Image
-                src="/brand-logo.svg"
-                alt="Barcody Logo"
-                width={40}
-                height={40}
-                className="h-full w-full object-contain"
-              />
-            </div>
-            <span className="hidden text-2xl font-black tracking-tighter sm:inline-block">
-              Barcody
-            </span>
+          <Link href="/" className="outline-none">
+            <motion.div
+              className="group flex items-center space-x-3 transition-all"
+              whileHover="hover"
+              initial="initial"
+            >
+              <motion.div
+                variants={{
+                  initial: { scale: 1 },
+                  hover: { scale: 1.1 },
+                }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl"
+              >
+                <Image
+                  src="/brand-logo.svg"
+                  alt="Barcody Logo"
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-contain"
+                />
+              </motion.div>
+              <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block">
+                Barcody
+              </span>
+            </motion.div>
           </Link>
 
           <nav className="hidden items-center gap-2 md:flex">
