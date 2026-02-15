@@ -5,9 +5,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
-import { SocketStatusIndicator } from './SocketStatusIndicator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, History, Camera, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, History, Camera, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const Header: React.FC = () => {
@@ -28,24 +36,17 @@ export const Header: React.FC = () => {
             href="/dashboard"
             className="group flex items-center space-x-3 transition-all"
           >
-            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 transition-transform group-hover:scale-110">
-              <div className="flex h-full w-full items-center justify-center rounded-[9px] bg-black/20 backdrop-blur-sm">
-                <span className="text-xl font-black text-white italic">B</span>
-              </div>
-              <motion.div
-                animate={{
-                  rotate: [0, 90, 180, 270, 360],
-                }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: 'linear',
-                }}
-                className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent,white,transparent)] opacity-20"
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl transition-transform group-hover:scale-105">
+              <Image
+                src="/brand-logo.svg"
+                alt="Barcody Logo"
+                width={40}
+                height={40}
+                className="h-full w-full object-contain"
               />
             </div>
             <span className="hidden text-2xl font-black tracking-tighter sm:inline-block">
-              BARCODY<span className="text-cyan-400">.</span>
+              Barcody
             </span>
           </Link>
 
@@ -86,38 +87,43 @@ export const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="hidden lg:block">
-            <SocketStatusIndicator />
-          </div>
-
           <div className="h-4 w-[1px] bg-white/10" />
 
           {user && (
-            <div className="flex items-center gap-6">
-              <div className="hidden flex-col items-end lg:flex">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black tracking-tight text-white/90">
-                    {user.email.split('@')[0]}
-                  </span>
-                  <div className="rounded-full bg-cyan-500/10 p-1 ring-1 ring-cyan-500/20">
-                    <User className="h-3 w-3 text-cyan-400" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-10 w-10 overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400/50"
+                >
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
+                    <span className="text-sm font-bold text-cyan-400">
+                      {user.email.charAt(0).toUpperCase()}
+                    </span>
                   </div>
-                </div>
-                <span className="text-[10px] font-bold text-white/20">
-                  {user.email}
-                </span>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={logout}
-                className="group h-10 rounded-full border border-white/5 bg-white/5 px-4 text-[10px] font-black tracking-widest uppercase transition-all hover:bg-red-500/10 hover:text-red-500 hover:ring-1 hover:ring-red-500/20"
-              >
-                <LogOut className="mr-2 h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
-                Logout
-              </Button>
-            </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm leading-none font-medium">
+                      {user.email.split('@')[0]}
+                    </p>
+                    <p className="text-muted-foreground text-xs leading-none">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
