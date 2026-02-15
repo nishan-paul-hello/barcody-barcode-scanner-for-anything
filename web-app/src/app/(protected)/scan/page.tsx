@@ -48,7 +48,7 @@ export default function ScanPage() {
       className="relative container mx-auto max-w-6xl space-y-12 py-10 px-4 sm:px-6 lg:px-8"
     >
       {/* Background decoration */}
-      <div className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 bg-cyan-500/10 blur-[120px]" />
+      {/* Background decoration - Removed */}
 
       <header className="flex flex-col items-center space-y-4 text-center">
         <motion.div
@@ -83,14 +83,14 @@ export default function ScanPage() {
                 <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
                   <TabsTrigger
                     value="camera"
-                    className="h-11 rounded-full px-8 text-xs font-bold tracking-widest uppercase transition-all data-[state=active]:bg-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+                    className="h-11 rounded-full px-8 text-xs font-bold tracking-widest uppercase transition-all data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
                   >
                     <Camera className="mr-2 h-3.5 w-3.5" />
                     Live Capture
                   </TabsTrigger>
                   <TabsTrigger
                     value="file"
-                    className="h-11 rounded-full px-8 text-xs font-bold tracking-widest uppercase transition-all data-[state=active]:bg-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+                    className="h-11 rounded-full px-8 text-xs font-bold tracking-widest uppercase transition-all data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
                   >
                     <FileUp className="mr-2 h-3.5 w-3.5" />
                     Asset Upload

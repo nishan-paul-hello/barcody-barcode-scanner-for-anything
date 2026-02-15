@@ -32,12 +32,11 @@ const NUTRITION_GRADES = {
   A: {
     color: 'bg-emerald-500',
     text: 'Excellent',
-    glow: 'shadow-emerald-500/20',
   },
-  B: { color: 'bg-green-500', text: 'Good', glow: 'shadow-green-500/20' },
-  C: { color: 'bg-yellow-500', text: 'Fair', glow: 'shadow-yellow-500/20' },
-  D: { color: 'bg-orange-500', text: 'Poor', glow: 'shadow-orange-500/20' },
-  E: { color: 'bg-red-500', text: 'Very Poor', glow: 'shadow-red-500/20' },
+  B: { color: 'bg-green-500', text: 'Good' },
+  C: { color: 'bg-yellow-500', text: 'Fair' },
+  D: { color: 'bg-orange-500', text: 'Poor' },
+  E: { color: 'bg-red-500', text: 'Very Poor' },
 };
 
 const ALLERGEN_ICONS: Record<string, LucideIcon> = {
@@ -175,15 +174,12 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                           key={g}
                           className={cn(
                             'flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black ring-1 transition-all duration-500',
-                            nutrition.grade === g
-                              ? NUTRITION_GRADES[
-                                  g as keyof typeof NUTRITION_GRADES
-                                ].color +
-                                  ' text-white shadow-lg ring-white/20 ' +
-                                  NUTRITION_GRADES[
+                              nutrition.grade === g
+                                ? NUTRITION_GRADES[
                                     g as keyof typeof NUTRITION_GRADES
-                                  ].glow
-                              : 'bg-white/5 text-white/10 ring-transparent hover:bg-white/10'
+                                  ].color +
+                                  ' text-white ring-white/20'
+                                : 'bg-white/5 text-white/10 ring-transparent hover:bg-white/10'
                           )}
                         >
                           {g}
@@ -374,7 +370,7 @@ function MacroRow({
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 1.5, ease: 'easeOut' }}
           className={cn(
-            'h-full rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]',
+            'h-full rounded-full',
             color
           )}
         />

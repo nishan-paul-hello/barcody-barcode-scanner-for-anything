@@ -352,7 +352,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 className="pointer-events-none absolute inset-0 z-10"
               >
                 {/* Advanced Scan Line */}
-                <div className="animate-scan-line absolute top-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_20px_rgba(34,211,238,0.8)]" />
+                <div className="animate-scan-line absolute top-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
 
                 {/* Corner Brackets */}
                 <div className="absolute top-10 left-10 h-16 w-16 rounded-tl-3xl border-t-2 border-l-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:left-8 group-hover:border-cyan-400" />
@@ -473,7 +473,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 : {}
             }
             transition={{ duration: 2, repeat: Infinity }}
-            className={`h-2.5 w-2.5 rounded-full ${isScanning ? 'bg-cyan-500 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-red-500'}`}
+            className={`h-2.5 w-2.5 rounded-full ${isScanning ? 'bg-cyan-500' : 'bg-red-500'}`}
           />
           <span className="text-[11px] font-bold tracking-[0.2em] text-white/40 uppercase">
             {isScanning ? 'System Online' : 'System Standby'}
