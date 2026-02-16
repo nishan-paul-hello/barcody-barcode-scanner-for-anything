@@ -4,6 +4,8 @@ export interface User {
   googleId: string;
   createdAt: string;
   lastLogin?: string;
+  name?: string;
+  picture?: string;
 }
 
 export interface AuthState {

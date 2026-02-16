@@ -21,6 +21,12 @@ COPY backend/package.json ./backend/
 COPY web-app/package.json ./web-app/
 COPY admin-dashboard/package.json ./admin-dashboard/
 COPY mobile-app/package.json ./mobile-app/
+
+# Configure npm to be more robust against network timeouts
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000
+
 # Use --include=dev if needed for building, but here we just need them for deps stage
 RUN npm ci
 
@@ -59,10 +65,15 @@ COPY --from=deps --chown=nestjs:nodejs /app/backend/node_modules /app/backend/no
 # Copy built dist
 COPY --from=builder --chown=nestjs:nodejs /app/backend/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/backend/package.json ./package.json
+COPY --from=builder --chown=nestjs:nodejs /app/backend/docker-entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nestjs
 EXPOSE 3002
 ENV PORT=3002
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Health check using the correct endpoint
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \

@@ -15,7 +15,7 @@ export default function DashboardPage() {
         <Link href="/scan">
           <Button
             size="lg"
-            className="gap-2 rounded-full bg-cyan-600 shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-500"
+            className="gap-2 rounded-full bg-cyan-600 transition-all hover:bg-cyan-500"
           >
             <Camera className="h-5 w-5" />
             Start Scanning
