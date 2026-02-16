@@ -1,0 +1,21 @@
+services:
+  ts-web:
+    image: tailscale/tailscale:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./infra/tailscale/web-local.json:/config/web.json
+
+  ts-admin:
+    image: tailscale/tailscale:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./infra/tailscale/admin-local.json:/config/admin.json
+
+  ts-api:
+    image: tailscale/tailscale:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./infra/tailscale/api-local.json:/config/api.json

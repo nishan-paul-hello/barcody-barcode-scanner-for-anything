@@ -20,6 +20,9 @@ COPY backend/package.json ./backend/
 COPY web-app/package.json ./web-app/
 COPY admin-dashboard/package.json ./admin-dashboard/
 COPY mobile-app/package.json ./mobile-app/
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000
 RUN npm ci
 
 FROM base AS builder
@@ -39,13 +42,13 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/admin-dashboard/public ./public
+COPY --from=builder /app/admin-dashboard/public ./admin-dashboard/public
 
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 COPY --from=builder --chown=nextjs:nodejs /app/admin-dashboard/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/admin-dashboard/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/admin-dashboard/.next/static ./admin-dashboard/.next/static
 
 USER nextjs
 EXPOSE 3001
@@ -55,4 +58,4 @@ ENV HOSTNAME=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
   CMD wget --spider -q http://localhost:3001/api/health || exit 1
 
-CMD ["node", "server.js"]
+CMD ["node", "admin-dashboard/server.js"]

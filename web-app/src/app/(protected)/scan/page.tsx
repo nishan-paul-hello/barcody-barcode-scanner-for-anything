@@ -4,189 +4,304 @@ import { useState } from 'react';
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
 import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Scan,
-  Info,
   Camera,
   FileUp,
   PackageSearch,
   AlertCircle,
+  History,
+  ShieldCheck,
+  Cpu,
 } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
 import { ProductSkeleton } from '@/components/products/ProductSkeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function ScanPage() {
   const [lastResult, setLastResult] = useState<string | null>(null);
   const { data: productData, isLoading, error } = useProduct(lastResult);
 
   return (
-    <div className="animate-in fade-in container max-w-5xl space-y-8 py-6 duration-500">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Scanner</h1>
-        <p className="text-muted-foreground">
-          Scan any barcode or QR code using your device camera or by uploading
-          an image.
-        </p>
-      </div>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="relative container mx-auto max-w-6xl space-y-12 px-4 py-10 sm:px-6 lg:px-8"
+    >
+      {/* Background decoration */}
+      {/* Background decoration - Removed */}
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
-        <div className="space-y-8">
-          <Tabs defaultValue="camera" className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-2 rounded-2xl bg-white/5 p-1">
-              <TabsTrigger
-                value="camera"
-                className="flex items-center gap-2 rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
-              >
-                <Camera className="h-4 w-4" />
-                Camera
-              </TabsTrigger>
-              <TabsTrigger
-                value="file"
-                className="flex items-center gap-2 rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
-              >
-                <FileUp className="h-4 w-4" />
-                File Upload
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="camera" className="mt-0 outline-none">
-              <BarcodeScanner
-                onScanSuccess={(result) => setLastResult(result.getText())}
-              />
-            </TabsContent>
-            <TabsContent value="file" className="mt-0 outline-none">
-              <BarcodeFileScanner
-                onScanSuccess={(result) => setLastResult(result.getText())}
-              />
-            </TabsContent>
-          </Tabs>
+      <header className="flex flex-col items-center space-y-4 text-center">
+        <motion.div
+          variants={itemVariants}
+          className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 backdrop-blur-md"
+        >
+          <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
+          <span className="text-[10px] font-black tracking-[0.2em] text-cyan-400/80 uppercase">
+            System V.2.0 Active
+          </span>
+        </motion.div>
+        <motion.h1
+          variants={itemVariants}
+          className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
+        >
+          Universal <span className="text-cyan-400">Scanner</span>
+        </motion.h1>
+        <motion.p
+          variants={itemVariants}
+          className="max-w-xl text-lg text-white/40"
+        >
+          Decode any signal with our high-precision optical engine. Supporting
+          over 12 industry-standard formats.
+        </motion.p>
+      </header>
+
+      <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
+        <div className="space-y-12">
+          <motion.div variants={itemVariants} className="relative">
+            <Tabs defaultValue="camera" className="w-full">
+              <div className="mb-8 flex justify-center">
+                <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
+                  <TabsTrigger
+                    value="camera"
+                    className="h-11 rounded-full px-8 text-xs font-bold tracking-widest uppercase transition-all data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+                  >
+                    <Camera className="mr-2 h-3.5 w-3.5" />
+                    Live Capture
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="file"
+                    className="h-11 rounded-full px-8 text-xs font-bold tracking-widest uppercase transition-all data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+                  >
+                    <FileUp className="mr-2 h-3.5 w-3.5" />
+                    Asset Upload
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="camera" className="m-0 outline-none">
+                <BarcodeScanner
+                  onScanSuccess={(result) => setLastResult(result.getText())}
+                />
+              </TabsContent>
+              <TabsContent value="file" className="m-0 outline-none">
+                <BarcodeFileScanner
+                  onScanSuccess={(result) => setLastResult(result.getText())}
+                />
+              </TabsContent>
+            </Tabs>
+          </motion.div>
 
           {/* Product Result Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <PackageSearch className="h-5 w-5 text-cyan-500" />
-              <h2 className="text-lg font-semibold">Product Information</h2>
-            </div>
-
-            {isLoading && <ProductSkeleton />}
-
-            {error && (
-              <Alert
-                variant="destructive"
-                className="border-red-500/20 bg-red-500/10 text-red-400"
-              >
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Product Not Found</AlertTitle>
-                <AlertDescription>
-                  We couldn&apos;t find any information for this barcode in our
-                  databases. Code: {lastResult}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {productData?.success && (
-              <ProductDetail
-                product={productData.data}
-                cacheStatus={productData.cacheStatus}
-              />
-            )}
-
-            {!lastResult && !isLoading && (
-              <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/5 bg-white/[0.01] py-12 text-center">
-                <div className="mb-4 rounded-full bg-white/5 p-4">
-                  <PackageSearch className="h-10 w-10 text-white/20" />
+          <motion.div variants={itemVariants} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-cyan-500/10 p-2.5 ring-1 ring-cyan-500/20">
+                  <PackageSearch className="h-5 w-5 text-cyan-400" />
                 </div>
-                <h3 className="text-lg font-medium text-white/40">
-                  Ready to Scan
-                </h3>
-                <p className="text-muted-foreground mt-1 max-w-xs text-sm">
-                  Product details will appear here automatically after a
-                  successful scan.
-                </p>
+                <h2 className="text-xl font-bold tracking-tight">
+                  Extraction Results
+                </h2>
               </div>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <Card className="h-fit border-white/5 bg-white/[0.02] backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-lg">Last Scan</CardTitle>
-              <CardDescription>Recently detected barcode data</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {lastResult ? (
-                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4 break-all">
-                  <p className="font-mono text-sm text-cyan-400">
-                    {lastResult}
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-white/5 py-8 text-center">
-                  <Scan className="text-muted-foreground/30 mb-2 h-8 w-8" />
-                  <p className="text-muted-foreground text-xs">No scans yet</p>
+              {lastResult && (
+                <div className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-3 py-1">
+                  <Cpu className="h-3 w-3 text-white/30" />
+                  <span className="text-[10px] font-bold text-white/30 uppercase">
+                    Processed
+                  </span>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card className="border-white/5 bg-white/[0.02] backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Info className="h-5 w-5 text-cyan-500" />
-                Scanning Tips
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-muted-foreground list-disc space-y-2 pl-4 text-sm">
-                <li>Ensure there is enough light on the barcode.</li>
-                <li>
-                  Hold the device steady and center the barcode in the frame.
-                </li>
-                <li>Keep the barcode at a medium distance (10-15cm).</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="overflow-hidden border-white/5 bg-white/[0.02] backdrop-blur-sm">
-            <div className="h-1 bg-gradient-to-r from-cyan-500 to-blue-500 p-1 opacity-50" />
-            <CardHeader>
-              <CardTitle className="text-muted-foreground text-lg text-[10px] font-black tracking-widest uppercase">
-                Supported Formats
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-2">
-              {[
-                'QR Code',
-                'EAN-13',
-                'UPC-A',
-                'Code 128',
-                'DataMatrix',
-                'PDF417',
-                'ITF',
-                'EAN-8',
-                'Code 39',
-              ].map((f) => (
-                <div
-                  key={f}
-                  className="flex items-center space-x-2 rounded-md bg-white/5 px-2 py-1 text-[11px] font-medium text-white/50"
+            <AnimatePresence mode="wait">
+              {isLoading && (
+                <motion.div
+                  key="skeleton"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
-                  <div className="h-1 w-1 rounded-full bg-cyan-500" />
-                  <span>{f}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                  <ProductSkeleton />
+                </motion.div>
+              )}
+
+              {error && (
+                <motion.div
+                  key="error"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <Alert
+                    variant="destructive"
+                    className="rounded-3xl border-red-500/20 bg-red-500/5 p-6 text-red-400"
+                  >
+                    <AlertCircle className="h-5 w-5" />
+                    <AlertTitle className="text-lg font-bold">
+                      Entity Not Found
+                    </AlertTitle>
+                    <AlertDescription className="mt-2 text-red-400/70">
+                      Our intelligence network could not match this signature.
+                      Signature: <span className="font-mono">{lastResult}</span>
+                    </AlertDescription>
+                  </Alert>
+                </motion.div>
+              )}
+
+              {productData?.success && (
+                <motion.div
+                  key="data"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <ProductDetail
+                    product={productData.data}
+                    cacheStatus={productData.cacheStatus}
+                  />
+                </motion.div>
+              )}
+
+              {!lastResult && !isLoading && (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="group flex flex-col items-center justify-center rounded-[2.5rem] border-2 border-dashed border-white/5 bg-white/[0.01] py-20 text-center transition-all hover:bg-white/[0.02]"
+                >
+                  <div className="mb-8 rounded-full bg-white/5 p-8 transition-transform duration-500 group-hover:scale-110">
+                    <Scan className="h-12 w-12 text-white/10 group-hover:text-cyan-500/50" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white/60">
+                    Awaiting Signal
+                  </h3>
+                  <p className="mt-4 max-w-[280px] text-sm leading-relaxed text-white/30">
+                    Once a code is detected, product data will be automatically
+                    hydrated here.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
+
+        <aside className="space-y-8">
+          <motion.div variants={itemVariants}>
+            <Card className="overflow-hidden rounded-[2rem] border-white/5 bg-black/40 backdrop-blur-3xl">
+              <CardHeader className="border-b border-white/5 bg-white/5 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-cyan-500/10 p-2">
+                    <History className="h-4 w-4 text-cyan-400" />
+                  </div>
+                  <CardTitle className="text-sm font-bold tracking-wider uppercase">
+                    Telemetry
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6">
+                {lastResult ? (
+                  <div className="group relative rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 transition-all hover:bg-cyan-500/10">
+                    <div className="mb-2 text-[10px] font-bold tracking-widest text-cyan-400/60 uppercase">
+                      Raw Signature
+                    </div>
+                    <p className="font-mono text-xs leading-relaxed break-all text-cyan-400">
+                      {lastResult}
+                    </p>
+                    <div className="absolute top-4 right-4 h-2 w-2 animate-pulse rounded-full bg-cyan-400" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-white/5 bg-white/5 py-10 text-center">
+                    <Scan className="mb-4 h-8 w-8 text-white/10" />
+                    <p className="text-[11px] font-bold tracking-widest text-white/20 uppercase">
+                      No Data Recorded
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="rounded-[2rem] border-white/5 bg-black/40 backdrop-blur-3xl">
+              <CardHeader className="pb-3 text-center">
+                <div className="mx-auto mb-4 rounded-full bg-cyan-500/10 p-3 ring-1 ring-cyan-500/20">
+                  <ShieldCheck className="h-5 w-5 text-cyan-400" />
+                </div>
+                <CardTitle className="text-lg font-bold ring-red-500">
+                  Protocol Tips
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  {[
+                    'Optimize ambient luminescence',
+                    'Stabilize input device focus',
+                    'Maintain critical focal distance',
+                  ].map((tip, i) => (
+                    <li key={i} className="flex items-start gap-4">
+                      <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-cyan-500/40" />
+                      <span className="text-xs leading-relaxed text-white/40">
+                        {tip}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Card className="overflow-hidden rounded-[2rem] border-white/5 bg-black/40 backdrop-blur-3xl">
+              <div className="h-1.5 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0" />
+              <CardHeader className="pb-4">
+                <CardTitle className="text-center text-[10px] font-black tracking-[0.3em] text-white/60 uppercase">
+                  Encoded Protocols
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-2">
+                {[
+                  'QR Code',
+                  'EAN-13',
+                  'UPC-A',
+                  'Code 128',
+                  'DataMatrix',
+                  'PDF417',
+                  'ITF-14',
+                  'EAN-8',
+                ].map((f) => (
+                  <div
+                    key={f}
+                    className="group flex items-center space-x-2 rounded-xl bg-white/5 px-3 py-2 transition-all hover:bg-white/10 hover:ring-1 hover:ring-white/10"
+                  >
+                    <div className="h-1 w-1 rounded-full bg-cyan-500/30 group-hover:bg-cyan-500" />
+                    <span className="text-[10px] font-bold text-white/30 group-hover:text-white/60">
+                      {f}
+                    </span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </aside>
       </div>
-    </div>
+    </motion.div>
   );
 }

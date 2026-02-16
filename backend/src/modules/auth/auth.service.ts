@@ -8,6 +8,15 @@ import { firstValueFrom } from 'rxjs';
 import { AuthResponseDto } from '@modules/auth/dtos/auth-response.dto';
 import { UserDto } from '@modules/auth/dtos/user.dto';
 
+interface GoogleUser {
+  sub: string;
+  email: string;
+  name: string;
+  picture: string;
+  aud: string;
+  [key: string]: unknown;
+}
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -21,20 +30,10 @@ export class AuthService {
 
   async loginWithGoogle(token: string): Promise<AuthResponseDto> {
     try {
-      this.logger.log('Verifying Google ID Token');
-      const tokenInfoUrl = `https://oauth2.googleapis.com/tokeninfo`;
-
-      const { data: googleUser } = await firstValueFrom(
-        this.httpService.get(tokenInfoUrl, {
-          params: { id_token: token },
-        }),
-      );
-
-      // Verify strict audience check if needed, but for now we trust the token if Google verifies it.
-      // Ideally check if googleUser.aud === GOOGLE_CLIENT_ID
+      const googleUser = await this.verifyGoogleToken(token);
 
       const user = await this.usersService.findOrCreateByGoogleId({
-        googleId: googleUser.sub, // 'sub' is the unique identifier in ID Token
+        googleId: googleUser.sub,
         email: googleUser.email,
       });
 
@@ -59,12 +58,54 @@ export class AuthService {
         isAdmin,
       };
     } catch (error) {
-      this.logger.error(
-        'Google authentication failed',
-        error instanceof Error ? error.stack : error,
-      );
-      throw new UnauthorizedException('Google authentication failed');
+      this.handleAuthError(error);
     }
+  }
+
+  private async verifyGoogleToken(token: string) {
+    this.logger.log('Verifying Google ID Token');
+    const tokenInfoUrl = `https://oauth2.googleapis.com/tokeninfo`;
+
+    const response = await firstValueFrom(
+      this.httpService.get(tokenInfoUrl, {
+        params: { id_token: token },
+      }),
+    );
+
+    const googleUser = response.data as GoogleUser;
+    this.logger.debug(`Google user verified: ${googleUser.email}`);
+
+    // Verify strict audience check
+    const expectedClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+    if (googleUser.aud !== expectedClientId) {
+      this.logger.error(`Audience mismatch: expected ${expectedClientId}, got ${googleUser.aud}`);
+      throw new UnauthorizedException('Google authentication failed: audience mismatch');
+    }
+
+    return googleUser;
+  }
+
+  private handleAuthError(error: unknown): never {
+    if (error instanceof UnauthorizedException) {
+      throw error;
+    }
+
+    let errorMessage = 'Google authentication failed';
+
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response?: { data?: { error_description?: string } } };
+      const responseData = axiosError.response?.data;
+      if (responseData) {
+        this.logger.error('Google verification failed with response:', responseData);
+        if (responseData.error_description) {
+          errorMessage = responseData.error_description;
+        }
+      }
+    }
+
+    this.logger.error('Google authentication failed', error instanceof Error ? error.stack : error);
+
+    throw new UnauthorizedException(errorMessage);
   }
 
   async refreshToken(refreshToken: string): Promise<AuthResponseDto> {

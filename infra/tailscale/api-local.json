@@ -1,0 +1,16 @@
+{
+  "TCP": {
+    "443": {
+      "HTTPS": true
+    }
+  },
+  "Web": {
+    "api-barcody.tamarin-ph.ts.net:443": {
+      "Handlers": {
+        "/": {
+          "Proxy": "http://host.docker.internal:3002"
+        }
+      }
+    }
+  }
+}

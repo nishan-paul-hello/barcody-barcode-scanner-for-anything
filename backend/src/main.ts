@@ -1,6 +1,7 @@
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Request, Response, NextFunction } from 'express';
 
 import { AppModule } from '@/app.module';
 import { HttpExceptionFilter } from '@common/filters/http-exception.filter';
@@ -12,6 +13,13 @@ async function bootstrap() {
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.setGlobalPrefix('api/v1');
+
+  // Fix Cross-Origin-Opener-Policy for Google Login
+  app.use((_req: Request, res: Response, next: NextFunction) => {
+    res.header('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+  });
 
   // Enable CORS
   app.enableCors({
@@ -64,20 +72,23 @@ async function bootstrap() {
   );
 
   // Trust proxy for correct IP detection behind Tailscale/Docker
-  // 100.64.0.0/10 is the Tailscale range
   const expressApp = app.getHttpAdapter().getInstance();
-  expressApp.set('trust proxy', (ip: string) => {
-    // Trust localhost
+
+  const isTailscaleIp = (parts: number[]): boolean =>
+    parts[0] === 100 && (parts[1] ?? 0) >= 64 && (parts[1] ?? 0) <= 127;
+
+  const isDockerIp = (parts: number[]): boolean =>
+    parts[0] === 172 && (parts[1] ?? 0) >= 16 && (parts[1] ?? 0) <= 31;
+
+  const isTrustedProxy = (ip: string): boolean => {
     if (ip === '127.0.0.1' || ip === '::1') return true;
-
-    // Trust Tailscale IPs
-    if (ip.startsWith('100.')) {
-      const parts = ip.split('.').map(Number);
-      return parts[0] === 100 && parts[1] !== undefined && parts[1] >= 64 && parts[1] <= 127;
-    }
-
+    const parts = ip.split('.').map(Number);
+    if (ip.startsWith('100.')) return isTailscaleIp(parts);
+    if (ip.startsWith('172.')) return isDockerIp(parts);
     return false;
-  });
+  };
+
+  expressApp.set('trust proxy', isTrustedProxy);
 
   // Swagger Configuration
   logger.log(`Current NODE_ENV: ${process.env.NODE_ENV}`);

@@ -14,7 +14,8 @@
     "format-root": "npx prettier --write \"./*.{json,md,yml}\" \"./docs/**/*.{json,md,yml}\"",
     "type-check": "npm run type-check --workspace=backend && npm run type-check --workspace=web-app && npm run type-check --workspace=mobile-app && npm run type-check --workspace=admin-dashboard",
     "test": "npm run test --workspace=backend && npm run test --workspace=web-app && npm run test --workspace=mobile-app && npm run test --workspace=admin-dashboard",
-    "build": "npm run build --workspace=backend && npm run build --workspace=web-app && npm run build --workspace=mobile-app && npm run build --workspace=admin-dashboard"
+    "build": "npm run build --workspace=backend && npm run build --workspace=web-app && npm run build --workspace=mobile-app && npm run build --workspace=admin-dashboard",
+    "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"npm run start:dev --workspace=backend\" \"npm run dev --workspace=web-app -- -p 3000\" \"npm run dev --workspace=admin-dashboard -- -p 3001\""
   },
   "workspaces": [
     "backend",
@@ -36,6 +37,7 @@
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@nestjs/cache-manager": "^3.1.0",
+    "concurrently": "^9.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7"
   },
