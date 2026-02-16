@@ -93,8 +93,6 @@ export const Header: React.FC = () => {
             })}
           </nav>
 
-
-
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

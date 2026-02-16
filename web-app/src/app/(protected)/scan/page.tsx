@@ -45,7 +45,7 @@ export default function ScanPage() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative container mx-auto max-w-6xl space-y-12 py-10 px-4 sm:px-6 lg:px-8"
+      className="relative container mx-auto max-w-6xl space-y-12 px-4 py-10 sm:px-6 lg:px-8"
     >
       {/* Background decoration */}
       {/* Background decoration - Removed */}

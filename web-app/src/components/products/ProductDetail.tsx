@@ -174,12 +174,11 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                           key={g}
                           className={cn(
                             'flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black ring-1 transition-all duration-500',
-                              nutrition.grade === g
-                                ? NUTRITION_GRADES[
-                                    g as keyof typeof NUTRITION_GRADES
-                                  ].color +
-                                  ' text-white ring-white/20'
-                                : 'bg-white/5 text-white/10 ring-transparent hover:bg-white/10'
+                            nutrition.grade === g
+                              ? NUTRITION_GRADES[
+                                  g as keyof typeof NUTRITION_GRADES
+                                ].color + ' text-white ring-white/20'
+                              : 'bg-white/5 text-white/10 ring-transparent hover:bg-white/10'
                           )}
                         >
                           {g}
@@ -369,10 +368,7 @@ function MacroRow({
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 1.5, ease: 'easeOut' }}
-          className={cn(
-            'h-full rounded-full',
-            color
-          )}
+          className={cn('h-full rounded-full', color)}
         />
       </div>
     </div>
