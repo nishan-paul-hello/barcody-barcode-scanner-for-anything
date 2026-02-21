@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Shield, Zap, Smartphone } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Smartphone, Heart } from 'lucide-react';
 import { Header } from '@/components/common/Header';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
@@ -88,18 +90,49 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="flex w-full shrink-0 flex-col items-center gap-2 border-t px-4 py-6 sm:flex-row md:px-6">
-        <p className="text-muted-foreground text-xs">
-          © 2026 Barcody. All rights reserved.
-        </p>
-        <nav className="flex gap-4 sm:ml-auto sm:gap-6">
-          <Link className="text-xs underline-offset-4 hover:underline" href="#">
-            Terms of Service
-          </Link>
-          <Link className="text-xs underline-offset-4 hover:underline" href="#">
-            Privacy
-          </Link>
-        </nav>
+      <footer className="relative border-t border-white/5 bg-black/40 py-12 backdrop-blur-xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-sm font-medium text-white/40"
+            >
+              © {new Date().getFullYear()} Barcody. All rights reserved.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="group flex items-center gap-2 text-sm font-medium text-white/40"
+            >
+              <span>Built with</span>
+              <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+              <span>by</span>
+              <Link
+                href="https://kaiverse.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/kai flex items-center gap-2 transition-all"
+              >
+                <div className="relative h-8 w-8 transition-transform duration-300 group-hover/kai:scale-110">
+                  <Image
+                    src="/company-logo.svg"
+                    alt="KAI Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="font-bold tracking-tight text-white/90 transition-colors duration-300 group-hover/kai:text-[#00F07C]">
+                  KAI
+                </span>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
       </footer>
     </div>
   );
