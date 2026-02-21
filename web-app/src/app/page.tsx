@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Shield, Zap, Smartphone, Heart } from 'lucide-react';
+import { Shield, Zap, Smartphone, Heart } from 'lucide-react';
 import { Header } from '@/components/common/Header';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -37,7 +37,7 @@ export default function LandingPage() {
               <div className="space-x-4">
                 <Button asChild size="lg">
                   <Link href={isAuthenticated ? '/dashboard' : '/login'}>
-                    Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                    Get Started
                   </Link>
                 </Button>
                 <Button variant="outline" size="lg" asChild>
