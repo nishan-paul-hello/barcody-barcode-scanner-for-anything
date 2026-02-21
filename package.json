@@ -39,11 +39,15 @@
     "@commitlint/config-conventional": "^20.2.0",
     "@nestjs/cache-manager": "^3.1.0",
     "@next/swc-linux-x64-gnu": "^16.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
     "audit-ci": "^7.1.0",
     "concurrently": "^9.2.1",
+    "eslint": "^9.18.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "react-native": "0.81.5"
+    "react-native": "0.81.5",
+    "typescript-eslint": "^8.18.0"
   },
   "repository": {
     "type": "git",
@@ -57,7 +61,6 @@
     "glob": "^11.0.0",
     "minimatch": "^10.2.1",
     "rimraf": "^6.0.1",
-    "webpack": "^5.105.2",
-    "ajv": "^8.18.0"
+    "webpack": "^5.105.2"
   }
 }

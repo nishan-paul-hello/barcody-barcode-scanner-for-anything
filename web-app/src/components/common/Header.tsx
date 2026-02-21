@@ -16,15 +16,27 @@ import { cn } from '@/lib/utils';
 import { LayoutDashboard, History, Camera, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export const Header: React.FC = () => {
+interface NavItem {
+  href: string;
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}
+
+interface HeaderProps {
+  navItems?: NavItem[];
+}
+
+export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const { user, logout } = useAuthStore();
   const pathname = usePathname();
 
-  const navItems = [
+  const defaultNavItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/history', label: 'History', icon: History },
     { href: '/scan', label: 'Scanner', icon: Camera },
   ];
+
+  const navItems = customNavItems || defaultNavItems;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-2xl transition-all duration-300">
@@ -70,12 +82,14 @@ export const Header: React.FC = () => {
                     isActive ? 'text-white' : 'text-white/40'
                   )}
                 >
-                  <item.icon
-                    className={cn(
-                      'h-4 w-4 transition-transform',
-                      isActive && 'text-cyan-400'
-                    )}
-                  />
+                  {item.icon && (
+                    <item.icon
+                      className={cn(
+                        'h-4 w-4 transition-transform',
+                        isActive && 'text-cyan-400'
+                      )}
+                    />
+                  )}
                   {item.label}
                   {isActive && (
                     <motion.div
@@ -93,7 +107,7 @@ export const Header: React.FC = () => {
             })}
           </nav>
 
-          {user && (
+          {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -143,6 +157,13 @@ export const Header: React.FC = () => {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+          ) : (
+            <Button
+              asChild
+              className="rounded-full bg-cyan-500 font-bold hover:bg-cyan-600"
+            >
+              <Link href="/login">Login</Link>
+            </Button>
           )}
         </div>
       </div>

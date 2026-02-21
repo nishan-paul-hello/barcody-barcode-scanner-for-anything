@@ -3,43 +3,20 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
-import { Barcode, ArrowRight, Shield, Zap, Smartphone } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Smartphone } from 'lucide-react';
+import { Header } from '@/components/common/Header';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
 
+  const landingNavItems = [
+    { href: '#features', label: 'Features' },
+    { href: '/about', label: 'About' },
+  ];
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      {/* Navigation */}
-      <header className="bg-card/50 flex h-16 items-center border-b px-4 backdrop-blur lg:px-6">
-        <Link className="flex items-center justify-center" href="/">
-          <Barcode className="text-primary h-6 w-6" />
-          <span className="ml-2 text-xl font-bold tracking-tight">Barcody</span>
-        </Link>
-        <nav className="ml-auto flex items-center gap-4 sm:gap-6">
-          <Link
-            className="text-sm font-medium underline-offset-4 hover:underline"
-            href="#features"
-          >
-            Features
-          </Link>
-          <Link
-            className="text-sm font-medium underline-offset-4 hover:underline"
-            href="/about"
-          >
-            About
-          </Link>
-          {isAuthenticated ? (
-            <Button asChild size="sm">
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
-          ) : (
-            <Button asChild size="sm">
-              <Link href="/login">Login</Link>
-            </Button>
-          )}
-        </nav>
-      </header>
+      <Header navItems={landingNavItems} />
 
       <main className="flex-1">
         {/* Hero Section */}
