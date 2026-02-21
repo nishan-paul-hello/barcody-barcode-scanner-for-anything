@@ -37,10 +37,12 @@
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@nestjs/cache-manager": "^3.1.0",
+    "@next/swc-linux-x64-gnu": "^16.1.6",
     "audit-ci": "^7.1.0",
     "concurrently": "^9.2.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.7"
+    "lint-staged": "^16.2.7",
+    "react-native": "0.81.5"
   },
   "repository": {
     "type": "git",
