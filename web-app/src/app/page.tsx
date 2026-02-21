@@ -11,10 +11,7 @@ import { motion } from 'framer-motion';
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
 
-  const landingNavItems = [
-    { href: '#features', label: 'Features' },
-    { href: '/about', label: 'About' },
-  ];
+  const landingNavItems = [{ href: '#features', label: 'Features' }];
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -39,9 +36,6 @@ export default function LandingPage() {
                   <Link href={isAuthenticated ? '/dashboard' : '/login'}>
                     Get Started
                   </Link>
-                </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link href="/about">Learn More</Link>
                 </Button>
               </div>
             </div>
