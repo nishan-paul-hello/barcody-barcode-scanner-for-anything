@@ -1,11 +1,11 @@
 echo "Running unit tests..."
-npm test || {
+npm run test || {
   echo "❌ Tests failed. Fix tests before pushing."
   exit 1
 }
 
 echo "Running security audit..."
-npx audit-ci --config audit-ci.json || {
+npm run audit:check || {
   echo "❌ New high/critical vulnerabilities found. Fix before pushing."
   exit 1
 }

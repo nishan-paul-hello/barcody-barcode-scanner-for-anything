@@ -15,7 +15,8 @@
     "type-check": "npm run type-check --workspace=backend && npm run type-check --workspace=web-app && npm run type-check --workspace=mobile-app && npm run type-check --workspace=admin-dashboard",
     "test": "npm run test --workspace=backend && npm run test --workspace=web-app && npm run test --workspace=mobile-app && npm run test --workspace=admin-dashboard",
     "build": "npm run build --workspace=backend && npm run build --workspace=web-app && npm run build --workspace=mobile-app && npm run build --workspace=admin-dashboard",
-    "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"npm run start:dev --workspace=backend\" \"npm run dev --workspace=web-app -- -p 3000\" \"npm run dev --workspace=admin-dashboard -- -p 3001\""
+    "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"npm run start:dev --workspace=backend\" \"npm run dev --workspace=web-app -- -p 3000\" \"npm run dev --workspace=admin-dashboard -- -p 3001\"",
+    "audit:check": "audit-ci --config ./audit-ci.json"
   },
   "workspaces": [
     "backend",
