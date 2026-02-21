@@ -37,6 +37,7 @@
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@nestjs/cache-manager": "^3.1.0",
+    "audit-ci": "^7.1.0",
     "concurrently": "^9.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7"
@@ -48,5 +49,12 @@
   "bugs": {
     "url": "https://github.com/nishan-paul-2022/barcody-barcode-scanner-for-anything/issues"
   },
-  "homepage": "https://github.com/nishan-paul-2022/barcody-barcode-scanner-for-anything#readme"
+  "homepage": "https://github.com/nishan-paul-2022/barcody-barcode-scanner-for-anything#readme",
+  "overrides": {
+    "glob": "^11.0.0",
+    "minimatch": "^10.2.1",
+    "rimraf": "^6.0.1",
+    "webpack": "^5.105.2",
+    "ajv": "^8.18.0"
+  }
 }

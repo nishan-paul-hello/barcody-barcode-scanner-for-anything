@@ -5,8 +5,8 @@ npm test || {
 }
 
 echo "Running security audit..."
-npm audit --audit-level=high || {
-  echo "❌ High/critical vulnerabilities found. Fix before pushing."
+npx audit-ci --config audit-ci.json || {
+  echo "❌ New high/critical vulnerabilities found. Fix before pushing."
   exit 1
 }
 
