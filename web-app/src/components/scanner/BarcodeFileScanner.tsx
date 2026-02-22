@@ -5,14 +5,7 @@ import { analytics } from '@/lib/analytics.service';
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
-import {
-  Upload,
-  X,
-  ImageIcon,
-  Loader2,
-  AlertCircle,
-  CheckCircle2,
-} from 'lucide-react';
+import { Upload, X, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
@@ -286,16 +279,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 <p className="mb-8 max-w-xs text-sm leading-relaxed text-white/40">
                   Drag and drop your image here or click to browse.
                 </p>
-
-                <div className="flex gap-3">
-                  <div className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-[10px] font-bold tracking-wider text-white/30 uppercase">
-                    <ImageIcon className="h-3.5 w-3.5" />
-                    JPG / PNG / WEBP
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-[10px] font-bold tracking-wider text-white/30 uppercase">
-                    10MB Limit
-                  </div>
-                </div>
               </motion.label>
             )}
           </AnimatePresence>
