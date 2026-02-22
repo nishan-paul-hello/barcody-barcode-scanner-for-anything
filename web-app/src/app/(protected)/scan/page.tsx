@@ -50,31 +50,6 @@ export default function ScanPage() {
       {/* Background decoration */}
       {/* Background decoration - Removed */}
 
-      <header className="flex flex-col items-center space-y-4 text-center">
-        <motion.div
-          variants={itemVariants}
-          className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 backdrop-blur-md"
-        >
-          <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
-          <span className="text-[10px] font-black tracking-[0.2em] text-cyan-400/80 uppercase">
-            System V.2.0 Active
-          </span>
-        </motion.div>
-        <motion.h1
-          variants={itemVariants}
-          className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
-        >
-          Universal <span className="text-cyan-400">Scanner</span>
-        </motion.h1>
-        <motion.p
-          variants={itemVariants}
-          className="max-w-xl text-lg text-white/40"
-        >
-          Decode any signal with our high-precision optical engine. Supporting
-          over 12 industry-standard formats.
-        </motion.p>
-      </header>
-
       <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
         <div className="space-y-12">
           <motion.div variants={itemVariants} className="relative">
