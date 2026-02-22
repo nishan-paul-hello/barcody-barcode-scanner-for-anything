@@ -104,7 +104,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 {/* Source Info */}
                 <div className="flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5">
                   <div className="flex items-center gap-3">
-                    <Cpu className="h-3.5 w-3.5 text-slate-400" />
+                    <Cpu className="h-3.5 w-3.5 text-yellow-400/60" />
                     <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
                       Input Source
                     </span>
@@ -117,7 +117,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 {/* Barcode Content Block */}
                 <div className="group relative flex min-h-0 flex-1 flex-col space-y-2">
                   <div className="flex items-center gap-2 px-1">
-                    <Barcode className="h-3 w-3 text-cyan-400" />
+                    <Barcode className="h-3 w-3 text-emerald-400/60" />
                     <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
                       Barcode Content
                     </span>
