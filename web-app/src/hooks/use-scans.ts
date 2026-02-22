@@ -7,7 +7,6 @@ import type {
   PaginationParams,
   PaginatedResponse,
 } from '@/lib/api/types';
-import { toast } from 'sonner';
 
 export const scanKeys = {
   all: ['scans'] as const,
@@ -22,6 +21,9 @@ export function useScans(params: PaginationParams = { page: 1, limit: 20 }) {
     queryKey: scanKeys.list(params),
     queryFn: () => api.scans.getScans(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
+    meta: {
+      suppressErrorToast: true,
+    },
   });
 }
 
@@ -99,6 +101,9 @@ export function useDeleteScan() {
 
   return useMutation({
     mutationFn: (id: string) => api.scans.deleteScan(id),
+    meta: {
+      suppressErrorToast: true,
+    },
     onMutate: async (id) => {
       // This is a bit complex for paginated data as the item could be on any page.
       // For simplicity, we'll try to remove it from the first page if it exists there.
@@ -132,9 +137,7 @@ export function useDeleteScan() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {
-      toast.success('Scan deleted successfully');
-    },
+    onSuccess: () => {},
   });
 }
 
@@ -145,7 +148,6 @@ export function useBulkCreateScans() {
     mutationFn: (dto: BulkCreateScansDto) => api.scans.bulkCreateScans(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.lists() });
-      toast.success('Batch scans uploaded successfully');
     },
   });
 }
@@ -154,11 +156,12 @@ export function useBulkDeleteScans() {
 
   return useMutation({
     mutationFn: (ids: string[]) => api.scans.bulkDeleteScans(ids),
+    meta: {
+      suppressErrorToast: true,
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {
-      toast.success('Scans deleted successfully');
-    },
+    onSuccess: () => {},
   });
 }
