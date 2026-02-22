@@ -138,20 +138,30 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     [scanImage]
   );
 
-  const onDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile) {
-        handleFile(droppedFile);
+  const onPaste = useCallback(
+    (e: ClipboardEvent) => {
+      if (!e.clipboardData) return;
+      const items = e.clipboardData.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item && item.type.indexOf('image') !== -1) {
+          const file = item.getAsFile();
+          if (file) {
+            handleFile(file);
+            break;
+          }
+        }
       }
     },
     [handleFile]
   );
 
-  const onDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
+  React.useEffect(() => {
+    window.addEventListener('paste', onPaste);
+    return () => window.removeEventListener('paste', onPaste);
+  }, [onPaste]);
 
   const clearFile = () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -169,8 +179,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         className="w-full"
       >
         <Card
-          onDrop={onDrop}
-          onDragOver={onDragOver}
           className={`group relative flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-[2.5rem] border-2 transition-all duration-500 sm:aspect-square md:aspect-video ${
             previewUrl
               ? 'border-white/10 bg-black/40 backdrop-blur-3xl'
@@ -276,9 +284,21 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 <h3 className="mb-2 text-xl font-bold tracking-tight text-white/90">
                   Upload Image
                 </h3>
-                <p className="mb-8 max-w-xs text-sm leading-relaxed text-white/40">
-                  Drag and drop your image here or click to browse.
-                </p>
+
+                <div className="my-6 text-[15px] font-medium text-white/50">
+                  OR
+                </div>
+
+                <div className="flex items-center gap-2 text-[15px] text-white/50">
+                  <kbd className="rounded border border-white/10 bg-white/5 px-2 py-0.5 font-sans text-xs">
+                    Ctrl
+                  </kbd>
+                  <span>+</span>
+                  <kbd className="rounded border border-white/10 bg-white/5 px-2 py-0.5 font-sans text-xs">
+                    V
+                  </kbd>
+                  <span>to paste an image</span>
+                </div>
               </motion.label>
             )}
           </AnimatePresence>
