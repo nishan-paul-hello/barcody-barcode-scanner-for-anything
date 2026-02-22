@@ -10,6 +10,7 @@ import {
 import { BarcodeFormat, DecodeHintType, type Result } from '@zxing/library';
 import {
   Camera,
+  CameraOff,
   RefreshCcw,
   AlertCircle,
   Volume2,
@@ -44,6 +45,8 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [isScanning, setIsScanning] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [flashActive, setFlashActive] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(true);
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
   const createScanMutation = useCreateScan();
 
   const drawFeedback = useCallback(() => {
@@ -106,6 +109,28 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       console.error('Error playing beep:', err);
     }
   }, [soundEnabled]);
+
+  const resetTimer = useCallback(() => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+    }
+    if (isCameraActive) {
+      inactivityTimerRef.current = setTimeout(() => {
+        setIsCameraActive(false);
+      }, 60000); // 60 seconds inactivity timeout
+    }
+  }, [isCameraActive]);
+
+  useEffect(() => {
+    if (isCameraActive) {
+      resetTimer();
+    }
+    return () => {
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, [isCameraActive, resetTimer]);
 
   // Initial device listing and reader setup
   useEffect(() => {
@@ -187,6 +212,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     async function start() {
       if (
         !active ||
+        !isCameraActive ||
         !selectedDeviceId ||
         !videoRef.current ||
         !readerRef.current
@@ -205,6 +231,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             if (result && isMounted) {
               playBeep();
               drawFeedback();
+              resetTimer();
 
               const barcodeData = result.getText();
               const formatName = result.getBarcodeFormat().toString();
@@ -278,9 +305,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     };
   }, [
     active,
+    isCameraActive,
     selectedDeviceId,
     playBeep,
     drawFeedback,
+    resetTimer,
     onScanSuccess,
     onScanError,
     createScanMutation,
@@ -359,7 +388,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             )}
           </AnimatePresence>
 
-          {!isScanning && !error && (
+          {!isScanning && !error && isCameraActive && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl">
               <motion.div
                 animate={{
@@ -388,6 +417,15 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             </div>
           )}
 
+          {!isCameraActive && !error && (
+            <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
+              <div className="mb-6 rounded-full bg-cyan-500/10 p-4 ring-1 ring-cyan-500/20">
+                <CameraOff className="h-12 w-12 text-cyan-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white">Camera Paused</h3>
+            </div>
+          )}
+
           {error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
               <div className="mb-6 rounded-full bg-red-500/10 p-4 ring-1 ring-red-500/20">
@@ -411,6 +449,16 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           {/* Controls Bar */}
           <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
+            <button
+              onClick={() => setIsCameraActive(!isCameraActive)}
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
+            >
+              {isCameraActive ? (
+                <Camera className="h-5 w-5" />
+              ) : (
+                <CameraOff className="h-5 w-5" />
+              )}
+            </button>
             <button
               onClick={() => {
                 const newValue = !soundEnabled;
