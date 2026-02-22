@@ -52,7 +52,7 @@ export default function ScanPage() {
       {/* Background decoration - Removed */}
 
       <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
-        <div className="space-y-12">
+        <div className="min-w-0 space-y-12">
           <motion.div variants={itemVariants} className="relative">
             <Tabs
               value={cameraTabActive ? 'camera' : 'file'}

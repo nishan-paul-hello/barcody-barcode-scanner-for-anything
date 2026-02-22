@@ -49,6 +49,8 @@ const ALLERGEN_ICONS: Record<string, LucideIcon> = {
   soy: Leaf,
   nuts: AlertTriangle,
   peanuts: AlertTriangle,
+  fish: AlertTriangle, // generic fallback, ideally we'd use a Fish icon if available, but AlertTriangle is clear
+  seafood: AlertTriangle,
 };
 
 export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
@@ -105,17 +107,28 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
           <div className="flex flex-1 flex-col justify-center space-y-6 p-10">
             <div className="space-y-3">
               <div className="flex flex-wrap gap-2">
-                <Badge className="rounded-full border-cyan-500/10 bg-cyan-500/5 px-4 py-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase backdrop-blur-sm">
-                  {category || 'Uncategorized'}
-                </Badge>
-                <Badge className="rounded-full border-white/5 bg-white/5 px-4 py-1 font-mono text-[10px] font-bold tracking-wider text-white/30 uppercase">
-                  # {barcode}
+                {category ? (
+                  category.split(',').map((cat, i) => (
+                    <Badge
+                      key={i}
+                      className="max-w-full rounded-full border-cyan-500/10 bg-cyan-500/5 px-4 py-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase backdrop-blur-sm"
+                    >
+                      <span className="truncate">{cat.trim()}</span>
+                    </Badge>
+                  ))
+                ) : (
+                  <Badge className="max-w-full rounded-full border-cyan-500/10 bg-cyan-500/5 px-4 py-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase backdrop-blur-sm">
+                    <span className="truncate">Uncategorized</span>
+                  </Badge>
+                )}
+                <Badge className="max-w-full rounded-full border-white/5 bg-white/5 px-4 py-1 font-mono text-[10px] font-bold tracking-wider text-white/30 uppercase">
+                  <span className="truncate"># {barcode}</span>
                 </Badge>
               </div>
-              <h2 className="text-3xl font-black tracking-tight text-white lg:text-4xl">
+              <h2 className="text-3xl font-black tracking-tight break-words text-white lg:text-4xl">
                 {name || 'Unknown Entity'}
               </h2>
-              <p className="text-xl font-medium tracking-wide text-white/40">
+              <p className="text-xl font-medium tracking-wide break-words text-white/40">
                 {brand || 'Generic Source'}
               </p>
             </div>
@@ -163,17 +176,17 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
           <CardContent className="space-y-8">
             {nutrition ? (
               <>
-                <div className="flex items-center justify-between rounded-3xl border border-white/5 bg-white/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-white/[0.05]">
+                <div className="flex flex-wrap items-center justify-between gap-6 rounded-3xl border border-white/5 bg-white/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-white/[0.05]">
                   <div className="space-y-3">
                     <p className="text-[10px] font-black tracking-[0.2em] text-white/30 uppercase">
                       Analysis Grade
                     </p>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       {['A', 'B', 'C', 'D', 'E'].map((g) => (
                         <div
                           key={g}
                           className={cn(
-                            'flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black ring-1 transition-all duration-500',
+                            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black ring-1 transition-all duration-500',
                             nutrition.grade === g
                               ? NUTRITION_GRADES[
                                   g as keyof typeof NUTRITION_GRADES
@@ -186,8 +199,8 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
                       ))}
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="flex items-center justify-end gap-1.5 text-orange-400">
+                  <div className="text-left sm:text-right">
+                    <div className="flex items-center justify-start gap-1.5 text-orange-400 sm:justify-end">
                       <Flame className="h-5 w-5 animate-pulse" />
                       <span className="text-3xl font-black tracking-tighter">
                         {nutrition.calories || 0}
