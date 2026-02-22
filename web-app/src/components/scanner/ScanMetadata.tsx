@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, Activity, Cpu, Barcode, Scan, Zap } from 'lucide-react';
+import { Clock, Activity, Cpu, Barcode, Scan, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScanMetadataProps {
@@ -18,6 +18,21 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   source = 'Camera',
   timestamp,
 }) => {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (copied) {
+      const timer = setTimeout(() => setCopied(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copied]);
+
+  const handleCopy = () => {
+    if (result) {
+      navigator.clipboard.writeText(result);
+      setCopied(true);
+    }
+  };
   const displayTimestamp = timestamp
     ? new Date(timestamp).toLocaleTimeString([], {
         hour: '2-digit',
@@ -42,28 +57,11 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
         <CardHeader className="relative z-10 border-b border-white/5 bg-white/[0.02] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <Activity className="h-5 w-5 text-cyan-400" />
-                {result && (
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-cyan-500 shadow-[0_0_12px_rgba(34,211,238,0.9)]"
-                  />
-                )}
-              </div>
+              <Activity className="h-5 w-5 text-cyan-400" />
               <CardTitle className="text-[11px] font-black tracking-[0.2em] text-white/90 uppercase">
                 Barcode Details
               </CardTitle>
             </div>
-            {result && (
-              <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 ring-1 ring-emerald-500/20">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-                <span className="text-[9px] font-black tracking-widest text-emerald-400 uppercase">
-                  Active
-                </span>
-              </div>
-            )}
           </div>
         </CardHeader>
 
@@ -77,24 +75,6 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6"
               >
-                {/* Raw Signature Block */}
-                <div className="group relative space-y-2">
-                  <div className="flex items-center justify-between px-1">
-                    <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
-                      Barcode Content
-                    </span>
-                    <Barcode className="h-3 w-3 text-white/10" />
-                  </div>
-                  <div className="relative rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all group-hover:bg-white/[0.05]">
-                    <p className="font-mono text-[13px] leading-relaxed break-all text-white/80">
-                      {result}
-                    </p>
-                    <div className="absolute right-2 bottom-2 opacity-0 transition-opacity group-hover:opacity-100">
-                      <Zap className="h-3 w-3 text-cyan-400/40" />
-                    </div>
-                  </div>
-                </div>
-
                 {/* Metadata Grid */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
@@ -124,14 +104,39 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 {/* Source Info */}
                 <div className="flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5">
                   <div className="flex items-center gap-3">
-                    <Cpu className="h-3.5 w-3.5 text-white/20" />
+                    <Cpu className="h-3.5 w-3.5 text-amber-400/60" />
                     <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
                       Input Source
                     </span>
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-cyan-400 uppercase">
+                  <span className="text-[10px] font-black tracking-widest text-white/80 uppercase">
                     {source}
                   </span>
+                </div>
+
+                {/* Barcode Content Block */}
+                <div className="group relative space-y-2">
+                  <div className="flex items-center gap-2 px-1">
+                    <Barcode className="h-3 w-3 text-cyan-400" />
+                    <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
+                      Barcode Content
+                    </span>
+                  </div>
+                  <div className="relative rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all group-hover:bg-white/[0.05]">
+                    <p className="pr-8 font-mono text-[13px] leading-relaxed break-all text-white/80">
+                      {result}
+                    </p>
+                    <button
+                      onClick={handleCopy}
+                      className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer rounded-lg bg-white/5 p-2 text-white/40 transition-all hover:bg-cyan-500/20 hover:text-cyan-400"
+                    >
+                      {copied ? (
+                        <Check className="h-3.5 w-3.5" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ) : (
