@@ -51,8 +51,9 @@ export default function ScanPage() {
       {/* Background decoration */}
       {/* Background decoration - Removed */}
 
-      <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
-        <div className="min-w-0 space-y-12">
+      <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[1fr_350px]">
+        {/* Row 1: Main Scanning Interface - Aligned at bottom */}
+        <div className="flex min-w-0 flex-col justify-end">
           <motion.div variants={itemVariants} className="relative">
             <Tabs
               value={cameraTabActive ? 'camera' : 'file'}
@@ -124,8 +125,22 @@ export default function ScanPage() {
               </TabsContent>
             </Tabs>
           </motion.div>
+        </div>
 
-          {/* Product Result Section */}
+        <div className="flex flex-col justify-end">
+          <motion.aside variants={itemVariants} className="space-y-8">
+            <ScanMetadata
+              result={lastResult}
+              format={scanMetadata?.format}
+              source={scanMetadata?.source}
+              timestamp={scanMetadata?.timestamp}
+              isError={hasError}
+            />
+          </motion.aside>
+        </div>
+
+        {/* Row 2: Extraction Results */}
+        <div className="min-w-0 space-y-12">
           <motion.div variants={itemVariants} className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -208,18 +223,6 @@ export default function ScanPage() {
             </AnimatePresence>
           </motion.div>
         </div>
-
-        <aside className="space-y-8">
-          <motion.div variants={itemVariants}>
-            <ScanMetadata
-              result={lastResult}
-              format={scanMetadata?.format}
-              source={scanMetadata?.source}
-              timestamp={scanMetadata?.timestamp}
-              isError={hasError}
-            />
-          </motion.div>
-        </aside>
       </div>
     </motion.div>
   );
