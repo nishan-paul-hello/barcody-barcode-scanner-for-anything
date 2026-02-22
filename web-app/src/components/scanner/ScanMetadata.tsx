@@ -50,12 +50,6 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
       className="w-full"
     >
       <Card className="relative flex h-[480px] flex-col gap-0 overflow-hidden rounded-[2.5rem] border-white/5 bg-black/40 py-0 shadow-2xl backdrop-blur-3xl">
-        {/* Animated Background Pulse */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-cyan-500/5 blur-[80px]" />
-          <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-purple-500/5 blur-[80px]" />
-        </div>
-
         <CardHeader className="relative z-10 border-b border-white/5 bg-white/[0.02] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -168,20 +162,6 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 className="flex flex-1 flex-col items-center justify-center py-12 text-center"
               >
                 <div className="relative mb-10 flex items-center justify-center">
-                  {/* Animated Glow Background */}
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [0.3, 0.6, 0.3],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
-                    className="absolute h-40 w-40 rounded-full bg-cyan-500/10 blur-[60px]"
-                  />
-
                   {/* Main Icon Container (Circular) - Size matched to Camera status icons (80px) */}
                   <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
                     <Scan className="h-10 w-10 text-white/30" />
@@ -190,20 +170,6 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 <p className="text-[11px] font-black tracking-[0.3em] text-white/20 uppercase">
                   Waiting for Barcode
                 </p>
-                <div className="mt-4 flex gap-1">
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      animate={{ opacity: [0.2, 1, 0.2] }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        delay: i * 0.2,
-                      }}
-                      className="h-1 w-1 rounded-full bg-cyan-500/40"
-                    />
-                  ))}
-                </div>
               </motion.div>
             )}
           </AnimatePresence>
