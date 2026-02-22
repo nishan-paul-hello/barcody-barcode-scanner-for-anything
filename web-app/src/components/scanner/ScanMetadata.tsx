@@ -122,22 +122,27 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                       Barcode Content
                     </span>
                   </div>
-                  <div className="relative min-h-0 flex-1 rounded-2xl border border-white/5 bg-white/[0.03] transition-all group-hover:bg-white/[0.05]">
-                    <div className="h-full overflow-y-auto p-4 pr-10 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent">
-                      <p className="font-mono text-[13px] leading-relaxed break-all text-white/80">
+                  <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/5 bg-white/[0.03] transition-all group-hover:bg-white/[0.05]">
+                    {/* Utility Header Row */}
+                    <div className="flex items-center justify-end border-b border-white/5 bg-white/5 px-2 py-1">
+                      <button
+                        onClick={handleCopy}
+                        className="cursor-pointer rounded-md p-1 opacity-60 transition-all hover:bg-cyan-500/10 hover:text-cyan-400 hover:opacity-100"
+                      >
+                        {copied ? (
+                          <Check className="h-3 w-3" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Content Area with Contained Scrollbar */}
+                    <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-transparent group-hover:[&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:!bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent">
+                      <p className="font-mono text-[12px] leading-relaxed break-all text-white/70">
                         {result}
                       </p>
                     </div>
-                    <button
-                      onClick={handleCopy}
-                      className="absolute top-3 right-3 z-20 cursor-pointer rounded-lg border border-white/5 bg-black/40 p-2 text-white/40 backdrop-blur-md transition-all hover:bg-cyan-500/20 hover:text-cyan-400"
-                    >
-                      {copied ? (
-                        <Check className="h-3.5 w-3.5" />
-                      ) : (
-                        <Copy className="h-3.5 w-3.5" />
-                      )}
-                    </button>
                   </div>
                 </div>
               </motion.div>
