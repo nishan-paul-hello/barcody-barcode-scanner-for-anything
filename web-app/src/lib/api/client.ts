@@ -143,7 +143,7 @@ apiClient.interceptors.response.use(
 
     // Handle 403 Forbidden
     if (error.response?.status === 403) {
-      console.error('Access forbidden (403)');
+      console.warn('Access forbidden (403)');
     }
 
     // Transform error for consistent format

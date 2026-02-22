@@ -45,7 +45,7 @@ export const queryClient = new QueryClient({
         message = error.message;
       }
       toast.error(message);
-      console.error('Mutation Error:', error);
+      console.warn('Mutation Error:', error);
     },
   }),
   queryCache: new QueryCache({
@@ -62,7 +62,7 @@ export const queryClient = new QueryClient({
         message = error.message;
       }
       toast.error(message);
-      console.error('Query Error:', error);
+      console.warn('Query Error:', error);
     },
   }),
 });

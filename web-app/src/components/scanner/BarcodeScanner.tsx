@@ -320,7 +320,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   err.message.includes('source width is 0'));
 
               if (!isIgnorableError) {
-                console.error('Scan error:', err);
+                // Silenced scanning error to prevent Next.js dev overlay
                 analytics.trackScanFailed(
                   err instanceof Error ? err.message : String(err),
                   'camera'

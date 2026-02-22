@@ -95,7 +95,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           });
         }
       } catch (err) {
-        console.error('OCR/Barcode Scan error:', err);
+        // Silencing expected scanning errors to prevent dev overlay
         const errorMessage =
           'No barcode found in this image. Try a clearer photo.';
         setError(errorMessage);
