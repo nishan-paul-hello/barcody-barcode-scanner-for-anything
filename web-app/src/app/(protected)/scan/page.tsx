@@ -58,14 +58,14 @@ export default function ScanPage() {
                 <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
                   <TabsTrigger
                     value="camera"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-cyan-500 data-[state=active]:!text-white"
+                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <Camera className="mr-2 h-3.5 w-3.5" />
                     Live Capture
                   </TabsTrigger>
                   <TabsTrigger
                     value="file"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-cyan-500 data-[state=active]:!text-white"
+                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <FileUp className="mr-2 h-3.5 w-3.5" />
                     Asset Upload
