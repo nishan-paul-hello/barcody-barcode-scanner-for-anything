@@ -20,7 +20,7 @@ import {
   Box,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,6 +47,7 @@ const itemVariants = {
 } as const;
 
 export const ScanInfoDialog: React.FC = () => {
+  const [showTooltip, setShowTooltip] = React.useState(false);
   const protocols = [
     'QR Code',
     'EAN-13',
@@ -68,19 +69,37 @@ export const ScanInfoDialog: React.FC = () => {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="group relative h-10 w-10 rounded-full border border-white/5 bg-white/5 transition-all duration-300 hover:border-cyan-500/50 hover:bg-cyan-500/10"
-        >
-          <Info className="h-4 w-4 text-white/40 transition-colors group-hover:text-cyan-400" />
-          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-cyan-500"></span>
-          </span>
-        </Button>
-      </DialogTrigger>
+      <div
+        className="relative"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        <AnimatePresence>
+          {showTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 5, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 5, scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-[20%] px-3 py-1.5"
+            >
+              <div className="relative rounded-lg border border-white/10 bg-black/80 px-3 py-1.5 text-[10px] font-bold tracking-wider whitespace-nowrap text-white/50 uppercase shadow-2xl backdrop-blur-xl">
+                View Specifications
+                <div className="absolute -bottom-1 left-[20%] h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-white/10 bg-black/80" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="group relative h-10 w-10 cursor-pointer rounded-full border border-white/5 bg-white/5 transition-all duration-300 hover:border-cyan-500/50 hover:bg-cyan-500/10"
+          >
+            <Info className="h-4 w-4 text-white/40 transition-colors group-hover:text-cyan-400" />
+          </Button>
+        </DialogTrigger>
+      </div>
       <DialogContent
         className="max-w-xl overflow-hidden rounded-[2.5rem] border-white/10 bg-black/90 p-0 text-white shadow-2xl backdrop-blur-3xl sm:max-w-2xl"
         showCloseButton={false}
