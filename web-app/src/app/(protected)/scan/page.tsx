@@ -12,7 +12,6 @@ import {
   PackageSearch,
   AlertCircle,
   History,
-  ShieldCheck,
   Cpu,
 } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
@@ -216,35 +215,6 @@ export default function ScanPage() {
                     </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Card className="rounded-[2rem] border-white/5 bg-black/40 backdrop-blur-3xl">
-              <CardHeader className="pb-3 text-center">
-                <div className="mx-auto mb-4 rounded-full bg-cyan-500/10 p-3 ring-1 ring-cyan-500/20">
-                  <ShieldCheck className="h-5 w-5 text-cyan-400" />
-                </div>
-                <CardTitle className="text-lg font-bold ring-red-500">
-                  Protocol Tips
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  {[
-                    'Optimize ambient luminescence',
-                    'Stabilize input device focus',
-                    'Maintain critical focal distance',
-                  ].map((tip, i) => (
-                    <li key={i} className="flex items-start gap-4">
-                      <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-cyan-500/40" />
-                      <span className="text-xs leading-relaxed text-white/40">
-                        {tip}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
               </CardContent>
             </Card>
           </motion.div>
