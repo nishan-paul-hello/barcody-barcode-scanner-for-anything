@@ -169,10 +169,10 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         className="w-full"
       >
         <Card
-          className={`group relative flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-[2.5rem] border-2 transition-all duration-500 sm:aspect-square md:aspect-video ${
+          className={`group relative flex aspect-video w-full flex-col overflow-hidden rounded-[2.5rem] border-2 transition-all duration-500 sm:aspect-square md:aspect-video ${
             previewUrl
-              ? 'border-white/5 bg-transparent'
-              : 'border-dashed border-white/5 bg-white/[0.02] hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
+              ? 'border-white/5 bg-transparent p-0'
+              : 'items-center justify-center border-dashed border-white/5 bg-white/[0.02] py-6 hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
           }`}
         >
           <AnimatePresence mode="wait">
@@ -184,12 +184,12 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 exit={{ opacity: 0 }}
                 className="relative h-full w-full"
               >
-                <div className="relative h-full w-full overflow-hidden">
+                <div className="relative h-full w-full overflow-hidden rounded-[2.5rem]">
                   <Image
                     src={previewUrl}
                     alt="Preview"
                     fill
-                    className={`object-contain transition-transform duration-700 ${isScanning ? 'scale-105 blur-[2px]' : 'blur-0 scale-100'}`}
+                    className={`object-cover transition-transform duration-700 ${isScanning ? 'scale-110 blur-[2px]' : 'blur-0 scale-100'}`}
                     unoptimized
                   />
 
@@ -213,7 +213,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                     e.stopPropagation();
                     clearFile();
                   }}
-                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 backdrop-blur-md transition-all hover:bg-red-500 hover:text-white"
+                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
                 >
                   <X className="h-5 w-5" />
                 </Button>
