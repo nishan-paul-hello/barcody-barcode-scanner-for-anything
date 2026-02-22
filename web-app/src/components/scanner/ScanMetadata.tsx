@@ -94,7 +94,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
                     <div className="flex items-center gap-2">
                       <Scan className="h-3 w-3 text-cyan-400/60" />
-                      <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
+                      <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                         Code Type
                       </span>
                     </div>
@@ -105,7 +105,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
                     <div className="flex items-center gap-2">
                       <Clock className="h-3 w-3 text-purple-400/60" />
-                      <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
+                      <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                         Detected At
                       </span>
                     </div>
@@ -132,7 +132,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 <div className="group relative flex min-h-0 flex-1 flex-col space-y-2">
                   <div className="flex items-center gap-2 px-1">
                     <Barcode className="h-3 w-3 text-emerald-400/60" />
-                    <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
+                    <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                       Barcode Content
                     </span>
                   </div>
