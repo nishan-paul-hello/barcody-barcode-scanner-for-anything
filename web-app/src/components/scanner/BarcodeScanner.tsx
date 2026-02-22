@@ -309,7 +309,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
           <video
             ref={videoRef}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             muted
             playsInline
           />
@@ -342,10 +342,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 <div className="animate-scan-line absolute top-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
 
                 {/* Corner Brackets */}
-                <div className="absolute top-10 left-10 h-16 w-16 rounded-tl-3xl border-t-2 border-l-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:left-8 group-hover:border-cyan-400" />
-                <div className="absolute top-10 right-10 h-16 w-16 rounded-tr-3xl border-t-2 border-r-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:right-8 group-hover:border-cyan-400" />
-                <div className="absolute bottom-10 left-10 h-16 w-16 rounded-bl-3xl border-b-2 border-l-2 border-cyan-400/60 transition-all group-hover:bottom-8 group-hover:left-8 group-hover:border-cyan-400" />
-                <div className="absolute right-10 bottom-10 h-16 w-16 rounded-br-3xl border-r-2 border-b-2 border-cyan-400/60 transition-all group-hover:right-8 group-hover:bottom-8 group-hover:border-cyan-400" />
+                <div className="absolute top-0 left-0 h-20 w-20 rounded-tl-[2.5rem] border-t-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute top-0 right-0 h-20 w-20 rounded-tr-[2.5rem] border-t-4 border-r-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute bottom-0 left-0 h-20 w-20 rounded-bl-[2.5rem] border-b-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute right-0 bottom-0 h-20 w-20 rounded-br-[2.5rem] border-r-4 border-b-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
 
                 {/* Vignette */}
                 <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
