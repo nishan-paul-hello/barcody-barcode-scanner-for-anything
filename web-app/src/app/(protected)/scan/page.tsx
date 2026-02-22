@@ -12,7 +12,6 @@ import {
   PackageSearch,
   AlertCircle,
   History,
-  Cpu,
 } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
@@ -102,14 +101,6 @@ export default function ScanPage() {
                   Extraction Results
                 </h2>
               </div>
-              {lastResult && (
-                <div className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-3 py-1">
-                  <Cpu className="h-3 w-3 text-white/30" />
-                  <span className="text-[10px] font-bold text-white/30 uppercase">
-                    Processed
-                  </span>
-                </div>
-              )}
             </div>
 
             <AnimatePresence mode="wait">
