@@ -4,11 +4,10 @@ import { useState } from 'react';
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
 import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Scan, Camera, FileUp, PackageSearch, AlertCircle } from 'lucide-react';
+import { Camera, FileUp, PackageSearch } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
 import { ProductSkeleton } from '@/components/products/ProductSkeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScanInfoDialog } from '@/components/scanner/ScanInfoDialog';
 import { ScanMetadata } from '@/components/scanner/ScanMetadata';
@@ -39,7 +38,7 @@ export default function ScanPage() {
   const [cameraTabActive, setCameraTabActive] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const { data: productData, isLoading, error } = useProduct(lastResult);
+  const { data: productData, isLoading } = useProduct(lastResult);
 
   return (
     <motion.div
@@ -140,89 +139,55 @@ export default function ScanPage() {
         </div>
 
         {/* Row 2: Extraction Results */}
-        <div className="min-w-0 space-y-12">
-          <motion.div variants={itemVariants} className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-cyan-500/10 p-2.5 ring-1 ring-cyan-500/20">
-                  <PackageSearch className="h-5 w-5 text-cyan-400" />
-                </div>
-                <h2 className="text-xl font-bold tracking-tight">
-                  Extraction Results
-                </h2>
-              </div>
-            </div>
-
-            <AnimatePresence mode="wait">
-              {isLoading && (
-                <motion.div
-                  key="skeleton"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <ProductSkeleton />
-                </motion.div>
-              )}
-
-              {error && (
-                <motion.div
-                  key="error"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <Alert
-                    variant="destructive"
-                    className="rounded-3xl border-red-500/20 bg-red-500/5 p-6 text-red-400"
-                  >
-                    <AlertCircle className="h-5 w-5" />
-                    <AlertTitle className="text-lg font-bold">
-                      Entity Not Found
-                    </AlertTitle>
-                    <AlertDescription className="mt-2 text-red-400/70">
-                      Our intelligence network could not match this signature.
-                      Signature: <span className="font-mono">{lastResult}</span>
-                    </AlertDescription>
-                  </Alert>
-                </motion.div>
-              )}
-
-              {productData?.success && (
-                <motion.div
-                  key="data"
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                >
-                  <ProductDetail
-                    product={productData.data}
-                    cacheStatus={productData.cacheStatus}
-                  />
-                </motion.div>
-              )}
-
-              {!lastResult && !isLoading && (
-                <motion.div
-                  key="empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="group flex flex-col items-center justify-center rounded-[2.5rem] border-2 border-dashed border-white/5 bg-white/[0.01] py-20 text-center transition-all hover:bg-white/[0.02]"
-                >
-                  <div className="mb-8 rounded-full bg-white/5 p-8 transition-transform duration-500 group-hover:scale-110">
-                    <Scan className="h-12 w-12 text-white/10 group-hover:text-cyan-500/50" />
+        <AnimatePresence>
+          {(isLoading || productData?.success) && (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="min-w-0 space-y-12"
+            >
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-cyan-500/10 p-2.5 ring-1 ring-cyan-500/20">
+                      <PackageSearch className="h-5 w-5 text-cyan-400" />
+                    </div>
+                    <h2 className="text-xl font-bold tracking-tight">
+                      Extraction Results
+                    </h2>
                   </div>
-                  <h3 className="text-2xl font-bold text-white/60">
-                    Awaiting Signal
-                  </h3>
-                  <p className="mt-4 max-w-[280px] text-sm leading-relaxed text-white/30">
-                    Once a code is detected, product data will be automatically
-                    hydrated here.
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        </div>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  {isLoading && (
+                    <motion.div
+                      key="skeleton"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <ProductSkeleton />
+                    </motion.div>
+                  )}
+
+                  {productData?.success && (
+                    <motion.div
+                      key="data"
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
+                      <ProductDetail
+                        product={productData.data}
+                        cacheStatus={productData.cacheStatus}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
