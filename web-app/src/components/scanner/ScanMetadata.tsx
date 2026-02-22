@@ -183,12 +183,9 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                   />
 
                   {/* Main Icon Container (Circular) - Size matched to Camera status icons (80px) */}
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl transition-all group-hover:border-cyan-500/20 hover:border-cyan-500/30"
-                  >
-                    <Scan className="h-10 w-10 text-white/30 transition-colors group-hover:text-cyan-400" />
-                  </motion.div>
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
+                    <Scan className="h-10 w-10 text-white/30" />
+                  </div>
                 </div>
                 <p className="text-[11px] font-black tracking-[0.3em] text-white/20 uppercase">
                   Waiting for Barcode
