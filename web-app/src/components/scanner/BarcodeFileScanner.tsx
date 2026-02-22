@@ -275,7 +275,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   }}
                 />
                 <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileHover={{ scale: 1.1 }}
                   className="mb-6 rounded-[2rem] bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
                 >
                   <Upload className="h-10 w-10 text-cyan-400" />
