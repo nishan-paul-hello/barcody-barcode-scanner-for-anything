@@ -323,23 +323,22 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Floating Action Toolbar */}
-                <div className="mb-4 flex items-center gap-2 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
+                <div className="mb-4 flex items-center gap-1 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
                   <button
                     onClick={() => setIsPreviewOpen(false)}
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-white"
+                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                   >
                     <X className="h-5 w-5" />
                   </button>
-                  <div className="h-4 w-[1px] bg-white/10" />
                   <button
                     onClick={downloadImage}
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-white"
+                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                   >
                     <Download className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => window.open(previewUrl, '_blank')}
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-white"
+                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </button>
