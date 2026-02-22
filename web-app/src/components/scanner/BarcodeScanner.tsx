@@ -43,27 +43,31 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [flashActive, setFlashActive] = useState(false);
-  const [isCameraActive, setIsCameraActive] = useState(true);
-  const createScanMutation = useCreateScan();
-
-  // Load user preferences from localStorage on mount
-  useEffect(() => {
+  const [soundEnabled, setSoundEnabled] = useState(() => {
     try {
-      const savedSound = localStorage.getItem('barcody_sound_pref');
-      if (savedSound !== null) {
-        // eslint-disable-next-line
-        setSoundEnabled(savedSound === 'true');
-      }
-      const savedCamera = localStorage.getItem('barcody_camera_pref');
-      if (savedCamera !== null) {
-        setIsCameraActive(savedCamera === 'true');
-      }
-    } catch (err) {
-      console.warn('Could not read user preferences:', err);
+      const saved = localStorage.getItem('barcody_sound_pref');
+      return saved !== null ? saved === 'true' : true;
+    } catch {
+      return true;
     }
-  }, []);
+  });
+  const [flashActive, setFlashActive] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(() => {
+    try {
+      const saved = localStorage.getItem('barcody_camera_pref');
+      return saved !== null ? saved === 'true' : true;
+    } catch {
+      return true;
+    }
+  });
+  const [startRetryTrigger, setStartRetryTrigger] = useState(0);
+  const startRetryCountRef = useRef(0);
+  const playBeepRef = useRef<() => void>(() => {});
+  const drawFeedbackRef = useRef<() => void>(() => {});
+  const onScanSuccessRef = useRef(onScanSuccess);
+  const onScanErrorRef = useRef(onScanError);
+  const createScanMutation = useCreateScan();
+  const createScanMutationRef = useRef(createScanMutation);
 
   const handleToggleSound = useCallback(() => {
     const newValue = !soundEnabled;
@@ -84,13 +88,22 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       const newValue =
         forcedState !== undefined ? forcedState : !isCameraActive;
       setIsCameraActive(newValue);
+      // When turning camera ON, ensure we have a device selected so the scanner effect can start
+      if (newValue && !selectedDeviceId && devices.length > 0) {
+        const preferred = devices.find((d) =>
+          /back|rear|environment/i.test(d.label)
+        );
+        setSelectedDeviceId(
+          preferred ? preferred.deviceId : (devices[0]?.deviceId ?? '')
+        );
+      }
       try {
         localStorage.setItem('barcody_camera_pref', String(newValue));
       } catch {
         // Ignored
       }
     },
-    [isCameraActive]
+    [isCameraActive, selectedDeviceId, devices]
   );
 
   const drawFeedback = useCallback(() => {
@@ -153,6 +166,14 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       console.error('Error playing beep:', err);
     }
   }, [soundEnabled]);
+
+  useEffect(() => {
+    playBeepRef.current = playBeep;
+    drawFeedbackRef.current = drawFeedback;
+    onScanSuccessRef.current = onScanSuccess;
+    onScanErrorRef.current = onScanError;
+    createScanMutationRef.current = createScanMutation;
+  }, [playBeep, drawFeedback, onScanSuccess, onScanError, createScanMutation]);
 
   // Initial device listing and reader setup
   useEffect(() => {
@@ -230,18 +251,38 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   useEffect(() => {
     let controls: IScannerControls | null = null;
     let isMounted = true;
+    let retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
     async function start() {
-      if (
-        !active ||
-        !isCameraActive ||
-        !selectedDeviceId ||
-        !videoRef.current ||
-        !readerRef.current
-      ) {
+      if (!active || !isCameraActive || !readerRef.current) {
+        return;
+      }
+      // When camera is on but no device selected yet, pick first device so next effect run will start
+      if (!selectedDeviceId && devices.length > 0) {
+        const preferred = devices.find((d) =>
+          /back|rear|environment/i.test(d.label)
+        );
+        setSelectedDeviceId(
+          preferred ? preferred.deviceId : (devices[0]?.deviceId ?? '')
+        );
+        return;
+      }
+      if (!selectedDeviceId) {
+        return;
+      }
+      // videoRef.current can be null on first run (tab/layout not painted yet); retry after paint
+      if (!videoRef.current) {
+        if (startRetryCountRef.current < 15) {
+          startRetryCountRef.current += 1;
+          retryTimeoutId = setTimeout(
+            () => setStartRetryTrigger((t) => t + 1),
+            80
+          );
+        }
         return;
       }
 
+      startRetryCountRef.current = 0; // reset so future camera-on can retry
       try {
         setIsScanning(true);
         setError(null);
@@ -251,20 +292,20 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           videoRef.current,
           (result, err) => {
             if (result && isMounted) {
-              playBeep();
-              drawFeedback();
+              playBeepRef.current();
+              drawFeedbackRef.current();
 
               const barcodeData = result.getText();
               const formatName = result.getBarcodeFormat().toString();
 
-              onScanSuccess?.(result);
+              onScanSuccessRef.current?.(result);
 
               analytics.trackScanCreated(
                 mapZxingFormatToReadable(result.getBarcodeFormat()),
                 'camera'
               );
 
-              createScanMutation.mutate({
+              createScanMutationRef.current.mutate({
                 barcodeData,
                 barcodeType: mapZxingFormatToReadable(
                   result.getBarcodeFormat()
@@ -293,7 +334,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   err instanceof Error ? err.message : String(err),
                   'camera'
                 );
-                onScanError?.(err);
+                onScanErrorRef.current?.(err);
               }
             }
           }
@@ -303,6 +344,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           newControls.stop();
         } else {
           controls = newControls;
+          // Ensure video is playing (some browsers need explicit play after stream attach)
+          requestAnimationFrame(() => {
+            videoRef.current?.play().catch(() => {});
+          });
         }
       } catch (err) {
         if (isMounted) {
@@ -319,21 +364,13 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     return () => {
       isMounted = false;
+      if (retryTimeoutId) clearTimeout(retryTimeoutId);
       if (controls) {
         controls.stop();
       }
       setIsScanning(false);
     };
-  }, [
-    active,
-    isCameraActive,
-    selectedDeviceId,
-    playBeep,
-    drawFeedback,
-    onScanSuccess,
-    onScanError,
-    createScanMutation,
-  ]);
+  }, [active, isCameraActive, selectedDeviceId, devices, startRetryTrigger]);
 
   const switchCamera = useCallback(() => {
     if (devices.length < 2) return;

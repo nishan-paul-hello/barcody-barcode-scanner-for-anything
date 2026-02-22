@@ -38,6 +38,7 @@ const itemVariants = {
 
 export default function ScanPage() {
   const [lastResult, setLastResult] = useState<string | null>(null);
+  const [cameraTabActive, setCameraTabActive] = useState(true);
   const { data: productData, isLoading, error } = useProduct(lastResult);
 
   return (
@@ -53,7 +54,11 @@ export default function ScanPage() {
       <div className="grid gap-12 lg:grid-cols-[1fr_350px]">
         <div className="space-y-12">
           <motion.div variants={itemVariants} className="relative">
-            <Tabs defaultValue="camera" className="w-full">
+            <Tabs
+              value={cameraTabActive ? 'camera' : 'file'}
+              onValueChange={(v) => setCameraTabActive(v === 'camera')}
+              className="w-full"
+            >
               <div className="mb-8 flex justify-center">
                 <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
                   <TabsTrigger
@@ -75,6 +80,7 @@ export default function ScanPage() {
 
               <TabsContent value="camera" className="m-0 outline-none">
                 <BarcodeScanner
+                  active={cameraTabActive}
                   onScanSuccess={(result) => setLastResult(result.getText())}
                 />
               </TabsContent>
