@@ -308,7 +308,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
           <video
             ref={videoRef}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700"
             muted
             playsInline
           />
