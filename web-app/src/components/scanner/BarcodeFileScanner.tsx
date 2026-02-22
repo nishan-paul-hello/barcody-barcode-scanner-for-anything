@@ -5,7 +5,7 @@ import { analytics } from '@/lib/analytics.service';
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
-import { Upload, X, Loader2, AlertCircle } from 'lucide-react';
+import { Upload, X, Loader2, Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
@@ -28,6 +28,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createScanMutation = useCreateScan();
 
@@ -154,6 +155,16 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     return () => window.removeEventListener('paste', onPaste);
   }, [onPaste]);
 
+  const downloadImage = () => {
+    if (!previewUrl) return;
+    const link = document.createElement('a');
+    link.href = previewUrl;
+    link.download = `barcode-asset-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const clearFile = () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
@@ -179,17 +190,20 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             {previewUrl ? (
               <motion.div
                 key="preview"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
                 className="relative h-full w-full"
               >
-                <div className="relative h-full w-full overflow-hidden rounded-[2.5rem]">
+                <div
+                  className="group/img relative h-full w-full cursor-zoom-in overflow-hidden rounded-[2.5rem]"
+                  onClick={() => setIsPreviewOpen(true)}
+                >
                   <Image
                     src={previewUrl}
                     alt="Preview"
                     fill
-                    className={`object-cover transition-transform duration-700 ${isScanning ? 'scale-110 blur-[2px]' : 'blur-0 scale-100'}`}
+                    className={`object-cover transition-all duration-700 group-hover/img:scale-105 ${isScanning ? 'blur-[2px]' : 'blur-0'}`}
                     unoptimized
                   />
 
@@ -278,11 +292,11 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="flex items-center justify-between gap-4 rounded-3xl border border-red-500/20 bg-red-500/5 p-5"
+            className="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-red-500/20 bg-red-500/5 p-5"
           >
             <div className="flex items-center gap-4">
               <div className="rounded-full bg-red-500/10 p-2.5 ring-1 ring-red-500/20">
-                <AlertCircle className="h-5 w-5 text-red-500" />
+                <X className="h-5 w-5 text-red-500" />
               </div>
               <div>
                 <p className="text-sm font-bold text-white/90">System Error</p>
@@ -291,6 +305,61 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             </div>
           </motion.div>
         )}
+        <AnimatePresence>
+          {isPreviewOpen && previewUrl && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md md:p-8"
+              onClick={() => setIsPreviewOpen(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="relative flex max-h-[85vh] w-full max-w-4xl flex-col items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Floating Action Toolbar */}
+                <div className="mb-4 flex items-center gap-2 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
+                  <button
+                    onClick={() => setIsPreviewOpen(false)}
+                    className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-white"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                  <div className="h-4 w-[1px] bg-white/10" />
+                  <button
+                    onClick={downloadImage}
+                    className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-white"
+                  >
+                    <Download className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => window.open(previewUrl, '_blank')}
+                    className="flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-white"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Moderated Image Container */}
+                <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/40 shadow-2xl ring-1 ring-white/5 backdrop-blur-3xl">
+                  <Image
+                    src={previewUrl}
+                    alt="Full Preview"
+                    width={1600}
+                    height={1200}
+                    className="h-auto max-h-[70vh] w-auto max-w-full object-contain"
+                    unoptimized
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </AnimatePresence>
     </div>
   );
