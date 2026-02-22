@@ -175,7 +175,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         <Card
           className={`group relative flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-[2.5rem] border-2 transition-all duration-500 sm:aspect-square md:aspect-video ${
             previewUrl
-              ? 'border-white/10 bg-black/40 backdrop-blur-3xl'
+              ? 'border-white/5 bg-transparent'
               : 'border-dashed border-white/5 bg-white/[0.02] hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
           }`}
         >
@@ -186,54 +186,48 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="relative h-full w-full p-4"
+                className="relative h-full w-full"
               >
-                <div className="relative h-full w-full overflow-hidden rounded-3xl ring-1 ring-white/10">
+                <div className="relative h-full w-full overflow-hidden">
                   <Image
                     src={previewUrl}
                     alt="Preview"
                     fill
-                    className={`object-contain transition-transform duration-700 ${isScanning ? 'scale-110 blur-[2px]' : 'blur-0 scale-100'}`}
+                    className={`object-contain transition-transform duration-700 ${isScanning ? 'scale-105 blur-[2px]' : 'blur-0 scale-100'}`}
                     unoptimized
                   />
 
-                  {/* High-tech overlay for preview */}
+                  {/* Status overlays */}
                   <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-
                     {isScanning && (
                       <>
-                        <div className="animate-scan-line absolute top-0 left-0 h-[2px] w-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-cyan-500/5 backdrop-blur-[1px]">
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{
-                              duration: 2,
-                              repeat: Infinity,
-                              ease: 'linear',
-                            }}
-                          >
-                            <Loader2 className="h-10 w-10 text-cyan-400" />
-                          </motion.div>
-                          <p className="mt-4 text-[10px] font-bold tracking-[0.2em] text-cyan-400 uppercase">
-                            Processing Data
-                          </p>
+                        <div className="animate-scan-line absolute top-0 left-0 h-[1px] w-full bg-cyan-400/50 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-transparent backdrop-blur-[1px]">
+                          <Loader2 className="h-8 w-8 animate-spin text-cyan-400/60" />
                         </div>
                       </>
                     )}
 
-                    {!isScanning && isSuccess && (
+                    {!isScanning && (isSuccess || error) && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="absolute inset-0 flex flex-col items-center justify-center bg-emerald-500/10 backdrop-blur-[2px]"
+                        className="absolute bottom-6 left-6 flex items-center gap-2 rounded-full border border-white/10 bg-black/40 p-1.5 pr-4 backdrop-blur-md"
                       >
-                        <div className="rounded-full bg-emerald-500/20 p-4 ring-1 ring-emerald-500/40">
-                          <CheckCircle2 className="h-10 w-10 text-emerald-400" />
+                        <div
+                          className={`rounded-full p-1.5 ${isSuccess ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}
+                        >
+                          {isSuccess ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                          ) : (
+                            <AlertCircle className="h-3.5 w-3.5 text-red-400" />
+                          )}
                         </div>
-                        <p className="mt-4 text-[10px] font-bold tracking-[0.2em] text-emerald-400 uppercase">
-                          Success Detected
-                        </p>
+                        <span
+                          className={`text-[10px] font-bold tracking-widest uppercase ${isSuccess ? 'text-emerald-400/80' : 'text-red-400/80'}`}
+                        >
+                          {isSuccess ? 'Detected' : 'Failed'}
+                        </span>
                       </motion.div>
                     )}
                   </div>
@@ -246,7 +240,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                     e.stopPropagation();
                     clearFile();
                   }}
-                  className="absolute top-8 right-8 h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/70 backdrop-blur-md transition-all hover:bg-red-500 hover:text-white"
+                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 backdrop-blur-md transition-all hover:bg-red-500 hover:text-white"
                 >
                   <X className="h-5 w-5" />
                 </Button>
@@ -306,48 +300,22 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
       </motion.div>
 
       <AnimatePresence>
-        {error && (
+        {!isScanning && error && !previewUrl && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className={`flex items-center justify-between gap-4 rounded-3xl border p-5 ${
-              previewUrl
-                ? 'border-amber-500/20 bg-amber-500/5 transition-colors'
-                : 'border-red-500/20 bg-red-500/5'
-            }`}
+            className="flex items-center justify-between gap-4 rounded-3xl border border-red-500/20 bg-red-500/5 p-5"
           >
             <div className="flex items-center gap-4">
-              <div
-                className={`rounded-full p-2.5 ${
-                  previewUrl ? 'bg-amber-500/10' : 'bg-red-500/10'
-                }`}
-              >
-                <AlertCircle
-                  className={`h-5 w-5 ${previewUrl ? 'text-amber-500' : 'text-red-500'}`}
-                />
+              <div className="rounded-full bg-red-500/10 p-2.5 ring-1 ring-red-500/20">
+                <AlertCircle className="h-5 w-5 text-red-500" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white/90">
-                  {previewUrl ? 'Detection Failed' : 'System Error'}
-                </p>
+                <p className="text-sm font-bold text-white/90">System Error</p>
                 <p className="text-xs text-white/40">{error}</p>
               </div>
             </div>
-            {previewUrl && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => scanImage(previewUrl)}
-                disabled={isScanning}
-                className="h-10 rounded-full border-white/10 bg-white/5 px-6 text-[11px] font-bold tracking-widest text-white uppercase hover:bg-white/10"
-              >
-                {isScanning ? (
-                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                ) : null}
-                Retry Scan
-              </Button>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
