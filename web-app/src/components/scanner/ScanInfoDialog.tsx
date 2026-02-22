@@ -9,7 +9,16 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Info, FileType, Cpu, Zap, X } from 'lucide-react';
+import {
+  Info,
+  FileType,
+  Cpu,
+  Zap,
+  X,
+  Binary,
+  Database,
+  Box,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -77,19 +86,13 @@ export const ScanInfoDialog: React.FC = () => {
         showCloseButton={false}
       >
         <div className="relative p-8">
-          {/* Decorative background effects */}
-          <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-cyan-500/10 blur-[60px]" />
-          <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-purple-500/10 blur-[60px]" />
-
-          <DialogClose className="absolute top-6 right-6 z-50 rounded-full bg-white/5 p-2 text-white/40 transition-all hover:bg-white/10 hover:text-white">
+          <DialogClose className="absolute top-6 right-6 z-50 cursor-pointer rounded-full bg-white/5 p-2 text-white/40 transition-all hover:bg-white/10 hover:text-white">
             <X className="h-4 w-4" />
           </DialogClose>
 
           <DialogHeader className="relative mb-10">
             <div className="mb-4 flex items-center gap-4">
-              <div className="rounded-2xl bg-cyan-500/10 p-3.5 ring-1 ring-cyan-500/20">
-                <Cpu className="h-7 w-7 text-cyan-400" />
-              </div>
+              <Cpu className="h-8 w-8 text-cyan-400" />
               <div>
                 <DialogTitle className="text-3xl font-black tracking-tight text-white">
                   System Specification
@@ -108,7 +111,7 @@ export const ScanInfoDialog: React.FC = () => {
             <div className="space-y-10">
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2 text-white/90">
-                  <div className="h-1 w-4 rounded-full bg-cyan-500" />
+                  <Box className="h-4 w-4 text-cyan-400" />
                   <h4 className="text-xs font-black tracking-widest text-white/60 uppercase">
                     Input Sources
                   </h4>
@@ -136,26 +139,26 @@ export const ScanInfoDialog: React.FC = () => {
 
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2 text-white/90">
-                  <div className="h-1 w-4 rounded-full bg-cyan-500" />
+                  <Database className="h-4 w-4 text-cyan-400" />
                   <h4 className="text-xs font-black tracking-widest text-white/60 uppercase">
                     Data Constraints
                   </h4>
                 </div>
-                <div className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-cyan-500/5 p-6">
-                  <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Zap className="h-12 w-12 text-cyan-400" />
+                <div className="relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-6 shadow-inner">
+                  <div className="absolute top-0 right-0 p-4 opacity-5">
+                    <Zap className="h-12 w-12 text-white" />
                   </div>
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="text-[10px] font-black tracking-widest text-cyan-400/60 uppercase">
-                      Maximum Payload
+                    <span className="text-[10px] font-black tracking-widest text-white/20 uppercase">
+                      Capacity Limit
                     </span>
                   </div>
                   <div className="flex items-baseline gap-3">
-                    <span className="text-4xl font-black tracking-tighter text-white">
+                    <span className="text-4xl font-black tracking-tighter text-white/90">
                       10
                     </span>
-                    <span className="text-sm font-bold text-cyan-400/60">
-                      MB / File
+                    <span className="text-xs font-bold tracking-wider text-white/30 uppercase">
+                      Megabytes / Asset
                     </span>
                   </div>
                 </div>
@@ -166,7 +169,7 @@ export const ScanInfoDialog: React.FC = () => {
             <div className="space-y-6">
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2 text-white/90">
-                  <div className="h-1 w-4 rounded-full bg-cyan-500" />
+                  <Binary className="h-4 w-4 text-cyan-400" />
                   <h4 className="text-xs font-black tracking-widest text-white/60 uppercase">
                     Decoding Matrix
                   </h4>
