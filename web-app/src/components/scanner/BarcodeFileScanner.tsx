@@ -258,15 +258,16 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 </Button>
               </motion.div>
             ) : (
-              <motion.label
+              <motion.div
                 key="upload"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex h-full w-full cursor-pointer flex-col items-center justify-center p-8 text-center"
+                className="flex h-full w-full flex-col items-center justify-center p-8 text-center"
               >
                 <input
                   type="file"
+                  id="barcode-image-upload"
                   ref={fileInputRef}
                   className="hidden"
                   accept={ALLOWED_TYPES.join(',')}
@@ -275,12 +276,17 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                     if (selectedFile) handleFile(selectedFile);
                   }}
                 />
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  className="mb-6 rounded-[2rem] bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
+                <label
+                  htmlFor="barcode-image-upload"
+                  className="cursor-pointer"
                 >
-                  <Upload className="h-10 w-10 text-cyan-400" />
-                </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="mb-6 rounded-[2rem] bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
+                  >
+                    <Upload className="h-10 w-10 text-cyan-400" />
+                  </motion.div>
+                </label>
                 <h3 className="mb-2 text-xl font-bold tracking-tight text-white/90">
                   Upload Image
                 </h3>
@@ -299,7 +305,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   </kbd>
                   <span>to paste an image</span>
                 </div>
-              </motion.label>
+              </motion.div>
             )}
           </AnimatePresence>
         </Card>
