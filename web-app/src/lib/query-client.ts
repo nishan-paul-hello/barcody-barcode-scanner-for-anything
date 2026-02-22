@@ -1,4 +1,9 @@
-import { QueryClient, QueryCache } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryCache,
+  MutationCache,
+  type Mutation,
+} from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 
@@ -22,22 +27,33 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
     },
-    mutations: {
-      onError: (error) => {
-        let message = 'An unexpected error occurred';
-        if (error instanceof AxiosError) {
-          message = error.response?.data?.message || error.message || message;
-        } else if (error instanceof Error) {
-          message = error.message;
-        }
-        toast.error(message);
-        console.error('Mutation Error:', error);
-      },
-    },
   },
+  mutationCache: new MutationCache({
+    onError: (
+      error: unknown,
+      _vars: unknown,
+      _context: unknown,
+      mutation: Mutation<unknown, unknown, unknown, unknown>
+    ) => {
+      let message = 'An unexpected error occurred';
+      if (mutation.meta?.suppressErrorToast) {
+        return;
+      }
+      if (error instanceof AxiosError) {
+        message = error.response?.data?.message || error.message || message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      }
+      toast.error(message);
+      console.error('Mutation Error:', error);
+    },
+  }),
   queryCache: new QueryCache({
-    onError: (error) => {
+    onError: (error, query) => {
       let message = 'Failed to fetch data';
+      if (query.meta?.suppressErrorToast) {
+        return;
+      }
       if (error instanceof AxiosError) {
         // Don't show toast for 401s as they are handled by auth logic
         if (error.response?.status === 401) return;

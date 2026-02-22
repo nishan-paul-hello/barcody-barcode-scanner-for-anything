@@ -9,7 +9,6 @@ import { Upload, X, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
-import { toast } from 'sonner';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -97,10 +96,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
               timestamp: Date.now(),
             },
           });
-
-          toast.success(`Barcode detected: ${barcodeData}`, {
-            description: `Format: ${formatName}`,
-          });
         }
       } catch (err) {
         console.error('OCR/Barcode Scan error:', err);
@@ -109,7 +104,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         setError(errorMessage);
         analytics.trackScanFailed(errorMessage, 'file');
         onScanError?.(err);
-        toast.error('Scan failed', { description: errorMessage });
       } finally {
         setIsScanning(false);
       }

@@ -40,6 +40,9 @@ export function useCreateScan() {
 
   return useMutation({
     mutationFn: (dto: CreateScanDto) => api.scans.createScan(dto),
+    meta: {
+      suppressErrorToast: true,
+    },
     onMutate: async (newScan) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
@@ -87,9 +90,7 @@ export function useCreateScan() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {
-      toast.success('Scan created successfully');
-    },
+    onSuccess: () => {},
   });
 }
 

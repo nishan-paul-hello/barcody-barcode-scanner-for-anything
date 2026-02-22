@@ -3,7 +3,6 @@ import { queryClient } from '@/lib/query-client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useSocketStore } from '@/store/useSocketStore';
 import type { ScanResponseDto, PaginatedResponse } from '@/lib/api/types';
-import { toast } from 'sonner';
 
 interface QueuedMessage {
   event: string;
@@ -104,9 +103,6 @@ class SocketService {
 
   private handleScanCreated(scan: ScanResponseDto) {
     console.warn('Real-time: Scan created', scan);
-    toast.success(`New scan received: ${scan.barcodeData}`, {
-      description: scan.product?.name || 'Product details pending...',
-    });
 
     // Invalidate the scans list to trigger a refetch
     // This ensures consistency even if we don't manually update the cache

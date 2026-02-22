@@ -19,7 +19,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
-import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BarcodeScannerProps {
@@ -310,10 +309,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 deviceType: 'web',
                 scannedAt: new Date().toISOString(),
                 metadata: { format: formatName, timestamp: Date.now() },
-              });
-
-              toast.info(`Scanned: ${barcodeData}`, {
-                description: `Format: ${formatName}`,
               });
             }
             if (err && isMounted) {
