@@ -4,21 +4,15 @@ import { useState } from 'react';
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
 import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Scan,
-  Camera,
-  FileUp,
-  PackageSearch,
-  AlertCircle,
-  History,
-} from 'lucide-react';
+import { Scan, Camera, FileUp, PackageSearch, AlertCircle } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
 import { ProductSkeleton } from '@/components/products/ProductSkeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScanInfoDialog } from '@/components/scanner/ScanInfoDialog';
+import { ScanMetadata } from '@/components/scanner/ScanMetadata';
+import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -37,7 +31,13 @@ const itemVariants = {
 
 export default function ScanPage() {
   const [lastResult, setLastResult] = useState<string | null>(null);
+  const [scanMetadata, setScanMetadata] = useState<{
+    format: string;
+    source: 'Camera' | 'Asset Upload';
+    timestamp: string;
+  } | null>(null);
   const [cameraTabActive, setCameraTabActive] = useState(true);
+
   const { data: productData, isLoading, error } = useProduct(lastResult);
 
   return (
@@ -83,12 +83,30 @@ export default function ScanPage() {
               <TabsContent value="camera" className="m-0 outline-none">
                 <BarcodeScanner
                   active={cameraTabActive}
-                  onScanSuccess={(result) => setLastResult(result.getText())}
+                  onScanSuccess={(result) => {
+                    setLastResult(result.getText());
+                    setScanMetadata({
+                      format: mapZxingFormatToReadable(
+                        result.getBarcodeFormat()
+                      ),
+                      source: 'Camera',
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
                 />
               </TabsContent>
               <TabsContent value="file" className="m-0 outline-none">
                 <BarcodeFileScanner
-                  onScanSuccess={(result) => setLastResult(result.getText())}
+                  onScanSuccess={(result) => {
+                    setLastResult(result.getText());
+                    setScanMetadata({
+                      format: mapZxingFormatToReadable(
+                        result.getBarcodeFormat()
+                      ),
+                      source: 'Asset Upload',
+                      timestamp: new Date().toISOString(),
+                    });
+                  }}
                 />
               </TabsContent>
             </Tabs>
@@ -180,38 +198,12 @@ export default function ScanPage() {
 
         <aside className="space-y-8">
           <motion.div variants={itemVariants}>
-            <Card className="overflow-hidden rounded-[2rem] border-white/5 bg-black/40 backdrop-blur-3xl">
-              <CardHeader className="border-b border-white/5 bg-white/5 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-cyan-500/10 p-2">
-                    <History className="h-4 w-4 text-cyan-400" />
-                  </div>
-                  <CardTitle className="text-sm font-bold tracking-wider uppercase">
-                    Telemetry
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-6">
-                {lastResult ? (
-                  <div className="group relative rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-4 transition-all hover:bg-cyan-500/10">
-                    <div className="mb-2 text-[10px] font-bold tracking-widest text-cyan-400/60 uppercase">
-                      Raw Signature
-                    </div>
-                    <p className="font-mono text-xs leading-relaxed break-all text-cyan-400">
-                      {lastResult}
-                    </p>
-                    <div className="absolute top-4 right-4 h-2 w-2 animate-pulse rounded-full bg-cyan-400" />
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center rounded-2xl border border-white/5 bg-white/5 py-10 text-center">
-                    <Scan className="mb-4 h-8 w-8 text-white/10" />
-                    <p className="text-[11px] font-bold tracking-widest text-white/20 uppercase">
-                      No Data Recorded
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <ScanMetadata
+              result={lastResult}
+              format={scanMetadata?.format}
+              source={scanMetadata?.source}
+              timestamp={scanMetadata?.timestamp}
+            />
           </motion.div>
         </aside>
       </div>
