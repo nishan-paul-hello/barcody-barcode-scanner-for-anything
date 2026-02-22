@@ -447,36 +447,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           </div>
         </Card>
       </motion.div>
-
-      <div className="flex w-full items-center justify-between px-4">
-        <div className="flex items-center space-x-3">
-          <motion.div
-            animate={
-              isScanning
-                ? {
-                    scale: [1, 1.2, 1],
-                    opacity: [1, 0.7, 1],
-                  }
-                : {}
-            }
-            transition={{ duration: 2, repeat: Infinity }}
-            className={`h-2.5 w-2.5 rounded-full ${isScanning ? 'bg-cyan-500' : 'bg-red-500'}`}
-          />
-          <span className="text-[11px] font-bold tracking-[0.2em] text-white/40 uppercase">
-            {isScanning ? 'System Online' : 'System Standby'}
-          </span>
-        </div>
-
-        {devices.length > 0 && (
-          <div className="group flex items-center gap-2">
-            <div className="h-1 w-1 rounded-full bg-white/20 transition-colors group-hover:bg-cyan-500" />
-            <span className="max-w-[150px] truncate text-[11px] font-medium text-white/30 transition-colors group-hover:text-white/60">
-              {devices.find((d) => d.deviceId === selectedDeviceId)?.label ||
-                'Standard Input'}
-            </span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
