@@ -52,14 +52,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     }
   });
   const [flashActive, setFlashActive] = useState(false);
-  const [isCameraActive, setIsCameraActive] = useState(() => {
-    try {
-      const saved = localStorage.getItem('barcody_camera_pref');
-      return saved !== null ? saved === 'true' : true;
-    } catch {
-      return true;
-    }
-  });
+  const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
   const startRetryCountRef = useRef(0);
   const playBeepRef = useRef<() => void>(() => {});
@@ -68,6 +61,14 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const onScanErrorRef = useRef(onScanError);
   const createScanMutation = useCreateScan();
   const createScanMutationRef = useRef(createScanMutation);
+
+  // Turn camera off when tab is left or context is lost (saves cost); stays off until user clicks camera on
+  useEffect(() => {
+    if (!active) {
+      const id = setTimeout(() => setIsCameraActive(false), 0);
+      return () => clearTimeout(id);
+    }
+  }, [active]);
 
   const handleToggleSound = useCallback(() => {
     const newValue = !soundEnabled;
@@ -96,11 +97,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         setSelectedDeviceId(
           preferred ? preferred.deviceId : (devices[0]?.deviceId ?? '')
         );
-      }
-      try {
-        localStorage.setItem('barcody_camera_pref', String(newValue));
-      } catch {
-        // Ignored
       }
     },
     [isCameraActive, selectedDeviceId, devices]
