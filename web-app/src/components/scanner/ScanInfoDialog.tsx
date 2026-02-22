@@ -81,11 +81,11 @@ export const ScanInfoDialog: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-[20%] px-3 py-1.5"
+              className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 px-3 py-1.5"
             >
               <div className="relative rounded-lg border border-white/10 bg-black/80 px-3 py-1.5 text-[10px] font-bold tracking-wider whitespace-nowrap text-white/50 uppercase shadow-2xl backdrop-blur-xl">
                 View Specifications
-                <div className="absolute -bottom-1 left-[20%] h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-white/10 bg-black/80" />
+                <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-white/10 bg-black/80" />
               </div>
             </motion.div>
           )}
