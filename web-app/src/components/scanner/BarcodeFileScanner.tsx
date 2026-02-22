@@ -29,6 +29,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [imgDims, setImgDims] = useState<{ w: number; h: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createScanMutation = useCreateScan();
 
@@ -125,6 +126,14 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
 
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+
+      // Capture dimensions for proportional rounding
+      const img = new window.Image();
+      img.onload = () => {
+        setImgDims({ w: img.naturalWidth, h: img.naturalHeight });
+      };
+      img.src = url;
+
       await scanImage(url);
     },
     [scanImage]
@@ -196,14 +205,14 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 className="relative h-full w-full"
               >
                 <div
-                  className="group/img relative h-full w-full cursor-zoom-in overflow-hidden rounded-[2.5rem]"
+                  className="group/img relative h-full w-full cursor-pointer overflow-hidden rounded-[2.5rem]"
                   onClick={() => setIsPreviewOpen(true)}
                 >
                   <Image
                     src={previewUrl}
                     alt="Preview"
                     fill
-                    className={`object-cover transition-all duration-700 group-hover/img:scale-105 ${isScanning ? 'blur-[2px]' : 'blur-0'}`}
+                    className={`object-cover transition-all duration-700 ${isScanning ? 'blur-[2px]' : 'blur-0'}`}
                     unoptimized
                   />
 
@@ -344,14 +353,24 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   </button>
                 </div>
 
-                {/* Moderated Image Container */}
-                <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/40 shadow-2xl ring-1 ring-white/5 backdrop-blur-3xl">
+                {/* Dynamic Image Container */}
+                <div
+                  className="relative overflow-hidden shadow-2xl ring-1 ring-white/5 backdrop-blur-3xl"
+                  style={{
+                    borderRadius: imgDims
+                      ? `${Math.min(imgDims.w, imgDims.h) * 0.05}px`
+                      : '2rem',
+                    aspectRatio: imgDims
+                      ? `${imgDims.w} / ${imgDims.h}`
+                      : 'auto',
+                  }}
+                >
                   <Image
                     src={previewUrl}
                     alt="Full Preview"
-                    width={1600}
-                    height={1200}
-                    className="h-auto max-h-[70vh] w-auto max-w-full object-contain"
+                    width={imgDims?.w || 1600}
+                    height={imgDims?.h || 1200}
+                    className="h-auto max-h-[75vh] w-auto max-w-full object-contain"
                     unoptimized
                   />
                 </div>
