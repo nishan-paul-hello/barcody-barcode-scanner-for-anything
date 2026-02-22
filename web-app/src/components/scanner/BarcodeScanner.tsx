@@ -46,8 +46,52 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [flashActive, setFlashActive] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(true);
-  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
   const createScanMutation = useCreateScan();
+
+  // Load user preferences from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedSound = localStorage.getItem('barcody_sound_pref');
+      if (savedSound !== null) {
+        // eslint-disable-next-line
+        setSoundEnabled(savedSound === 'true');
+      }
+      const savedCamera = localStorage.getItem('barcody_camera_pref');
+      if (savedCamera !== null) {
+        setIsCameraActive(savedCamera === 'true');
+      }
+    } catch (err) {
+      console.warn('Could not read user preferences:', err);
+    }
+  }, []);
+
+  const handleToggleSound = useCallback(() => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    try {
+      localStorage.setItem('barcody_sound_pref', String(newValue));
+    } catch {
+      // Ignored
+    }
+    analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
+      setting: 'sound_enabled',
+      value: newValue,
+    });
+  }, [soundEnabled]);
+
+  const handleToggleCamera = useCallback(
+    (forcedState?: boolean) => {
+      const newValue =
+        forcedState !== undefined ? forcedState : !isCameraActive;
+      setIsCameraActive(newValue);
+      try {
+        localStorage.setItem('barcody_camera_pref', String(newValue));
+      } catch {
+        // Ignored
+      }
+    },
+    [isCameraActive]
+  );
 
   const drawFeedback = useCallback(() => {
     setFlashActive(true);
@@ -109,28 +153,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       console.error('Error playing beep:', err);
     }
   }, [soundEnabled]);
-
-  const resetTimer = useCallback(() => {
-    if (inactivityTimerRef.current) {
-      clearTimeout(inactivityTimerRef.current);
-    }
-    if (isCameraActive) {
-      inactivityTimerRef.current = setTimeout(() => {
-        setIsCameraActive(false);
-      }, 60000); // 60 seconds inactivity timeout
-    }
-  }, [isCameraActive]);
-
-  useEffect(() => {
-    if (isCameraActive) {
-      resetTimer();
-    }
-    return () => {
-      if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current);
-      }
-    };
-  }, [isCameraActive, resetTimer]);
 
   // Initial device listing and reader setup
   useEffect(() => {
@@ -231,7 +253,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             if (result && isMounted) {
               playBeep();
               drawFeedback();
-              resetTimer();
 
               const barcodeData = result.getText();
               const formatName = result.getBarcodeFormat().toString();
@@ -309,7 +330,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     selectedDeviceId,
     playBeep,
     drawFeedback,
-    resetTimer,
     onScanSuccess,
     onScanError,
     createScanMutation,
@@ -450,7 +470,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           {/* Controls Bar */}
           <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
             <button
-              onClick={() => setIsCameraActive(!isCameraActive)}
+              onClick={() => handleToggleCamera()}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {isCameraActive ? (
@@ -460,14 +480,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
               )}
             </button>
             <button
-              onClick={() => {
-                const newValue = !soundEnabled;
-                setSoundEnabled(newValue);
-                analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
-                  setting: 'sound_enabled',
-                  value: newValue,
-                });
-              }}
+              onClick={handleToggleSound}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {soundEnabled ? (
