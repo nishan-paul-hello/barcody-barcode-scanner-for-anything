@@ -5,7 +5,7 @@ import { analytics } from '@/lib/analytics.service';
 import React, { useState, useCallback, useRef } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
-import { Upload, X, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Upload, X, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
@@ -28,7 +28,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createScanMutation = useCreateScan();
 
@@ -36,7 +35,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     async (url: string) => {
       setIsScanning(true);
       setError(null);
-      setIsSuccess(false);
 
       const hints = new Map();
       hints.set(DecodeHintType.POSSIBLE_FORMATS, [
@@ -77,7 +75,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           const formatName = result.getBarcodeFormat().toString();
 
           onScanSuccess?.(result);
-          setIsSuccess(true);
 
           analytics.trackScanCreated(
             mapZxingFormatToReadable(result.getBarcodeFormat()),
@@ -161,7 +158,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setError(null);
-    setIsSuccess(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -206,29 +202,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                           <Loader2 className="h-8 w-8 animate-spin text-cyan-400/60" />
                         </div>
                       </>
-                    )}
-
-                    {!isScanning && (isSuccess || error) && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="absolute bottom-6 left-6 flex items-center gap-2 rounded-full border border-white/10 bg-black/40 p-1.5 pr-4 backdrop-blur-md"
-                      >
-                        <div
-                          className={`rounded-full p-1.5 ${isSuccess ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}
-                        >
-                          {isSuccess ? (
-                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                          ) : (
-                            <AlertCircle className="h-3.5 w-3.5 text-red-400" />
-                          )}
-                        </div>
-                        <span
-                          className={`text-[10px] font-bold tracking-widest uppercase ${isSuccess ? 'text-emerald-400/80' : 'text-red-400/80'}`}
-                        >
-                          {isSuccess ? 'Detected' : 'Failed'}
-                        </span>
-                      </motion.div>
                     )}
                   </div>
                 </div>

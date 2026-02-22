@@ -10,6 +10,7 @@ interface ScanMetadataProps {
   format?: string;
   source?: 'Camera' | 'Asset Upload';
   timestamp?: string;
+  isError?: boolean;
 }
 
 export const ScanMetadata: React.FC<ScanMetadataProps> = ({
@@ -17,6 +18,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   format = 'Unknown',
   source = 'Camera',
   timestamp,
+  isError = false,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -62,6 +64,18 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 Barcode Details
               </CardTitle>
             </div>
+            {isError && (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1"
+              >
+                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+                <span className="text-[9px] font-black tracking-widest text-red-500 uppercase">
+                  Failed
+                </span>
+              </motion.div>
+            )}
           </div>
         </CardHeader>
 

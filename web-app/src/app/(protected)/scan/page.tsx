@@ -37,6 +37,7 @@ export default function ScanPage() {
     timestamp: string;
   } | null>(null);
   const [cameraTabActive, setCameraTabActive] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const { data: productData, isLoading, error } = useProduct(lastResult);
 
@@ -85,6 +86,7 @@ export default function ScanPage() {
                   active={cameraTabActive}
                   onScanSuccess={(result) => {
                     setLastResult(result.getText());
+                    setHasError(false);
                     setScanMetadata({
                       format: mapZxingFormatToReadable(
                         result.getBarcodeFormat()
@@ -93,12 +95,18 @@ export default function ScanPage() {
                       timestamp: new Date().toISOString(),
                     });
                   }}
+                  onScanError={() => {
+                    setHasError(true);
+                    setLastResult(null);
+                    setScanMetadata(null);
+                  }}
                 />
               </TabsContent>
               <TabsContent value="file" className="m-0 outline-none">
                 <BarcodeFileScanner
                   onScanSuccess={(result) => {
                     setLastResult(result.getText());
+                    setHasError(false);
                     setScanMetadata({
                       format: mapZxingFormatToReadable(
                         result.getBarcodeFormat()
@@ -106,6 +114,11 @@ export default function ScanPage() {
                       source: 'Asset Upload',
                       timestamp: new Date().toISOString(),
                     });
+                  }}
+                  onScanError={() => {
+                    setHasError(true);
+                    setLastResult(null);
+                    setScanMetadata(null);
                   }}
                 />
               </TabsContent>
@@ -203,6 +216,7 @@ export default function ScanPage() {
               format={scanMetadata?.format}
               source={scanMetadata?.source}
               timestamp={scanMetadata?.timestamp}
+              isError={hasError}
             />
           </motion.div>
         </aside>
