@@ -18,6 +18,7 @@ import { ProductDetail } from '@/components/products/ProductDetail';
 import { ProductSkeleton } from '@/components/products/ProductSkeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScanInfoDialog } from '@/components/scanner/ScanInfoDialog';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -57,7 +58,7 @@ export default function ScanPage() {
               onValueChange={(v) => setCameraTabActive(v === 'camera')}
               className="w-full"
             >
-              <div className="mb-8 flex justify-center">
+              <div className="relative mb-8 flex items-center justify-center">
                 <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
                   <TabsTrigger
                     value="camera"
@@ -74,6 +75,9 @@ export default function ScanPage() {
                     Asset Upload
                   </TabsTrigger>
                 </TabsList>
+                <div className="absolute top-1/2 right-0 -translate-y-1/2">
+                  <ScanInfoDialog />
+                </div>
               </div>
 
               <TabsContent value="camera" className="m-0 outline-none">
@@ -206,39 +210,6 @@ export default function ScanPage() {
                     </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Card className="overflow-hidden rounded-[2rem] border-white/5 bg-black/40 backdrop-blur-3xl">
-              <div className="h-1.5 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0" />
-              <CardHeader className="pb-4">
-                <CardTitle className="text-center text-[10px] font-black tracking-[0.3em] text-white/60 uppercase">
-                  Encoded Protocols
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-2">
-                {[
-                  'QR Code',
-                  'EAN-13',
-                  'UPC-A',
-                  'Code 128',
-                  'DataMatrix',
-                  'PDF417',
-                  'ITF-14',
-                  'EAN-8',
-                ].map((f) => (
-                  <div
-                    key={f}
-                    className="group flex items-center space-x-2 rounded-xl bg-white/5 px-3 py-2 transition-all hover:bg-white/10 hover:ring-1 hover:ring-white/10"
-                  >
-                    <div className="h-1 w-1 rounded-full bg-cyan-500/30 group-hover:bg-cyan-500" />
-                    <span className="text-[10px] font-bold text-white/30 group-hover:text-white/60">
-                      {f}
-                    </span>
-                  </div>
-                ))}
               </CardContent>
             </Card>
           </motion.div>
