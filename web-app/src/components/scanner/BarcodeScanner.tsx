@@ -404,9 +404,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           {/* Controls Bar */}
           <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={() => {
                 const newValue = !soundEnabled;
                 setSoundEnabled(newValue);
@@ -415,24 +413,22 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   value: newValue,
                 });
               }}
-              className="h-10 w-10 rounded-full text-white/70 hover:bg-white/10 hover:text-white"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {soundEnabled ? (
                 <Volume2 className="h-5 w-5" />
               ) : (
                 <VolumeX className="h-5 w-5" />
               )}
-            </Button>
+            </button>
 
             {devices.length > 1 && (
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 onClick={switchCamera}
-                className="h-10 w-10 rounded-full text-white/70 hover:bg-white/10 hover:text-white"
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
               >
                 <RefreshCcw className="h-5 w-5" />
-              </Button>
+              </button>
             )}
           </div>
         </Card>
