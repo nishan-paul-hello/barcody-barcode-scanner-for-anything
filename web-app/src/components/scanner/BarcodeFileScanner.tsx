@@ -281,11 +281,10 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   <Upload className="h-10 w-10 text-cyan-400" />
                 </motion.div>
                 <h3 className="mb-2 text-xl font-bold tracking-tight text-white/90">
-                  Import Signal Source
+                  Upload Image
                 </h3>
                 <p className="mb-8 max-w-xs text-sm leading-relaxed text-white/40">
-                  Drag and drop your asset here, or click to browse local filing
-                  system.
+                  Drag and drop your image here or click to browse.
                 </p>
 
                 <div className="flex gap-3">
