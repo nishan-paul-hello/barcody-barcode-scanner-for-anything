@@ -9,7 +9,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Info, FileType, Cpu, Zap, ShieldCheck, X } from 'lucide-react';
+import { Info, FileType, Cpu, Zap, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
@@ -39,22 +39,22 @@ const itemVariants = {
 
 export const ScanInfoDialog: React.FC = () => {
   const protocols = [
-    { name: 'QR Code', type: '2D' },
-    { name: 'EAN-13', type: '1D' },
-    { name: 'EAN-8', type: '1D' },
-    { name: 'UPC-A', type: '1D' },
-    { name: 'UPC-E', type: '1D' },
-    { name: 'Code 128', type: '1D' },
-    { name: 'Code 39', type: '1D' },
-    { name: 'DataMatrix', type: '2D' },
-    { name: 'PDF417', type: '2D' },
-    { name: 'ITF', type: '1D' },
+    'QR Code',
+    'EAN-13',
+    'EAN-8',
+    'UPC-A',
+    'UPC-E',
+    'Code 128',
+    'Code 39',
+    'DataMatrix',
+    'PDF417',
+    'ITF',
   ];
 
   const uploadTypes = [
-    { label: 'JPEG', ext: '.jpg', color: 'bg-emerald-500/10 text-emerald-400' },
-    { label: 'PNG', ext: '.png', color: 'bg-blue-500/10 text-blue-400' },
-    { label: 'WEBP', ext: '.webp', color: 'bg-purple-500/10 text-purple-400' },
+    { label: 'JPEG', color: 'bg-emerald-500/10 text-emerald-400' },
+    { label: 'PNG', color: 'bg-blue-500/10 text-blue-400' },
+    { label: 'WEBP', color: 'bg-purple-500/10 text-purple-400' },
   ];
 
   return (
@@ -92,14 +92,8 @@ export const ScanInfoDialog: React.FC = () => {
               </div>
               <div>
                 <DialogTitle className="text-3xl font-black tracking-tight text-white">
-                  System Specs
+                  System Specification
                 </DialogTitle>
-                <div className="flex items-center gap-2">
-                  <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
-                    Core Intelligence Active
-                  </p>
-                </div>
               </div>
             </div>
           </DialogHeader>
@@ -135,9 +129,6 @@ export const ScanInfoDialog: React.FC = () => {
                           {type.label}
                         </span>
                       </div>
-                      <span className="font-mono text-[10px] text-white/20">
-                        {type.ext}
-                      </span>
                     </div>
                   ))}
                 </div>
@@ -184,55 +175,20 @@ export const ScanInfoDialog: React.FC = () => {
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                     {protocols.map((protocol) => (
                       <div
-                        key={protocol.name}
+                        key={protocol}
                         className="group flex items-center gap-3"
                       >
-                        <div
-                          className={`h-1.5 w-1.5 rounded-full ring-4 ring-transparent transition-all group-hover:ring-cyan-500/20 ${protocol.type === '2D' ? 'bg-cyan-500' : 'bg-white/20'}`}
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-[12px] font-bold text-white/70 transition-colors group-hover:text-white">
-                            {protocol.name}
-                          </span>
-                          <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">
-                            {protocol.type}
-                          </span>
-                        </div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-white/20 ring-4 ring-transparent transition-all group-hover:bg-cyan-500 group-hover:ring-cyan-500/20" />
+                        <span className="text-[12px] font-bold text-white/70 transition-colors group-hover:text-white">
+                          {protocol}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
               </motion.section>
-
-              <motion.div
-                variants={itemVariants}
-                className="flex items-center gap-3 rounded-2xl bg-emerald-500/5 p-4 ring-1 ring-emerald-500/20"
-              >
-                <div className="rounded-full bg-emerald-500/20 p-2">
-                  <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[11px] font-black tracking-wide text-emerald-400 uppercase">
-                    Secure Scanning
-                  </span>
-                  <span className="text-[10px] text-emerald-400/50">
-                    End-to-end extraction validation
-                  </span>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
-
-          <div className="mt-12 flex items-center justify-between border-t border-white/5 pt-8">
-            <p className="text-[10px] font-medium text-white/20">
-              Barcody Scan Engine v2.4.0 • Updated 2024
-            </p>
-            <DialogClose asChild>
-              <Button className="h-11 rounded-full bg-white px-8 text-[11px] font-black tracking-widest text-black uppercase transition-all hover:bg-cyan-400 hover:text-black active:scale-95">
-                Acknowledge
-              </Button>
-            </DialogClose>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
