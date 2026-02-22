@@ -2,7 +2,7 @@
 
 import { analytics } from '@/lib/analytics.service';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
 import { Upload, X, Loader2, Download, ExternalLink } from 'lucide-react';
@@ -12,6 +12,7 @@ import { useCreateScan } from '@/hooks/use-scans';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useScanStore } from '@/store/useScanStore';
 
 interface BarcodeFileScannerProps {
   onScanSuccess?: (result: Result) => void;
@@ -27,13 +28,24 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   onScanError,
   onClear,
 }) => {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { previewUrl, setPreviewUrl } = useScanStore();
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [imgDims, setImgDims] = useState<{ w: number; h: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createScanMutation = useCreateScan();
+
+  // Restore image dimensions if preview exists on mount
+  useEffect(() => {
+    if (previewUrl) {
+      const img = new window.Image();
+      img.onload = () => {
+        setImgDims({ w: img.naturalWidth, h: img.naturalHeight });
+      };
+      img.src = previewUrl;
+    }
+  }, [previewUrl]);
 
   const scanImage = useCallback(
     async (url: string) => {
@@ -126,19 +138,25 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         return;
       }
 
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setPreviewUrl(base64String);
 
-      // Capture dimensions for proportional rounding
-      const img = new window.Image();
-      img.onload = () => {
-        setImgDims({ w: img.naturalWidth, h: img.naturalHeight });
+        // Capture dimensions for proportional rounding
+        const img = new window.Image();
+        img.onload = () => {
+          setImgDims({ w: img.naturalWidth, h: img.naturalHeight });
+        };
+        img.src = base64String;
       };
-      img.src = url;
+      reader.readAsDataURL(file);
 
+      const url = URL.createObjectURL(file);
       await scanImage(url);
+      URL.revokeObjectURL(url);
     },
-    [scanImage]
+    [scanImage, setPreviewUrl]
   );
 
   const onPaste = useCallback(
@@ -177,7 +195,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   };
 
   const clearFile = () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(null);
     setError(null);
     if (fileInputRef.current) fileInputRef.current.value = '';

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
 import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ScanInfoDialog } from '@/components/scanner/ScanInfoDialog';
 import { ScanMetadata } from '@/components/scanner/ScanMetadata';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
+import { useScanStore } from '@/store/useScanStore';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,14 +29,16 @@ const itemVariants = {
 };
 
 export default function ScanPage() {
-  const [lastResult, setLastResult] = useState<string | null>(null);
-  const [scanMetadata, setScanMetadata] = useState<{
-    format: string;
-    source: 'Camera' | 'Asset Upload';
-    timestamp: string;
-  } | null>(null);
-  const [cameraTabActive, setCameraTabActive] = useState(true);
-  const [hasError, setHasError] = useState(false);
+  const {
+    lastResult,
+    scanMetadata,
+    hasError,
+    activeTab,
+    setLastResult,
+    setScanMetadata,
+    setHasError,
+    setActiveTab,
+  } = useScanStore();
 
   const { data: productData, isLoading } = useProduct(lastResult);
 
@@ -55,8 +57,8 @@ export default function ScanPage() {
         <div className="flex min-w-0 flex-col justify-end">
           <motion.div variants={itemVariants} className="relative">
             <Tabs
-              value={cameraTabActive ? 'camera' : 'file'}
-              onValueChange={(v) => setCameraTabActive(v === 'camera')}
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as 'camera' | 'file')}
               className="w-full"
             >
               <div className="relative mb-8 flex items-center justify-center">
@@ -83,7 +85,7 @@ export default function ScanPage() {
 
               <TabsContent value="camera" className="m-0 outline-none">
                 <BarcodeScanner
-                  active={cameraTabActive}
+                  active={activeTab === 'camera'}
                   onScanSuccess={(result) => {
                     setLastResult(result.getText());
                     setHasError(false);
@@ -117,8 +119,6 @@ export default function ScanPage() {
                   }}
                   onScanError={() => {
                     setHasError(true);
-                    setLastResult(null);
-                    setScanMetadata(null);
                   }}
                   onClear={() => {
                     setLastResult(null);
