@@ -43,8 +43,16 @@ export const queryClient = new QueryClient({
         message = error.response?.data?.message || error.message || message;
       } else if (error instanceof Error) {
         message = error.message;
+      } else if (
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error
+      ) {
+        message = (error as { message: string }).message;
       }
-      toast.error(message);
+      toast.error(
+        typeof message === 'string' ? message : 'An unexpected error occurred'
+      );
       console.warn('Mutation Error:', error);
     },
   }),
@@ -60,8 +68,16 @@ export const queryClient = new QueryClient({
         message = error.response?.data?.message || error.message || message;
       } else if (error instanceof Error) {
         message = error.message;
+      } else if (
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error
+      ) {
+        message = (error as { message: string }).message;
       }
-      toast.error(message);
+      toast.error(
+        typeof message === 'string' ? message : 'Failed to fetch data'
+      );
       console.warn('Query Error:', error);
     },
   }),

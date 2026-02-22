@@ -100,6 +100,16 @@ export class ScansController {
     return this.scansService.findOne(userId, id);
   }
 
+  @Delete('batch')
+  @ApiOperation({ summary: 'Batch delete scans' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Scans deleted successfully' })
+  async bulkRemove(
+    @CurrentUser('sub') userId: string,
+    @Body() bulkDeleteDto: BulkDeleteScansDto,
+  ): Promise<{ count: number }> {
+    return this.scansService.bulkDelete(userId, bulkDeleteDto.ids);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a scan' })
   @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Scan deleted successfully' })
@@ -109,15 +119,5 @@ export class ScansController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<void> {
     return this.scansService.delete(userId, id);
-  }
-
-  @Delete('batch')
-  @ApiOperation({ summary: 'Batch delete scans' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Scans deleted successfully' })
-  async bulkRemove(
-    @CurrentUser('sub') userId: string,
-    @Body() bulkDeleteDto: BulkDeleteScansDto,
-  ): Promise<{ count: number }> {
-    return this.scansService.bulkDelete(userId, bulkDeleteDto.ids);
   }
 }

@@ -61,16 +61,24 @@ export class ScansGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * Emits a scan:created event to the specific user's room
    */
   emitScanCreated(userId: string, scan: Scan) {
-    this.server.to(`user:${userId}`).emit('scan:created', scan);
-    this.logger.debug(`Emitted scan:created for user ${userId}`);
+    if (this.server) {
+      this.server.to(`user:${userId}`).emit('scan:created', scan);
+      this.logger.debug(`Emitted scan:created for user ${userId}`);
+    } else {
+      this.logger.warn(`Could not emit scan:created: server not initialized`);
+    }
   }
 
   /**
    * Emits a scan:deleted event to the specific user's room
    */
   emitScanDeleted(userId: string, scanId: string) {
-    this.server.to(`user:${userId}`).emit('scan:deleted', { id: scanId });
-    this.logger.debug(`Emitted scan:deleted for user ${userId}`);
+    if (this.server) {
+      this.server.to(`user:${userId}`).emit('scan:deleted', { id: scanId });
+      this.logger.debug(`Emitted scan:deleted for user ${userId}`);
+    } else {
+      this.logger.warn(`Could not emit scan:deleted: server not initialized`);
+    }
   }
 
   private extractToken(socket: Socket): string | undefined {
