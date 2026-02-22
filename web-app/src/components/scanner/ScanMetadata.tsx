@@ -159,9 +159,9 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex flex-1 flex-col items-center justify-center py-12 text-center"
+                className="flex flex-1 flex-col items-center justify-center text-center"
               >
-                <div className="relative mb-10 flex items-center justify-center">
+                <div className="relative mb-6 flex items-center justify-center">
                   {/* Main Icon Container (Circular) - Size matched to Camera status icons (80px) */}
                   <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
                     <Scan className="h-10 w-10 text-white/30" />
