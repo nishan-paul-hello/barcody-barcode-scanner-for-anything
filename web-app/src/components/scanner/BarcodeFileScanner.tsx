@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface BarcodeFileScannerProps {
   onScanSuccess?: (result: Result) => void;
   onScanError?: (error: unknown) => void;
+  onClear?: () => void;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -24,6 +25,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   onScanSuccess,
   onScanError,
+  onClear,
 }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -179,6 +181,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     setPreviewUrl(null);
     setError(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+    onClear?.();
   };
 
   return (

@@ -120,6 +120,11 @@ export default function ScanPage() {
                     setLastResult(null);
                     setScanMetadata(null);
                   }}
+                  onClear={() => {
+                    setLastResult(null);
+                    setHasError(false);
+                    setScanMetadata(null);
+                  }}
                 />
               </TabsContent>
             </Tabs>
