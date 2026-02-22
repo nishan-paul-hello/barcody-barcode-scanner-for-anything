@@ -14,7 +14,6 @@ import {
   AlertCircle,
   Volume2,
   VolumeX,
-  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -435,15 +434,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 <RefreshCcw className="h-5 w-5" />
               </Button>
             )}
-
-            <div className="mx-1 h-4 w-[1px] bg-white/10" />
-
-            <div className="flex items-center gap-2 px-3 py-2">
-              <Zap className="h-4 w-4 text-cyan-400" />
-              <span className="text-[10px] font-bold tracking-widest text-white/80 uppercase">
-                Active
-              </span>
-            </div>
           </div>
         </Card>
       </motion.div>
