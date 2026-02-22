@@ -279,7 +279,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   OR
                 </div>
 
-                <div className="flex items-center gap-2 text-[15px] text-white/50">
+                <div className="flex items-center gap-2 text-xl font-bold text-white/90">
                   <kbd className="rounded border border-white/10 bg-white/5 px-2 py-0.5 font-sans text-xs">
                     Ctrl
                   </kbd>
