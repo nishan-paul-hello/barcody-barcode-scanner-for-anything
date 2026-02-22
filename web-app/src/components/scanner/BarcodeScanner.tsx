@@ -184,7 +184,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   useEffect(() => {
     let controls: IScannerControls | null = null;
     let isMounted = true;
-    let timer: NodeJS.Timeout;
 
     async function start() {
       if (
@@ -197,28 +196,8 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       }
 
       try {
-        timer = setTimeout(() => {
-          if (isMounted) setIsScanning(true);
-        }, 0);
-
+        setIsScanning(true);
         setError(null);
-
-        // Wait for video dimensions to be available to prevent IndexSizeError in ZXing internal canvas
-        const video = videoRef.current;
-        if (video.videoWidth === 0 || video.videoHeight === 0) {
-          await new Promise<void>((resolve) => {
-            const onLoaded = () => {
-              video.removeEventListener('loadedmetadata', onLoaded);
-              video.removeEventListener('playing', onLoaded);
-              resolve();
-            };
-            video.addEventListener('loadedmetadata', onLoaded);
-            video.addEventListener('playing', onLoaded);
-
-            // Safety timeout
-            setTimeout(resolve, 3000);
-          });
-        }
 
         const newControls = await readerRef.current.decodeFromVideoDevice(
           selectedDeviceId,
@@ -253,13 +232,22 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 description: `Format: ${formatName}`,
               });
             }
-            if (err && !(err.name === 'NotFoundException')) {
-              console.error('Scan error:', err);
-              analytics.trackScanFailed(
-                err instanceof Error ? err.message : String(err),
-                'camera'
-              );
-              if (isMounted) onScanError?.(err);
+            if (err && isMounted) {
+              // Ignore expected errors during initialization or when no barcode is found
+              const isIgnorableError =
+                err.name === 'NotFoundException' ||
+                err.name === 'IndexSizeError' ||
+                (err instanceof Error &&
+                  err.message.includes('source width is 0'));
+
+              if (!isIgnorableError) {
+                console.error('Scan error:', err);
+                analytics.trackScanFailed(
+                  err instanceof Error ? err.message : String(err),
+                  'camera'
+                );
+                onScanError?.(err);
+              }
             }
           }
         );
@@ -284,7 +272,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     return () => {
       isMounted = false;
-      if (timer) clearTimeout(timer);
       if (controls) {
         controls.stop();
       }
