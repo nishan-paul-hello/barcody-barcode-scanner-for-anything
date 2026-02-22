@@ -167,9 +167,31 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 animate={{ opacity: 1 }}
                 className="flex flex-1 flex-col items-center justify-center py-12 text-center"
               >
-                <div className="relative mb-6">
-                  <div className="absolute inset-0 animate-ping rounded-full bg-white/5" />
-                  <Scan className="relative h-10 w-10 text-white/10" />
+                <div className="relative mb-10 flex items-center justify-center">
+                  {/* Animated Glow Background */}
+                  <motion.div
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                    className="absolute h-40 w-40 rounded-full bg-cyan-500/10 blur-[60px]"
+                  />
+
+                  {/* Outer Pinging Circle */}
+                  <div className="absolute h-34 w-34 animate-ping rounded-full bg-white/5" />
+
+                  {/* Main Icon Container (Circular) */}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    className="relative flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl transition-all group-hover:border-cyan-500/20 hover:border-cyan-500/30"
+                  >
+                    <Scan className="h-12 w-12 text-white/30 transition-colors group-hover:text-cyan-400" />
+                  </motion.div>
                 </div>
                 <p className="text-[11px] font-black tracking-[0.3em] text-white/20 uppercase">
                   Waiting for Barcode
