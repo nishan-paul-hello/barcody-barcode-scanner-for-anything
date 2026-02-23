@@ -105,7 +105,7 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section
           ref={targetRef}
-          className="relative flex h-screen flex-col items-center justify-center overflow-hidden px-4 pt-20"
+          className="relative flex h-screen flex-col items-center justify-start overflow-hidden px-4 pt-24 md:pt-32"
         >
           <motion.div
             style={{ y: smoothY, opacity, scale }}
