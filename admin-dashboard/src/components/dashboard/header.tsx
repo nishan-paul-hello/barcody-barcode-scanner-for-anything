@@ -9,22 +9,23 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LogOut, BarChart, Users, Scan, Shield } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { googleLogout } from '@react-oauth/google';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useUIStore } from '@/stores/uiStore';
 
 export function Header() {
   const { user, logout } = useAuthStore();
-  const router = useRouter();
+  const { openLoginModal } = useUIStore();
   const pathname = usePathname();
 
   const handleLogout = () => {
     googleLogout();
     logout();
-    router.push('/login');
+    openLoginModal();
   };
 
   const navItems = [
@@ -106,7 +107,7 @@ export function Header() {
             })}
           </nav>
 
-          {user && (
+          {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -156,6 +157,13 @@ export function Header() {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+          ) : (
+            <Button
+              onClick={openLoginModal}
+              className="group flex cursor-pointer items-center gap-2 rounded-full bg-white px-6 font-bold text-black transition-all hover:scale-105 hover:bg-zinc-200"
+            >
+              Sign In
+            </Button>
           )}
         </div>
       </div>

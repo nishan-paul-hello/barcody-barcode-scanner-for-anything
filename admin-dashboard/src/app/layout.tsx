@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { LoginModal } from '@/components/auth/LoginModal';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,7 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <LoginModal />
+        </Providers>
       </body>
     </html>
   );

@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import { useUIStore } from '@/stores/uiStore';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,19 +12,15 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isAdmin, isLoading } = useAuthStore();
-  const router = useRouter();
+  const { openLoginModal } = useUIStore();
 
   useEffect(() => {
     if (!isLoading) {
-      if (!isAuthenticated) {
-        router.push('/login');
-      } else if (!isAdmin) {
-        // If authenticated but not admin, we might want to show a specific page
-        // or just stay on login with an error. For now, redirect to login.
-        router.push('/login?error=unauthorized');
+      if (!isAuthenticated || !isAdmin) {
+        openLoginModal();
       }
     }
-  }, [isAuthenticated, isAdmin, isLoading, router]);
+  }, [isAuthenticated, isAdmin, isLoading, openLoginModal]);
 
   if (isLoading || !isAuthenticated || !isAdmin) {
     return (
