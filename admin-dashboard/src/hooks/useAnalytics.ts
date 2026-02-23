@@ -67,3 +67,11 @@ export const useHourlyActivity = (dateRange?: DateRange) => {
       }),
   });
 };
+
+export const useUsers = (params: { page?: number; limit?: number } = {}) => {
+  return useQuery({
+    queryKey: ['admin', 'users', params],
+    queryFn: () => api.admin.getUsers(params),
+    placeholderData: (prev) => prev,
+  });
+};
