@@ -59,7 +59,7 @@ export function Header() {
                 className="h-full w-full object-contain"
               />
             </motion.div>
-            <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block">
+            <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-[#ee4b2b] sm:inline-block">
               Barcody
             </span>
           </motion.div>
