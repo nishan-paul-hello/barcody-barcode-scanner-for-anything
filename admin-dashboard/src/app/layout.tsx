@@ -6,7 +6,7 @@ import { Providers } from '@/components/providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Barcody Admin',
+  title: 'Barcody',
   description: 'Admin Dashboard for Barcody',
 };
 

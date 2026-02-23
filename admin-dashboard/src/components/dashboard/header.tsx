@@ -39,7 +39,7 @@ export function Header() {
               />
             </div>
             <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block">
-              Barcody Admin
+              Barcody
             </span>
           </div>
         </Link>
