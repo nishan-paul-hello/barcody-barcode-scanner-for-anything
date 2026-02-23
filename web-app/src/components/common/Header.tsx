@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { History, Camera, LogOut } from 'lucide-react';
+import { History, Camera, LogOut, Fingerprint } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
 
@@ -166,8 +166,9 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
           ) : (
             <Button
               onClick={openLoginModal}
-              className="rounded-full bg-cyan-500 px-6 font-bold transition-all hover:scale-105 hover:bg-cyan-600"
+              className="group flex cursor-pointer items-center gap-2 rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
             >
+              <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
               Login
             </Button>
           )}

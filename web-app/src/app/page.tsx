@@ -154,7 +154,7 @@ export default function LandingPage() {
                     openLoginModal();
                   }
                 }}
-                className="group h-14 rounded-full bg-cyan-500 px-10 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
+                className="group h-14 cursor-pointer rounded-full bg-cyan-500 px-10 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
               >
                 Launch Scanner
               </Button>
@@ -162,7 +162,7 @@ export default function LandingPage() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="h-14 rounded-full border-white/10 bg-white/5 px-10 font-bold backdrop-blur-md transition-all hover:bg-white/10"
+                className="h-14 cursor-pointer rounded-full border-white/10 bg-white/5 px-10 font-bold backdrop-blur-md transition-all hover:bg-white/10"
               >
                 <Link href="#features">Explore Features</Link>
               </Button>
