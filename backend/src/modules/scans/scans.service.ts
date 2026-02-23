@@ -6,6 +6,8 @@ import { CreateScanDto } from '@modules/scans/dto/create-scan.dto';
 import { ScanQueryDto } from '@modules/scans/dto/scan-query.dto';
 import { ScansGateway } from '@modules/scans/scans.gateway';
 
+import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
+
 @Injectable()
 export class ScansService {
   private readonly logger = new Logger(ScansService.name);
@@ -15,10 +17,47 @@ export class ScansService {
     private readonly scanRepository: Repository<Scan>,
     private readonly dataSource: DataSource,
     private readonly scansGateway: ScansGateway,
+    private readonly productLookupService: ProductLookupService,
   ) {}
 
-  async create(userId: string, createScanDto: CreateScanDto): Promise<Scan> {
+  private transformScan(scan: Scan, relevance?: number) {
+    return {
+      ...scan,
+      relevance,
+      product: scan.productName
+        ? {
+            barcode: scan.barcodeData,
+            name: scan.productName,
+            brand: scan.brand,
+            category: scan.category,
+            images: scan.imageUrl ? [scan.imageUrl] : [],
+            nutrition: {
+              grade: scan.nutritionGrade,
+            },
+          }
+        : undefined,
+    };
+  }
+
+  async create(userId: string, createScanDto: CreateScanDto): Promise<Record<string, unknown>> {
     this.logger.log(`Creating scan for user ${userId}`);
+
+    // Auto-lookup product info if missing
+    if (!createScanDto.productName) {
+      try {
+        const { data: product } = await this.productLookupService.lookup(createScanDto.barcodeData);
+        if (product) {
+          createScanDto.productName = product.name;
+          createScanDto.brand = product.brand;
+          createScanDto.category = product.category;
+          createScanDto.nutritionGrade = product.nutrition?.grade;
+          createScanDto.imageUrl = product.images?.[0];
+        }
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.logger.error(`Error looking up product during scan creation: ${message}`);
+      }
+    }
 
     const scan = this.scanRepository.create({
       ...createScanDto,
@@ -26,8 +65,9 @@ export class ScansService {
     });
 
     const savedScan = await this.scanRepository.save(scan);
-    this.scansGateway.emitScanCreated(userId, savedScan);
-    return savedScan;
+    const transformed = this.transformScan(savedScan);
+    this.scansGateway.emitScanCreated(userId, transformed);
+    return transformed;
   }
 
   async findAll(userId: string, query: ScanQueryDto) {
@@ -50,10 +90,7 @@ export class ScansService {
 
     const items = rawAndEntities.entities.map((entity, index) => {
       const relevance = rawAndEntities.raw[index]?.relevance;
-      return {
-        ...entity,
-        relevance: relevance ? parseFloat(relevance) : undefined,
-      };
+      return this.transformScan(entity, relevance ? parseFloat(relevance) : undefined);
     });
 
     return {
@@ -159,7 +196,7 @@ export class ScansService {
     });
 
     return {
-      items,
+      items: items.map((item) => this.transformScan(item)),
       meta: {
         total,
         page,
@@ -169,7 +206,7 @@ export class ScansService {
     };
   }
 
-  async findOne(userId: string, id: string): Promise<Scan> {
+  async findOne(userId: string, id: string): Promise<Record<string, unknown>> {
     const scan = await this.scanRepository.findOne({
       where: { id, userId },
     });
@@ -178,7 +215,7 @@ export class ScansService {
       throw new NotFoundException(`Scan with ID ${id} not found`);
     }
 
-    return scan;
+    return this.transformScan(scan);
   }
 
   async delete(userId: string, id: string): Promise<void> {
@@ -206,7 +243,7 @@ export class ScansService {
     return { count: result.affected || 0 };
   }
 
-  async bulkCreate(userId: string, scanDtos: CreateScanDto[]): Promise<Scan[]> {
+  async bulkCreate(userId: string, scanDtos: CreateScanDto[]): Promise<Record<string, unknown>[]> {
     this.logger.log(`Bulk creating ${scanDtos.length} scans for user ${userId}`);
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -224,12 +261,14 @@ export class ScansService {
       const savedScans = await queryRunner.manager.save(Scan, scans);
       await queryRunner.commitTransaction();
 
+      const transformedScans = savedScans.map((scan) => this.transformScan(scan));
+
       // Emit events for all created scans
-      savedScans.forEach((scan) => {
+      transformedScans.forEach((scan) => {
         this.scansGateway.emitScanCreated(userId, scan);
       });
 
-      return savedScans;
+      return transformedScans;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       this.logger.error(`Failed to bulk create scans: ${errorMessage}`);
