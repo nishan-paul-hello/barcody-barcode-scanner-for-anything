@@ -1,10 +1,4 @@
-import {
-  QueryClient,
-  QueryCache,
-  MutationCache,
-  type Mutation,
-} from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export const queryClient = new QueryClient({
@@ -29,55 +23,12 @@ export const queryClient = new QueryClient({
     },
   },
   mutationCache: new MutationCache({
-    onError: (
-      error: unknown,
-      _vars: unknown,
-      _context: unknown,
-      mutation: Mutation<unknown, unknown, unknown, unknown>
-    ) => {
-      let message = 'An unexpected error occurred';
-      if (mutation.meta?.suppressErrorToast) {
-        return;
-      }
-      if (error instanceof AxiosError) {
-        message = error.response?.data?.message || error.message || message;
-      } else if (error instanceof Error) {
-        message = error.message;
-      } else if (
-        typeof error === 'object' &&
-        error !== null &&
-        'message' in error
-      ) {
-        message = (error as { message: string }).message;
-      }
-      toast.error(
-        typeof message === 'string' ? message : 'An unexpected error occurred'
-      );
+    onError: (error: unknown) => {
       console.warn('Mutation Error:', error);
     },
   }),
   queryCache: new QueryCache({
-    onError: (error, query) => {
-      let message = 'Failed to fetch data';
-      if (query.meta?.suppressErrorToast) {
-        return;
-      }
-      if (error instanceof AxiosError) {
-        // Don't show toast for 401s as they are handled by auth logic
-        if (error.response?.status === 401) return;
-        message = error.response?.data?.message || error.message || message;
-      } else if (error instanceof Error) {
-        message = error.message;
-      } else if (
-        typeof error === 'object' &&
-        error !== null &&
-        'message' in error
-      ) {
-        message = (error as { message: string }).message;
-      }
-      toast.error(
-        typeof message === 'string' ? message : 'Failed to fetch data'
-      );
+    onError: (error) => {
       console.warn('Query Error:', error);
     },
   }),

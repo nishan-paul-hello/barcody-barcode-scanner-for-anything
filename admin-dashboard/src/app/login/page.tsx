@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, BarChart3, ShieldCheck, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
 
 function LoginContent() {
   const router = useRouter();
@@ -42,26 +41,16 @@ function LoginContent() {
         setError(
           'Access denied. You must be an administrator to access this dashboard.'
         );
-        toast.error('Access Denied', {
-          description:
-            'You are not authorized to access the administration panel.',
-        });
         return;
       }
 
       setAuth(data.user, data.accessToken, data.refreshToken, data.isAdmin);
-      toast.success('Login Successful', {
-        description: `Welcome back, ${data.user.name}`,
-      });
       router.push('/');
     } catch (err: unknown) {
       const axiosError = err as { response?: { data?: { message?: string } } };
       const message =
         axiosError.response?.data?.message || 'Login failed. Please try again.';
       setError(message);
-      toast.error('Login Error', {
-        description: message,
-      });
     } finally {
       setLoading(false);
     }
@@ -69,9 +58,6 @@ function LoginContent() {
 
   const handleError = () => {
     setError('Google authentication failed.');
-    toast.error('Google Error', {
-      description: 'Authentication with Google failed.',
-    });
   };
 
   return (

@@ -24,7 +24,6 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from '@/components/theme-provider';
-import { Toaster } from '@/components/ui/sonner';
 import { GoogleAuthProvider } from '@/components/providers/google-auth-provider';
 import { AuthInitializer } from '@/components/auth-initializer';
 import { QueryProvider } from '@/components/providers/query-provider';
@@ -55,7 +54,6 @@ export default function RootLayout({
                 <AnalyticsTracker />
                 <ErrorBoundary>{children}</ErrorBoundary>
               </SocketProvider>
-              <Toaster />
             </ThemeProvider>
           </GoogleAuthProvider>
         </QueryProvider>

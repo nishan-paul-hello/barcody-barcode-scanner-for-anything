@@ -2,7 +2,6 @@
 
 import { useState, Suspense, useEffect } from 'react';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
-import { toast } from 'sonner';
 import { api } from '@/lib/api/client';
 import type { ApiErrorResponse } from '@/lib/api/types';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -49,8 +48,6 @@ function LoginContent() {
       // Store tokens and user state via Zustand
       login(user, accessToken, refreshToken);
 
-      toast.success(`Welcome back, ${user?.email || 'User'}!`);
-
       // Redirect to dashboard
       router.push(redirectUrl);
     } catch (error: unknown) {
@@ -69,14 +66,13 @@ function LoginContent() {
         message = error.message;
       }
 
-      toast.error(message);
+      console.error('Login Error:', message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleError = () => {
-    toast.error('Google Sign-In was unsuccessful. Please try again.');
     setIsLoading(false);
   };
 

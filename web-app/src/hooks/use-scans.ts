@@ -21,9 +21,6 @@ export function useScans(params: PaginationParams = { page: 1, limit: 20 }) {
     queryKey: scanKeys.list(params),
     queryFn: () => api.scans.getScans(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    meta: {
-      suppressErrorToast: true,
-    },
   });
 }
 
@@ -42,9 +39,6 @@ export function useCreateScan() {
 
   return useMutation({
     mutationFn: (dto: CreateScanDto) => api.scans.createScan(dto),
-    meta: {
-      suppressErrorToast: true,
-    },
     onMutate: async (newScan) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
@@ -101,9 +95,6 @@ export function useDeleteScan() {
 
   return useMutation({
     mutationFn: (id: string) => api.scans.deleteScan(id),
-    meta: {
-      suppressErrorToast: true,
-    },
     onMutate: async (id) => {
       // This is a bit complex for paginated data as the item could be on any page.
       // For simplicity, we'll try to remove it from the first page if it exists there.
@@ -156,9 +147,6 @@ export function useBulkDeleteScans() {
 
   return useMutation({
     mutationFn: (ids: string[]) => api.scans.bulkDeleteScans(ids),
-    meta: {
-      suppressErrorToast: true,
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },

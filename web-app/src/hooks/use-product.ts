@@ -9,8 +9,5 @@ export function useProduct(barcode: string | null) {
     enabled: !!barcode,
     staleTime: 1000 * 60 * 30, // 30 minutes
     retry: 1,
-    meta: {
-      suppressErrorToast: true,
-    },
   });
 }
