@@ -85,7 +85,7 @@ export default function UsersPage() {
   const total = users?.total ?? 0;
 
   return (
-    <div className="flex-1 space-y-6 p-8 pt-6">
+    <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Users</h1>

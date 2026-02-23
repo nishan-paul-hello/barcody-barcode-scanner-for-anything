@@ -36,7 +36,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-2xl transition-all duration-300">
-      <div className="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="outline-none">
           <motion.div
             className="group flex cursor-pointer items-center space-x-3 transition-all"

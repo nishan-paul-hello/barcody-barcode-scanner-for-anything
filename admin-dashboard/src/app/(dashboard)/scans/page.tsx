@@ -123,7 +123,7 @@ export default function ScansPage() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-8 pt-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
