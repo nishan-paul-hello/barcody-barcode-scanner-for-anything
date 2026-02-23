@@ -15,6 +15,7 @@ import {
   Code,
   Layers,
   Sparkles,
+  Heart,
 } from 'lucide-react';
 import { Header } from '@/components/common/Header';
 import Image from 'next/image';
@@ -377,121 +378,49 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="relative overflow-hidden border-t border-white/5 bg-black py-20">
-        <div className="relative z-10 container mx-auto px-4">
-          <div className="mb-16 grid grid-cols-1 gap-12 md:grid-cols-4">
-            <div className="col-span-1 space-y-6 md:col-span-2">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-cyan-500">
+      <footer className="relative border-t border-white/5 bg-black/40 py-12 backdrop-blur-xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-sm font-medium text-white/40"
+            >
+              © {new Date().getFullYear()} Barcody. All rights reserved.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="group flex items-center gap-2 text-sm font-medium text-white/40"
+            >
+              <span>Built with</span>
+              <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+              <span>by</span>
+              <Link
+                href="https://kaiverse.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/kai flex items-center gap-2 transition-all"
+              >
+                <div className="relative h-8 w-8 transition-transform duration-300 group-hover/kai:scale-110">
                   <Image
-                    src="/brand-logo.svg"
-                    alt="Barcody"
-                    width={40}
-                    height={40}
+                    src="/company-logo.svg"
+                    alt="KAI Logo"
+                    fill
+                    className="object-contain"
                   />
                 </div>
-                <span className="text-2xl font-black tracking-tighter">
-                  Barcody
+                <span className="font-bold tracking-tight text-white/90 transition-colors duration-300 group-hover/kai:text-[#00F07C]">
+                  KAI
                 </span>
-              </div>
-              <p className="max-w-sm leading-relaxed text-white/40">
-                The world&apos;s most versatile barcode scanning platform for
-                modern logistics and personal productivity.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold tracking-widest text-cyan-500 uppercase">
-                Product
-              </h4>
-              <ul className="space-y-2 text-sm text-white/50">
-                <li>
-                  <Link
-                    href="/scan"
-                    className="transition-colors hover:text-cyan-400"
-                  >
-                    Scanner
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/history"
-                    className="transition-colors hover:text-cyan-400"
-                  >
-                    History
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="transition-colors hover:text-cyan-400"
-                  >
-                    Integrations
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold tracking-widest text-cyan-500 uppercase">
-                Support
-              </h4>
-              <ul className="space-y-2 text-sm text-white/50">
-                <li>
-                  <Link
-                    href="#"
-                    className="transition-colors hover:text-cyan-400"
-                  >
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="transition-colors hover:text-cyan-400"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="transition-colors hover:text-cyan-400"
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center justify-between gap-8 border-t border-white/5 pt-12 md:flex-row">
-            <p className="text-sm font-medium text-white/20">
-              © {new Date().getFullYear()} Barcody. Engineered for the future.
-            </p>
-
-            <Link
-              href="https://kaiverse.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-3 opacity-40 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-            >
-              <span className="text-sm font-bold tracking-tight text-white/90">
-                Built by KAI
-              </span>
-              <div className="relative h-8 w-8">
-                <Image
-                  src="/company-logo.svg"
-                  alt="KAI"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </Link>
+              </Link>
+            </motion.div>
           </div>
         </div>
-
-        <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-20" />
       </footer>
     </div>
   );
