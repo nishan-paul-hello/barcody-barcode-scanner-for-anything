@@ -176,6 +176,7 @@ export const api = {
 
   // Scans
   scans: {
+    getStats: () => apiClient.get('/scans/stats').then((r) => r.data),
     createScan: (dto: CreateScanDto) =>
       apiClient.post<ScanResponseDto>('/scans', dto).then((r) => r.data),
     getScans: (params?: PaginationParams) =>

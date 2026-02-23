@@ -70,6 +70,29 @@ export class ScansService {
     return transformed;
   }
 
+  async getStats(userId: string) {
+    const totalScans = await this.scanRepository.count({ where: { userId } });
+
+    const activeProductsQuery = await this.scanRepository
+      .createQueryBuilder('scan')
+      .select('COUNT(DISTINCT scan.barcodeData)', 'count')
+      .where('scan.userId = :userId', { userId })
+      .getRawOne();
+
+    const activeProducts = parseInt(activeProductsQuery?.count || '0', 10);
+
+    const recentScan = await this.scanRepository.findOne({
+      where: { userId },
+      order: { scannedAt: 'DESC' },
+    });
+
+    return {
+      totalScans,
+      activeProducts,
+      recentActivity: recentScan ? this.transformScan(recentScan) : null,
+    };
+  }
+
   async findAll(userId: string, query: ScanQueryDto) {
     const { page = 1, limit = 50, sortBy = 'scannedAt', order = 'DESC', search } = query;
 

@@ -36,7 +36,7 @@ export class ScansController {
   async create(
     @CurrentUser('sub') userId: string,
     @Body() createScanDto: CreateScanDto,
-  ): Promise<Scan> {
+  ): Promise<Record<string, unknown>> {
     this.logger.log(`User ${userId} creating scan: ${createScanDto.barcodeData}`);
     return this.scansService.create(userId, createScanDto);
   }
@@ -77,6 +77,13 @@ export class ScansController {
     return this.scansService.findAll(userId, query);
   }
 
+  @Get('stats')
+  @ApiOperation({ summary: 'Get scan statistics' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Scan statistics' })
+  async getStats(@CurrentUser('sub') userId: string) {
+    return this.scansService.getStats(userId);
+  }
+
   @Get('since/:timestamp')
   @ApiOperation({ summary: 'Incremental sync: Get scans since timestamp' })
   @ApiParam({ name: 'timestamp', description: 'ISO 8601 timestamp' })
@@ -96,7 +103,7 @@ export class ScansController {
   async findOne(
     @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Scan> {
+  ): Promise<Record<string, unknown>> {
     return this.scansService.findOne(userId, id);
   }
 
