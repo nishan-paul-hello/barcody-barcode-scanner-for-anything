@@ -14,7 +14,6 @@ import {
   ArrowRight,
   Code,
   Layers,
-  Sparkles,
   Heart,
 } from 'lucide-react';
 import { Header } from '@/components/common/Header';
@@ -112,18 +111,6 @@ export default function LandingPage() {
             style={{ y: smoothY, opacity, scale }}
             className="z-10 container mx-auto flex max-w-6xl flex-col items-center text-center"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md"
-            >
-              <Sparkles className="h-4 w-4 text-cyan-400" />
-              <span className="text-sm font-medium tracking-wide text-cyan-100/80">
-                Next Gen Barcode Intelligence
-              </span>
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
