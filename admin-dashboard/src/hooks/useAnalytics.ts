@@ -38,3 +38,10 @@ export const useDeviceBreakdown = () => {
     queryFn: () => api.admin.getDeviceBreakdown(),
   });
 };
+
+export const useRetentionCohorts = () => {
+  return useQuery({
+    queryKey: ['analytics', 'retention'],
+    queryFn: () => api.admin.getRetentionCohorts(),
+  });
+};

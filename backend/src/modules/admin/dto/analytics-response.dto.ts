@@ -9,6 +9,17 @@ export class AnalyticsOverviewDto {
 
   @ApiProperty()
   activeToday!: number;
+
+  @ApiProperty({ description: 'Scan growth % vs previous equal-length period', nullable: true })
+  scanGrowthPercent!: number | null;
+
+  @ApiProperty({ description: 'User growth % vs previous equal-length period', nullable: true })
+  userGrowthPercent!: number | null;
+
+  @ApiProperty({
+    description: 'Scan success rate: scans with identified barcode type / total scans',
+  })
+  successRate!: number;
 }
 
 export class TrendDataPointDto {
@@ -38,4 +49,20 @@ export class DeviceDistributionDto {
 
   @ApiProperty()
   count!: number;
+}
+
+export class RetentionCohortWeekDto {
+  @ApiProperty({ description: 'Week start date (ISO string)' })
+  weekStart!: string;
+
+  @ApiProperty({ description: 'Number of unique users who first scanned this week' })
+  newUsers!: number;
+
+  @ApiProperty({ description: 'Retention percentages for weeks 0..N (week 0 is always 100%)' })
+  retention!: number[];
+}
+
+export class RetentionCohortsDto {
+  @ApiProperty({ type: [RetentionCohortWeekDto] })
+  cohorts!: RetentionCohortWeekDto[];
 }

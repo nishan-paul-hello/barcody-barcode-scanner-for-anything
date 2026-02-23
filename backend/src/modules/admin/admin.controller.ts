@@ -10,6 +10,7 @@ import {
   TrendDataDto,
   BarcodeTypeDistributionDto,
   DeviceDistributionDto,
+  RetentionCohortsDto,
 } from './dto/analytics-response.dto';
 import { UserListDto, ScanListDto } from './dto/list-response.dto';
 
@@ -46,6 +47,13 @@ export class AdminController {
   @ApiResponse({ type: [DeviceDistributionDto] })
   async getDevices(): Promise<DeviceDistributionDto[]> {
     return this.adminService.getDevices();
+  }
+
+  @Get('analytics/retention')
+  @ApiOperation({ summary: 'Get weekly user retention cohort data (real calculation)' })
+  @ApiResponse({ type: RetentionCohortsDto })
+  async getRetentionCohorts(): Promise<RetentionCohortsDto> {
+    return this.adminService.getRetentionCohorts();
   }
 
   @Get('users')

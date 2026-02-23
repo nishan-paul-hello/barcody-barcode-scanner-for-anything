@@ -112,6 +112,10 @@ export const adminApi = {
     const response = await apiClient.get('/admin/analytics/devices');
     return response.data;
   },
+  getRetentionCohorts: async () => {
+    const response = await apiClient.get('/admin/analytics/retention');
+    return response.data;
+  },
   getUsers: async ({
     page = 1,
     limit = 10,
