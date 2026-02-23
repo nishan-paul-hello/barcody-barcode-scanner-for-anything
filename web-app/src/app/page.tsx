@@ -333,36 +333,6 @@ export default function LandingPage() {
             </motion.div>
           </div>
         </section>
-
-        {/* Call To Action */}
-        <section className="px-4 py-32">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative container mx-auto max-w-4xl overflow-hidden rounded-[3rem] bg-gradient-to-br from-cyan-600 to-blue-700 p-12 text-center md:p-20"
-          >
-            <div className="pointer-events-none absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
-            <div className="relative z-10">
-              <h2 className="mb-8 text-4xl font-black text-black md:text-6xl">
-                Ready to start scanning?
-              </h2>
-              <p className="mx-auto mb-10 max-w-xl text-lg font-medium text-black/70 md:text-xl">
-                Join thousands of users who have streamlined their workflow with
-                Barcody. Start for free today.
-              </p>
-              <Button
-                asChild
-                size="lg"
-                className="h-16 rounded-full bg-black px-12 text-lg font-bold text-white transition-all hover:bg-white hover:text-black"
-              >
-                <Link href={isAuthenticated ? '/scan' : '/login'}>
-                  Create Free Account
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
-        </section>
       </main>
 
       <footer className="relative border-t border-white/5 bg-black/40 py-12 backdrop-blur-xl">
