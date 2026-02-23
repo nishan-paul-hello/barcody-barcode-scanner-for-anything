@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { subDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import {
   useAnalyticsTrends,
@@ -81,10 +81,7 @@ const tooltipStyle = {
 };
 
 export default function AnalyticsPage() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: subDays(new Date(), 30),
-    to: new Date(),
-  });
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
 
   const { data: trendData, isLoading: loadingTrends } =
     useAnalyticsTrends(dateRange);

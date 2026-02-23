@@ -16,6 +16,7 @@ import {
   HourlyActivityDto,
 } from './dto/analytics-response.dto';
 import { UserListDto, ScanListDto } from './dto/list-response.dto';
+import { GetScansDto } from './dto/get-scans.dto';
 import {
   buildWeekStartsList,
   buildUserWeekMap,
@@ -219,10 +220,16 @@ export class AdminService {
 
     return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
-
-  async getScans(pagination: PaginationDto, filter: AnalyticsFilterDto): Promise<ScanListDto> {
-    const { page = 1, limit = 50, sortBy = 'scannedAt', sortOrder = 'DESC' } = pagination;
-    const { startDate, endDate, query } = filter;
+  async getScans(dto: GetScansDto): Promise<ScanListDto> {
+    const {
+      page = 1,
+      limit = 50,
+      sortBy = 'scannedAt',
+      sortOrder = 'DESC',
+      startDate,
+      endDate,
+      query,
+    } = dto;
     const skip = (page - 1) * limit;
 
     const qb = this.scanRepository

@@ -75,3 +75,19 @@ export const useUsers = (params: { page?: number; limit?: number } = {}) => {
     placeholderData: (prev) => prev,
   });
 };
+
+export const useScans = (
+  params: {
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+    query?: string;
+  } = {}
+) => {
+  return useQuery({
+    queryKey: ['admin', 'scans', params],
+    queryFn: () => api.admin.getScans(params),
+    placeholderData: (prev) => prev,
+  });
+};
