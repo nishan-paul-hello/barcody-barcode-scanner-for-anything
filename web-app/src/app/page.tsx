@@ -11,11 +11,9 @@ import { motion } from 'framer-motion';
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
 
-  const landingNavItems = [{ href: '#features', label: 'Features' }];
-
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <Header navItems={landingNavItems} />
+      <Header />
 
       <main className="flex-1">
         {/* Hero Section */}
