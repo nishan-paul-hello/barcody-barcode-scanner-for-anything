@@ -11,6 +11,8 @@ import {
   BarcodeTypeDistributionDto,
   DeviceDistributionDto,
   RetentionCohortsDto,
+  TopBarcodeDto,
+  HourlyActivityDto,
 } from './dto/analytics-response.dto';
 import { UserListDto, ScanListDto } from './dto/list-response.dto';
 
@@ -54,6 +56,20 @@ export class AdminController {
   @ApiResponse({ type: RetentionCohortsDto })
   async getRetentionCohorts(): Promise<RetentionCohortsDto> {
     return this.adminService.getRetentionCohorts();
+  }
+
+  @Get('analytics/top-barcodes')
+  @ApiOperation({ summary: 'Get top N most scanned barcodes with optional date range' })
+  @ApiResponse({ type: [TopBarcodeDto] })
+  async getTopBarcodes(@Query() filter: AnalyticsFilterDto): Promise<TopBarcodeDto[]> {
+    return this.adminService.getTopBarcodes(20, filter);
+  }
+
+  @Get('analytics/hourly')
+  @ApiOperation({ summary: 'Get scan counts grouped by hour of day (0–23 UTC)' })
+  @ApiResponse({ type: [HourlyActivityDto] })
+  async getHourlyActivity(@Query() filter: AnalyticsFilterDto): Promise<HourlyActivityDto[]> {
+    return this.adminService.getHourlyActivity(filter);
   }
 
   @Get('users')

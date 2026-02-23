@@ -45,3 +45,25 @@ export const useRetentionCohorts = () => {
     queryFn: () => api.admin.getRetentionCohorts(),
   });
 };
+
+export const useTopBarcodes = (dateRange?: DateRange) => {
+  return useQuery({
+    queryKey: ['analytics', 'top-barcodes', dateRange],
+    queryFn: () =>
+      api.admin.getTopBarcodes({
+        startDate: dateRange?.from?.toISOString(),
+        endDate: dateRange?.to?.toISOString(),
+      }),
+  });
+};
+
+export const useHourlyActivity = (dateRange?: DateRange) => {
+  return useQuery({
+    queryKey: ['analytics', 'hourly', dateRange],
+    queryFn: () =>
+      api.admin.getHourlyActivity({
+        startDate: dateRange?.from?.toISOString(),
+        endDate: dateRange?.to?.toISOString(),
+      }),
+  });
+};

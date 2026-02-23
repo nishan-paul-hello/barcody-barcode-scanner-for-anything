@@ -66,3 +66,25 @@ export class RetentionCohortsDto {
   @ApiProperty({ type: [RetentionCohortWeekDto] })
   cohorts!: RetentionCohortWeekDto[];
 }
+
+export class TopBarcodeDto {
+  @ApiProperty()
+  barcodeData!: string;
+
+  @ApiProperty()
+  barcodeType!: string;
+
+  @ApiProperty()
+  count!: number;
+
+  @ApiProperty({ nullable: true })
+  productName!: string | null;
+}
+
+export class HourlyActivityDto {
+  @ApiProperty({ description: 'Hour of day 0–23' })
+  hour!: number;
+
+  @ApiProperty()
+  count!: number;
+}
