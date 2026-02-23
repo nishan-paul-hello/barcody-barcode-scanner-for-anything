@@ -49,9 +49,6 @@ export default function ScanPage() {
       animate="visible"
       className="relative container mx-auto max-w-6xl space-y-12 px-4 py-10 sm:px-6 lg:px-8"
     >
-      {/* Background decoration */}
-      {/* Background decoration - Removed */}
-
       <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[1fr_350px]">
         {/* Row 1: Main Scanning Interface - Aligned at bottom */}
         <div className="flex min-w-0 flex-col justify-end">

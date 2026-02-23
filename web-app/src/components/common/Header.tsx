@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, History, Camera, LogOut } from 'lucide-react';
+import { LayoutDashboard, History, Camera, Search, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavItem {
@@ -34,6 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/history', label: 'History', icon: History },
     { href: '/scan', label: 'Scanner', icon: Camera },
+    { href: '/lookup', label: 'Lookup', icon: Search },
   ];
 
   const navItems = customNavItems || defaultNavItems;
