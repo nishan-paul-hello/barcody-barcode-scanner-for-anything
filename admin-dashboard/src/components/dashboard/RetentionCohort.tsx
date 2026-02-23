@@ -88,11 +88,8 @@ export function RetentionCohort() {
 }
 
 function getRetentionColor(percentage: number) {
-  if (percentage >= 80)
-    return 'bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100';
-  if (percentage >= 50)
-    return 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100';
-  if (percentage >= 20)
-    return 'bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100';
-  return 'bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-100';
+  if (percentage >= 80) return 'bg-green-900 text-green-100';
+  if (percentage >= 50) return 'bg-blue-900 text-blue-100';
+  if (percentage >= 20) return 'bg-yellow-900 text-yellow-100';
+  return 'bg-red-900 text-red-100';
 }

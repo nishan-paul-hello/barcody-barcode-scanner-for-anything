@@ -1,6 +1,5 @@
 'use client';
 
-import { ModeToggle } from '@/components/mode-toggle';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -33,8 +32,6 @@ export function Header() {
           Barcody Admin
         </div>
         <div className="ml-auto flex items-center space-x-4">
-          <ModeToggle />
-
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
