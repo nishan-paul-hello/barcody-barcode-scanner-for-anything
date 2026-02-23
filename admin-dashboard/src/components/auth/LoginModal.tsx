@@ -32,7 +32,12 @@ export const LoginModal = () => {
         return;
       }
 
-      setAuth(data.user, data.accessToken, data.refreshToken, data.isAdmin);
+      await setAuth(
+        data.user,
+        data.accessToken,
+        data.refreshToken,
+        data.isAdmin
+      );
       closeLoginModal();
     } catch (error: unknown) {
       console.error('Login Error:', error);

@@ -18,7 +18,8 @@ import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/uiStore';
 
 export function Header() {
-  const { user, logout } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
   const { openLoginModal } = useUIStore();
   const pathname = usePathname();
 
@@ -108,7 +109,7 @@ export function Header() {
           </nav>
 
           {user ? (
-            <DropdownMenu>
+            <DropdownMenu key={user.id}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
