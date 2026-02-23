@@ -40,19 +40,22 @@ export const LoginModal = () => {
 
   return (
     <Dialog open={isLoginModalOpen} onOpenChange={closeLoginModal}>
-      <DialogContent className="max-w-[420px] border-none bg-[#1a1a1a] p-0 text-white shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem]">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-[420px] border-none bg-[#1a1a1a] p-0 text-white shadow-[0_32px_64px_-12px_rgba(0,0,0,0.8)] sm:rounded-[2.5rem]"
+      >
         <div className="relative flex flex-col items-center px-10 pt-16 pb-12">
           {/* Close Button */}
           <button
             onClick={closeLoginModal}
-            className="absolute top-8 right-8 text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
+            className="absolute top-8 right-8 z-30 cursor-pointer text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
           >
             <X size={20} />
           </button>
 
           <div className="mb-10 text-center">
-            <DialogTitle className="mb-2 text-[2.25rem] leading-tight font-medium tracking-tight text-white">
-              Log back in
+            <DialogTitle className="mb-2 text-[2.25rem] leading-tight font-medium tracking-tight text-white focus:outline-none">
+              Log In
             </DialogTitle>
             <p className="text-base font-light tracking-wide text-white/50">
               Choose an account to continue.
@@ -84,15 +87,18 @@ export const LoginModal = () => {
                 className="w-full"
               >
                 {/* Account Item */}
-                <div className="group relative flex w-full cursor-pointer items-center overflow-hidden rounded-[2rem] border-[1.5px] border-white bg-white/5 p-6 transition-all hover:bg-white/10">
-                  <div className="absolute inset-0 z-20 flex scale-[5] items-center justify-center opacity-[0.01]">
+                <div className="group relative flex h-[104px] w-full items-center overflow-hidden rounded-[2rem] border-[1.5px] border-white bg-white/5 transition-all hover:bg-white/10">
+                  {/* Google Login Overlay (z-20) */}
+                  <div className="absolute inset-0 z-20 flex scale-[5] cursor-pointer items-center justify-center opacity-[0.01]">
                     <GoogleLogin
                       onSuccess={handleSuccess}
                       onError={handleError}
                       width="400"
                     />
                   </div>
-                  <div className="pointer-events-none relative z-10 flex w-full items-center">
+
+                  {/* Visual Content (z-10) */}
+                  <div className="pointer-events-none relative z-10 flex w-full items-center px-6">
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#9c27b0] text-xl font-medium text-white shadow-lg">
                       {user?.name
                         ?.split(' ')
@@ -107,10 +113,18 @@ export const LoginModal = () => {
                         {user?.email || 'nishanpaul12011996se@gmail.com'}
                       </p>
                     </div>
-                    <div className="ml-2 p-1 text-white/30">
-                      <X size={18} />
-                    </div>
                   </div>
+
+                  {/* Intercepting Close Button (z-30) */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      closeLoginModal();
+                    }}
+                    className="absolute right-6 z-30 cursor-pointer p-2 text-white/30 transition-all hover:scale-110 hover:text-white active:scale-90"
+                  >
+                    <X size={18} />
+                  </button>
                 </div>
 
                 {/* Divider */}
