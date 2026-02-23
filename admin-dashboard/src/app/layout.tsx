@@ -6,8 +6,14 @@ import { Providers } from '@/components/providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Barcody',
+  title: {
+    template: 'Barcody - %s',
+    default: 'Barcody - Dashboard',
+  },
   description: 'Admin Dashboard for Barcody',
+  icons: {
+    icon: '/admin/brand-logo.svg?v=1',
+  },
 };
 
 export default function RootLayout({
