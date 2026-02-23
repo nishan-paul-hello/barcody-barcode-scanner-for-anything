@@ -37,6 +37,7 @@ export const LoginModal = () => {
   };
 
   const handleError = () => {
+    console.error('Google Login Authentication Failed');
     setIsLoading(false);
   };
 
@@ -49,8 +50,13 @@ export const LoginModal = () => {
         <div className="relative flex flex-col items-center px-10 pt-16 pb-12">
           {/* Close Button */}
           <button
-            onClick={closeLoginModal}
-            className="absolute top-8 right-8 z-30 cursor-pointer text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              closeLoginModal();
+            }}
+            className="absolute top-8 right-8 z-[100] cursor-pointer p-2 text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
+            aria-label="Close"
           >
             <X size={20} />
           </button>
@@ -94,7 +100,7 @@ export const LoginModal = () => {
                     {/* Account Item */}
                     <div className="group relative flex h-[104px] w-full items-center overflow-hidden rounded-[2rem] border-[1.5px] border-white bg-white/5 transition-all hover:bg-white/10">
                       {/* Google Login Overlay (z-20) */}
-                      <div className="absolute inset-0 z-20 flex scale-[15] cursor-pointer items-center justify-center opacity-0">
+                      <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] transition-opacity hover:opacity-[0.05]">
                         <GoogleLogin
                           onSuccess={handleSuccess}
                           onError={handleError}
@@ -120,13 +126,15 @@ export const LoginModal = () => {
                         </div>
                       </div>
 
-                      {/* Intercepting Dismiss Button (z-30) */}
+                      {/* Intercepting Dismiss Button (z-[100]) */}
                       <button
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           setIsSuggestedDismissed(true);
                         }}
-                        className="absolute right-6 z-30 cursor-pointer p-2 text-white/30 transition-all hover:scale-110 hover:text-white active:scale-90"
+                        className="absolute right-6 z-[100] cursor-pointer p-3 text-white/30 transition-all hover:scale-110 hover:text-white active:scale-90"
+                        aria-label="Dismiss"
                       >
                         <X size={18} />
                       </button>
@@ -143,7 +151,7 @@ export const LoginModal = () => {
 
                     {/* Use a different account */}
                     <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
-                      <div className="absolute inset-0 z-20 flex scale-[15] items-center justify-center opacity-0">
+                      <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] transition-opacity hover:opacity-[0.05]">
                         <GoogleLogin
                           onSuccess={handleSuccess}
                           onError={handleError}
@@ -178,7 +186,7 @@ export const LoginModal = () => {
                 ) : (
                   /* Continue with Google (Simple View) */
                   <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/10 bg-white/[0.03] transition-all hover:bg-white/[0.08] active:scale-[0.98]">
-                    <div className="absolute inset-0 z-20 flex scale-[15] items-center justify-center opacity-0">
+                    <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] transition-opacity hover:opacity-[0.05]">
                       <GoogleLogin
                         onSuccess={handleSuccess}
                         onError={handleError}
