@@ -8,7 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, LayoutDashboard, BarChart, Users, Scan } from 'lucide-react';
+import {
+  LogOut,
+  LayoutDashboard,
+  BarChart,
+  Users,
+  Scan,
+  Shield,
+} from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { googleLogout } from '@react-oauth/google';
 import Link from 'next/link';
@@ -28,7 +35,8 @@ export function Header() {
   };
 
   const navItems = [
-    { title: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { title: 'Home', href: '/', icon: LayoutDashboard },
+    { title: 'Dashboard', href: '/dashboard', icon: Shield },
     { title: 'Analytics', href: '/analytics', icon: BarChart },
     { title: 'Users', href: '/users', icon: Users },
     { title: 'Scans', href: '/scans', icon: Scan },
