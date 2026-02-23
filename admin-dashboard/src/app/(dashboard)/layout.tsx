@@ -1,12 +1,18 @@
+'use client';
+
 import { Header } from '@/components/dashboard/header';
 import { Footer } from '@/components/dashboard/footer';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { usePathname } from 'next/navigation';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+
   return (
     <ProtectedRoute>
       <div className="flex min-h-screen flex-col bg-[#0a0a0a]">
@@ -15,7 +21,7 @@ export default function DashboardLayout({
           <main className="container mx-auto flex-1 px-4 py-8 sm:px-6 lg:px-8">
             {children}
           </main>
-          <Footer />
+          {isHomePage && <Footer />}
         </div>
       </div>
     </ProtectedRoute>
