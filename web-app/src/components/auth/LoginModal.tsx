@@ -59,10 +59,8 @@ export const LoginModal = () => {
             <DialogTitle className="mb-2 text-[2.25rem] leading-tight font-medium tracking-tight text-white focus:outline-none">
               Log In
             </DialogTitle>
-            <p className="text-base font-light tracking-wide text-white/50">
-              {isSuggestedDismissed
-                ? 'Sign in to sync your scanner data.'
-                : 'Choose an account to continue.'}
+            <p className="text-base font-light tracking-wide whitespace-nowrap text-white/50">
+              Scan, track, and sync across all devices
             </p>
           </div>
 
@@ -96,7 +94,7 @@ export const LoginModal = () => {
                     {/* Account Item */}
                     <div className="group relative flex h-[104px] w-full items-center overflow-hidden rounded-[2rem] border-[1.5px] border-white bg-white/5 transition-all hover:bg-white/10">
                       {/* Google Login Overlay (z-20) */}
-                      <div className="absolute inset-0 z-20 flex scale-[5] cursor-pointer items-center justify-center opacity-[0.01]">
+                      <div className="absolute inset-0 z-20 flex scale-[15] cursor-pointer items-center justify-center opacity-0">
                         <GoogleLogin
                           onSuccess={handleSuccess}
                           onError={handleError}
@@ -105,7 +103,7 @@ export const LoginModal = () => {
                       </div>
 
                       {/* Visual Content (z-10) */}
-                      <div className="pointer-events-none relative z-10 flex w-full items-center px-6">
+                      <div className="pointer-events-none relative z-10 flex w-full items-center px-6 select-none">
                         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#9c27b0] text-xl font-medium text-white shadow-lg">
                           {user?.name
                             ?.split(' ')
@@ -145,14 +143,14 @@ export const LoginModal = () => {
 
                     {/* Use a different account */}
                     <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
-                      <div className="absolute inset-0 z-20 flex scale-[5] items-center justify-center opacity-[0.01]">
+                      <div className="absolute inset-0 z-20 flex scale-[15] items-center justify-center opacity-0">
                         <GoogleLogin
                           onSuccess={handleSuccess}
                           onError={handleError}
                           width="400"
                         />
                       </div>
-                      <div className="pointer-events-none relative z-10 flex h-16 w-full items-center justify-center gap-3">
+                      <div className="pointer-events-none relative z-10 flex h-16 w-full items-center justify-center gap-3 select-none">
                         <svg width="20" height="20" viewBox="0 0 24 24">
                           <path
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -180,15 +178,14 @@ export const LoginModal = () => {
                 ) : (
                   /* Continue with Google (Simple View) */
                   <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/10 bg-white/[0.03] transition-all hover:bg-white/[0.08] active:scale-[0.98]">
-                    <div className="absolute inset-0 z-20 flex scale-[5] items-center justify-center opacity-[0.01]">
+                    <div className="absolute inset-0 z-20 flex scale-[15] items-center justify-center opacity-0">
                       <GoogleLogin
                         onSuccess={handleSuccess}
                         onError={handleError}
                         width="400"
-                        theme="filled_black"
                       />
                     </div>
-                    <div className="pointer-events-none relative z-10 flex h-16 w-full items-center justify-center gap-3">
+                    <div className="pointer-events-none relative z-10 flex h-16 w-full items-center justify-center gap-3 select-none">
                       <svg width="20" height="20" viewBox="0 0 24 24">
                         <path
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
