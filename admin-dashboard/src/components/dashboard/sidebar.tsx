@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart, Users, Scan, Settings, LayoutDashboard } from 'lucide-react';
+import { BarChart, Users, Scan, LayoutDashboard } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
@@ -34,11 +34,6 @@ export function Sidebar({ className, ...props }: SidebarNavProps) {
       title: 'Scans',
       href: '/scans',
       icon: Scan,
-    },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: Settings,
     },
   ];
 
