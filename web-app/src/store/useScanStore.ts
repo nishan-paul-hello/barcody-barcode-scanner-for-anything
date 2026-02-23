@@ -9,7 +9,7 @@ interface ScanState {
     timestamp: string;
   } | null;
   hasError: boolean;
-  activeTab: 'camera' | 'file';
+  activeTab: 'camera' | 'file' | 'lookup';
   previewUrl: string | null; // Base64 or Blob storage (Blob won't persist across reloads, so Base64 is better for true persistence)
 }
 
@@ -17,7 +17,7 @@ interface ScanStore extends ScanState {
   setLastResult: (result: string | null) => void;
   setScanMetadata: (metadata: ScanState['scanMetadata']) => void;
   setHasError: (hasError: boolean) => void;
-  setActiveTab: (tab: 'camera' | 'file') => void;
+  setActiveTab: (tab: 'camera' | 'file' | 'lookup') => void;
   setPreviewUrl: (url: string | null) => void;
   reset: () => void;
 }

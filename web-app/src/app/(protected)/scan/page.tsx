@@ -2,8 +2,9 @@
 
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
 import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
+import { BarcodeManualLookup } from '@/components/scanner/BarcodeManualLookup';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, FileUp, PackageSearch } from 'lucide-react';
+import { Camera, FileUp, PackageSearch, Search } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
 import { ProductSkeleton } from '@/components/products/ProductSkeleton';
@@ -55,7 +56,9 @@ export default function ScanPage() {
           <motion.div variants={itemVariants} className="relative">
             <Tabs
               value={activeTab}
-              onValueChange={(v) => setActiveTab(v as 'camera' | 'file')}
+              onValueChange={(v) =>
+                setActiveTab(v as 'camera' | 'file' | 'lookup')
+              }
               className="w-full"
             >
               <div className="relative mb-8 flex items-center justify-center">
@@ -73,6 +76,13 @@ export default function ScanPage() {
                   >
                     <FileUp className="mr-2 h-3.5 w-3.5" />
                     Asset Upload
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="lookup"
+                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                  >
+                    <Search className="mr-2 h-3.5 w-3.5" />
+                    Lookup
                   </TabsTrigger>
                 </TabsList>
                 <div className="absolute top-1/2 right-0 -translate-y-1/2">
@@ -116,6 +126,24 @@ export default function ScanPage() {
                   }}
                   onScanError={() => {
                     setHasError(true);
+                  }}
+                  onClear={() => {
+                    setLastResult(null);
+                    setHasError(false);
+                    setScanMetadata(null);
+                  }}
+                />
+              </TabsContent>
+              <TabsContent value="lookup" className="m-0 outline-none">
+                <BarcodeManualLookup
+                  onLookupSuccess={(barcode) => {
+                    setLastResult(barcode);
+                    setHasError(false);
+                    setScanMetadata({
+                      format: 'Manual Entry',
+                      source: 'Manual entry',
+                      timestamp: new Date().toISOString(),
+                    });
                   }}
                   onClear={() => {
                     setLastResult(null);
