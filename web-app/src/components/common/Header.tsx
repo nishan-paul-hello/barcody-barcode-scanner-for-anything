@@ -169,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
               className="group flex cursor-pointer items-center gap-2 rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
             >
               <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
-              Login
+              Get Started
             </Button>
           )}
         </div>
