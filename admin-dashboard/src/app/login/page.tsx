@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/lib/api/client';
@@ -13,7 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, BarChart3, ShieldCheck, Loader2 } from 'lucide-react';
+import { AlertCircle, ShieldCheck, Loader2 } from 'lucide-react';
 
 function LoginContent() {
   const router = useRouter();
@@ -65,8 +66,13 @@ function LoginContent() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="mb-6 flex justify-center">
-            <div className="rounded-2xl bg-blue-600/10 p-4 ring-1 ring-blue-500/20">
-              <BarChart3 className="h-10 w-10 text-blue-500" />
+            <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
+              <Image
+                src="/admin/brand-logo.svg"
+                alt="Barcody Logo"
+                fill
+                className="object-contain p-4"
+              />
             </div>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white">
