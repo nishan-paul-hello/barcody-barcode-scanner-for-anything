@@ -33,8 +33,8 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const defaultNavItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/history', label: 'History', icon: History },
-    { href: '/scan', label: 'Scanner', icon: Camera },
     { href: '/lookup', label: 'Lookup', icon: Search },
+    { href: '/scan', label: 'Scanner', icon: Camera },
   ];
 
   const navItems = customNavItems || defaultNavItems;
