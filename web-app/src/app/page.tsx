@@ -33,7 +33,7 @@ export default function LandingPage() {
               </div>
               <div className="space-x-4">
                 <Button asChild size="lg">
-                  <Link href={isAuthenticated ? '/dashboard' : '/login'}>
+                  <Link href={isAuthenticated ? '/history' : '/login'}>
                     Get Started
                   </Link>
                 </Button>

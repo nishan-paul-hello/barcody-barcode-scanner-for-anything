@@ -24,8 +24,8 @@ function LoginContent() {
   const login = useAuthStore((state) => state.login);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isAuthLoading = useAuthStore((state) => state.isLoading);
-  const rawRedirect = searchParams.get('redirect') || '/dashboard';
-  const redirectUrl = rawRedirect.startsWith('/') ? rawRedirect : '/dashboard';
+  const rawRedirect = searchParams.get('redirect') || '/history';
+  const redirectUrl = rawRedirect.startsWith('/') ? rawRedirect : '/history';
 
   useEffect(() => {
     if (!isAuthLoading && isAuthenticated) {
@@ -48,7 +48,7 @@ function LoginContent() {
       // Store tokens and user state via Zustand
       login(user, accessToken, refreshToken);
 
-      // Redirect to dashboard
+      // Redirect to history
       router.push(redirectUrl);
     } catch (error: unknown) {
       console.error('Login Error:', error);
@@ -104,7 +104,7 @@ function LoginContent() {
           Welcome to Barcody
         </CardTitle>
         <CardDescription>
-          Sign in to access your barcode scanner dashboard
+          Sign in to access your barcode scanner history
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

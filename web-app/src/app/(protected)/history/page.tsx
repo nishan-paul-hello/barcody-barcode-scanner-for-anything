@@ -30,6 +30,13 @@ import {
 } from 'lucide-react';
 import { ExportModal } from '@/components/export/ExportModal';
 import { analytics } from '@/lib/analytics.service';
+import { api } from '@/lib/api/client';
+
+interface DashboardStats {
+  totalScans: number;
+  activeProducts: number;
+  recentActivity: ScanResponseDto | null;
+}
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -96,6 +103,14 @@ export default function HistoryPage() {
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
 
+  // Stats State
+  const [stats, setStats] = useState<DashboardStats>({
+    totalScans: 0,
+    activeProducts: 0,
+    recentActivity: null,
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
+
   // Sync URL with filters and search
   useEffect(() => {
     const params = new URLSearchParams();
@@ -128,6 +143,34 @@ export default function HistoryPage() {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchValue, addRecentSearch]);
+
+  // Fetch stats on load
+  useEffect(() => {
+    api.scans
+      .getStats()
+      .then((data) => setStats(data))
+      .catch((err) => console.error('Failed to fetch stats:', err))
+      .finally(() => setStatsLoading(false));
+  }, []);
+
+  const formatActivity = (scan: ScanResponseDto | null) => {
+    if (!scan) return 'No recent activity';
+
+    const date = new Date(scan.scannedAt);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.round(diffMs / 60000);
+    const diffHours = Math.round(diffMins / 60);
+    const diffDays = Math.round(diffHours / 24);
+
+    let timeAgo = '';
+    if (diffMins < 1) timeAgo = 'Just now';
+    else if (diffMins < 60) timeAgo = `${diffMins} mins ago`;
+    else if (diffHours < 24) timeAgo = `${diffHours} hours ago`;
+    else timeAgo = `${diffDays} days ago`;
+
+    return `Scanned "${scan.product?.name || scan.barcodeData}" ${timeAgo}`;
+  };
 
   // Reset page when filters change
   const handleFilterChange = (key: keyof PaginationParams, value: unknown) => {
@@ -243,6 +286,30 @@ export default function HistoryPage() {
           Export Data
         </Button>
       </div>
+
+      {/* Dashboard Stats */}
+      {statsLoading ? (
+        <div className="bg-card mt-4 flex justify-center rounded-xl border py-6 shadow-sm">
+          <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+        </div>
+      ) : (
+        <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="bg-card rounded-xl border p-6 shadow-sm">
+            <h2 className="mb-2 text-xl font-semibold">Total Scans</h2>
+            <p className="text-4xl font-bold">{stats.totalScans}</p>
+          </div>
+          <div className="bg-card rounded-xl border p-6 shadow-sm">
+            <h2 className="mb-2 text-xl font-semibold">Active Products</h2>
+            <p className="text-4xl font-bold">{stats.activeProducts}</p>
+          </div>
+          <div className="bg-card rounded-xl border p-6 shadow-sm">
+            <h2 className="mb-2 text-xl font-semibold">Recent Activity</h2>
+            <p className="text-muted-foreground text-sm">
+              {formatActivity(stats.recentActivity)}
+            </p>
+          </div>
+        </div>
+      )}
 
       <ScanFilters
         filters={{ ...filters, search: searchValue }}
