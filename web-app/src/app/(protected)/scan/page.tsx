@@ -145,7 +145,7 @@ export default function ScanPage() {
 
         {/* Row 2: Extraction Results */}
         <AnimatePresence>
-          {(isLoading || productData?.success) && (
+          {lastResult && (isLoading || productData !== undefined) && (
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
@@ -176,7 +176,7 @@ export default function ScanPage() {
                     </motion.div>
                   )}
 
-                  {productData?.success && (
+                  {!isLoading && productData?.success && (
                     <motion.div
                       key="data"
                       initial={{ opacity: 0, scale: 0.98 }}
@@ -186,6 +186,27 @@ export default function ScanPage() {
                         product={productData.data}
                         cacheStatus={productData.cacheStatus}
                       />
+                    </motion.div>
+                  )}
+
+                  {!isLoading && productData && !productData.success && (
+                    <motion.div
+                      key="empty"
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-amber-500/20 bg-amber-500/5 py-16 text-center"
+                    >
+                      <PackageSearch className="mb-4 h-12 w-12 text-amber-500/50" />
+                      <p className="text-sm font-bold text-white/80">
+                        No product data for this barcode
+                      </p>
+                      <p className="mt-2 max-w-sm text-xs text-white/50">
+                        Our databases don&apos;t have details for{' '}
+                        <span className="font-mono text-white/60">
+                          {lastResult}
+                        </span>
+                        . Try another source or scan a different code.
+                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
