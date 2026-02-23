@@ -29,7 +29,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
       const currentUrl =
         pathname +
         (searchParams.toString() ? `?${searchParams.toString()}` : '');
-      const redirectPath = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+      const redirectPath = `/?login=true&redirect=${encodeURIComponent(currentUrl)}`;
 
       router.push(redirectPath);
     }

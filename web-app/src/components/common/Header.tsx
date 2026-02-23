@@ -15,6 +15,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { History, Camera, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useUIStore } from '@/store/useUIStore';
 
 interface NavItem {
   href: string;
@@ -28,6 +29,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const { user, logout } = useAuthStore();
+  const { openLoginModal } = useUIStore();
   const pathname = usePathname();
 
   const defaultNavItems = [
@@ -163,10 +165,10 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
             </DropdownMenu>
           ) : (
             <Button
-              asChild
-              className="rounded-full bg-cyan-500 font-bold hover:bg-cyan-600"
+              onClick={openLoginModal}
+              className="rounded-full bg-cyan-500 px-6 font-bold transition-all hover:scale-105 hover:bg-cyan-600"
             >
-              <Link href="/login">Login</Link>
+              Login
             </Button>
           )}
         </div>

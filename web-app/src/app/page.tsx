@@ -19,6 +19,8 @@ import { Header } from '@/components/common/Header';
 import Image from 'next/image';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef } from 'react';
+import { useUIStore } from '@/store/useUIStore';
+import { useRouter } from 'next/navigation';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -61,6 +63,8 @@ const FeatureCard = ({
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
+  const { openLoginModal } = useUIStore();
+  const router = useRouter();
   const targetRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -142,16 +146,17 @@ export default function LandingPage() {
               className="flex flex-col gap-4 sm:flex-row"
             >
               <Button
-                asChild
                 size="lg"
+                onClick={() => {
+                  if (isAuthenticated) {
+                    router.push('/scan');
+                  } else {
+                    openLoginModal();
+                  }
+                }}
                 className="group h-14 rounded-full bg-cyan-500 px-10 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
               >
-                <Link
-                  href={isAuthenticated ? '/scan' : '/login'}
-                  className="flex items-center gap-2"
-                >
-                  Launch Scanner
-                </Link>
+                Launch Scanner
               </Button>
               <Button
                 asChild

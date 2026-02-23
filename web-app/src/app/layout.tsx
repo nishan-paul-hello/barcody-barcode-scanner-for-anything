@@ -30,6 +30,8 @@ import { QueryProvider } from '@/components/providers/query-provider';
 import { SocketProvider } from '@/components/providers/SocketProvider';
 import { ErrorBoundary } from '@/components/common/error-boundary';
 import { AnalyticsTracker } from '@/components/analytics-tracker';
+import { LoginModal } from '@/components/auth/LoginModal';
+import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler';
 
 export default function RootLayout({
   children,
@@ -52,6 +54,8 @@ export default function RootLayout({
             >
               <SocketProvider>
                 <AnalyticsTracker />
+                <LoginModal />
+                <AuthRedirectHandler />
                 <ErrorBoundary>{children}</ErrorBoundary>
               </SocketProvider>
             </ThemeProvider>
