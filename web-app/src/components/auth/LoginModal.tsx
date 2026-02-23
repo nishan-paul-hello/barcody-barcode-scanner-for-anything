@@ -12,8 +12,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Loader2, Shield, Fingerprint, Lock } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 export const LoginModal = () => {
   const { isLoginModalOpen, closeLoginModal } = useUIStore();
@@ -62,23 +63,14 @@ export const LoginModal = () => {
               className="relative mb-6 h-20 w-20"
             >
               <div className="absolute inset-0 animate-pulse rounded-2xl bg-cyan-500/20 blur-xl" />
-              <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 1].map((_h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 10 }}
-                      animate={{ height: [12, 24, 12] }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        delay: i * 0.1,
-                        ease: 'easeInOut',
-                      }}
-                      className="w-1 rounded-full bg-cyan-400"
-                    />
-                  ))}
-                </div>
+              <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+                <Image
+                  src="/brand-logo.svg"
+                  alt="Barcody Logo"
+                  width={80}
+                  height={80}
+                  className="h-full w-full object-contain"
+                />
               </div>
             </motion.div>
 
@@ -127,45 +119,9 @@ export const LoginModal = () => {
                       text="continue_with"
                     />
                   </div>
-
-                  <div className="flex items-center justify-center gap-6 pt-4 text-white/30">
-                    <div className="flex flex-col items-center gap-1">
-                      <Lock className="h-4 w-4" />
-                      <span className="text-[10px] font-bold tracking-tighter uppercase">
-                        Safe
-                      </span>
-                    </div>
-                    <div className="h-4 w-[1px] bg-white/10" />
-                    <div className="flex flex-col items-center gap-1">
-                      <Fingerprint className="h-4 w-4" />
-                      <span className="text-[10px] font-bold tracking-tighter uppercase">
-                        Secure
-                      </span>
-                    </div>
-                    <div className="h-4 w-[1px] bg-white/10" />
-                    <div className="flex flex-col items-center gap-1">
-                      <Shield className="h-4 w-4" />
-                      <span className="text-[10px] font-bold tracking-tighter uppercase">
-                        Private
-                      </span>
-                    </div>
-                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-xs leading-relaxed font-medium text-white/30">
-              By continuing, you agree to our{' '}
-              <button className="text-white/60 underline underline-offset-4 transition-colors hover:text-white">
-                Terms
-              </button>{' '}
-              and{' '}
-              <button className="text-white/60 underline underline-offset-4 transition-colors hover:text-white">
-                Privacy Policy
-              </button>
-            </p>
           </div>
         </div>
       </DialogContent>
