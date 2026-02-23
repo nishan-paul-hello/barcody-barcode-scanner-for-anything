@@ -1,15 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import {
-  BarChart,
-  Users,
-  Scan,
-  ArrowRight,
-  Shield,
-  Zap,
-  Globe,
-} from 'lucide-react';
+import { BarChart, Users, Scan, ArrowRight, Zap, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
@@ -53,11 +45,6 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           className="max-w-3xl"
         >
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs font-medium text-white/60 backdrop-blur-xl">
-            <Shield className="h-3.5 w-3.5 text-cyan-400" />
-            <span>Admin Control Center</span>
-          </div>
-
           <h1 className="mb-6 text-5xl font-black tracking-tight text-white sm:text-7xl">
             Everything your{' '}
             <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
