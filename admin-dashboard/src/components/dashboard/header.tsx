@@ -52,7 +52,7 @@ export function Header() {
               className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl"
             >
               <Image
-                src="/admin/brand-logo.svg"
+                src="/brand-logo.svg"
                 alt="Barcody Logo"
                 width={40}
                 height={40}

@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
       allowedOrigins: ['admin-barcody.tamarin-ph.ts.net', 'localhost:3001'],
     },
   },
-  basePath: '/admin',
   images: {
     remotePatterns: [
       {

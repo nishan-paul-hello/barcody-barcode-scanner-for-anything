@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
   description: 'Admin Dashboard for Barcody',
   icons: {
-    icon: '/admin/brand-logo.svg?v=1',
+    icon: '/brand-logo.svg?v=1',
   },
 };
 

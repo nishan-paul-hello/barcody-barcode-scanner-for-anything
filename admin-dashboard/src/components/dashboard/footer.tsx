@@ -25,7 +25,7 @@ export function Footer() {
             >
               <div className="relative h-8 w-8 transition-transform duration-300 group-hover/kai:scale-110">
                 <Image
-                  src="/admin/company-logo.svg"
+                  src="/company-logo.svg"
                   alt="KAI Logo"
                   fill
                   className="object-contain"

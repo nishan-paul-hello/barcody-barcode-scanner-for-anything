@@ -68,7 +68,7 @@ function LoginContent() {
           <div className="mb-6 flex justify-center">
             <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
               <Image
-                src="/admin/brand-logo.svg"
+                src="/brand-logo.svg"
                 alt="Barcody Logo"
                 fill
                 className="object-contain p-4"
