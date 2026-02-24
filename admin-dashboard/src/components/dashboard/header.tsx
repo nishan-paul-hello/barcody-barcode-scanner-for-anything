@@ -165,13 +165,17 @@ export function Header() {
                   </div>
                 </div>
 
-                <div className="p-2">
+                <div className="space-y-1 p-2">
                   <DropdownMenuItem
                     onClick={handleLogout}
-                    className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+                    className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500"
                   >
-                    <LogOut className="h-4 w-4 transition-colors group-hover:text-white" />
-                    <span className="text-sm font-bold">Log out</span>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/10 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
+                      <LogOut className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-bold tracking-tight">
+                      Log out
+                    </span>
                   </DropdownMenuItem>
                 </div>
               </DropdownMenuContent>
