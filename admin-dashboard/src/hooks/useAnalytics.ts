@@ -38,3 +38,56 @@ export const useDeviceBreakdown = () => {
     queryFn: () => api.admin.getDeviceBreakdown(),
   });
 };
+
+export const useRetentionCohorts = () => {
+  return useQuery({
+    queryKey: ['analytics', 'retention'],
+    queryFn: () => api.admin.getRetentionCohorts(),
+  });
+};
+
+export const useTopBarcodes = (dateRange?: DateRange) => {
+  return useQuery({
+    queryKey: ['analytics', 'top-barcodes', dateRange],
+    queryFn: () =>
+      api.admin.getTopBarcodes({
+        startDate: dateRange?.from?.toISOString(),
+        endDate: dateRange?.to?.toISOString(),
+      }),
+  });
+};
+
+export const useHourlyActivity = (dateRange?: DateRange) => {
+  return useQuery({
+    queryKey: ['analytics', 'hourly', dateRange],
+    queryFn: () =>
+      api.admin.getHourlyActivity({
+        startDate: dateRange?.from?.toISOString(),
+        endDate: dateRange?.to?.toISOString(),
+      }),
+  });
+};
+
+export const useUsers = (params: { page?: number; limit?: number } = {}) => {
+  return useQuery({
+    queryKey: ['admin', 'users', params],
+    queryFn: () => api.admin.getUsers(params),
+    placeholderData: (prev) => prev,
+  });
+};
+
+export const useScans = (
+  params: {
+    page?: number;
+    limit?: number;
+    startDate?: string;
+    endDate?: string;
+    query?: string;
+  } = {}
+) => {
+  return useQuery({
+    queryKey: ['admin', 'scans', params],
+    queryFn: () => api.admin.getScans(params),
+    placeholderData: (prev) => prev,
+  });
+};

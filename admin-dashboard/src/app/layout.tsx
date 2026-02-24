@@ -1,15 +1,22 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'; // or local font
 import '@/app/globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
 import { Providers } from '@/components/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Barcody Admin',
+  title: {
+    template: 'Barcody - %s',
+    default: 'Barcody',
+  },
   description: 'Admin Dashboard for Barcody',
+  icons: {
+    icon: '/brand-logo.svg?v=1',
+  },
 };
+
+import { LoginModal } from '@/components/auth/LoginModal';
 
 export default function RootLayout({
   children,
@@ -19,14 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>{children}</Providers>
-        </ThemeProvider>
+        <Providers>
+          {children}
+          <LoginModal />
+        </Providers>
       </body>
     </html>
   );

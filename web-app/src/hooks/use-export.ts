@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api/client';
 import { ExportFormat, type PaginationParams } from '@/lib/api/types';
-import { toast } from 'sonner';
 
 export function useExportData() {
   return useMutation({
@@ -66,9 +65,6 @@ export function useExportData() {
         }
         window.URL.revokeObjectURL(url);
       }, 10000); // 10 seconds is much safer
-    },
-    onSuccess: () => {
-      toast.success('Export completed successfully');
     },
   });
 }

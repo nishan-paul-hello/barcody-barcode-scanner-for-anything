@@ -31,6 +31,14 @@ refresh:
 logs:
 	docker compose logs -f
 
+funnel-on:
+	@find infra/tailscale/ -name "*.json" -exec sed -i '/"AllowFunnel": {/,/}/ s/: false/: true/' {} +
+	@docker compose restart ts-web ts-admin ts-api
+
+funnel-off:
+	@find infra/tailscale/ -name "*.json" -exec sed -i '/"AllowFunnel": {/,/}/ s/: true/: false/' {} +
+	@docker compose restart ts-web ts-admin ts-api
+
 help:
 	@echo "  build       - Start production environment (Docker)"
 	@echo "  dev         - Start local development (Apps local, DB in Docker)"
@@ -39,3 +47,5 @@ help:
 	@echo "  restart     - Restart all containers"
 	@echo "  refresh     - Deep rebuild of dev (use if deps change)"
 	@echo "  logs        - Tail logs of all containers"
+	@echo "  funnel-on   - Enable public access via Tailscale Funnel"
+	@echo "  funnel-off  - Disable public access (Tailnet only)"

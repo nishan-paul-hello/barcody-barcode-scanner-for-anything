@@ -157,7 +157,7 @@ class AnalyticsService {
               err && typeof err === 'object'
                 ? JSON.stringify(err)
                 : String(err);
-            console.error(
+            console.warn(
               `[Analytics] Failed to send event ${event.eventType}:`,
               errorDetails
             );
@@ -165,7 +165,7 @@ class AnalyticsService {
         })
       );
     } catch (error) {
-      console.error('[Analytics] Error in batch processing:', error);
+      console.warn('[Analytics] Error in batch processing:', error);
     } finally {
       this.isProcessing = false;
       // If items remain, process again shortly

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
+  title: 'Scanner',
 };
 
-export default function DashboardLayout({
+export default function ScanLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

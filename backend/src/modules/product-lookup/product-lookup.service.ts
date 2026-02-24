@@ -1,10 +1,10 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@modules/redis/redis.service';
 import { OpenFoodFactsClient } from '@modules/product-lookup/clients/open-food-facts.client';
 import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.client';
 import { BarcodeLookupClient } from '@modules/product-lookup/clients/barcode-lookup.client';
 import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
+import { UsersService } from '@modules/users/users.service';
 
 export interface ProductComparison {
   nutrients: Record<
@@ -31,8 +31,6 @@ export interface ProductComparison {
 export class ProductLookupService {
   private readonly logger = new Logger(ProductLookupService.name);
   private readonly openFoodFactsClient: OpenFoodFactsClient;
-  private readonly upcDatabaseClient: UpcDatabaseClient;
-  private readonly barcodeLookupClient: BarcodeLookupClient;
 
   // TTL constants (in seconds)
   private readonly PRODUCT_CACHE_TTL = 2592000; // 30 days
@@ -43,24 +41,17 @@ export class ProductLookupService {
   private readonly BARCODE_LOOKUP_LIMIT = 50;
 
   constructor(
-    private configService: ConfigService,
     private redisService: RedisService,
+    private usersService: UsersService,
   ) {
     this.openFoodFactsClient = new OpenFoodFactsClient();
-
-    this.upcDatabaseClient = new UpcDatabaseClient(
-      this.configService.get<string>('UPC_DATABASE_API_KEY') || '',
-    );
-
-    this.barcodeLookupClient = new BarcodeLookupClient(
-      this.configService.get<string>('BARCODE_LOOKUP_API_KEY') || '',
-    );
   }
 
   async lookup(
     barcode: string,
+    userId: string,
   ): Promise<{ data: ProductInfo | null; cacheStatus: 'hit' | 'miss' }> {
-    this.logger.log(`Looking up barcode: ${barcode}`);
+    this.logger.log(`Looking up barcode: ${barcode} for user ${userId}`);
 
     // 1. Check Caches
     const cached = await this.checkCaches(barcode);
@@ -71,7 +62,7 @@ export class ProductLookupService {
     await this.incrementStat('cache_miss');
 
     // 2. Cascade Fallback
-    const result = await this.performCascadeLookup(barcode);
+    const result = await this.performCascadeLookup(barcode, userId);
 
     // 3. Cache result or Not Found
     if (result) {
@@ -101,17 +92,17 @@ export class ProductLookupService {
     return undefined;
   }
 
-  private async performCascadeLookup(barcode: string): Promise<ProductInfo | null> {
+  private async performCascadeLookup(barcode: string, userId: string): Promise<ProductInfo | null> {
     // Step 1: Open Food Facts (Free, Unlimited)
     const offResult = await this.tryOpenFoodFacts(barcode);
     if (offResult) return offResult;
 
     // Step 2: UPC Database
-    const upcResult = await this.tryUpcDatabase(barcode);
+    const upcResult = await this.tryUpcDatabase(barcode, userId);
     if (upcResult) return upcResult;
 
     // Step 3: Barcode Lookup
-    const blResult = await this.tryBarcodeLookup(barcode);
+    const blResult = await this.tryBarcodeLookup(barcode, userId);
     if (blResult) return blResult;
 
     return null;
@@ -131,14 +122,21 @@ export class ProductLookupService {
     return null;
   }
 
-  private async tryUpcDatabase(barcode: string): Promise<ProductInfo | null> {
+  private async tryUpcDatabase(barcode: string, userId: string): Promise<ProductInfo | null> {
     if (!(await this.checkLimit('upc', this.UPC_LIMIT))) {
       this.logger.warn(`UPC Database limit reached for today`);
       return null;
     }
 
+    const { upcDatabaseApiKey } = await this.usersService.getApiKeys(userId);
+    if (!upcDatabaseApiKey) {
+      this.logger.warn(`No UPC Database API key configured for user ${userId}`);
+      return null;
+    }
+
     try {
-      const result = await this.upcDatabaseClient.lookup(barcode);
+      const client = new UpcDatabaseClient(upcDatabaseApiKey);
+      const result = await client.lookup(barcode);
       await this.incrementUsage('upc');
       if (result) {
         this.logger.log(`Found ${barcode} on UPC Database`);
@@ -151,14 +149,22 @@ export class ProductLookupService {
     return null;
   }
 
-  private async tryBarcodeLookup(barcode: string): Promise<ProductInfo | null> {
+  private async tryBarcodeLookup(barcode: string, userId: string): Promise<ProductInfo | null> {
     if (!(await this.checkLimit('barcode', this.BARCODE_LOOKUP_LIMIT))) {
       this.logger.warn(`Barcode Lookup limit reached for today`);
       return null;
     }
 
+    const { barcodeLookupApiKey } = await this.usersService.getApiKeys(userId);
+    if (!barcodeLookupApiKey) {
+      this.logger.warn(`No Barcode Lookup API key configured for user ${userId}`);
+      return null;
+    }
+
+    const client = new BarcodeLookupClient(barcodeLookupApiKey);
+
     try {
-      const result = await this.barcodeLookupClient.lookup(barcode);
+      const result = await client.lookup(barcode);
       await this.incrementUsage('barcode');
       if (result) {
         this.logger.log(`Found ${barcode} on Barcode Lookup`);
@@ -218,12 +224,13 @@ export class ProductLookupService {
 
   async compare(
     barcodes: string[],
+    userId: string,
   ): Promise<{ products: ProductInfo[]; comparison: ProductComparison }> {
     this.logger.log(`Comparing barcodes: ${barcodes.join(', ')}`);
 
     const productsData = await Promise.all(
       barcodes.map(async (barcode) => {
-        const { data } = await this.lookup(barcode);
+        const { data } = await this.lookup(barcode, userId);
         return data;
       }),
     );

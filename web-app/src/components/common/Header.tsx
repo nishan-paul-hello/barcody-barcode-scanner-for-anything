@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,18 +13,49 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, History, Camera, LogOut } from 'lucide-react';
+import { History, Camera, LogOut, Fingerprint, KeyRound } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useUIStore } from '@/store/useUIStore';
+import { ApiKeysModal } from '@/components/settings/ApiKeysModal';
 
-export const Header: React.FC = () => {
-  const { user, logout } = useAuthStore();
+interface NavItem {
+  href: string;
+  label: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}
+
+interface HeaderProps {
+  navItems?: NavItem[];
+}
+
+export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
+  const { user, logout, isAuthenticated } = useAuthStore();
+  const { openLoginModal } = useUIStore();
   const pathname = usePathname();
+  const router = useRouter();
+  const [isApiKeysOpen, setIsApiKeysOpen] = React.useState(false);
 
-  const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (isAuthenticated) {
+      router.push(href);
+    } else {
+      openLoginModal(href);
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.setItem('is_logout_redirect', 'true');
+    logout();
+    router.push('/');
+  };
+
+  const defaultNavItems = [
     { href: '/history', label: 'History', icon: History },
     { href: '/scan', label: 'Scanner', icon: Camera },
   ];
+
+  const navItems = customNavItems || defaultNavItems;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-2xl transition-all duration-300">
@@ -51,7 +82,12 @@ export const Header: React.FC = () => {
                 className="h-full w-full object-contain"
               />
             </motion.div>
-            <span className="hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block">
+            <span
+              className={cn(
+                'hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-cyan-400 sm:inline-block',
+                pathname === '/' ? 'text-cyan-400' : 'text-white'
+              )}
+            >
               Barcody
             </span>
           </motion.div>
@@ -65,17 +101,20 @@ export const Header: React.FC = () => {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
                   className={cn(
                     'relative flex h-10 cursor-pointer items-center gap-2 px-4 text-xs font-bold tracking-widest uppercase transition-all hover:text-white',
                     isActive ? 'text-white' : 'text-white/40'
                   )}
                 >
-                  <item.icon
-                    className={cn(
-                      'h-4 w-4 transition-transform',
-                      isActive && 'text-cyan-400'
-                    )}
-                  />
+                  {item.icon && (
+                    <item.icon
+                      className={cn(
+                        'h-4 w-4 transition-transform',
+                        isActive && 'text-cyan-400'
+                      )}
+                    />
+                  )}
                   {item.label}
                   {isActive && (
                     <motion.div
@@ -93,56 +132,89 @@ export const Header: React.FC = () => {
             })}
           </nav>
 
-          {user && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400 data-[state=open]:ring-cyan-400"
-                >
-                  {user.picture ? (
-                    <Image
-                      src={user.picture}
-                      alt={user.name || 'User Profile'}
-                      fill
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
-                      <span className="text-sm font-bold text-cyan-400">
-                        {(user.name || user.email).charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#1a1a1a] p-0 text-white shadow-xl"
-                align="end"
-                forceMount
-              >
-                <div className="p-5">
-                  <div className="flex flex-col gap-1">
-                    <p className="truncate text-base font-bold tracking-tight text-white">
-                      {user.name || 'User'}
-                    </p>
-                    <p className="truncate text-xs font-medium text-white/50">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-2">
-                  <DropdownMenuItem
-                    onClick={logout}
-                    className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
+          {user ? (
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400 data-[state=open]:ring-cyan-400"
                   >
-                    <LogOut className="h-4 w-4 transition-colors group-hover:text-white" />
-                    <span className="text-sm font-bold">Log out</span>
-                  </DropdownMenuItem>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    {user.picture ? (
+                      <Image
+                        src={user.picture}
+                        alt={user.name || 'User Profile'}
+                        fill
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
+                        <span className="text-sm font-bold text-cyan-400">
+                          {(user.name || user.email).charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#1a1a1a] p-0 text-white shadow-xl"
+                  align="end"
+                  forceMount
+                >
+                  <div className="p-5">
+                    <div className="flex flex-col gap-1">
+                      <p className="truncate text-base font-bold tracking-tight text-white">
+                        {user.name || 'User'}
+                      </p>
+                      <p className="truncate text-xs font-medium text-white/50">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 p-2">
+                    <DropdownMenuItem
+                      onClick={() => setIsApiKeysOpen(true)}
+                      className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-sm transition-all hover:bg-white/5 focus:bg-white/5"
+                    >
+                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all group-hover:scale-110 group-hover:ring-violet-400">
+                        <KeyRound className="h-5 w-5 text-violet-400" />
+                        <div className="absolute inset-0 bg-violet-400 opacity-0 blur-xl transition-opacity group-hover:opacity-20" />
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-bold tracking-tight text-white group-hover:text-violet-400">
+                          Personal API Keys
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/10 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
+                        <LogOut className="h-5 w-5" />
+                      </div>
+                      <span className="text-sm font-bold tracking-tight">
+                        Log out
+                      </span>
+                    </DropdownMenuItem>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <ApiKeysModal
+                open={isApiKeysOpen}
+                onOpenChange={setIsApiKeysOpen}
+              />
+            </>
+          ) : (
+            <Button
+              onClick={() => openLoginModal()}
+              className="group flex cursor-pointer items-center gap-2 rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
+            >
+              <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
+              Get Started
+            </Button>
           )}
         </div>
       </div>

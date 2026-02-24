@@ -49,7 +49,13 @@ export class Scan {
   productName?: string;
 
   @Column({ nullable: true })
+  brand?: string;
+
+  @Column({ nullable: true })
   category?: string;
+
+  @Column({ name: 'image_url', nullable: true })
+  imageUrl?: string;
 
   @Column({ name: 'nutrition_grade', nullable: true })
   nutritionGrade?: string;

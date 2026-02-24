@@ -1,13 +1,13 @@
 import {
+  Body,
   Controller,
   Get,
-  Param,
-  UseGuards,
+  HttpCode,
   NotFoundException,
   BadRequestException,
+  Param,
   Post,
-  Body,
-  HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import {
@@ -18,6 +18,7 @@ import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.int
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AdminGuard } from '@modules/auth/guards/admin.guard';
+import { CurrentUser } from '@modules/auth/decorators/current-user.decorator';
 import { CompareProductsDto } from './dto/compare-products.dto';
 
 @ApiTags('Products')
@@ -46,12 +47,12 @@ export class ProductsController {
   @ApiResponse({ status: 400, description: 'Invalid barcode format' })
   @ApiResponse({ status: 404, description: 'Product not found' })
   @ApiResponse({ status: 429, description: 'Too many requests' })
-  async lookup(@Param('barcode') barcode: string) {
+  async lookup(@Param('barcode') barcode: string, @CurrentUser('sub') userId: string) {
     if (!barcode || barcode.length < 8) {
       throw new BadRequestException('Invalid barcode format');
     }
 
-    const { data, cacheStatus } = await this.productLookupService.lookup(barcode);
+    const { data, cacheStatus } = await this.productLookupService.lookup(barcode, userId);
 
     if (!data) {
       throw new NotFoundException({
@@ -76,7 +77,8 @@ export class ProductsController {
   @ApiResponse({ status: 400, description: 'Invalid request' })
   async compare(
     @Body() compareDto: CompareProductsDto,
+    @CurrentUser('sub') userId: string,
   ): Promise<{ products: ProductInfo[]; comparison: ProductComparison }> {
-    return this.productLookupService.compare(compareDto.barcodes);
+    return this.productLookupService.compare(compareDto.barcodes, userId);
   }
 }

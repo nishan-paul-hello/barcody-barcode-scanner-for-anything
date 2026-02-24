@@ -5,6 +5,7 @@ import { ProductLookupService } from '@modules/product-lookup/product-lookup.ser
 import { ProductsController } from '@modules/product-lookup/products.controller';
 import { RedisModule } from '@modules/redis/redis.module';
 import { AuthModule } from '@modules/auth/auth.module';
+import { UsersModule } from '@modules/users/users.module';
 import { UserThrottlerGuard } from '@/common/guards/user-throttler.guard';
 
 @Module({
@@ -12,6 +13,7 @@ import { UserThrottlerGuard } from '@/common/guards/user-throttler.guard';
     ConfigModule,
     RedisModule,
     AuthModule,
+    UsersModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60000,

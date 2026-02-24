@@ -7,6 +7,7 @@ import { BarcodeType } from '@common/enums/barcode-type.enum';
 import { DeviceType } from '@common/enums/device-type.enum';
 import { NotFoundException } from '@nestjs/common';
 import { ScansGateway } from '@modules/scans/scans.gateway';
+import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
 
 describe('ScansService', () => {
   let service: ScansService;
@@ -40,6 +41,10 @@ describe('ScansService', () => {
     emitScanDeleted: jest.fn(),
   };
 
+  const mockProductLookupService = {
+    lookup: jest.fn(),
+  };
+
   const mockQueryRunner = {
     connect: jest.fn(),
     startTransaction: jest.fn(),
@@ -70,6 +75,10 @@ describe('ScansService', () => {
         {
           provide: ScansGateway,
           useValue: mockScansGateway,
+        },
+        {
+          provide: ProductLookupService,
+          useValue: mockProductLookupService,
         },
       ],
     }).compile();

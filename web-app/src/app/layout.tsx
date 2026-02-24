@@ -24,13 +24,14 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from '@/components/theme-provider';
-import { Toaster } from '@/components/ui/sonner';
 import { GoogleAuthProvider } from '@/components/providers/google-auth-provider';
 import { AuthInitializer } from '@/components/auth-initializer';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { SocketProvider } from '@/components/providers/SocketProvider';
 import { ErrorBoundary } from '@/components/common/error-boundary';
 import { AnalyticsTracker } from '@/components/analytics-tracker';
+import { LoginModal } from '@/components/auth/LoginModal';
+import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler';
 
 export default function RootLayout({
   children,
@@ -53,9 +54,10 @@ export default function RootLayout({
             >
               <SocketProvider>
                 <AnalyticsTracker />
+                <LoginModal />
+                <AuthRedirectHandler />
                 <ErrorBoundary>{children}</ErrorBoundary>
               </SocketProvider>
-              <Toaster />
             </ThemeProvider>
           </GoogleAuthProvider>
         </QueryProvider>
