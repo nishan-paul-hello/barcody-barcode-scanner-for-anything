@@ -76,7 +76,7 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 flex min-h-[90vh] flex-col items-center justify-center px-4 pt-20 text-center">
+      <section className="relative z-10 flex min-h-[75vh] flex-col items-center justify-start px-4 pt-16 text-center md:pt-24">
         <motion.div
           style={{ opacity, scale }}
           className="flex flex-col items-center space-y-8"
@@ -139,7 +139,10 @@ export default function LandingPage() {
       </section>
 
       {/* Functionality & Purpose Matrix */}
-      <section id="overview" className="relative z-10 px-4 py-32">
+      <section
+        id="overview"
+        className="relative z-10 px-4 pt-10 pb-20 md:pt-16"
+      >
         <div className="container mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -203,7 +206,7 @@ export default function LandingPage() {
       </section>
 
       {/* Deep Dive Features with Parallax Images */}
-      <section className="relative z-10 overflow-hidden py-32">
+      <section className="relative z-10 overflow-hidden pt-20 pb-32">
         <div className="container mx-auto flex max-w-7xl flex-col gap-32 px-4 text-white">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <motion.div
