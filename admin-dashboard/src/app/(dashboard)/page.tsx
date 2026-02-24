@@ -53,7 +53,7 @@ export default function LandingPage() {
     if (isAuthenticated && isAdmin) {
       router.push('/dashboard');
     } else {
-      openLoginModal();
+      openLoginModal('/dashboard');
     }
   };
 

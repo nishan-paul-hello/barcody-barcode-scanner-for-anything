@@ -35,7 +35,7 @@ export function Header() {
     if (isAuthenticated && isAdmin) {
       router.push(href);
     } else {
-      openLoginModal();
+      openLoginModal(href);
     }
   };
 
@@ -177,7 +177,7 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <Button
-              onClick={openLoginModal}
+              onClick={() => openLoginModal()}
               className="group flex cursor-pointer items-center gap-2 rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
             >
               <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />

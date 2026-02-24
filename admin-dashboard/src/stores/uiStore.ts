@@ -2,12 +2,21 @@ import { create } from 'zustand';
 
 interface UIStore {
   isLoginModalOpen: boolean;
-  openLoginModal: () => void;
+  pendingRedirectPath: string | null;
+  openLoginModal: (redirectPath?: string) => void;
   closeLoginModal: () => void;
+  setPendingRedirectPath: (path: string | null) => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
   isLoginModalOpen: false,
-  openLoginModal: () => set({ isLoginModalOpen: true }),
-  closeLoginModal: () => set({ isLoginModalOpen: false }),
+  pendingRedirectPath: null,
+  openLoginModal: (redirectPath) =>
+    set({
+      isLoginModalOpen: true,
+      pendingRedirectPath: redirectPath || null,
+    }),
+  closeLoginModal: () =>
+    set({ isLoginModalOpen: false, pendingRedirectPath: null }),
+  setPendingRedirectPath: (path) => set({ pendingRedirectPath: path }),
 }));

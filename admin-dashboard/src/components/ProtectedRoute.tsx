@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -16,14 +16,16 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isAdmin, isLoading } = useAuthStore();
   const { openLoginModal } = useUIStore();
 
+  const pathname = usePathname();
+
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated || !isAdmin) {
         router.push('/');
-        openLoginModal();
+        openLoginModal(pathname);
       }
     }
-  }, [isAuthenticated, isAdmin, isLoading, openLoginModal, router]);
+  }, [isAuthenticated, isAdmin, isLoading, openLoginModal, router, pathname]);
 
   if (isLoading || !isAuthenticated || !isAdmin) {
     return (

@@ -9,11 +9,14 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/lib/api/client';
+import { useRouter } from 'next/navigation';
 
 export const LoginModal = () => {
-  const { isLoginModalOpen, closeLoginModal } = useUIStore();
+  const { isLoginModalOpen, closeLoginModal, pendingRedirectPath } =
+    useUIStore();
   const [isLoading, setIsLoading] = useState(false);
   const { setAuth, user, setError } = useAuthStore();
+  const router = useRouter();
   const [isSuggestedDismissed, setIsSuggestedDismissed] = useState(false);
 
   const MIN_SPINNER_MS = 500;
@@ -41,6 +44,11 @@ export const LoginModal = () => {
         data.refreshToken,
         data.isAdmin
       );
+
+      if (pendingRedirectPath) {
+        router.push(pendingRedirectPath);
+      }
+
       closeLoginModal();
     } catch (error: unknown) {
       console.error('Login Error:', error);
