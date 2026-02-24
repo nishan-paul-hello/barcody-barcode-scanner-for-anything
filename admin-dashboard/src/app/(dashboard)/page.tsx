@@ -9,7 +9,6 @@ import {
   Database,
   Lock,
   Zap,
-  ChevronRight,
   TrendingUp,
   Fingerprint,
 } from 'lucide-react';
@@ -121,9 +120,7 @@ export default function LandingPage() {
                 <motion.span
                   animate={{ x: [0, 4, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </motion.span>
+                ></motion.span>
               </Link>
             </Button>
             <Button
@@ -521,36 +518,6 @@ export default function LandingPage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="relative z-10 py-32">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative mx-auto max-w-4xl overflow-hidden rounded-[3rem] border border-[#00ffe7]/20 bg-gradient-to-b from-[#00ffe7]/10 to-transparent p-12 backdrop-blur-xl md:p-20"
-          >
-            {/* Inner glow effect */}
-            <div className="absolute top-0 left-1/2 h-px w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#00ffe7]/50 to-transparent" />
-
-            <h2 className="mb-6 text-4xl font-black text-white md:text-6xl">
-              Take Command.
-            </h2>
-            <p className="mb-10 text-lg text-zinc-400 md:text-xl">
-              Your empire awaits its architect. Initialize your session and
-              begin managing your operations.
-            </p>
-            <Button
-              size="lg"
-              className="h-16 rounded-full bg-white px-10 text-lg font-black text-black transition-all hover:scale-105 hover:bg-[#00ffe7] hover:shadow-[0_0_20px_rgba(0,255,231,0.4)]"
-              asChild
-            >
-              <Link href="/dashboard">Access Dashboard</Link>
-            </Button>
-          </motion.div>
         </div>
       </section>
     </div>
