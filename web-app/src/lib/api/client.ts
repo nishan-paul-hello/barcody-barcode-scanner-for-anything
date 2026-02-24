@@ -211,6 +211,24 @@ export const api = {
         .then((r) => r.data),
   },
 
+  // User settings
+  settings: {
+    getApiKeys: () =>
+      apiClient
+        .get<{
+          upcDatabaseApiKey: string | null;
+          barcodeLookupApiKey: string | null;
+        }>('/users/me/api-keys')
+        .then((r) => r.data),
+    updateApiKeys: (dto: {
+      upcDatabaseApiKey?: string;
+      barcodeLookupApiKey?: string;
+    }) =>
+      apiClient
+        .put<{ success: boolean }>('/users/me/api-keys', dto)
+        .then((r) => r.data),
+  },
+
   // Export
   export: {
     exportCSV: (params?: PaginationParams, onProgress?: (p: number) => void) =>
