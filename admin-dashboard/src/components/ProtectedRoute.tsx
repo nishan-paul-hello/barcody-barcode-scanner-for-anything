@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -11,16 +12,18 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const router = useRouter();
   const { isAuthenticated, isAdmin, isLoading } = useAuthStore();
   const { openLoginModal } = useUIStore();
 
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated || !isAdmin) {
+        router.push('/');
         openLoginModal();
       }
     }
-  }, [isAuthenticated, isAdmin, isLoading, openLoginModal]);
+  }, [isAuthenticated, isAdmin, isLoading, openLoginModal, router]);
 
   if (isLoading || !isAuthenticated || !isAdmin) {
     return (

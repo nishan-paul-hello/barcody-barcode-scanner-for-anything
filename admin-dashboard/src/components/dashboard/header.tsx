@@ -16,7 +16,7 @@ import {
   Shield,
   Fingerprint,
 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { googleLogout } from '@react-oauth/google';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -29,10 +29,12 @@ export function Header() {
   const logout = useAuthStore((state) => state.logout);
   const { openLoginModal } = useUIStore();
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleLogout = () => {
     googleLogout();
     logout();
+    router.push('/');
   };
 
   const navItems = [
