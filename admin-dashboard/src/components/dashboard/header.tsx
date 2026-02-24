@@ -33,7 +33,6 @@ export function Header() {
   const handleLogout = () => {
     googleLogout();
     logout();
-    openLoginModal();
   };
 
   const navItems = [
