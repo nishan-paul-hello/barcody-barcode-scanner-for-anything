@@ -121,7 +121,7 @@ export const LoginModal = () => {
                     {/* Account Item */}
                     <div className="group relative flex h-[104px] w-full items-center overflow-hidden rounded-[2rem] border-[1.5px] border-white bg-white/5 transition-all hover:bg-white/10">
                       {/* Google Login Overlay (z-20) */}
-                      <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] mix-blend-multiply">
+                      <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.001] mix-blend-multiply">
                         <GoogleLogin
                           onSuccess={handleSuccess}
                           onError={handleError}
@@ -172,7 +172,7 @@ export const LoginModal = () => {
 
                     {/* Use a different account */}
                     <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
-                      <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] mix-blend-multiply">
+                      <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.001] mix-blend-multiply">
                         <GoogleLogin
                           onSuccess={handleSuccess}
                           onError={handleError}
@@ -207,7 +207,7 @@ export const LoginModal = () => {
                 ) : (
                   /* Continue with Google (Simple View) */
                   <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
-                    <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] mix-blend-multiply">
+                    <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.001] mix-blend-multiply">
                       <GoogleLogin
                         onSuccess={handleSuccess}
                         onError={handleError}
