@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   BarChart3,
   Users,
-  ShieldAlert,
   Settings,
   Activity,
   Database,
@@ -82,16 +81,6 @@ export default function LandingPage() {
           style={{ opacity, scale }}
           className="flex flex-col items-center space-y-8"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: 'backOut' }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#00ffe7]/20 bg-[#00ffe7]/10 px-4 py-1.5 text-sm font-medium text-[#00ffe7] backdrop-blur-md"
-          >
-            <ShieldAlert className="h-4 w-4" />
-            <span>RESTRICTED ACCESS: ADMINSTRATORS ONLY</span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -255,29 +244,81 @@ export default function LandingPage() {
               style={{ y: y1 }}
               className="relative aspect-square w-full rounded-full bg-gradient-to-br from-[#00ffe7]/20 to-transparent p-1 backdrop-blur-3xl"
             >
-              <div className="absolute inset-4 rounded-full border border-[#00ffe7]/20 bg-zinc-950 shadow-[0_0_50px_rgba(0,255,231,0.05)]">
-                {/* Abstract UI representation */}
-                <div className="flex h-full flex-col p-8">
-                  <div className="flex items-end gap-2 px-4 pt-8 pb-12 opacity-70">
-                    {[40, 70, 45, 90, 65, 80, 50, 100, 60].map((h, i) => (
-                      <motion.div
-                        key={i}
-                        animate={{ height: [`${h}%`, `${h * 0.8}%`, `${h}%`] }}
-                        transition={{
-                          duration: 2 + (i % 4) * 0.5,
-                          repeat: Infinity,
-                          ease: 'easeInOut',
-                        }}
-                        className="w-1/12 rounded-t-sm bg-gradient-to-t from-[#00ffe7] to-[#00ffe7]/20"
-                        style={{ height: `${h}%` }}
-                      />
-                    ))}
+              <div className="absolute inset-4 overflow-hidden rounded-full border border-[#00ffe7]/20 bg-zinc-950 shadow-[0_0_50px_rgba(0,255,231,0.05)]">
+                <div className="flex h-full flex-col p-10">
+                  {/* Header Metrics */}
+                  <div className="flex justify-between px-4 pt-6">
+                    <div>
+                      <div className="mb-1 text-xs font-semibold text-zinc-500">
+                        TOTAL SCANS (24H)
+                      </div>
+                      <div className="font-mono text-3xl font-black text-white">
+                        2.4M
+                      </div>
+                      <div className="text-xs text-[#00ffe7]">
+                        +14.2% vs prev
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="mb-1 text-xs font-semibold text-zinc-500">
+                        ACTIVE NODES
+                      </div>
+                      <div className="font-mono text-3xl font-black text-white">
+                        842
+                      </div>
+                      <div className="text-xs text-green-400">
+                        All Systems Nominal
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Chart Area */}
+                  <div className="relative mt-auto mb-4 flex h-1/2 items-end justify-between gap-1 px-2 opacity-80">
+                    {/* Grid lines */}
+                    <div className="absolute inset-0 flex flex-col justify-between border-y border-white/5 py-2">
+                      <div className="h-px w-full bg-white/5" />
+                      <div className="h-px w-full bg-white/5" />
+                      <div className="h-px w-full bg-white/5" />
+                    </div>
+                    {[40, 70, 45, 90, 65, 80, 50, 100, 60, 40, 75, 85].map(
+                      (h, i) => (
+                        <motion.div
+                          key={i}
+                          animate={{
+                            height: [`${h}%`, `${h * 0.7}%`, `${h}%`],
+                          }}
+                          transition={{
+                            duration: 2 + (i % 4) * 0.5,
+                            repeat: Infinity,
+                            ease: 'easeInOut',
+                          }}
+                          className="group relative z-10 w-full cursor-crosshair rounded-t-sm bg-gradient-to-t from-[#00ffe7]/80 to-[#00ffe7]/20 hover:from-[#00ffe7] hover:to-[#00ffe7]/40"
+                          style={{ height: `${h}%` }}
+                        >
+                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded border border-[#00ffe7]/30 bg-black/80 px-2 py-1 font-mono text-[10px] text-[#00ffe7] opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
+                            {h * 12}k
+                          </div>
+                        </motion.div>
+                      )
+                    )}
+                  </div>
+
                   <div className="h-px w-full bg-gradient-to-r from-transparent via-[#00ffe7]/40 to-transparent" />
-                  <div className="mt-8 flex justify-between px-8 font-mono text-xs text-zinc-500">
-                    <span>LIVE</span>
-                    <span className="animate-pulse text-[#00ffe7] drop-shadow-[0_0_8px_rgba(0,255,231,0.8)]">
-                      REC O
+
+                  {/* Footer Ticker */}
+                  <div className="mt-6 flex justify-between px-6 font-mono text-xs text-zinc-400">
+                    <div className="flex gap-4">
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-[#00ffe7]" />{' '}
+                        API HTTP/2
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-zinc-600" /> DB
+                        W/R
+                      </span>
+                    </div>
+                    <span className="animate-pulse font-bold text-[#00ffe7] drop-shadow-[0_0_8px_rgba(0,255,231,0.8)]">
+                      LIVE • REC
                     </span>
                   </div>
                 </div>
@@ -288,26 +329,101 @@ export default function LandingPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <motion.div
               style={{ y: y2 }}
-              className="relative order-2 aspect-square w-full rounded-3xl border border-zinc-800 bg-zinc-900/50 p-8 shadow-2xl backdrop-blur-xl transition-colors hover:border-[#00ffe7]/10 lg:order-1"
+              className="relative order-2 flex aspect-square w-full flex-col rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl backdrop-blur-xl transition-colors hover:border-[#00ffe7]/10 lg:order-1"
             >
-              <div className="flex flex-col gap-4">
-                {[1, 2, 3, 4, 5].map((i) => (
+              <div className="mb-6 flex items-center justify-between border-b border-white/5 pb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white">
+                    Active Personnel
+                  </h3>
+                  <p className="text-xs text-zinc-500">
+                    Currently authenticated sessions
+                  </p>
+                </div>
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map((j) => (
+                    <div
+                      key={j}
+                      className="h-8 w-8 rounded-full border-2 border-zinc-900 bg-zinc-800"
+                    />
+                  ))}
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-zinc-900 bg-[#00ffe7]/10 text-xs font-bold text-[#00ffe7]">
+                    +42
+                  </div>
+                </div>
+              </div>
+
+              <div className="no-scrollbar flex flex-col gap-3 overflow-y-auto pb-2">
+                {[
+                  {
+                    name: 'Sarah Jenkins',
+                    role: 'Super Admin',
+                    dept: 'Security Ops',
+                    status: 'online',
+                    color: 'bg-[#00ffe7]',
+                  },
+                  {
+                    name: 'Marcus Chen',
+                    role: 'Auditor',
+                    dept: 'Compliance',
+                    status: 'away',
+                    color: 'bg-yellow-400',
+                  },
+                  {
+                    name: 'Elena Rostova',
+                    role: 'Manager',
+                    dept: 'Logistics',
+                    status: 'online',
+                    color: 'bg-[#00ffe7]',
+                  },
+                  {
+                    name: 'David Kim',
+                    role: 'Analyst',
+                    dept: 'Data Science',
+                    status: 'offline',
+                    color: 'bg-zinc-600',
+                  },
+                  {
+                    name: 'Priya Patel',
+                    role: 'Developer',
+                    dept: 'Engineering',
+                    status: 'online',
+                    color: 'bg-[#00ffe7]',
+                  },
+                ].map((user, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex items-center justify-between rounded-xl border border-white/5 bg-black/40 p-4"
+                    className="group flex items-center justify-between rounded-xl border border-white/5 bg-black/40 p-3 transition-colors hover:border-white/10 hover:bg-black/60"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-full border border-[#00ffe7]/10 bg-zinc-800" />
-                      <div className="space-y-2">
-                        <div className="h-2 w-24 rounded bg-zinc-700" />
-                        <div className="h-2 w-16 rounded bg-zinc-800" />
+                      <div className="relative">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-zinc-800 text-sm font-bold text-zinc-300">
+                          {user.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </div>
+                        <div
+                          className={`absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-black ${user.color}`}
+                        />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-white transition-colors group-hover:text-[#00ffe7]">
+                          {user.name}
+                        </div>
+                        <div className="text-xs text-zinc-500">{user.dept}</div>
                       </div>
                     </div>
-                    <div className="h-6 w-20 rounded-full border border-[#00ffe7]/20 bg-[#00ffe7]/10" />
+                    <div className="flex items-center gap-3">
+                      <div className="hidden rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-medium text-zinc-300 sm:block">
+                        {user.role}
+                      </div>
+                      <Settings className="h-4 w-4 cursor-pointer text-zinc-600 transition-colors hover:text-white" />
+                    </div>
                   </motion.div>
                 ))}
               </div>
