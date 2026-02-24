@@ -17,7 +17,8 @@ import {
   Database,
   Globe,
   Info,
-  Save,
+  Zap,
+  X,
   ScanBarcode,
   ExternalLink,
 } from 'lucide-react';
@@ -58,25 +59,36 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-2xl sm:rounded-[32px]">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-lg overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-2xl sm:rounded-[32px]"
+      >
         {/* Decorative background element */}
         <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-cyan-500/10 blur-[80px]" />
         <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-blue-600/10 blur-[80px]" />
 
         <div className="relative p-8 px-10">
           <DialogHeader className="mb-8 space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 ring-1 ring-white/10">
-                <ScanBarcode className="h-6 w-6 text-cyan-400" />
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 ring-1 ring-white/10">
+                  <ScanBarcode className="h-6 w-6 text-cyan-400" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl font-bold tracking-tight text-white">
+                    Personal API Keys
+                  </DialogTitle>
+                  <DialogDescription className="text-sm font-medium text-white/40">
+                    Power your scanner with custom data sources
+                  </DialogDescription>
+                </div>
               </div>
-              <div>
-                <DialogTitle className="text-2xl font-bold tracking-tight text-white">
-                  Personal API Keys
-                </DialogTitle>
-                <DialogDescription className="text-sm font-medium text-white/40">
-                  Power your scanner with custom data sources
-                </DialogDescription>
-              </div>
+              <button
+                onClick={() => onOpenChange(false)}
+                className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10 hover:text-white"
+              >
+                <X className="h-5 w-5 text-white/20 transition-colors group-hover:text-red-400" />
+              </button>
             </div>
           </DialogHeader>
 
@@ -185,12 +197,12 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
               >
-                <Save className="h-4 w-4" />
+                <Zap className="h-4 w-4" />
               </motion.div>
             ) : (
               <div className="flex items-center gap-2">
-                <Save className="h-4 w-4" />
-                Save Config
+                <Zap className="h-4 w-4" />
+                Apply Keys
               </div>
             )}
           </Button>
