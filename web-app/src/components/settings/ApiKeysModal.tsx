@@ -21,6 +21,9 @@ import {
   X,
   ScanBarcode,
   ExternalLink,
+  Copy,
+  Check,
+  Trash2,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -35,6 +38,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
 
   const [upcKey, setUpcKey] = React.useState('');
   const [barcodeKey, setBarcodeKey] = React.useState('');
+  const [copiedField, setCopiedField] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (open && data && !isLoading) {
@@ -42,6 +46,19 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
       setBarcodeKey(data.barcodeLookupApiKey || '');
     }
   }, [open, data, isLoading]);
+
+  const handleCopy = (text: string, fieldId: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedField(fieldId);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const handleClear = (
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    setter('');
+  };
 
   const handleSave = () => {
     updateMutation.mutate(
@@ -115,13 +132,33 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                   GET KEY <ExternalLink className="h-2.5 w-2.5" />
                 </Link>
               </div>
-              <div className="relative">
+              <div className="group/input relative">
                 <Input
                   placeholder="Paste your UPC Item DB API key..."
-                  className="h-12 border-white/5 bg-white/5 px-4 font-mono text-sm transition-all focus:bg-white/[0.08] focus:ring-1 focus:ring-cyan-500/50"
+                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus:ring-1 focus:ring-cyan-500/50"
                   value={upcKey}
                   onChange={(e) => setUpcKey(e.target.value)}
                 />
+                <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 opacity-0 transition-opacity group-hover/input:opacity-100">
+                  <button
+                    onClick={() => handleCopy(upcKey, 'upc')}
+                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-cyan-400"
+                    title="Copy to clipboard"
+                  >
+                    {copiedField === 'upc' ? (
+                      <Check className="h-3.5 w-3.5 text-green-400" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleClear(setUpcKey)}
+                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-red-400"
+                    title="Clear field"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
               <p className="px-1 text-[11px] leading-relaxed text-white/30">
                 Primary source for high-quality product data, ingredients, and
@@ -151,13 +188,33 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                   GET KEY <ExternalLink className="h-2.5 w-2.5" />
                 </Link>
               </div>
-              <div className="relative">
+              <div className="group/input relative">
                 <Input
                   placeholder="Paste your Barcode Lookup API key..."
-                  className="h-12 border-white/5 bg-white/5 px-4 font-mono text-sm transition-all focus:bg-white/[0.08] focus:ring-1 focus:ring-blue-500/50"
+                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus:ring-1 focus:ring-blue-500/50"
                   value={barcodeKey}
                   onChange={(e) => setBarcodeKey(e.target.value)}
                 />
+                <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 opacity-0 transition-opacity group-hover/input:opacity-100">
+                  <button
+                    onClick={() => handleCopy(barcodeKey, 'barcode')}
+                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-blue-400"
+                    title="Copy to clipboard"
+                  >
+                    {copiedField === 'barcode' ? (
+                      <Check className="h-3.5 w-3.5 text-green-400" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleClear(setBarcodeKey)}
+                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-red-400"
+                    title="Clear field"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
               <p className="px-1 text-[11px] leading-relaxed text-white/30">
                 Secondary fallback for hard-to-find barcodes. Helpful when
