@@ -50,11 +50,10 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>External Barcode API Keys</DialogTitle>
+          <DialogTitle>Personal API Keys</DialogTitle>
           <DialogDescription>
-            Configure the API keys used for UPC Database and Barcode Lookup.
-            These keys are stored per account and override any environment
-            values.
+            Enter your custom API keys to power the scanner. These keys are tied
+            to your individual account for private use.
           </DialogDescription>
         </DialogHeader>
 
