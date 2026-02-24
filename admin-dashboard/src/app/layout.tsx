@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: {
     template: 'Barcody - %s',
-    default: 'Barcody - Dashboard',
+    default: 'Barcody',
   },
   description: 'Admin Dashboard for Barcody',
   icons: {
