@@ -16,8 +16,11 @@ export const LoginModal = () => {
   const { setAuth, user, setError } = useAuthStore();
   const [isSuggestedDismissed, setIsSuggestedDismissed] = useState(false);
 
+  const MIN_SPINNER_MS = 500;
+
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     setIsLoading(true);
+    const spinnerStartedAt = Date.now();
     try {
       if (!credentialResponse.credential) {
         throw new Error('No credential received from Google');
@@ -43,6 +46,11 @@ export const LoginModal = () => {
       console.error('Login Error:', error);
       setError('Login failed. Please try again.');
     } finally {
+      const elapsed = Date.now() - spinnerStartedAt;
+      const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
+      if (remaining > 0) {
+        await new Promise((r) => setTimeout(r, remaining));
+      }
       setIsLoading(false);
     }
   };

@@ -16,8 +16,11 @@ export const LoginModal = () => {
 
   const [isSuggestedDismissed, setIsSuggestedDismissed] = useState(false);
 
+  const MIN_SPINNER_MS = 500;
+
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     setIsLoading(true);
+    const spinnerStartedAt = Date.now();
     try {
       if (!credentialResponse.credential) {
         throw new Error('No credential received from Google');
@@ -32,6 +35,11 @@ export const LoginModal = () => {
     } catch (error: unknown) {
       console.error('Login Error:', error);
     } finally {
+      const elapsed = Date.now() - spinnerStartedAt;
+      const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
+      if (remaining > 0) {
+        await new Promise((r) => setTimeout(r, remaining));
+      }
       setIsLoading(false);
     }
   };
@@ -95,7 +103,7 @@ export const LoginModal = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="w-full"
               >
-                {!isSuggestedDismissed ? (
+                {!isSuggestedDismissed && user ? (
                   <>
                     {/* Account Item */}
                     <div className="group relative flex h-[104px] w-full items-center overflow-hidden rounded-[2rem] border-[1.5px] border-white bg-white/5 transition-all hover:bg-white/10">
@@ -185,7 +193,7 @@ export const LoginModal = () => {
                   </>
                 ) : (
                   /* Continue with Google (Simple View) */
-                  <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/10 bg-white/[0.03] transition-all hover:bg-white/[0.08] active:scale-[0.98]">
+                  <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
                     <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.01] mix-blend-multiply">
                       <GoogleLogin
                         onSuccess={handleSuccess}
