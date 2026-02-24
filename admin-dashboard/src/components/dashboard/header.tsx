@@ -152,7 +152,6 @@ export function Header() {
               <DropdownMenuContent
                 className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#1a1a1a] p-0 text-white shadow-xl"
                 align="end"
-                forceMount
               >
                 <div className="p-5">
                   <div className="flex flex-col gap-1">

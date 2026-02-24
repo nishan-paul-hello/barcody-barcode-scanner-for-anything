@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import {
   BarChart3,
   Users,
@@ -40,8 +40,10 @@ export default function LandingPage() {
     offset: ['start start', 'end end'],
   });
 
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const rawY1 = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const rawY2 = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const y1 = useSpring(rawY1, { stiffness: 80, damping: 20 });
+  const y2 = useSpring(rawY2, { stiffness: 80, damping: 20 });
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
@@ -62,27 +64,27 @@ export default function LandingPage() {
       ref={containerRef}
       className="relative min-h-screen overflow-hidden bg-[#030303] text-zinc-100 selection:bg-[#00ffe7]/30 selection:text-[#00ffe7]"
     >
-      {/* Dynamic Background */}
+      {/* Static Background — no blur on animated elements for GPU performance */}
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay" />
         <div className="absolute top-0 right-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#00ffe7]/30 to-transparent" />
 
-        {/* Animated Orbs */}
-        <motion.div
-          animate={{
-            rotate: [0, 360],
-            scale: [1, 1.2, 1],
+        {/* Static gradient orbs — radial-gradient instead of blur on animated elements */}
+        <div
+          className="absolute -top-[20%] -right-[10%] h-[70vw] w-[70vw] rounded-full"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(0,255,231,0.07) 0%, transparent 70%)',
+            willChange: 'transform',
           }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-[20%] -right-[10%] h-[70vw] w-[70vw] rounded-full bg-[#00ffe7]/[0.03] blur-[150px]"
         />
-        <motion.div
-          animate={{
-            rotate: [360, 0],
-            scale: [1, 1.5, 1],
+        <div
+          className="absolute -bottom-[20%] -left-[10%] h-[60vw] w-[60vw] rounded-full"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(0,255,231,0.045) 0%, transparent 70%)',
+            willChange: 'transform',
           }}
-          transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-          className="absolute -bottom-[20%] -left-[10%] h-[60vw] w-[60vw] rounded-full bg-[#00ffe7]/[0.02] blur-[150px]"
         />
 
         {/* Grid pattern */}
@@ -298,7 +300,7 @@ export default function LandingPage() {
                         <motion.div
                           key={i}
                           animate={{
-                            height: [`${h}%`, `${h * 0.7}%`, `${h}%`],
+                            scaleY: [1, 0.7, 1],
                           }}
                           transition={{
                             duration: 2 + (i % 4) * 0.5,
@@ -306,7 +308,11 @@ export default function LandingPage() {
                             ease: 'easeInOut',
                           }}
                           className="group relative z-10 w-full cursor-crosshair rounded-t-sm bg-gradient-to-t from-[#00ffe7]/80 to-[#00ffe7]/20 hover:from-[#00ffe7] hover:to-[#00ffe7]/40"
-                          style={{ height: `${h}%` }}
+                          style={{
+                            height: `${h}%`,
+                            transformOrigin: 'bottom',
+                            willChange: 'transform',
+                          }}
                         >
                           <div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded border border-[#00ffe7]/30 bg-black/80 px-2 py-1 font-mono text-[10px] text-[#00ffe7] opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
                             {h * 12}k
