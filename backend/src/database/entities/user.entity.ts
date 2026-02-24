@@ -27,6 +27,12 @@ export class User {
   @Column({ name: 'last_login', type: 'timestamptz', nullable: true })
   lastLogin?: Date;
 
+  @Column({ name: 'upc_database_api_key', type: 'varchar', nullable: true })
+  upcDatabaseApiKey?: string | null;
+
+  @Column({ name: 'barcode_lookup_api_key', type: 'varchar', nullable: true })
+  barcodeLookupApiKey?: string | null;
+
   @OneToMany(() => Session, (session) => session.user)
   sessions!: Session[];
 

@@ -7,7 +7,6 @@ import type {
   PaginationParams,
   PaginatedResponse,
 } from '@/lib/api/types';
-import { toast } from 'sonner';
 
 export const scanKeys = {
   all: ['scans'] as const,
@@ -87,9 +86,7 @@ export function useCreateScan() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {
-      toast.success('Scan created successfully');
-    },
+    onSuccess: () => {},
   });
 }
 
@@ -131,9 +128,7 @@ export function useDeleteScan() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {
-      toast.success('Scan deleted successfully');
-    },
+    onSuccess: () => {},
   });
 }
 
@@ -144,7 +139,6 @@ export function useBulkCreateScans() {
     mutationFn: (dto: BulkCreateScansDto) => api.scans.bulkCreateScans(dto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.lists() });
-      toast.success('Batch scans uploaded successfully');
     },
   });
 }
@@ -156,8 +150,6 @@ export function useBulkDeleteScans() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {
-      toast.success('Scans deleted successfully');
-    },
+    onSuccess: () => {},
   });
 }

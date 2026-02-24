@@ -60,3 +60,4 @@ sentry.properties
 # Misc
 *.pem
 .eslintcache
+.swc

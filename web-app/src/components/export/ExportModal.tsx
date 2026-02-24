@@ -23,7 +23,6 @@ import { Input } from '@/components/ui/input';
 import { ExportFormat, BarcodeType, DeviceType } from '@/lib/api/types';
 import { useExportData } from '@/hooks/use-export';
 import { Download, Loader2, Filter, AlertTriangle } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -79,7 +78,6 @@ export function ExportModal({
     // Validate dates
     if (filters.startDate && filters.endDate) {
       if (new Date(filters.startDate) > new Date(filters.endDate)) {
-        toast.error('Start date must be before end date');
         return;
       }
     }

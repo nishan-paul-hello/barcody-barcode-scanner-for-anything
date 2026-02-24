@@ -112,6 +112,23 @@ export const adminApi = {
     const response = await apiClient.get('/admin/analytics/devices');
     return response.data;
   },
+  getRetentionCohorts: async () => {
+    const response = await apiClient.get('/admin/analytics/retention');
+    return response.data;
+  },
+  getTopBarcodes: async (params?: { startDate?: string; endDate?: string }) => {
+    const response = await apiClient.get('/admin/analytics/top-barcodes', {
+      params,
+    });
+    return response.data;
+  },
+  getHourlyActivity: async (params?: {
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    const response = await apiClient.get('/admin/analytics/hourly', { params });
+    return response.data;
+  },
   getUsers: async ({
     page = 1,
     limit = 10,

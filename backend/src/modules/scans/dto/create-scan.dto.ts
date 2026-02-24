@@ -46,10 +46,23 @@ export class CreateScanDto {
   @IsString()
   productName?: string;
 
+  @ApiPropertyOptional({ description: 'The product brand', example: 'Nestle' })
+  @IsOptional()
+  @IsString()
+  brand?: string;
+
   @ApiPropertyOptional({ description: 'The product category', example: 'Beverages' })
   @IsOptional()
   @IsString()
   category?: string;
+
+  @ApiPropertyOptional({
+    description: 'The product image URL',
+    example: 'https://example.com/image.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 
   @ApiPropertyOptional({ description: 'The nutrition grade', example: 'A' })
   @IsOptional()

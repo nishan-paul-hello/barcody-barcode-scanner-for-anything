@@ -12,5 +12,8 @@
         }
       }
     }
+  },
+  "AllowFunnel": {
+    "admin-barcody.tamarin-ph.ts.net:443": false
   }
 }

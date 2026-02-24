@@ -10,16 +10,15 @@ import {
 import { BarcodeFormat, DecodeHintType, type Result } from '@zxing/library';
 import {
   Camera,
+  CameraOff,
   RefreshCcw,
   AlertCircle,
   Volume2,
   VolumeX,
-  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
-import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BarcodeScannerProps {
@@ -43,9 +42,64 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try {
+      const saved = localStorage.getItem('barcody_sound_pref');
+      return saved !== null ? saved === 'true' : true;
+    } catch {
+      return true;
+    }
+  });
   const [flashActive, setFlashActive] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [startRetryTrigger, setStartRetryTrigger] = useState(0);
+  const startRetryCountRef = useRef(0);
+  const playBeepRef = useRef<() => void>(() => {});
+  const drawFeedbackRef = useRef<() => void>(() => {});
+  const onScanSuccessRef = useRef(onScanSuccess);
+  const onScanErrorRef = useRef(onScanError);
   const createScanMutation = useCreateScan();
+  const createScanMutationRef = useRef(createScanMutation);
+
+  // Turn camera off when tab is left or context is lost (saves cost); stays off until user clicks camera on
+  useEffect(() => {
+    if (!active) {
+      const id = setTimeout(() => setIsCameraActive(false), 0);
+      return () => clearTimeout(id);
+    }
+  }, [active]);
+
+  const handleToggleSound = useCallback(() => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    try {
+      localStorage.setItem('barcody_sound_pref', String(newValue));
+    } catch {
+      // Ignored
+    }
+    analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
+      setting: 'sound_enabled',
+      value: newValue,
+    });
+  }, [soundEnabled]);
+
+  const handleToggleCamera = useCallback(
+    (forcedState?: boolean) => {
+      const newValue =
+        forcedState !== undefined ? forcedState : !isCameraActive;
+      setIsCameraActive(newValue);
+      // When turning camera ON, ensure we have a device selected so the scanner effect can start
+      if (newValue && !selectedDeviceId && devices.length > 0) {
+        const preferred = devices.find((d) =>
+          /back|rear|environment/i.test(d.label)
+        );
+        setSelectedDeviceId(
+          preferred ? preferred.deviceId : (devices[0]?.deviceId ?? '')
+        );
+      }
+    },
+    [isCameraActive, selectedDeviceId, devices]
+  );
 
   const drawFeedback = useCallback(() => {
     setFlashActive(true);
@@ -107,6 +161,14 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       console.error('Error playing beep:', err);
     }
   }, [soundEnabled]);
+
+  useEffect(() => {
+    playBeepRef.current = playBeep;
+    drawFeedbackRef.current = drawFeedback;
+    onScanSuccessRef.current = onScanSuccess;
+    onScanErrorRef.current = onScanError;
+    createScanMutationRef.current = createScanMutation;
+  }, [playBeep, drawFeedback, onScanSuccess, onScanError, createScanMutation]);
 
   // Initial device listing and reader setup
   useEffect(() => {
@@ -184,61 +246,61 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   useEffect(() => {
     let controls: IScannerControls | null = null;
     let isMounted = true;
-    let timer: NodeJS.Timeout;
+    let retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
     async function start() {
-      if (
-        !active ||
-        !selectedDeviceId ||
-        !videoRef.current ||
-        !readerRef.current
-      ) {
+      if (!active || !isCameraActive || !readerRef.current) {
+        return;
+      }
+      // When camera is on but no device selected yet, pick first device so next effect run will start
+      if (!selectedDeviceId && devices.length > 0) {
+        const preferred = devices.find((d) =>
+          /back|rear|environment/i.test(d.label)
+        );
+        setSelectedDeviceId(
+          preferred ? preferred.deviceId : (devices[0]?.deviceId ?? '')
+        );
+        return;
+      }
+      if (!selectedDeviceId) {
+        return;
+      }
+      // videoRef.current can be null on first run (tab/layout not painted yet); retry after paint
+      if (!videoRef.current) {
+        if (startRetryCountRef.current < 15) {
+          startRetryCountRef.current += 1;
+          retryTimeoutId = setTimeout(
+            () => setStartRetryTrigger((t) => t + 1),
+            80
+          );
+        }
         return;
       }
 
+      startRetryCountRef.current = 0; // reset so future camera-on can retry
       try {
-        timer = setTimeout(() => {
-          if (isMounted) setIsScanning(true);
-        }, 0);
-
+        setIsScanning(true);
         setError(null);
-
-        // Wait for video dimensions to be available to prevent IndexSizeError in ZXing internal canvas
-        const video = videoRef.current;
-        if (video.videoWidth === 0 || video.videoHeight === 0) {
-          await new Promise<void>((resolve) => {
-            const onLoaded = () => {
-              video.removeEventListener('loadedmetadata', onLoaded);
-              video.removeEventListener('playing', onLoaded);
-              resolve();
-            };
-            video.addEventListener('loadedmetadata', onLoaded);
-            video.addEventListener('playing', onLoaded);
-
-            // Safety timeout
-            setTimeout(resolve, 3000);
-          });
-        }
 
         const newControls = await readerRef.current.decodeFromVideoDevice(
           selectedDeviceId,
           videoRef.current,
           (result, err) => {
             if (result && isMounted) {
-              playBeep();
-              drawFeedback();
+              playBeepRef.current();
+              drawFeedbackRef.current();
 
               const barcodeData = result.getText();
               const formatName = result.getBarcodeFormat().toString();
 
-              onScanSuccess?.(result);
+              onScanSuccessRef.current?.(result);
 
               analytics.trackScanCreated(
                 mapZxingFormatToReadable(result.getBarcodeFormat()),
                 'camera'
               );
 
-              createScanMutation.mutate({
+              createScanMutationRef.current.mutate({
                 barcodeData,
                 barcodeType: mapZxingFormatToReadable(
                   result.getBarcodeFormat()
@@ -248,18 +310,23 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 scannedAt: new Date().toISOString(),
                 metadata: { format: formatName, timestamp: Date.now() },
               });
-
-              toast.info(`Scanned: ${barcodeData}`, {
-                description: `Format: ${formatName}`,
-              });
             }
-            if (err && !(err.name === 'NotFoundException')) {
-              console.error('Scan error:', err);
-              analytics.trackScanFailed(
-                err instanceof Error ? err.message : String(err),
-                'camera'
-              );
-              if (isMounted) onScanError?.(err);
+            if (err && isMounted) {
+              // Ignore expected errors during initialization or when no barcode is found
+              const isIgnorableError =
+                err.name === 'NotFoundException' ||
+                err.name === 'IndexSizeError' ||
+                (err instanceof Error &&
+                  err.message.includes('source width is 0'));
+
+              if (!isIgnorableError) {
+                // Silenced scanning error to prevent Next.js dev overlay
+                analytics.trackScanFailed(
+                  err instanceof Error ? err.message : String(err),
+                  'camera'
+                );
+                onScanErrorRef.current?.(err);
+              }
             }
           }
         );
@@ -268,6 +335,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           newControls.stop();
         } else {
           controls = newControls;
+          // Ensure video is playing (some browsers need explicit play after stream attach)
+          requestAnimationFrame(() => {
+            videoRef.current?.play().catch(() => {});
+          });
         }
       } catch (err) {
         if (isMounted) {
@@ -284,21 +355,13 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     return () => {
       isMounted = false;
-      if (timer) clearTimeout(timer);
+      if (retryTimeoutId) clearTimeout(retryTimeoutId);
       if (controls) {
         controls.stop();
       }
       setIsScanning(false);
     };
-  }, [
-    active,
-    selectedDeviceId,
-    playBeep,
-    drawFeedback,
-    onScanSuccess,
-    onScanError,
-    createScanMutation,
-  ]);
+  }, [active, isCameraActive, selectedDeviceId, devices, startRetryTrigger]);
 
   const switchCamera = useCallback(() => {
     if (devices.length < 2) return;
@@ -322,7 +385,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
           <video
             ref={videoRef}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700"
             muted
             playsInline
           />
@@ -351,14 +414,21 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 exit={{ opacity: 0 }}
                 className="pointer-events-none absolute inset-0 z-10"
               >
-                {/* Advanced Scan Line */}
-                <div className="animate-scan-line absolute top-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+                {/* Sleek Minimalist Scan Line */}
+                <div className="animate-scan-line absolute left-0 flex w-full justify-center">
+                  <div className="relative flex w-[75%] items-center justify-center">
+                    {/* Core laser line */}
+                    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+                    {/* Center flare point */}
+                    <div className="absolute h-[2px] w-[30px] rounded-full bg-white opacity-90 blur-[1px]" />
+                  </div>
+                </div>
 
                 {/* Corner Brackets */}
-                <div className="absolute top-10 left-10 h-16 w-16 rounded-tl-3xl border-t-2 border-l-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:left-8 group-hover:border-cyan-400" />
-                <div className="absolute top-10 right-10 h-16 w-16 rounded-tr-3xl border-t-2 border-r-2 border-cyan-400/60 transition-all group-hover:top-8 group-hover:right-8 group-hover:border-cyan-400" />
-                <div className="absolute bottom-10 left-10 h-16 w-16 rounded-bl-3xl border-b-2 border-l-2 border-cyan-400/60 transition-all group-hover:bottom-8 group-hover:left-8 group-hover:border-cyan-400" />
-                <div className="absolute right-10 bottom-10 h-16 w-16 rounded-br-3xl border-r-2 border-b-2 border-cyan-400/60 transition-all group-hover:right-8 group-hover:bottom-8 group-hover:border-cyan-400" />
+                <div className="absolute top-0 left-0 h-20 w-20 rounded-tl-[2.5rem] border-t-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute top-0 right-0 h-20 w-20 rounded-tr-[2.5rem] border-t-4 border-r-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute bottom-0 left-0 h-20 w-20 rounded-bl-[2.5rem] border-b-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute right-0 bottom-0 h-20 w-20 rounded-br-[2.5rem] border-r-4 border-b-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
 
                 {/* Vignette */}
                 <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
@@ -366,7 +436,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             )}
           </AnimatePresence>
 
-          {!isScanning && !error && (
+          {!isScanning && !error && isCameraActive && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl">
               <motion.div
                 animate={{
@@ -395,6 +465,15 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             </div>
           )}
 
+          {!isCameraActive && !error && (
+            <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
+              <div className="mb-6 rounded-full bg-cyan-500/10 p-4 ring-1 ring-cyan-500/20">
+                <CameraOff className="h-12 w-12 text-cyan-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white">Camera Paused</h3>
+            </div>
+          )}
+
           {error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
               <div className="mb-6 rounded-full bg-red-500/10 p-4 ring-1 ring-red-500/20">
@@ -418,78 +497,38 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           {/* Controls Bar */}
           <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                const newValue = !soundEnabled;
-                setSoundEnabled(newValue);
-                analytics.track(AnalyticsEventType.SETTINGS_CHANGED, {
-                  setting: 'sound_enabled',
-                  value: newValue,
-                });
-              }}
-              className="h-10 w-10 rounded-full text-white/70 hover:bg-white/10 hover:text-white"
+            <button
+              onClick={() => handleToggleCamera()}
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
+            >
+              {isCameraActive ? (
+                <Camera className="h-5 w-5" />
+              ) : (
+                <CameraOff className="h-5 w-5" />
+              )}
+            </button>
+            <button
+              onClick={handleToggleSound}
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {soundEnabled ? (
                 <Volume2 className="h-5 w-5" />
               ) : (
                 <VolumeX className="h-5 w-5" />
               )}
-            </Button>
+            </button>
 
             {devices.length > 1 && (
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 onClick={switchCamera}
-                className="h-10 w-10 rounded-full text-white/70 hover:bg-white/10 hover:text-white"
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
               >
                 <RefreshCcw className="h-5 w-5" />
-              </Button>
+              </button>
             )}
-
-            <div className="mx-1 h-4 w-[1px] bg-white/10" />
-
-            <div className="flex items-center gap-2 px-3 py-2">
-              <Zap className="h-4 w-4 text-cyan-400" />
-              <span className="text-[10px] font-bold tracking-widest text-white/80 uppercase">
-                Active
-              </span>
-            </div>
           </div>
         </Card>
       </motion.div>
-
-      <div className="flex w-full items-center justify-between px-4">
-        <div className="flex items-center space-x-3">
-          <motion.div
-            animate={
-              isScanning
-                ? {
-                    scale: [1, 1.2, 1],
-                    opacity: [1, 0.7, 1],
-                  }
-                : {}
-            }
-            transition={{ duration: 2, repeat: Infinity }}
-            className={`h-2.5 w-2.5 rounded-full ${isScanning ? 'bg-cyan-500' : 'bg-red-500'}`}
-          />
-          <span className="text-[11px] font-bold tracking-[0.2em] text-white/40 uppercase">
-            {isScanning ? 'System Online' : 'System Standby'}
-          </span>
-        </div>
-
-        {devices.length > 0 && (
-          <div className="group flex items-center gap-2">
-            <div className="h-1 w-1 rounded-full bg-white/20 transition-colors group-hover:bg-cyan-500" />
-            <span className="max-w-[150px] truncate text-[11px] font-medium text-white/30 transition-colors group-hover:text-white/60">
-              {devices.find((d) => d.deviceId === selectedDeviceId)?.label ||
-                'Standard Input'}
-            </span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

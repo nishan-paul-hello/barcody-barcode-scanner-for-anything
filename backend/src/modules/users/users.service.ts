@@ -51,4 +51,28 @@ export class UsersService {
   async updateLastLogin(id: string): Promise<void> {
     await this.userRepository.update(id, { lastLogin: new Date() });
   }
+
+  async getApiKeys(userId: string): Promise<{
+    upcDatabaseApiKey: string | null;
+    barcodeLookupApiKey: string | null;
+  }> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return {
+      upcDatabaseApiKey: user.upcDatabaseApiKey || null,
+      barcodeLookupApiKey: user.barcodeLookupApiKey || null,
+    };
+  }
+
+  async updateApiKeys(
+    userId: string,
+    keys: { upcDatabaseApiKey?: string; barcodeLookupApiKey?: string },
+  ): Promise<void> {
+    await this.userRepository.update(userId, {
+      upcDatabaseApiKey: keys.upcDatabaseApiKey ?? null,
+      barcodeLookupApiKey: keys.barcodeLookupApiKey ?? null,
+    });
+  }
 }

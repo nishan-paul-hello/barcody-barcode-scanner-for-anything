@@ -143,7 +143,7 @@ apiClient.interceptors.response.use(
 
     // Handle 403 Forbidden
     if (error.response?.status === 403) {
-      console.error('Access forbidden (403)');
+      console.warn('Access forbidden (403)');
     }
 
     // Transform error for consistent format
@@ -176,6 +176,7 @@ export const api = {
 
   // Scans
   scans: {
+    getStats: () => apiClient.get('/scans/stats').then((r) => r.data),
     createScan: (dto: CreateScanDto) =>
       apiClient.post<ScanResponseDto>('/scans', dto).then((r) => r.data),
     getScans: (params?: PaginationParams) =>
@@ -187,7 +188,7 @@ export const api = {
     deleteScan: (id: string) =>
       apiClient.delete(`/scans/${id}`).then((r) => r.data),
     bulkDeleteScans: (ids: string[]) =>
-      apiClient.delete('/scans', { data: { ids } }).then((r) => r.data),
+      apiClient.delete('/scans/batch', { data: { ids } }).then((r) => r.data),
     bulkCreateScans: (dto: BulkCreateScansDto) =>
       apiClient.post<ScanResponseDto[]>('/scans/bulk', dto).then((r) => r.data),
     getScansSince: (timestamp: string) =>
@@ -207,6 +208,24 @@ export const api = {
     compareProducts: (barcodes: string[]) =>
       apiClient
         .post<ProductComparisonResponse>('/products/compare', { barcodes })
+        .then((r) => r.data),
+  },
+
+  // User settings
+  settings: {
+    getApiKeys: () =>
+      apiClient
+        .get<{
+          upcDatabaseApiKey: string | null;
+          barcodeLookupApiKey: string | null;
+        }>('/users/me/api-keys')
+        .then((r) => r.data),
+    updateApiKeys: (dto: {
+      upcDatabaseApiKey?: string;
+      barcodeLookupApiKey?: string;
+    }) =>
+      apiClient
+        .put<{ success: boolean }>('/users/me/api-keys', dto)
         .then((r) => r.data),
   },
 
