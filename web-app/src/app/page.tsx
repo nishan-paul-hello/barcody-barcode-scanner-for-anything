@@ -151,7 +151,7 @@ export default function LandingPage() {
                   if (isAuthenticated) {
                     router.push('/scan');
                   } else {
-                    openLoginModal();
+                    openLoginModal('/scan');
                   }
                 }}
                 className="group h-14 cursor-pointer rounded-full bg-cyan-500 px-10 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"

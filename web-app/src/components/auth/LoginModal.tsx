@@ -6,13 +6,16 @@ import { api } from '@/lib/api/client';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useUIStore } from '@/store/useUIStore';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const LoginModal = () => {
-  const { isLoginModalOpen, closeLoginModal } = useUIStore();
+  const { isLoginModalOpen, closeLoginModal, pendingRedirectPath } =
+    useUIStore();
   const [isLoading, setIsLoading] = useState(false);
   const { login, user } = useAuthStore();
+  const router = useRouter();
 
   const [isSuggestedDismissed, setIsSuggestedDismissed] = useState(false);
 
@@ -31,6 +34,13 @@ export const LoginModal = () => {
       });
 
       login(user, accessToken, refreshToken);
+
+      if (pendingRedirectPath) {
+        router.push(pendingRedirectPath);
+      } else if (window.location.search.includes('login=true')) {
+        router.replace(window.location.pathname);
+      }
+
       closeLoginModal();
     } catch (error: unknown) {
       console.error('Login Error:', error);

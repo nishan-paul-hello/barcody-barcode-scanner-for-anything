@@ -10,7 +10,8 @@ function AuthRedirectHandlerContent() {
 
   useEffect(() => {
     if (searchParams.get('login') === 'true') {
-      openLoginModal();
+      const redirect = searchParams.get('redirect');
+      openLoginModal(redirect || undefined);
     }
   }, [searchParams, openLoginModal]);
 
