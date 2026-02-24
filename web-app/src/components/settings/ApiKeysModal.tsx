@@ -139,7 +139,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               <div className="group/input relative">
                 <Input
                   placeholder="Paste your UPC Item DB API key..."
-                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus:ring-1 focus:ring-cyan-500/50"
+                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-cyan-500/40 focus-visible:ring-0"
                   value={upcKey}
                   onChange={(e) => setUpcKey(e.target.value)}
                 />
@@ -195,7 +195,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               <div className="group/input relative">
                 <Input
                   placeholder="Paste your Barcode Lookup API key..."
-                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus:ring-1 focus:ring-blue-500/50"
+                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-blue-500/40 focus-visible:ring-0"
                   value={barcodeKey}
                   onChange={(e) => setBarcodeKey(e.target.value)}
                 />
@@ -250,8 +250,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           </Button>
           <Button
             onClick={handleSave}
-            disabled={updateMutation.isPending}
-            className="min-w-[120px] cursor-pointer rounded-xl bg-cyan-500 font-bold text-black shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all hover:scale-[1.02] hover:bg-cyan-400 active:scale-95"
+            disabled={updateMutation.isPending || !hasChanges}
+            className={cn(
+              'min-w-[120px] rounded-xl font-bold transition-all',
+              hasChanges
+                ? 'cursor-pointer bg-cyan-500 text-black shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:scale-[1.02] hover:bg-cyan-400 active:scale-95'
+                : 'cursor-not-allowed bg-white/5 text-white/20 shadow-none'
+            )}
           >
             {updateMutation.isPending ? (
               <motion.div
