@@ -6,12 +6,6 @@
 
 Barcody is a professional, high-performance monorepo designed for scanning, managing, and analyzing barcodes at scale. Built with **Next.js 16**, **NestJS 11**, and **Tailwind CSS v4**, it provides a seamless cross-platform experience with real-time data synchronization and advanced analytics.
 
-<div align="center">
-  <br />
-  <img src="web-app/public/brand-logo.svg" alt="Barcody Dashboard" width="100%" style="border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); opacity: 0.8;" />
-  <br />
-</div>
-
 ## ✨ Core Features
 
 - **📱 Cross-Platform Scanning**: High-performance mobile application for instant precision scanning.
@@ -22,6 +16,30 @@ Barcody is a professional, high-performance monorepo designed for scanning, mana
 - **🎨 Elite UI**: Stunning dark-mode interface built with Tailwind CSS v4 and Shadcn UI.
 - **🔌 Real-time Updates**: Socket.io integration for instant data synchronization.
 - **🐳 Docker Ready**: Fully containerized architecture for effortless deployment.
+
+---
+
+## 📸 Application Preview
+
+### 🌐 User Web App
+The end-user experience optimized for speed and clarity.
+
+| Feature | Preview |
+|---|---|
+| **Modern Landing** | ![Home](preview/web-01-home.gif) |
+| **Precision Scanning** | ![Scan](preview/web-02-scan.gif) |
+| **Activity History** | ![History](preview/web-03-history.gif) |
+
+### 🛡️ Admin Dashboard
+Comprehensive management suite for system administrators.
+
+| Module | Preview |
+|---|---|
+| **Overview Console** | ![Admin Home](preview/admin-01-home.gif) |
+| **Control Center** | ![Admin Dashboard](preview/admin-02-dashboard.gif) |
+| **Intelligence Lab** | ![Admin Analytics](preview/admin-03-analytics.gif) |
+| **User Governance** | ![Admin Users](preview/admin-04-users.gif) |
+| **Global Audit** | ![Admin Scans](preview/admin-05-scans.gif) |
 
 ---
 
