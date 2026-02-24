@@ -177,12 +177,12 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                       onClick={() => setIsApiKeysOpen(true)}
                       className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-sm transition-all hover:bg-white/5 focus:bg-white/5"
                     >
-                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 ring-1 ring-white/10 transition-all group-hover:scale-110 group-hover:ring-cyan-400">
-                        <KeyRound className="h-5 w-5 text-cyan-400" />
-                        <div className="absolute inset-0 bg-cyan-400 opacity-0 blur-xl transition-opacity group-hover:opacity-20" />
+                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all group-hover:scale-110 group-hover:ring-violet-400">
+                        <KeyRound className="h-5 w-5 text-violet-400" />
+                        <div className="absolute inset-0 bg-violet-400 opacity-0 blur-xl transition-opacity group-hover:opacity-20" />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-bold tracking-tight text-white group-hover:text-cyan-400">
+                        <span className="text-sm font-bold tracking-tight text-white group-hover:text-violet-400">
                           Personal API Keys
                         </span>
                       </div>

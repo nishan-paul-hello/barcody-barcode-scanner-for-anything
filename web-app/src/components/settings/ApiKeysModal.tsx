@@ -13,17 +13,18 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useApiKeys, useUpdateApiKeys } from '@/hooks/use-api-keys';
+import { cn } from '@/lib/utils';
 import {
   Database,
   Globe,
   Info,
   Zap,
   X,
-  ScanBarcode,
   ExternalLink,
   Copy,
   Check,
   Trash2,
+  KeyRound,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -60,7 +61,12 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     setter('');
   };
 
+  const initialUpc = data?.upcDatabaseApiKey || '';
+  const initialBarcode = data?.barcodeLookupApiKey || '';
+  const hasChanges = upcKey !== initialUpc || barcodeKey !== initialBarcode;
+
   const handleSave = () => {
+    if (!hasChanges) return;
     updateMutation.mutate(
       {
         upcDatabaseApiKey: upcKey || undefined,
@@ -81,16 +87,14 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
         className="max-w-lg overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-2xl sm:rounded-[32px]"
       >
         {/* Decorative background element */}
-        <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-cyan-500/10 blur-[80px]" />
-        <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-blue-600/10 blur-[80px]" />
+        <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-violet-500/10 blur-[80px]" />
+        <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-fuchsia-600/10 blur-[80px]" />
 
         <div className="relative p-8 px-10">
           <DialogHeader className="mb-8 space-y-3">
             <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 ring-1 ring-white/10">
-                  <ScanBarcode className="h-6 w-6 text-cyan-400" />
-                </div>
+              <div className="flex items-center gap-4">
+                <KeyRound className="h-10 w-10 text-violet-400" />
                 <div>
                   <DialogTitle className="text-2xl font-bold tracking-tight text-white">
                     Personal API Keys
@@ -102,9 +106,9 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </div>
               <button
                 onClick={() => onOpenChange(false)}
-                className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10 hover:text-white"
+                className="group flex h-8 w-8 cursor-pointer items-center justify-center transition-all hover:scale-110 active:scale-90"
               >
-                <X className="h-5 w-5 text-white/20 transition-colors group-hover:text-red-400" />
+                <X className="h-6 w-6 text-white/20 transition-colors group-hover:text-white" />
               </button>
             </div>
           </DialogHeader>
