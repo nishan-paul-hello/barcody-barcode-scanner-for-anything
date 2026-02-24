@@ -8,7 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, BarChart, Users, Scan, Shield } from 'lucide-react';
+import {
+  LogOut,
+  BarChart,
+  Users,
+  Scan,
+  Shield,
+  Fingerprint,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { googleLogout } from '@react-oauth/google';
 import Link from 'next/link';
@@ -161,9 +168,10 @@ export function Header() {
           ) : (
             <Button
               onClick={openLoginModal}
-              className="group flex cursor-pointer items-center gap-2 rounded-full bg-white px-6 font-bold text-black transition-all hover:scale-105 hover:bg-zinc-200"
+              className="group flex cursor-pointer items-center gap-2 rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
             >
-              Sign In
+              <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
+              Get Started
             </Button>
           )}
         </div>
