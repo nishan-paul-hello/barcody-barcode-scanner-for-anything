@@ -348,7 +348,7 @@ export default function LandingPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <motion.div
               style={{ y: y2 }}
-              className="relative order-2 flex aspect-square w-full flex-col rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl backdrop-blur-xl transition-colors hover:border-[#00ffe7]/10 lg:order-1"
+              className="relative order-2 flex aspect-square w-full flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl backdrop-blur-xl transition-colors hover:border-[#00ffe7]/10 lg:order-1"
             >
               <div className="mb-6 flex items-center justify-between border-b border-white/5 pb-4">
                 <div>
@@ -372,7 +372,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="no-scrollbar flex flex-col gap-3 overflow-y-auto pb-2">
+              <div className="no-scrollbar flex flex-col gap-3 overflow-x-hidden overflow-y-auto pb-2">
                 {[
                   {
                     name: 'Sarah Jenkins',
