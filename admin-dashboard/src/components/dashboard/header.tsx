@@ -25,11 +25,19 @@ import { cn } from '@/lib/utils';
 import { useUIStore } from '@/stores/uiStore';
 
 export function Header() {
-  const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
+  const { user, logout, isAuthenticated, isAdmin } = useAuthStore();
   const { openLoginModal } = useUIStore();
   const pathname = usePathname();
   const router = useRouter();
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (isAuthenticated && isAdmin) {
+      router.push(href);
+    } else {
+      openLoginModal();
+    }
+  };
 
   const handleLogout = () => {
     googleLogout();
@@ -88,6 +96,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
                   className={cn(
                     'relative flex h-10 cursor-pointer items-center gap-2 px-4 text-xs font-bold tracking-widest uppercase transition-all hover:text-white',
                     isActive ? 'text-white' : 'text-white/40'

@@ -28,10 +28,19 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
-  const { user, logout } = useAuthStore();
+  const { user, logout, isAuthenticated } = useAuthStore();
   const { openLoginModal } = useUIStore();
   const pathname = usePathname();
   const router = useRouter();
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (isAuthenticated) {
+      router.push(href);
+    } else {
+      openLoginModal();
+    }
+  };
 
   const handleLogout = () => {
     sessionStorage.setItem('is_logout_redirect', 'true');
@@ -90,6 +99,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
                   className={cn(
                     'relative flex h-10 cursor-pointer items-center gap-2 px-4 text-xs font-bold tracking-widest uppercase transition-all hover:text-white',
                     isActive ? 'text-white' : 'text-white/40'
