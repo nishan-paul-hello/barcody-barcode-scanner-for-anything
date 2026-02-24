@@ -15,6 +15,9 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useRef } from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import { useUIStore } from '@/stores/uiStore';
+import { useRouter } from 'next/navigation';
 
 const fadeIn = {
   initial: { opacity: 0, y: 40 },
@@ -41,6 +44,18 @@ export default function LandingPage() {
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -300]);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+
+  const { isAuthenticated, isAdmin } = useAuthStore();
+  const { openLoginModal } = useUIStore();
+  const router = useRouter();
+
+  const handleLaunchDashboard = () => {
+    if (isAuthenticated && isAdmin) {
+      router.push('/dashboard');
+    } else {
+      openLoginModal();
+    }
+  };
 
   return (
     <div
@@ -112,16 +127,14 @@ export default function LandingPage() {
           >
             <Button
               size="lg"
+              onClick={handleLaunchDashboard}
               className="group h-14 overflow-hidden rounded-full bg-[#00ffe7] px-8 font-bold text-black shadow-[0_0_20px_rgba(0,255,231,0.3)] transition-all hover:bg-[#00ffe7]/90 hover:ring-4 hover:ring-[#00ffe7]/20"
-              asChild
             >
-              <Link href="/dashboard" className="flex items-center gap-2">
-                Initialize Dashboard
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                ></motion.span>
-              </Link>
+              Initialize Dashboard
+              <motion.span
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
             </Button>
             <Button
               size="lg"
