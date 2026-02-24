@@ -171,14 +171,14 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             variant="ghost"
             onClick={() => onOpenChange(false)}
             disabled={updateMutation.isPending}
-            className="rounded-xl font-bold text-white/40 hover:bg-white/5 hover:text-white"
+            className="cursor-pointer rounded-xl font-bold text-white/40 hover:bg-white/5 hover:text-white"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={updateMutation.isPending}
-            className="min-w-[120px] rounded-xl bg-cyan-500 font-bold text-black shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all hover:scale-[1.02] hover:bg-cyan-400 active:scale-95"
+            className="min-w-[120px] cursor-pointer rounded-xl bg-cyan-500 font-bold text-black shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all hover:scale-[1.02] hover:bg-cyan-400 active:scale-95"
           >
             {updateMutation.isPending ? (
               <motion.div
