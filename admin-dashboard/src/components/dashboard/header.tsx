@@ -171,7 +171,7 @@ export function Header() {
                     className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                   >
                     <LogOut className="h-4 w-4 transition-colors group-hover:text-white" />
-                    <span className="text-sm font-bold">Sign out</span>
+                    <span className="text-sm font-bold">Log out</span>
                   </DropdownMenuItem>
                 </div>
               </DropdownMenuContent>
