@@ -21,6 +21,14 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated || !isAdmin) {
+        if (
+          typeof window !== 'undefined' &&
+          sessionStorage.getItem('is_logout_redirect')
+        ) {
+          sessionStorage.removeItem('is_logout_redirect');
+          router.replace('/');
+          return;
+        }
         router.push('/');
         openLoginModal(pathname);
       }

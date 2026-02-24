@@ -40,6 +40,7 @@ export function Header() {
   };
 
   const handleLogout = () => {
+    sessionStorage.setItem('is_logout_redirect', 'true');
     googleLogout();
     logout();
     router.push('/');
