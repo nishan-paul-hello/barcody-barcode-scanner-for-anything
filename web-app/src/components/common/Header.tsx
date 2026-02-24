@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,6 +31,13 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const { user, logout } = useAuthStore();
   const { openLoginModal } = useUIStore();
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    sessionStorage.setItem('is_logout_redirect', 'true');
+    logout();
+    router.push('/');
+  };
 
   const defaultNavItems = [
     { href: '/history', label: 'History', icon: History },
@@ -154,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
 
                 <div className="p-2">
                   <DropdownMenuItem
-                    onClick={logout}
+                    onClick={handleLogout}
                     className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white"
                   >
                     <LogOut className="h-4 w-4 transition-colors group-hover:text-white" />

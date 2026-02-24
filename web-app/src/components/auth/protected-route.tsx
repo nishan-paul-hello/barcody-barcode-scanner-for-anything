@@ -25,6 +25,16 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
+      // Check if this is an intentional logout
+      if (
+        typeof window !== 'undefined' &&
+        sessionStorage.getItem('is_logout_redirect')
+      ) {
+        sessionStorage.removeItem('is_logout_redirect');
+        router.replace('/');
+        return;
+      }
+
       // Capture current URL including query params
       const currentUrl =
         pathname +
