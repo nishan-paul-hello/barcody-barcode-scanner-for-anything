@@ -15,6 +15,7 @@ import {
   Scan,
   Shield,
   Fingerprint,
+  Trash2,
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { googleLogout } from '@react-oauth/google';
@@ -165,11 +166,20 @@ export function Header() {
                 </div>
 
                 <div className="space-y-1 p-2">
+                  <DropdownMenuItem className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-zinc-500 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zinc-400 ring-1 ring-white/5 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
+                      <Trash2 className="h-5 w-5" />
+                    </div>
+                    <span className="text-sm font-bold tracking-tight">
+                      Delete Account
+                    </span>
+                  </DropdownMenuItem>
+
                   <DropdownMenuItem
                     onClick={handleLogout}
                     className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/10 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/10 text-red-400 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
                       <LogOut className="h-5 w-5" />
                     </div>
                     <span className="text-sm font-bold tracking-tight">
