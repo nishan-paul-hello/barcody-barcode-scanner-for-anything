@@ -37,10 +37,10 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const { user, logout, isAuthenticated } = useAuthStore();
-  const { openLoginModal } = useUIStore();
+  const { openLoginModal, isApiKeysModalOpen, setApiKeysModalOpen } =
+    useUIStore();
   const pathname = usePathname();
   const router = useRouter();
-  const [isApiKeysOpen, setIsApiKeysOpen] = React.useState(false);
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
@@ -181,7 +181,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
 
                   <div className="space-y-1 p-2">
                     <DropdownMenuItem
-                      onClick={() => setIsApiKeysOpen(true)}
+                      onClick={() => setApiKeysModalOpen(true)}
                       className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-sm transition-all hover:bg-white/5 focus:bg-white/5"
                     >
                       <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all group-hover:scale-110 group-hover:ring-violet-400">
@@ -219,8 +219,8 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                 </DropdownMenuContent>
               </DropdownMenu>
               <ApiKeysModal
-                open={isApiKeysOpen}
-                onOpenChange={setIsApiKeysOpen}
+                open={isApiKeysModalOpen}
+                onOpenChange={setApiKeysModalOpen}
               />
             </>
           ) : (
