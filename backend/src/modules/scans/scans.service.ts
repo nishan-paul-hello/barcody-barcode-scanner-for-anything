@@ -45,10 +45,8 @@ export class ScansService {
     // Auto-lookup product info if missing
     if (!createScanDto.productName) {
       try {
-        const { data: product } = await this.productLookupService.lookup(
-          createScanDto.barcodeData,
-          userId,
-        );
+        const result = await this.productLookupService.lookup(createScanDto.barcodeData, userId);
+        const product = result?.data;
         if (product) {
           createScanDto.productName = product.name;
           createScanDto.brand = product.brand;

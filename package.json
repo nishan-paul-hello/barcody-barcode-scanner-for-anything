@@ -58,8 +58,8 @@
   },
   "homepage": "https://github.com/nishan-paul-2022/barcody-barcode-scanner-for-anything#readme",
   "overrides": {
-    "glob": "^11.0.0",
-    "minimatch": "^10.2.1",
+    "glob": "^10.5.0",
+    "minimatch": "^10.2.3",
     "rimraf": "^6.0.1",
     "webpack": "^5.105.2"
   }
