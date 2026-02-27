@@ -138,6 +138,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </div>
               <div className="group/input relative">
                 <Input
+                  type="password"
                   placeholder="Paste your UPC Item DB API key..."
                   className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-cyan-500/40 focus-visible:ring-0"
                   value={upcKey}
@@ -194,6 +195,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </div>
               <div className="group/input relative">
                 <Input
+                  type="password"
                   placeholder="Paste your Barcode Lookup API key..."
                   className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-blue-500/40 focus-visible:ring-0"
                   value={barcodeKey}
