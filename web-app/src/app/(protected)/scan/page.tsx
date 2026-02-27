@@ -62,24 +62,24 @@ export default function ScanPage() {
               className="w-full"
             >
               <div className="relative mb-8 flex items-center justify-center">
-                <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
+                <TabsList className="grid h-14 w-full max-w-[450px] grid-cols-3 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
                   <TabsTrigger
                     value="camera"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                    className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <Camera className="mr-2 h-3.5 w-3.5" />
-                    Live Capture
+                    Live
                   </TabsTrigger>
                   <TabsTrigger
                     value="file"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                    className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <FileUp className="mr-2 h-3.5 w-3.5" />
-                    Asset Upload
+                    Upload
                   </TabsTrigger>
                   <TabsTrigger
                     value="lookup"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                    className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <Search className="mr-2 h-3.5 w-3.5" />
                     Lookup
@@ -120,7 +120,7 @@ export default function ScanPage() {
                       format: mapZxingFormatToReadable(
                         result.getBarcodeFormat()
                       ),
-                      source: 'Asset Upload',
+                      source: 'Upload',
                       timestamp: new Date().toISOString(),
                     });
                   }}

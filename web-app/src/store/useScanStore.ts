@@ -5,7 +5,7 @@ interface ScanState {
   lastResult: string | null;
   scanMetadata: {
     format: string;
-    source: 'Camera' | 'Asset Upload' | 'Manual entry';
+    source: 'Camera' | 'Upload' | 'Manual entry';
     timestamp: string;
   } | null;
   hasError: boolean;
