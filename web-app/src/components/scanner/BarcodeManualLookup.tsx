@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, KeyRound, ArrowRight } from 'lucide-react';
+import {
+  KeyRound,
+  Scan,
+  Search,
+  Copy,
+  X,
+  Check,
+  ArrowRight,
+} from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -19,6 +27,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
   onClear,
 }) => {
   const [barcode, setBarcode] = useState('');
+  const [copied, setCopied] = useState(false);
   const { data: apiKeys } = useApiKeys();
   const { setApiKeysModalOpen } = useUIStore();
 
@@ -39,58 +48,114 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
     onClear?.();
   };
 
+  const handleCopy = () => {
+    if (!barcode) return;
+    navigator.clipboard.writeText(barcode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         className="w-full"
       >
-        <Card className="flex aspect-video w-full flex-col items-center justify-center rounded-[2.5rem] border-2 border-dashed border-white/5 bg-white/[0.02] p-8 transition-all duration-500 hover:border-cyan-500/30 hover:bg-cyan-500/[0.03] sm:aspect-square md:aspect-video">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex w-full max-w-sm flex-col items-center text-center"
-          >
-            <div className="mb-6 rounded-[2rem] bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20">
-              <Search className="h-10 w-10 text-cyan-400" />
+        <Card className="group relative aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-[2.5rem] border border-white/5 bg-black/40 p-8 shadow-2xl backdrop-blur-3xl transition-all duration-700 hover:border-cyan-500/10 sm:aspect-square md:aspect-video">
+          {/* Animated Background Motifs */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-cyan-500/5 blur-[100px] transition-opacity group-hover:opacity-100" />
+            <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-purple-500/5 blur-[100px] transition-opacity group-hover:opacity-100" />
+
+            {/* Grid Pattern */}
+            <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent)] opacity-[0.02]">
+              <div className="h-full w-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px]" />
             </div>
-            <h3 className="mb-2 text-xl font-bold tracking-tight text-white/90">
-              Manual Entry
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative z-10 flex w-full max-w-md flex-col items-center text-center"
+          >
+            {/* Header Icon Section */}
+            <div className="mb-6">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/20">
+                <Search className="h-8 w-8 transition-transform duration-500 group-hover:scale-110" />
+              </div>
+            </div>
+
+            <h3 className="mb-2 text-2xl font-black tracking-tight text-white uppercase">
+              Manual <span className="text-cyan-400">Lookup</span>
             </h3>
-            <p className="mb-8 text-sm text-white/50">
-              Type or paste a barcode number below to manually look it up in out
+            <p className="mb-10 max-w-[280px] text-sm leading-relaxed font-medium text-white/40">
+              Enter a barcode number manually to fetch product details from
               database.
             </p>
 
-            <form
-              onSubmit={handleSubmit}
-              className="flex w-full flex-col gap-4 sm:flex-row"
-            >
-              <Input
-                type="text"
-                placeholder="Enter barcode number..."
-                value={barcode}
-                onChange={(e) => setBarcode(e.target.value)}
-                className="h-12 border-white/10 bg-black/40 text-center font-mono placeholder:font-sans placeholder:text-white/30 focus-visible:ring-cyan-500/50 sm:text-left"
-              />
-              <Button
-                type="submit"
-                disabled={!barcode.trim()}
-                className="h-12 min-w-[120px] rounded-xl bg-cyan-500 text-black hover:bg-cyan-400 disabled:opacity-50"
-              >
-                Lookup
-              </Button>
+            <form onSubmit={handleSubmit} className="relative w-full">
+              <div className="flex w-full flex-col gap-3 sm:flex-row">
+                <div className="relative flex-1">
+                  <Input
+                    type="text"
+                    placeholder="ENTER BARCODE..."
+                    value={barcode}
+                    onChange={(e) => setBarcode(e.target.value)}
+                    className="h-14 border-white/5 bg-white/5 pr-20 pl-12 font-mono text-lg font-bold tracking-[0.2em] text-cyan-400 transition-all placeholder:font-sans placeholder:text-xs placeholder:tracking-widest placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-cyan-500/30"
+                  />
+                  <div className="absolute top-1/2 left-4 -translate-y-1/2 text-white/20">
+                    <Scan className="h-4 w-4" />
+                  </div>
+
+                  {/* Inline Actions */}
+                  <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
+                    <AnimatePresence>
+                      {barcode && (
+                        <>
+                          <motion.button
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            type="button"
+                            onClick={handleCopy}
+                            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-cyan-400"
+                            title="Copy barcode"
+                          >
+                            {copied ? (
+                              <Check className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
+                          </motion.button>
+                          <motion.button
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            type="button"
+                            onClick={handleClear}
+                            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-red-400"
+                            title="Clear input"
+                          >
+                            <X className="h-4 w-4" />
+                          </motion.button>
+                        </>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={!barcode.trim()}
+                  className="h-14 min-w-[140px] cursor-pointer rounded-xl bg-cyan-500 px-6 text-black shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all hover:scale-[1.02] hover:bg-cyan-400 disabled:opacity-30 disabled:grayscale"
+                >
+                  <span className="font-black tracking-tighter uppercase">
+                    Search
+                  </span>
+                </Button>
+              </div>
             </form>
-            {barcode.trim() && (
-              <Button
-                variant="ghost"
-                onClick={handleClear}
-                className="mt-4 text-xs text-white/40 hover:text-white"
-              >
-                Clear
-              </Button>
-            )}
           </motion.div>
         </Card>
 
@@ -129,7 +194,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                   onClick={() => setApiKeysModalOpen(true)}
                   className="h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] hover:bg-amber-400 active:scale-95 sm:ml-auto"
                 >
-                  <span className="font-bold">Set API Keys</span>
+                  <span className="border-black font-bold">Set API Keys</span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
