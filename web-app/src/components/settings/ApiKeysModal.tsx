@@ -17,7 +17,6 @@ import { cn } from '@/lib/utils';
 import {
   Database,
   Globe,
-  Info,
   Zap,
   X,
   ExternalLink,
@@ -227,17 +226,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 standard databases don&apos;t return results.
               </p>
             </motion.div>
-
-            {/* Security Note */}
-            <div className="flex items-start gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/5">
-              <div className="mt-0.5 rounded-full bg-cyan-400/10 p-1.5 ring-1 ring-cyan-400/20">
-                <Info className="h-3 w-3 text-cyan-400" />
-              </div>
-              <p className="text-[11px] leading-relaxed font-medium text-white/50">
-                Your keys are encrypted and stored privately on your account.
-                They are never shared or used by other users.
-              </p>
-            </div>
           </div>
         </div>
 
