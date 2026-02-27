@@ -1,5 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
+import {
+  ProductInfo,
+  ProductAttribute,
+} from '@modules/product-lookup/interfaces/product-info.interface';
 
 interface BarcodeLookupProduct {
   product_name?: string;
@@ -53,9 +56,25 @@ export class BarcodeLookupClient {
       description: product.description,
       manufacturer: product.manufacturer,
       images: product.images || [],
+      attributes: this.mapAttributes(product),
       source: 'barcodelookup',
       lastUpdated: new Date(),
     };
+  }
+
+  private mapAttributes(product: BarcodeLookupProduct): ProductAttribute[] {
+    const attrs: ProductAttribute[] = [];
+    if (product.manufacturer) {
+      attrs.push({ group: 'Manufacturer', label: 'Company', value: product.manufacturer });
+    }
+    if (product.category) {
+      attrs.push({ group: 'Classification', label: 'Category', value: product.category });
+    }
+    // Barcode Lookup often has multiple images, store them in details if needed
+    if (product.images && product.images.length > 1) {
+      attrs.push({ group: 'Media', label: 'Image Count', value: product.images.length });
+    }
+    return attrs;
   }
 
   private handleError(error: unknown): never | null {

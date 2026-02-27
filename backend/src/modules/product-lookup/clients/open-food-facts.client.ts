@@ -1,5 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
+import {
+  ProductInfo,
+  ProductAttribute,
+} from '@modules/product-lookup/interfaces/product-info.interface';
 
 interface OFFProduct {
   product_name?: string;
@@ -50,6 +53,9 @@ export class OpenFoodFactsClient {
   }
 
   private mapToProductInfo(barcode: string, product: OFFProduct): ProductInfo {
+    const nutrition = this.mapNutrition(product);
+    const attributes = this.convertToAttributes(nutrition);
+
     return {
       barcode,
       name: product.product_name || product.product_name_en || 'Unknown Product',
@@ -58,10 +64,69 @@ export class OpenFoodFactsClient {
       description: product.generic_name,
       manufacturer: product.manufacturing_places,
       images: product.image_front_url ? [product.image_front_url] : [],
-      nutrition: this.mapNutrition(product),
+      nutrition,
+      attributes,
       source: 'openfoodfacts',
       lastUpdated: new Date(),
     };
+  }
+
+  private convertToAttributes(nutrition: Record<string, unknown>): ProductAttribute[] {
+    const attrs: ProductAttribute[] = [];
+    if (!nutrition) return attrs;
+
+    this.addNutrientAttrs(attrs, nutrition);
+    this.addSafetyAttrs(attrs, nutrition);
+
+    return attrs;
+  }
+
+  private addNutrientAttrs(attrs: ProductAttribute[], nutrition: Record<string, unknown>): void {
+    const group = 'Nutrition';
+    const nutrients = [
+      { key: 'calories', label: 'Calories', unit: 'kcal' },
+      { key: 'fat', label: 'Fat', unit: 'g' },
+      { key: 'carbs', label: 'Carbohydrates', unit: 'g' },
+      { key: 'protein', label: 'Protein', unit: 'g' },
+      { key: 'sugar', label: 'Sugar', unit: 'g' },
+      { key: 'fiber', label: 'Fiber', unit: 'g' },
+      { key: 'salt', label: 'Salt', unit: 'g' },
+    ];
+
+    for (const n of nutrients) {
+      if (nutrition[n.key]) {
+        attrs.push({
+          group,
+          label: n.label,
+          value: nutrition[n.key] as string | number,
+          unit: n.unit,
+        });
+      }
+    }
+  }
+
+  private addSafetyAttrs(attrs: ProductAttribute[], nutrition: Record<string, unknown>): void {
+    if (nutrition.ingredients) {
+      attrs.push({
+        group: 'Ingredients',
+        label: 'Raw Ingredients',
+        value: nutrition.ingredients as string,
+      });
+    }
+
+    if (
+      nutrition.allergens &&
+      Array.isArray(nutrition.allergens) &&
+      nutrition.allergens.length > 0
+    ) {
+      attrs.push({
+        group: 'Safety',
+        label: 'Allergens',
+        value: (nutrition.allergens as string[])
+          .map((a: string) => a.replace('en:', ''))
+          .join(', '),
+      });
+    }
   }
 
   private mapNutrition(product: OFFProduct) {

@@ -34,6 +34,7 @@ export class ScansService {
             nutrition: {
               grade: scan.nutritionGrade,
             },
+            attributes: scan.attributes,
           }
         : undefined,
     };
@@ -53,6 +54,7 @@ export class ScansService {
           createScanDto.category = product.category;
           createScanDto.nutritionGrade = product.nutrition?.grade;
           createScanDto.imageUrl = product.images?.[0];
+          createScanDto.attributes = product.attributes;
         }
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);

@@ -76,4 +76,12 @@ export class CreateScanDto {
   @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    description: 'Product attributes (Specifications, etc.)',
+    example: [{ group: 'Specs', label: 'Color', value: 'Black' }],
+  })
+  @IsOptional()
+  @IsObject({ each: true })
+  attributes?: Record<string, unknown>[];
 }

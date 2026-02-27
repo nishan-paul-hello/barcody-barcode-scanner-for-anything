@@ -1,5 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
+import {
+  ProductInfo,
+  ProductAttribute,
+} from '@modules/product-lookup/interfaces/product-info.interface';
 
 interface UpcDatabaseItem {
   title: string;
@@ -48,9 +51,21 @@ export class UpcDatabaseClient {
       description: item.description,
       manufacturer: item.publisher || item.brand,
       images: item.images || [],
+      attributes: this.mapAttributes(item),
       source: 'upcdatabase',
       lastUpdated: new Date(),
     };
+  }
+
+  private mapAttributes(item: UpcDatabaseItem): ProductAttribute[] {
+    const attrs: ProductAttribute[] = [];
+    if (item.publisher) {
+      attrs.push({ group: 'Manufacturer', label: 'Publisher', value: item.publisher });
+    }
+    if (item.category) {
+      attrs.push({ group: 'Classification', label: 'Category', value: item.category });
+    }
+    return attrs;
   }
 
   private handleLookupError(error: unknown): never | null {
