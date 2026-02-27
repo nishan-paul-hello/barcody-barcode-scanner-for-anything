@@ -3,6 +3,7 @@ export interface ProductAttribute {
   label: string;
   value: string | number;
   unit?: string;
+  [key: string]: unknown;
 }
 
 export interface ProductInfo {
