@@ -99,7 +99,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                     Personal API Keys
                   </DialogTitle>
                   <DialogDescription className="text-sm font-medium text-white/40">
-                    Power your scanner with custom data sources
+                    Boost scanning accuracy by connecting data sources.
                   </DialogDescription>
                 </div>
               </div>
@@ -165,8 +165,8 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 </div>
               </div>
               <p className="px-1 text-[11px] leading-relaxed text-white/30">
-                Primary source for high-quality product data, ingredients, and
-                brands. Recommended for US/International products.
+                The main provider for global product info, ingredients, and
+                brands.
               </p>
             </motion.div>
 
@@ -222,8 +222,8 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 </div>
               </div>
               <p className="px-1 text-[11px] leading-relaxed text-white/30">
-                Secondary fallback for hard-to-find barcodes. Helpful when
-                standard databases don&apos;t return results.
+                A reliable backup source for barcodes not found in standard
+                databases.
               </p>
             </motion.div>
           </div>
