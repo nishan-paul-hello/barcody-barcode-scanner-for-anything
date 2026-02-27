@@ -242,12 +242,20 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             onClick={handleSave}
             disabled={updateMutation.isPending || !hasChanges}
             className={cn(
-              'min-w-[120px] rounded-xl font-bold transition-all',
+              'group relative min-w-[140px] overflow-hidden rounded-xl border-2 px-6 font-bold transition-all duration-500',
               hasChanges
-                ? 'cursor-pointer bg-cyan-500 text-black shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:scale-[1.02] hover:bg-cyan-400 active:scale-95'
-                : 'cursor-not-allowed bg-white/5 text-white/20 shadow-none'
+                ? 'cursor-pointer border-cyan-500/30 bg-transparent text-cyan-400 hover:border-cyan-500 hover:bg-cyan-500 hover:text-black hover:shadow-[0_0_30px_rgba(6,182,212,0.25)] active:scale-95'
+                : 'cursor-not-allowed border-white/5 bg-white/5 text-white/20 shadow-none'
             )}
           >
+            {/* Decorative corners for active state */}
+            {hasChanges && !updateMutation.isPending && (
+              <>
+                <div className="absolute top-0 left-0 h-1.5 w-1.5 border-t-2 border-l-2 border-cyan-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="absolute right-0 bottom-0 h-1.5 w-1.5 border-r-2 border-b-2 border-cyan-400 opacity-0 transition-opacity group-hover:opacity-100" />
+              </>
+            )}
+
             {updateMutation.isPending ? (
               <motion.div
                 animate={{ rotate: 360 }}
@@ -257,7 +265,12 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </motion.div>
             ) : (
               <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4" />
+                <Zap
+                  className={cn(
+                    'h-4 w-4 transition-transform duration-300',
+                    hasChanges && 'group-hover:scale-125 group-hover:rotate-12'
+                  )}
+                />
                 Apply Keys
               </div>
             )}
