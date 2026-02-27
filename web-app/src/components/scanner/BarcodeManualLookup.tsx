@@ -99,7 +99,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                 <div className="relative flex-1">
                   <Input
                     type="text"
-                    placeholder="ENTER BARCODE..."
+                    placeholder="ENTER BARCODE"
                     value={barcode}
                     onChange={(e) => setBarcode(e.target.value)}
                     className="h-14 border-white/5 bg-white/5 pr-20 pl-12 font-mono text-lg font-bold tracking-[0.2em] text-cyan-400 transition-all placeholder:font-sans placeholder:text-xs placeholder:tracking-widest placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-cyan-500/30"

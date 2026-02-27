@@ -76,7 +76,7 @@ export function ScanFilters({
           <div className="group relative flex-1">
             <Search className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
             <Input
-              placeholder="Search by barcode or product name..."
+              placeholder="Search by barcode or product name"
               className="h-10 pl-10"
               value={filters.search || ''}
               onChange={(e) => onFilterChange('search', e.target.value)}
