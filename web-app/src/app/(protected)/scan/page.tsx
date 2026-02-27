@@ -31,15 +31,15 @@ const itemVariants = {
 
 export default function ScanPage() {
   const {
-    lastResult,
-    scanMetadata,
-    hasError,
+    results,
     activeTab,
     setLastResult,
     setScanMetadata,
     setHasError,
     setActiveTab,
   } = useScanStore();
+
+  const { lastResult, scanMetadata, hasError } = results[activeTab];
 
   const { data: productData, isLoading } = useProduct(lastResult);
 

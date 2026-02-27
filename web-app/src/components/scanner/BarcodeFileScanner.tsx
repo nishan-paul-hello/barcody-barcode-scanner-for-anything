@@ -38,7 +38,8 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   onScanError,
   onClear,
 }) => {
-  const { previewUrl, setPreviewUrl } = useScanStore();
+  const { results, activeTab, setPreviewUrl } = useScanStore();
+  const { previewUrl } = results[activeTab];
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
