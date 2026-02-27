@@ -102,7 +102,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                     placeholder="ENTER BARCODE"
                     value={barcode}
                     onChange={(e) => setBarcode(e.target.value)}
-                    className="h-14 border-white/5 bg-white/5 pr-20 pl-12 font-mono text-lg font-bold tracking-[0.2em] text-cyan-400 transition-all placeholder:font-sans placeholder:text-xs placeholder:tracking-widest placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-cyan-500/30"
+                    className="h-14 border-white/5 bg-white/5 pr-24 pl-12 font-mono text-lg font-bold tracking-[0.2em] text-cyan-400 transition-all placeholder:font-sans placeholder:text-xs placeholder:tracking-widest placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-cyan-500/30"
                   />
                   <div className="absolute top-1/2 left-4 -translate-y-1/2 text-white/20">
                     <Scan className="h-4 w-4" />
