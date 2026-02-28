@@ -52,12 +52,6 @@ const APIS = [
     icon: ShoppingBag,
     color: 'text-orange-400',
   },
-  {
-    id: 'barcodeLookup',
-    name: 'Barcode Lookup',
-    icon: Search,
-    color: 'text-cyan-400',
-  },
   { id: 'goUpc', name: 'Go-UPC', icon: Zap, color: 'text-purple-400' },
   { id: 'searchUpc', name: 'SearchUPC', icon: Key, color: 'text-yellow-400' },
 ];
@@ -106,7 +100,16 @@ export default function GlobalLookupPage() {
       }));
     } catch (err: unknown) {
       const endTime = performance.now();
-      const message = err instanceof Error ? err.message : String(err);
+      let message: string;
+      if (err && typeof err === 'object' && 'isAxiosError' in err) {
+        const ax = err as {
+          response?: { data?: { message?: string | string[] } };
+        };
+        const msg = ax.response?.data?.message;
+        message = Array.isArray(msg) ? msg[0] : msg || (err as Error).message;
+      } else {
+        message = err instanceof Error ? err.message : String(err);
+      }
       setResults((prev) => ({
         ...prev,
         [id]: {
@@ -244,6 +247,8 @@ export default function GlobalLookupPage() {
                           <span className="text-cyan-400">
                             {barcode || 'None'}
                           </span>
+                          . On the Scanner, results use a cascade (OFF → UPC
+                          DB); here each API is called directly.
                         </p>
                       </div>
 

@@ -29,7 +29,6 @@ import { motion } from 'framer-motion';
 const SOURCE_LABELS: Record<ProductResponseDto['source'], string> = {
   openfoodfacts: 'Open Food Facts',
   upcdatabase: 'UPC Database',
-  barcodelookup: 'Barcode Lookup',
 };
 
 const NUTRITION_GRADES = {

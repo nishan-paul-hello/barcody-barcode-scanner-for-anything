@@ -219,7 +219,6 @@ export const api = {
       apiClient
         .get<{
           upcDatabaseApiKey: string | null;
-          barcodeLookupApiKey: string | null;
           usdaFoodDataApiKey: string | null;
           goUpcApiKey: string | null;
           searchUpcApiKey: string | null;
@@ -227,7 +226,6 @@ export const api = {
         .then((r) => r.data),
     updateApiKeys: (dto: {
       upcDatabaseApiKey?: string;
-      barcodeLookupApiKey?: string;
       usdaFoodDataApiKey?: string;
       goUpcApiKey?: string;
       searchUpcApiKey?: string;

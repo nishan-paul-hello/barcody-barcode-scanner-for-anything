@@ -17,7 +17,6 @@ import {
   Check,
   KeyRound,
   FlaskConical,
-  Search,
   Database,
   Zap,
   X,
@@ -155,7 +154,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
   const updateMutation = useUpdateApiKeys();
 
   const [upcKey, setUpcKey] = React.useState('');
-  const [barcodeKey, setBarcodeKey] = React.useState('');
   const [usdaKey, setUsdaKey] = React.useState('');
   const [goUpcKey, setGoUpcKey] = React.useState('');
   const [searchUpcKey, setSearchUpcKey] = React.useState('');
@@ -164,7 +162,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
   React.useEffect(() => {
     if (open && data && !isLoading) {
       setUpcKey(data.upcDatabaseApiKey || '');
-      setBarcodeKey(data.barcodeLookupApiKey || '');
       setUsdaKey(data.usdaFoodDataApiKey || '');
       setGoUpcKey(data.goUpcApiKey || '');
       setSearchUpcKey(data.searchUpcApiKey || '');
@@ -186,7 +183,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
 
   const hasChanges =
     upcKey !== (data?.upcDatabaseApiKey || '') ||
-    barcodeKey !== (data?.barcodeLookupApiKey || '') ||
     usdaKey !== (data?.usdaFoodDataApiKey || '') ||
     goUpcKey !== (data?.goUpcApiKey || '') ||
     searchUpcKey !== (data?.searchUpcApiKey || '');
@@ -196,7 +192,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     updateMutation.mutate(
       {
         upcDatabaseApiKey: upcKey || undefined,
-        barcodeLookupApiKey: barcodeKey || undefined,
         usdaFoodDataApiKey: usdaKey || undefined,
         goUpcApiKey: goUpcKey || undefined,
         searchUpcApiKey: searchUpcKey || undefined,
@@ -254,20 +249,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 color="text-cyan-400"
                 placeholder="Enter UPC Item DB Key"
                 link="https://www.upcitemdb.com/api/explorer"
-                onCopy={handleCopy}
-                copiedField={copiedField}
-                onClear={handleClear}
-              />
-
-              <ApiKeyInput
-                label="Barcode Lookup"
-                value={barcodeKey}
-                setter={setBarcodeKey}
-                fieldId="barcode"
-                icon={Search}
-                color="text-blue-400"
-                placeholder="Enter Barcode Lookup Key"
-                link="https://www.barcodelookup.com/api"
                 onCopy={handleCopy}
                 copiedField={copiedField}
                 onClear={handleClear}

@@ -51,7 +51,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
 
   const hasApiConfigured = React.useMemo(() => {
     if (!apiKeys) return true; // Assume true while loading to avoid flickering
-    return !!(apiKeys.upcDatabaseApiKey || apiKeys.barcodeLookupApiKey);
+    return !!apiKeys.upcDatabaseApiKey;
   }, [apiKeys]);
 
   // Restore image dimensions if preview exists on mount

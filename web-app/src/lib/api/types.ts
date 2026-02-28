@@ -122,7 +122,7 @@ export interface ProductResponseDto {
   images?: string[];
   nutrition?: ProductNutrition;
   attributes?: ProductAttribute[];
-  source: 'openfoodfacts' | 'upcdatabase' | 'barcodelookup';
+  source: 'openfoodfacts' | 'upcdatabase';
   lastUpdated: string;
 }
 

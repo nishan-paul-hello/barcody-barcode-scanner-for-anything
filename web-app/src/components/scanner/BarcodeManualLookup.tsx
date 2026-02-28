@@ -33,7 +33,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
 
   const hasApiConfigured = React.useMemo(() => {
     if (!apiKeys) return true;
-    return !!(apiKeys.upcDatabaseApiKey || apiKeys.barcodeLookupApiKey);
+    return !!apiKeys.upcDatabaseApiKey;
   }, [apiKeys]);
 
   const handleSubmit = (e: React.FormEvent) => {
