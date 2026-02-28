@@ -165,7 +165,7 @@ export default function GlobalLookupPage() {
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Enter Barcode"
-              className="h-14 border-white/10 bg-white/5 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:ring-0"
+              className="h-14 border-white/10 bg-white/5 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-400 focus-visible:border-cyan-400 focus-visible:ring-0"
               onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
             />
           </div>
