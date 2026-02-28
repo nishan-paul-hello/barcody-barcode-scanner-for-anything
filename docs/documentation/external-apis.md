@@ -50,20 +50,7 @@ This document provides a concise overview of the barcode and product data APIs i
 
 ---
 
-## 5. Barcode Lookup
-- **Type:** Commercial, Free Trial.
-- **Database Size:** 500M+ products.
-- **Rate Limit:** 100 requests/minute. Monthly limit depends on trial terms (check dashboard).
-- **Setup:** API key required. Register at the link below.
-- **Website:** https://www.barcodelookup.com
-- **API Docs:** https://www.barcodelookup.com/api-documentation
-- **Key Signup:** https://www.barcodelookup.com/api
-- **Base URL:** `https://api.barcodelookup.com/v3/products?barcode={barcode}&key={key}`
-- **Env Variable:** `BARCODE_LOOKUP_API_KEY`
-
----
-
-## 6. Go-UPC
+## 5. Go-UPC
 - **Type:** Commercial, Free Plan (manual approval required).
 - **Database Size:** 500M+ products.
 - **Rate Limit:** 150 requests/month. Max 2 requests/second.
@@ -71,12 +58,12 @@ This document provides a concise overview of the barcode and product data APIs i
 - **Website:** https://go-upc.com
 - **API Docs:** https://go-upc.com/plans/api
 - **Key Signup:** https://go-upc.com/plans/api
-- **Base URL:** `https://api.go-upc.com/v1/code/{barcode}`
+- **Base URL:** `https://go-upc.com/api/v1/code/{barcode}`
 - **Env Variable:** `GO_UPC_API_KEY`
 
 ---
 
-## 7. SearchUPC
+## 6. SearchUPC
 - **Type:** Commercial, Free Tier.
 - **Database Size:** 1M+ products.
 - **Rate Limit:** 100 lookups/day, 25 searches/day.

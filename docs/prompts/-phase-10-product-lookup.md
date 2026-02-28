@@ -9,9 +9,9 @@
 ## Task 10.1: Backend Product Lookup - API Clients
 
 ```
-TASK: Implement external API integrations for product data retrieval from Open Food Facts, UPC Database, and Barcode Lookup.
+TASK: Implement external API integrations for product data retrieval from Open Food Facts and UPC Database.
 
-SYSTEM CONTEXT: Enhance barcode scanning with product information. Integrate with multiple external APIs to maximize product coverage. Open Food Facts for food products, UPC Database for general products, Barcode Lookup as fallback.
+SYSTEM CONTEXT: Enhance barcode scanning with product information. Integrate with multiple external APIs to maximize product coverage. Open Food Facts for food products, UPC Database for general products.
 
 REQUIREMENTS:
 
@@ -27,14 +27,9 @@ REQUIREMENTS:
    - Requires API key from environment
    - Parse response for product title, brand, description, images
    - Handle rate limits (100 requests/day free tier)
-5. Barcode Lookup Client: Implement client for api.barcodelookup.com:
-   - GET /v3/products?barcode={barcode}&key={api_key}
-   - Requires API key from environment
-   - Parse response for product name, manufacturer, category
-   - Handle rate limits (50 requests/day free tier)
-6. Error Handling: Handle network errors, timeouts, API errors, rate limits
-7. Response Normalization: Create common ProductInfo interface
-8. Environment Configuration: Add API keys to .env files
+5. Error Handling: Handle network errors, timeouts, API errors, rate limits
+6. Response Normalization: Create common ProductInfo interface
+7. Environment Configuration: Add API keys to .env files
 
 CONSTRAINTS:
 - Respect API rate limits
@@ -49,14 +44,13 @@ INTEGRATION POINTS:
 TESTING REQUIREMENTS:
 1. Open Food Facts client fetches data
 2. UPC Database client works with API key
-3. Barcode Lookup client works with API key
-4. All clients handle "not found" correctly
-5. Timeout handling works
-6. Rate limit errors handled
-7. Response normalization works
+3. All clients handle "not found" correctly
+4. Timeout handling works
+5. Rate limit errors handled
+6. Response normalization works
 
 ACCEPTANCE CRITERIA:
-- ✅ All three API clients implemented
+- ✅ All two API clients implemented
 - ✅ API keys configured from environment
 - ✅ Response normalization working
 - ✅ Error handling comprehensive
@@ -74,11 +68,10 @@ DELIVERABLES:
 - ProductLookupModule
 - Open Food Facts client
 - UPC Database client
-- Barcode Lookup client
 - ProductInfo interface
 - Error handling logic
 
-SUCCESS METRIC: All three external APIs successfully queried with proper error handling and response normalization.
+SUCCESS METRIC: All external APIs successfully queried with proper error handling and response normalization.
 ```
 
 ---
@@ -97,7 +90,6 @@ REQUIREMENTS:
 3. Cascade Fallback: Try APIs in order:
    - First: Open Food Facts (free, unlimited)
    - Second: UPC Database (if OFF returns nothing)
-   - Third: Barcode Lookup (if UPC returns nothing)
 4. Product Cache: Store successful lookups in Redis:
    - Key: product:{barcode}
    - Value: JSON stringified ProductInfo
@@ -107,13 +99,13 @@ REQUIREMENTS:
    - Value: "NOT_FOUND"
    - TTL: 24 hours (86,400 seconds)
 6. Daily API Usage Counter: Implement in Redis:
-   - Keys: api:usage:upc:{YYYY-MM-DD} and api:usage:barcode:{YYYY-MM-DD}
+   - Keys: api:usage:upc:{YYYY-MM-DD}
    - Increment on each API call
    - Set expiry to midnight UTC (automatic reset)
    - Use INCR command for atomic increment
 7. Usage Check: Before calling paid APIs:
    - Check counter value
-   - Skip API call if limit reached (100 for UPC, 50 for Barcode)
+   - Skip API call if limit reached (100 for UPC)
    - Return cached data or "limit reached" error
 8. Statistics: Track cache hit rate, API call counts
 

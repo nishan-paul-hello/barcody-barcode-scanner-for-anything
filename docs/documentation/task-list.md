@@ -1305,7 +1305,6 @@
 - [ ] Create `ProductLookupModule`
 - [ ] Implement Open Food Facts client
 - [ ] Implement UPC Database client
-- [ ] Implement Barcode Lookup client
 - [ ] Add API key configuration from env
 - [ ] Test: All API clients work
 
@@ -1327,7 +1326,7 @@
   - Increment on each API call
   - Set expiry to midnight UTC (automatic reset)
 - [ ] Check counter before making API calls
-- [ ] Skip API call if daily limit reached (100 for UPC, 50 for Barcode Lookup)
+- [ ] Skip API call if daily limit reached (100 for UPC)
 - [ ] Test: Cache hit rate >90%
 - [ ] Test: Daily counter increments correctly
 - [ ] Test: Counter resets at midnight UTC
@@ -1857,7 +1856,7 @@
   - Create .env file with prompts for:
     - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
     - JWT_SECRET (auto-generate)
-    - UPC_DATABASE_API_KEY, BARCODE_LOOKUP_API_KEY (optional)
+    - UPC_DATABASE_API_KEY (optional)
   - Download docker-compose.yml from GitHub
   - Start services with docker-compose up -d
   - Display success message with URLs (web, API, Tailscale setup)

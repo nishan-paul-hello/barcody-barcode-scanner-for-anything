@@ -622,9 +622,7 @@ graph LR
     API1 -->|Found| SAVE[Save to Cache]
     API1 -->|Not Found| API2[UPC Database]
     API2 -->|Found| SAVE
-    API2 -->|Not Found| API3[Barcode Lookup]
-    API3 -->|Found| SAVE
-    API3 -->|Not Found| BASIC[Return Basic Barcode Info]
+    API2 -->|Not Found| BASIC[Return Basic Barcode Info]
     SAVE --> RETURN
 ```
 
@@ -634,7 +632,6 @@ graph LR
 | ------------------- | --------- | ----------- | ----------------- | ---------------------- |
 | **Open Food Facts** | Free      | Unlimited   | 2M+ food products | Primary for food items |
 | **UPC Database**    | Free tier | 100 req/day | General products  | Secondary fallback     |
-| **Barcode Lookup**  | Free tier | 50 req/day  | General products  | Tertiary fallback      |
 
 **API Keys Setup:**
 
@@ -672,16 +669,7 @@ const lookupProduct = async (barcode: string) => {
     }
   }
 
-  // 4. Try Barcode Lookup (50/day limit)
-  if (dailyBLCount < 50) {
-    const blData = await barcodeLookup.lookup(barcode);
-    if (blData) {
-      await cache.set(barcode, blData, TTL_30_DAYS);
-      return blData;
-    }
-  }
-
-  // 5. Return basic barcode info
+  // 4. Return basic barcode info
   return { barcode, type: detectType(barcode), found: false };
 };
 ```
@@ -722,7 +710,7 @@ interface ProductInfo {
   price?: number;
 
   // Metadata
-  source: 'openfoodfacts' | 'upcdatabase' | 'barcodelookup' | 'cache';
+  source: 'openfoodfacts' | 'upcdatabase' | 'cache';
   lastUpdated: string;
 }
 ```
@@ -991,7 +979,6 @@ REDIS_URL=redis://redis:6379
 
 # Product Lookup API Keys (Optional - get from respective services)
 UPC_DATABASE_API_KEY=your_upc_key_here
-BARCODE_LOOKUP_API_KEY=your_barcode_lookup_key_here
 EOF
 
 # Download docker-compose.yml
