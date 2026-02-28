@@ -15,46 +15,34 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const isHomePage = pathname === '/';
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#040405] text-white selection:bg-[#00ffe7]/30 selection:text-[#00ffe7]">
-      {/* Premium Background System - Consistent across all pages */}
+    <div className="relative flex min-h-screen flex-col bg-[#0d0d0d] text-zinc-100 selection:bg-white/10 selection:text-white">
+      {/* ChatGPT-inspired Minimal Background System */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        {/* Soft Ambient Core - prevents 'too dark' feeling in empty zones */}
-        <div className="absolute top-1/2 left-1/2 h-[120vw] w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.02)_0%,transparent_70%)]" />
+        {/* Soft Ambient Core - prevents 'dead' black feel */}
+        <div className="absolute top-1/2 left-1/2 h-[100vw] w-[100vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.015)_0%,transparent_70%)]" />
 
-        {/* Animated Background Orbs - Distributed for uniform brightness */}
+        {/* Very Subtle Neutral Glows - Top Left */}
         <motion.div
           animate={{
-            x: [0, 150, 0],
-            y: [0, 100, 0],
-            scale: [1, 1.2, 1],
+            x: [0, 80, 0],
+            y: [0, 40, 0],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-[10%] -left-[10%] h-[70%] w-[70%] rounded-full bg-cyan-500/15 blur-[160px]"
+          className="absolute -top-[15%] -left-[10%] h-[60%] w-[60%] rounded-full bg-white/[0.03] blur-[140px]"
         />
+
+        {/* Very Subtle Neutral Glows - Bottom Right */}
         <motion.div
           animate={{
-            x: [0, -120, 0],
-            y: [0, 150, 0],
-            scale: [1, 1.1, 1],
+            x: [0, -60, 0],
+            y: [0, -30, 0],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-[15%] -right-[15%] h-[60%] w-[60%] rounded-full bg-emerald-500/12 blur-[160px]"
-        />
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -80, 0],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          className="absolute right-[10%] -bottom-[15%] h-[55%] w-[55%] rounded-full bg-blue-500/10 blur-[160px]"
+          className="absolute -right-[10%] -bottom-[15%] h-[50%] w-[50%] rounded-full bg-slate-500/[0.02] blur-[140px]"
         />
 
-        {/* Noise overlay */}
-        <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.2] brightness-125 contrast-125" />
-
-        {/* Strategic Vignette - subtle anchoring */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.4)_100%)]" />
+        {/* Premium Noise Overlay for Texture */}
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay brightness-125 contrast-125" />
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col">
