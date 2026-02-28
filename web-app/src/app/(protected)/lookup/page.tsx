@@ -155,16 +155,16 @@ export default function GlobalLookupPage() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mb-12 flex flex-col items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/5 p-8 shadow-2xl shadow-cyan-500/5 backdrop-blur-xl sm:flex-row"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
           <div className="relative w-full max-w-md">
             <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-white/30" />
             <Input
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
-              placeholder="Enter Barcode (UPC/EAN)..."
+              placeholder="Enter Barcode"
               className="h-14 border-white/10 bg-white/5 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:ring-0"
               onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
             />
