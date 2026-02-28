@@ -206,9 +206,9 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                     </DropdownMenuItem>
 
                     <DropdownMenuItem className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-red-500/5 focus:bg-red-500/5">
-                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-red-500/20 to-orange-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-red-400/50">
-                        <Trash2 className="h-5 w-5 text-red-500 transition-transform duration-300" />
-                        <div className="absolute inset-0 bg-red-400 opacity-0 blur-xl transition-opacity group-hover:opacity-20" />
+                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-red-400/50">
+                        <Trash2 className="h-5 w-5 text-red-400 transition-transform duration-300" />
+                        <div className="absolute inset-0 bg-red-400 opacity-0 blur-xl transition-opacity group-hover:opacity-30" />
                       </div>
                       <div className="flex flex-col gap-0.5">
                         <span className="text-[14px] font-semibold tracking-tight text-white/70 transition-colors group-hover:text-red-400">
