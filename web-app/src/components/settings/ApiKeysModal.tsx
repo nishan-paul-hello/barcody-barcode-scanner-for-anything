@@ -7,23 +7,22 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { useApiKeys, useUpdateApiKeys } from '@/hooks/use-api-keys';
 import { cn } from '@/lib/utils';
 import {
-  Database,
-  Zap,
-  X,
   ExternalLink,
   Copy,
   Check,
-  Trash2,
   KeyRound,
   FlaskConical,
   Search,
+  Database,
+  Zap,
+  X,
+  Loader2,
+  Trash2,
   Key,
   type LucideIcon,
 } from 'lucide-react';
@@ -67,30 +66,30 @@ const ApiKeyInput = ({
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative flex flex-col gap-6 rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-white/10 hover:bg-white/[0.04]"
+      className="group relative flex flex-col gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-5 transition-all hover:border-white/10 hover:bg-white/[0.04]"
     >
-      <div className="flex items-center justify-between gap-8">
-        <div className="flex min-w-0 flex-1 items-center gap-6">
+      <div className="flex items-center justify-between gap-6">
+        <div className="flex min-w-0 flex-1 items-center gap-4">
           <div
             className={cn(
-              'flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-1 transition-all group-hover:scale-110',
+              'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-all group-hover:scale-110',
               color.replace('text-', 'bg-').replace('-400', '/10'),
               color.replace('text-', 'ring-').replace('-400', '/20')
             )}
           >
-            <Icon className={cn('h-7 w-7', color)} />
+            <Icon className={cn('h-5 w-5', color)} />
           </div>
           <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <h3 className="text-lg font-bold tracking-tight whitespace-nowrap text-white">
+            <div className="flex items-center gap-3">
+              <h3 className="text-base font-bold tracking-tight whitespace-nowrap text-white">
                 {label}
               </h3>
               {isSet ? (
-                <span className="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-[9px] font-black tracking-widest whitespace-nowrap text-green-400 uppercase ring-1 ring-green-500/20">
+                <span className="inline-flex items-center rounded-full bg-green-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide whitespace-nowrap text-green-400 uppercase ring-1 ring-green-500/20">
                   Configured
                 </span>
               ) : (
-                <span className="inline-flex items-center rounded-full bg-white/5 px-2.5 py-0.5 text-[9px] font-black tracking-widest whitespace-nowrap text-white/20 uppercase ring-1 ring-white/10">
+                <span className="inline-flex items-center rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold tracking-wide whitespace-nowrap text-white/20 uppercase ring-1 ring-white/10">
                   Not Set
                 </span>
               )}
@@ -99,7 +98,7 @@ const ApiKeyInput = ({
               <Link
                 href={link}
                 target="_blank"
-                className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/5 bg-white/5 px-3 py-1.5 text-[9px] font-black tracking-widest whitespace-nowrap text-white/40 transition-all hover:bg-white/10 hover:text-white"
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-[10px] font-bold tracking-wide whitespace-nowrap text-white/40 transition-all hover:bg-white/10 hover:text-white"
               >
                 GET KEY <ExternalLink className="h-3 w-3" />
               </Link>
@@ -112,7 +111,7 @@ const ApiKeyInput = ({
         <Input
           type="password"
           placeholder={placeholder}
-          className="h-12 rounded-xl border-white/5 bg-white/5 px-4 font-mono text-xs transition-all focus:border-white/10 focus:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-white/10"
+          className="h-10 rounded-lg border-white/5 bg-white/5 px-3 font-mono text-xs transition-all focus:border-white/10 focus:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-white/10"
           value={value}
           onChange={(e) => setter(e.target.value)}
         />
@@ -214,32 +213,32 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-[0_0_100px_rgba(0,0,0,0.5)] sm:max-w-2xl sm:rounded-[32px]"
+        className="overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-[0_0_100px_rgba(0,0,0,0.5)] sm:max-w-2xl sm:rounded-3xl"
       >
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-violet-600/10 blur-[120px]" />
         <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cyan-600/10 blur-[120px]" />
 
         <div className="relative flex h-[85vh] flex-col sm:h-auto sm:max-h-[85vh]">
           {/* Header */}
-          <div className="flex items-start justify-between p-8 pb-4 sm:p-10 sm:pb-6">
-            <div className="flex items-center gap-5">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all hover:scale-110">
-                <KeyRound className="h-7 w-7 text-violet-400" />
+          <div className="flex items-start justify-between p-6 pb-4 sm:p-7 sm:pb-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all hover:scale-110">
+                <KeyRound className="h-5 w-5 text-violet-400" />
               </div>
-              <div>
-                <DialogTitle className="text-3xl font-black tracking-tight text-white sm:text-4xl">
+              <div className="flex flex-col gap-0.5">
+                <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   Connect Pro Sources
                 </DialogTitle>
-                <DialogDescription className="mt-1 text-sm font-semibold text-white/30 sm:text-base">
+                <DialogDescription className="text-sm font-medium text-white/40">
                   Unlock limitless scanning data with your own API keys.
                 </DialogDescription>
               </div>
             </div>
             <button
               onClick={() => onOpenChange(false)}
-              className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/5 transition-all hover:bg-white/10 active:scale-95"
+              className="group flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
             >
-              <X className="h-5 w-5 text-white/30 transition-colors group-hover:text-white" />
+              <X className="h-5 w-5 text-white/40 transition-colors group-hover:text-white" />
             </button>
           </div>
 
@@ -319,46 +318,37 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           </div>
 
           {/* Footer */}
-          <DialogFooter className="sticky bottom-0 mt-auto flex flex-col gap-4 border-t border-white/5 bg-[#0a0a0a]/80 p-8 backdrop-blur-xl sm:flex-row sm:justify-end sm:px-10">
-            <Button
-              variant="ghost"
+          <div className="flex items-center justify-between border-t border-white/5 bg-white/[0.02] px-8 py-4 sm:px-10">
+            <button
               onClick={() => onOpenChange(false)}
-              disabled={updateMutation.isPending}
-              className="h-14 cursor-pointer rounded-2xl px-8 font-black tracking-widest text-white/40 uppercase transition-all hover:bg-white/5 hover:text-white"
+              className="text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
             >
               Dismiss
-            </Button>
-            <Button
+            </button>
+
+            <button
               onClick={handleSave}
-              disabled={updateMutation.isPending || !hasChanges}
+              disabled={!hasChanges || updateMutation.isPending}
               className={cn(
-                'group relative h-14 min-w-[200px] overflow-hidden rounded-2xl border px-8 font-black tracking-widest uppercase transition-all duration-500',
+                'group flex h-9 items-center gap-2 rounded-lg px-5 text-[10px] font-bold tracking-widest uppercase transition-all',
                 hasChanges
-                  ? 'cursor-pointer border-cyan-500/20 bg-cyan-500/10 text-cyan-400 hover:border-cyan-400/50 hover:bg-cyan-400 hover:text-black hover:shadow-[0_0_40px_rgba(34,211,238,0.3)] active:scale-95'
-                  : 'cursor-not-allowed border-white/5 bg-white/5 text-white/10 shadow-none'
+                  ? 'bg-white text-black hover:scale-105 active:scale-95'
+                  : 'bg-white/5 text-white/20'
               )}
             >
               {updateMutation.isPending ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                >
-                  <Zap className="h-5 w-5" />
-                </motion.div>
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-3">
-                  <Zap
-                    className={cn(
-                      'h-5 w-5 transition-transform duration-300',
-                      hasChanges &&
-                        'group-hover:scale-125 group-hover:rotate-12'
-                    )}
-                  />
-                  Sync All Keys
-                </div>
+                <Zap
+                  className={cn(
+                    'h-3.5 w-3.5 transition-transform duration-300',
+                    hasChanges && 'group-hover:scale-125 group-hover:rotate-12'
+                  )}
+                />
               )}
-            </Button>
-          </DialogFooter>
+              Save
+            </button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
