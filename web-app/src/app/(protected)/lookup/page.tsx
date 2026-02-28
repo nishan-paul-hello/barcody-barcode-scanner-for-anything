@@ -165,7 +165,7 @@ export default function GlobalLookupPage() {
             size="lg"
             className="h-14 w-full cursor-pointer bg-cyan-500 px-10 font-bold text-black shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 active:scale-95 sm:w-auto"
           >
-            Start Global Lookup
+            Lookup
           </Button>
         </motion.div>
 
