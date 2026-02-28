@@ -186,58 +186,40 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
               )}
             </div>
 
-            {/* Thumbnail Row */}
-            {thumbnailCandidates.length > 0 && (
-              <div className="flex min-h-[56px] gap-2 overflow-x-auto pb-2">
-                {/*
-                  Hidden preloaders — display:none removes them from layout entirely.
-                  They silently load/fail in the background.
-                  No visual footprint whatsoever.
-                */}
-                {thumbnailCandidates.map((img) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={`pre-${img}`}
-                    src={img}
-                    alt=""
-                    aria-hidden
-                    style={{ display: 'none' }}
-                    onLoad={() => confirmThumbnail(img)}
-                    onError={() => markBroken(img)}
-                  />
-                ))}
+            {/* Silent preloaders — fully outside the visible layout */}
+            <div aria-hidden style={{ display: 'none' }}>
+              {thumbnailCandidates.map((img) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={`pre-${img}`}
+                  src={img}
+                  alt=""
+                  onLoad={() => confirmThumbnail(img)}
+                  onError={() => markBroken(img)}
+                />
+              ))}
+            </div>
 
-                {/*
-                  Visible tiles — ONLY rendered for URLs in confirmedThumbnails.
-                  A tile can only exist here after its image successfully loaded.
-                  Therefore: zero chance of a box appearing without a valid image.
-                */}
-                <AnimatePresence>
-                  {confirmedThumbnails
-                    .filter((img) => !brokenImages.has(img))
-                    .map((img) => (
-                      <motion.div
-                        key={img}
-                        initial={{ opacity: 0, scale: 0.7 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.7 }}
-                        transition={{
-                          type: 'spring',
-                          damping: 18,
-                          stiffness: 180,
-                        }}
-                        className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={img}
-                          alt={title}
-                          className="h-full w-full object-contain p-1"
-                          onError={() => markBroken(img)}
-                        />
-                      </motion.div>
-                    ))}
-                </AnimatePresence>
+            {/* Visible thumbnail row — only if we have confirmed valid images */}
+            {confirmedThumbnails.filter((img) => !brokenImages.has(img))
+              .length > 0 && (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {confirmedThumbnails
+                  .filter((img) => !brokenImages.has(img))
+                  .map((img) => (
+                    <div
+                      key={img}
+                      className="h-14 w-14 shrink-0 overflow-hidden rounded-lg"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={img}
+                        alt={title}
+                        className="h-full w-full object-cover"
+                        onError={() => markBroken(img)}
+                      />
+                    </div>
+                  ))}
               </div>
             )}
           </div>
