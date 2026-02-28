@@ -280,9 +280,6 @@ export default function HistoryPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 text-center"
       >
-        <div className="mb-4 inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/5 px-4 py-1.5 text-xs font-bold tracking-widest text-cyan-400 uppercase">
-          Activity Log
-        </div>
         <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
           SCAN{' '}
           <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
