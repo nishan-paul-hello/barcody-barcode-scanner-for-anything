@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-
-import { useUIStore } from '@/stores/uiStore';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,9 +11,9 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
   const { isAuthenticated, isAdmin, isLoading } = useAuthStore();
-  const { openLoginModal } = useUIStore();
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!isLoading) {
@@ -28,11 +26,16 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
           router.replace('/');
           return;
         }
-        router.push('/');
-        openLoginModal(pathname);
+
+        const currentUrl =
+          pathname +
+          (searchParams.toString() ? `?${searchParams.toString()}` : '');
+        const redirectPath = `/?login=true&redirect=${encodeURIComponent(currentUrl)}`;
+
+        router.push(redirectPath);
       }
     }
-  }, [isAuthenticated, isAdmin, isLoading, openLoginModal, router, pathname]);
+  }, [isAuthenticated, isAdmin, isLoading, router, pathname, searchParams]);
 
   if (isLoading || !isAuthenticated || !isAdmin) {
     return null;

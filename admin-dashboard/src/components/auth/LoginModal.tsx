@@ -47,6 +47,8 @@ export const LoginModal = () => {
 
       if (pendingRedirectPath) {
         router.push(pendingRedirectPath);
+      } else if (window.location.search.includes('login=true')) {
+        router.replace(window.location.pathname);
       }
 
       closeLoginModal();

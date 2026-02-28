@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 };
 
 import { LoginModal } from '@/components/auth/LoginModal';
+import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler';
 
 export default function RootLayout({
   children,
@@ -29,6 +30,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <LoginModal />
+          <AuthRedirectHandler />
         </Providers>
       </body>
     </html>
