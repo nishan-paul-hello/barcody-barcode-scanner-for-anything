@@ -390,7 +390,14 @@ export default function GlobalLookupPage() {
                       ) : res.data ? (
                         <div className="leading-relaxed selection:bg-cyan-500/30">
                           {apiItem.id === 'upcitemdb' ? (
-                            <UPCitemdbPresenter data={res.data} />
+                            <UPCitemdbPresenter
+                              key={
+                                res.data?.items?.[0]?.upc ||
+                                res.data?.items?.[0]?.ean ||
+                                'upcitemdb'
+                              }
+                              data={res.data}
+                            />
                           ) : (
                             <RawDataPresenter data={res.data} />
                           )}

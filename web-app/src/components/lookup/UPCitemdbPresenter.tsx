@@ -1,6 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import {
   ShoppingBag,
   Tag,
@@ -20,8 +22,34 @@ interface UPCitemdbPresenterProps {
   data: any;
 }
 
+const ProductPlaceholder = () => (
+  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-br from-white/[0.02] to-white/[0.08]">
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="h-32 w-32 rounded-full bg-cyan-500/10 blur-[60px]" />
+    </div>
+    <div className="relative flex flex-col items-center gap-4 text-white/10">
+      <div className="rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-xl">
+        <ImageIcon className="h-12 w-12 opacity-20" />
+      </div>
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-30">
+          No Visual Found
+        </span>
+        <div className="h-px w-8 bg-white/10" />
+      </div>
+    </div>
+  </div>
+);
+
 export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
-  if (!data?.items || data.items.length === 0) {
+  const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
+  const [mainReady, setMainReady] = useState(false);
+  // Only URLs confirmed successfully loaded appear here
+  const [confirmedThumbnails, setConfirmedThumbnails] = useState<string[]>([]);
+
+  const item = data?.items?.[0];
+
+  if (!item) {
     return (
       <div className="flex h-40 flex-col items-center justify-center gap-3 rounded-3xl border border-white/5 bg-white/[0.02] text-white/20">
         <Package className="h-10 w-10 opacity-20" />
@@ -30,7 +58,6 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
     );
   }
 
-  const item = data.items[0];
   const {
     title,
     brand,
@@ -52,16 +79,38 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
     offers = [],
   } = item;
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+  const markBroken = (url: string) => {
+    setBrokenImages((prev) => {
+      const next = new Set(prev);
+      next.add(url);
+      return next;
+    });
   };
 
+  const confirmThumbnail = (url: string) => {
+    setConfirmedThumbnails((prev) =>
+      prev.includes(url) ? prev : [...prev, url]
+    );
+  };
+
+  // All unique, non-empty, non-broken image URLs from the API
+  const allImages: string[] = Array.from(
+    new Set(
+      (images as string[]).filter(
+        (url) =>
+          typeof url === 'string' && url.trim() !== '' && !brokenImages.has(url)
+      )
+    )
+  );
+
+  const mainImage = allImages[0] ?? null;
+  // Candidate URLs for thumbnails (excluding main)
+  const thumbnailCandidates = allImages.slice(1, 12);
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
   const itemAnim = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
@@ -74,47 +123,126 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
       animate="show"
       className="space-y-6"
     >
-      {/* 1. Hero Section: Image & Main Info */}
+      {/* Hero */}
       <motion.div
         variants={itemAnim}
         className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur-xl"
       >
         <div className="flex flex-col gap-8 md:flex-row">
-          {/* Image Gallery / Main Image */}
+          {/* Image Column */}
           <div className="flex shrink-0 flex-col gap-4">
+            {/* Main Image Box */}
             <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/40 md:w-64">
-              {images && images.length > 0 ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={images[0]}
-                  alt={title}
-                  className="h-full w-full object-contain p-4"
-                />
+              {mainImage ? (
+                <>
+                  {/* Silent preloader for main image */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={mainImage}
+                    alt=""
+                    aria-hidden
+                    style={{ display: 'none' }}
+                    onLoad={() => setMainReady(true)}
+                    onError={() => markBroken(mainImage)}
+                  />
+
+                  {/* Placeholder until main image confirmed */}
+                  <AnimatePresence>
+                    {!mainReady && (
+                      <motion.div
+                        key="main-ph"
+                        initial={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-10"
+                      >
+                        <ProductPlaceholder />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Confirmed main image */}
+                  <AnimatePresence>
+                    {mainReady && (
+                      <motion.div
+                        key="main-img"
+                        initial={{ opacity: 0, scale: 0.92 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={mainImage}
+                          alt={title}
+                          fill
+                          className="object-contain p-4"
+                          unoptimized
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
               ) : (
-                <div className="flex h-full w-full items-center justify-center">
-                  <ImageIcon className="h-12 w-12 text-white/10" />
-                </div>
+                <ProductPlaceholder />
               )}
             </div>
-            {images.length > 1 && (
-              <div className="scrollbar-none flex gap-2 overflow-x-auto pb-2">
-                {images.slice(1, 5).map((img: string, idx: number) => (
-                  <div
-                    key={idx}
-                    className="h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-white/5 bg-black/20"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={img}
-                      alt={`${title} ${idx}`}
-                      className="h-full w-full object-contain p-1"
-                    />
-                  </div>
+
+            {/* Thumbnail Row */}
+            {thumbnailCandidates.length > 0 && (
+              <div className="flex min-h-[56px] gap-2 overflow-x-auto pb-2">
+                {/*
+                  Hidden preloaders — display:none removes them from layout entirely.
+                  They silently load/fail in the background.
+                  No visual footprint whatsoever.
+                */}
+                {thumbnailCandidates.map((img) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`pre-${img}`}
+                    src={img}
+                    alt=""
+                    aria-hidden
+                    style={{ display: 'none' }}
+                    onLoad={() => confirmThumbnail(img)}
+                    onError={() => markBroken(img)}
+                  />
                 ))}
+
+                {/*
+                  Visible tiles — ONLY rendered for URLs in confirmedThumbnails.
+                  A tile can only exist here after its image successfully loaded.
+                  Therefore: zero chance of a box appearing without a valid image.
+                */}
+                <AnimatePresence>
+                  {confirmedThumbnails
+                    .filter((img) => !brokenImages.has(img))
+                    .map((img) => (
+                      <motion.div
+                        key={img}
+                        initial={{ opacity: 0, scale: 0.7 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.7 }}
+                        transition={{
+                          type: 'spring',
+                          damping: 18,
+                          stiffness: 180,
+                        }}
+                        className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img}
+                          alt={title}
+                          className="h-full w-full object-contain p-1"
+                          onError={() => markBroken(img)}
+                        />
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
               </div>
             )}
           </div>
 
+          {/* Info Column */}
           <div className="flex flex-1 flex-col justify-between py-2">
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
@@ -153,7 +281,6 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
               </div>
             </div>
 
-            {/* Price Stats */}
             {(lowest_recorded_price || highest_recorded_price) && (
               <div className="mt-8 flex flex-wrap gap-4 rounded-2xl bg-white/[0.02] p-4 ring-1 ring-white/5">
                 <div className="flex flex-col gap-1">
@@ -182,7 +309,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
       </motion.div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* 2. Description & Specs */}
+        {/* Description & Specs */}
         <motion.div variants={itemAnim} className="space-y-6">
           <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
             <h3 className="mb-4 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
@@ -259,64 +386,61 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
           )}
         </motion.div>
 
-        {/* 3. Offers / Retailers */}
+        {/* Offers */}
         <motion.div variants={itemAnim}>
           <div className="h-full rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
             <h3 className="mb-6 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
               <ShoppingBag className="h-4 w-4 text-green-400" />
               Live Retailer Offers
             </h3>
-
             <div className="space-y-3">
               {offers && offers.length > 0 ? (
-                offers
-                  .slice(0, 6)
-                  .map(
-                    (
-                      offer: {
-                        link: string;
-                        merchant: string;
-                        condition?: string;
-                        currency?: string;
-                        price: number | string;
-                      },
-                      idx: number
-                    ) => (
-                      <a
-                        key={idx}
-                        href={offer.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/20 group-hover:text-cyan-400">
-                            <DollarSign className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-white/90">
-                              {offer.merchant}
-                            </p>
-                            <p className="text-xs text-white/40">
-                              {offer.condition || 'New'}
-                            </p>
-                          </div>
+                offers.slice(0, 6).map(
+                  (
+                    offer: {
+                      link: string;
+                      merchant: string;
+                      condition?: string;
+                      currency?: string;
+                      price: number | string;
+                    },
+                    idx: number
+                  ) => (
+                    <a
+                      key={idx}
+                      href={offer.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/20 group-hover:text-cyan-400">
+                          <DollarSign className="h-5 w-5" />
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-right">
-                            <p className="text-sm font-black text-white">
-                              {offer.currency || currency || '$'}
-                              {offer.price}
-                            </p>
-                            <p className="text-[10px] tracking-tighter text-white/20 uppercase">
-                              View Store
-                            </p>
-                          </div>
-                          <ArrowUpRight className="h-4 w-4 text-white/10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
+                        <div>
+                          <p className="text-sm font-bold text-white/90">
+                            {offer.merchant}
+                          </p>
+                          <p className="text-xs text-white/40">
+                            {offer.condition || 'New'}
+                          </p>
                         </div>
-                      </a>
-                    )
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="text-sm font-black text-white">
+                            {offer.currency || currency || '$'}
+                            {offer.price}
+                          </p>
+                          <p className="text-[10px] tracking-tighter text-white/20 uppercase">
+                            View Store
+                          </p>
+                        </div>
+                        <ArrowUpRight className="h-4 w-4 text-white/10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
+                      </div>
+                    </a>
                   )
+                )
               ) : (
                 <div className="flex h-40 flex-col items-center justify-center gap-2 text-center text-white/10">
                   <ExternalLink className="h-8 w-8 opacity-20" />
@@ -324,7 +448,6 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                 </div>
               )}
             </div>
-
             {offers.length > 6 && (
               <p className="mt-4 text-center text-[10px] font-bold tracking-widest text-white/20 uppercase">
                 + {offers.length - 6} More Retailers Available
