@@ -44,8 +44,8 @@ const ProductPlaceholder = () => (
 export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
   const [mainReady, setMainReady] = useState(false);
-  // Only URLs confirmed successfully loaded appear here
   const [confirmedThumbnails, setConfirmedThumbnails] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const item = data?.items?.[0];
 
@@ -106,6 +106,8 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   const mainImage = allImages[0] ?? null;
   // Candidate URLs for thumbnails (excluding main)
   const thumbnailCandidates = allImages.slice(1, 12);
+  // The image shown in the main box — default to mainImage, overridden by user click
+  const displayImage = selectedImage ?? mainImage;
 
   const container = {
     hidden: { opacity: 0 },
@@ -160,21 +162,22 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     )}
                   </AnimatePresence>
 
-                  {/* Confirmed main image */}
-                  <AnimatePresence>
-                    {mainReady && (
+                  {/* Confirmed main image — crossfades when selectedImage changes */}
+                  <AnimatePresence mode="wait">
+                    {mainReady && displayImage && (
                       <motion.div
-                        key="main-img"
-                        initial={{ opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                        key={displayImage}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
                         className="absolute inset-0"
                       >
                         <Image
-                          src={mainImage}
+                          src={displayImage}
                           alt={title}
                           fill
-                          className="object-contain p-4"
+                          className="object-cover"
                           unoptimized
                         />
                       </motion.div>
@@ -204,12 +207,38 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
             {confirmedThumbnails.filter((img) => !brokenImages.has(img))
               .length > 0 && (
               <div className="flex gap-2 overflow-x-auto pb-1">
+                {/* First tile: always show the mainImage so user can return to it */}
+                {mainImage && mainReady && (
+                  <button
+                    key={mainImage}
+                    onClick={() => setSelectedImage(mainImage)}
+                    className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg transition-all duration-200 ${
+                      (selectedImage ?? mainImage) === mainImage
+                        ? 'ring-2 ring-cyan-400 ring-offset-1 ring-offset-black/50'
+                        : 'opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={mainImage}
+                      alt={title}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                )}
+
+                {/* Rest of confirmed thumbnails */}
                 {confirmedThumbnails
                   .filter((img) => !brokenImages.has(img))
                   .map((img) => (
-                    <div
+                    <button
                       key={img}
-                      className="h-14 w-14 shrink-0 overflow-hidden rounded-lg"
+                      onClick={() => setSelectedImage(img)}
+                      className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg transition-all duration-200 ${
+                        selectedImage === img
+                          ? 'ring-2 ring-cyan-400 ring-offset-1 ring-offset-black/50'
+                          : 'opacity-60 hover:opacity-100'
+                      }`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -218,7 +247,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                         className="h-full w-full object-cover"
                         onError={() => markBroken(img)}
                       />
-                    </div>
+                    </button>
                   ))}
               </div>
             )}
