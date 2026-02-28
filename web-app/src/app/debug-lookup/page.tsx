@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useApiKeys } from '@/hooks/use-api-keys';
 import { useUIStore } from '@/store/useUIStore';
+import { api } from '@/lib/api/client';
 import {
   Search,
   Database,
@@ -65,7 +65,6 @@ const APIS = [
 
 export default function GlobalLookupPage() {
   const [barcode, setBarcode] = useState('');
-  const { data: userKeys } = useApiKeys();
   const setApiKeysModalOpen = useUIStore((state) => state.setApiKeysModalOpen);
 
   const [results, setResults] = useState<ResultsMap>(() => {
@@ -93,48 +92,8 @@ export default function GlobalLookupPage() {
     }));
 
     try {
-      let url = '';
-      const headers: Record<string, string> = {
-        Accept: 'application/json',
-      };
-
-      switch (id) {
-        case 'off':
-          url = `https://world.openfoodfacts.org/api/v2/product/${barcodeInput}.json`;
-          break;
-        case 'obf':
-          url = `https://world.openbeautyfacts.org/api/v2/product/${barcodeInput}.json`;
-          break;
-        case 'usda':
-          if (!userKeys?.usdaFoodDataApiKey)
-            throw new Error('USDA API Key missing');
-          url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${barcodeInput}&api_key=${userKeys.usdaFoodDataApiKey}`;
-          break;
-        case 'upcitemdb':
-          url = `https://api.upcitemdb.com/prod/trial/lookup?upc=${barcodeInput}`;
-          if (userKeys?.upcDatabaseApiKey) {
-            headers['user_key'] = userKeys.upcDatabaseApiKey;
-          }
-          break;
-        case 'barcodeLookup':
-          if (!userKeys?.barcodeLookupApiKey)
-            throw new Error('Barcode Lookup API Key missing');
-          url = `https://api.barcodelookup.com/v3/products?barcode=${barcodeInput}&key=${userKeys.barcodeLookupApiKey}`;
-          break;
-        case 'goUpc':
-          if (!userKeys?.goUpcApiKey) throw new Error('Go-UPC API Key missing');
-          url = `https://api.go-upc.com/v1/code/${barcodeInput}`;
-          headers['Authorization'] = `Bearer ${userKeys.goUpcApiKey}`;
-          break;
-        case 'searchUpc':
-          if (!userKeys?.searchUpcApiKey)
-            throw new Error('SearchUPC API Key missing');
-          url = `https://api.searchupc.com/v1.1/?request_type=product&key=${userKeys.searchUpcApiKey}&upc=${barcodeInput}`;
-          break;
-      }
-
-      const response = await fetch(url, { headers });
-      const data = await response.json();
+      // Use the backend proxy to avoid CORS issues
+      const data = await api.products.getRawLookup(barcodeInput, id);
 
       const endTime = performance.now();
       setResults((prev) => ({
@@ -142,19 +101,19 @@ export default function GlobalLookupPage() {
         [id]: {
           data: data,
           loading: false,
-          error: response.ok ? null : `API Error: ${response.status}`,
+          error: null,
           responseTime: Math.round(endTime - startTime),
         },
       }));
     } catch (err: unknown) {
       const endTime = performance.now();
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const message = err instanceof Error ? err.message : String(err);
       setResults((prev) => ({
         ...prev,
         [id]: {
           data: null,
           loading: false,
-          error: errorMessage || 'Failed to fetch (Check CORS in devtools)',
+          error: message || 'Failed to fetch (Check console)',
           responseTime: Math.round(endTime - startTime),
         },
       }));
@@ -251,8 +210,8 @@ export default function GlobalLookupPage() {
           </div>
 
           <AnimatePresence mode="wait">
-            {APIS.map((api) => {
-              const res = results[api.id] || {
+            {APIS.map((apiItem) => {
+              const res = results[apiItem.id] || {
                 loading: false,
                 data: null,
                 error: null,
@@ -260,12 +219,12 @@ export default function GlobalLookupPage() {
               };
               return (
                 <TabsContent
-                  key={api.id}
-                  value={api.id}
+                  key={apiItem.id}
+                  value={apiItem.id}
                   className="focus-visible:outline-none"
                 >
                   <motion.div
-                    key={api.id}
+                    key={apiItem.id}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -275,8 +234,10 @@ export default function GlobalLookupPage() {
                     <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
                       <div>
                         <h2 className="flex items-center gap-3 text-2xl font-bold text-white">
-                          <api.icon className={`h-6 w-6 ${api.color}`} />
-                          {api.name} Response
+                          <apiItem.icon
+                            className={`h-6 w-6 ${apiItem.color}`}
+                          />
+                          {apiItem.name} Response
                         </h2>
                         <p className="mt-1 text-sm text-white/50">
                           Detailed data trace for barcode:{' '}
@@ -325,14 +286,15 @@ export default function GlobalLookupPage() {
                           <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/20">
                             <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
                             <p className="animate-pulse">
-                              Synthesizing response from {api.name}...
+                              Synthesizing response from {apiItem.name}...
                             </p>
                           </div>
                         ) : res.error ? (
                           <div className="flex h-60 flex-col items-center justify-center gap-4 text-red-400/70">
                             <XCircle className="h-10 w-10" />
                             <p className="text-center font-bold">{res.error}</p>
-                            {res.error.includes('Key missing') ? (
+                            {res.error.toLowerCase().includes('key') ||
+                            res.error.toLowerCase().includes('configure') ? (
                               <div className="flex flex-col items-center gap-4">
                                 <p className="max-w-md text-center text-xs text-white/40">
                                   You need to add your personal API key for this
@@ -350,9 +312,9 @@ export default function GlobalLookupPage() {
                               </div>
                             ) : (
                               <p className="max-w-md text-center text-xs text-white/20">
-                                This might be due to CORS security policies or
-                                an invalid API key. Reference the browser
-                                console for details.
+                                This might be due to a service outage or an
+                                invalid Barcode. Backend proxy is now used to
+                                avoid CORS issues.
                               </p>
                             )}
                           </div>

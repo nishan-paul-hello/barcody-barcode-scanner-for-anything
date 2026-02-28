@@ -37,6 +37,11 @@ export class OpenFoodFactsClient {
     });
   }
 
+  async lookupRaw(barcode: string): Promise<unknown> {
+    const response = await this.axiosInstance.get(`/api/v2/product/${barcode}.json`);
+    return response.data;
+  }
+
   async lookup(barcode: string): Promise<ProductInfo | null> {
     try {
       const response = await this.axiosInstance.get<OFFResponse>(`/api/v0/product/${barcode}.json`);

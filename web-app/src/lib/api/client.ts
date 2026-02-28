@@ -209,6 +209,8 @@ export const api = {
       apiClient
         .post<ProductComparisonResponse>('/products/compare', { barcodes })
         .then((r) => r.data),
+    getRawLookup: (barcode: string, source: string) =>
+      apiClient.get(`/products/${barcode}/raw/${source}`).then((r) => r.data),
   },
 
   // User settings

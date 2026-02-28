@@ -69,6 +69,22 @@ export class ProductsController {
     };
   }
 
+  @Get(':barcode/raw/:source')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get raw data from a specific API source (Proxy)' })
+  @ApiParam({ name: 'barcode', description: 'Barcode to lookup' })
+  @ApiParam({
+    name: 'source',
+    description: 'API source (off, obf, usda, upcitemdb, barcodeLookup, goUpc, searchUpc)',
+  })
+  async getRawLookup(
+    @Param('barcode') barcode: string,
+    @Param('source') source: string,
+    @CurrentUser('sub') userId: string,
+  ) {
+    return this.productLookupService.globalRawLookup(barcode, source, userId);
+  }
+
   @Post('compare')
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)

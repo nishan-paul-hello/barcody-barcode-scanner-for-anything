@@ -27,6 +27,11 @@ export class UpcDatabaseClient {
     });
   }
 
+  async lookupRaw(barcode: string): Promise<unknown> {
+    const response = await this.axiosInstance.get(`/prod/trial/lookup?upc=${barcode}`);
+    return response.data;
+  }
+
   async lookup(barcode: string): Promise<ProductInfo | null> {
     try {
       const response = await this.axiosInstance.get(`/prod/trial/lookup?upc=${barcode}`);
