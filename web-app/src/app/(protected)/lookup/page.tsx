@@ -140,14 +140,14 @@ export default function GlobalLookupPage() {
 
   return (
     <>
-      <main className="container mx-auto max-w-6xl px-4 pt-12 pb-24">
+      <main className="container mx-auto max-w-6xl px-4 pt-0 pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
           <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
-            GLOBAL{' '}
+            BARCODE{' '}
             <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
               LOOKUP
             </span>

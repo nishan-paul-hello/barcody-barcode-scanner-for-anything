@@ -274,7 +274,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 py-8">
+    <div className="container mx-auto max-w-7xl space-y-6 pt-0 pb-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

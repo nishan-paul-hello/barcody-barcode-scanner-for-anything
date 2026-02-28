@@ -48,7 +48,7 @@ export default function ScanPage() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative container mx-auto max-w-6xl space-y-12 px-4 pt-12 pb-24 sm:px-6 lg:px-8"
+      className="relative container mx-auto max-w-6xl space-y-12 px-4 pt-0 pb-24 sm:px-6 lg:px-8"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}

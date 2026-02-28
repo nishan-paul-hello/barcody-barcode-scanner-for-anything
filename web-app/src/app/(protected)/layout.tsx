@@ -15,7 +15,7 @@ export default function ProtectedLayout({
       <ProtectedRoute>
         <div className="relative flex min-h-screen flex-col bg-[#050505] text-white selection:bg-cyan-500/30">
           <Header />
-          <main className="relative z-10 flex-1">{children}</main>
+          <main className="relative z-10 flex-1 pt-12">{children}</main>
 
           {/* Animated Background Orbs */}
           <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
