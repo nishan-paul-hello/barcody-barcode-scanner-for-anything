@@ -18,6 +18,13 @@ export function AuthInitializer() {
     const handleStorageChange = (event: StorageEvent) => {
       // Key must exactly match the 'name' given in useAuthStore persist configuration
       if (event.key === 'auth-storage') {
+        if (
+          !event.newValue ||
+          !event.newValue.includes('"isAuthenticated":true')
+        ) {
+          sessionStorage.setItem('is_logout_redirect', 'true');
+        }
+
         // Force the store to re-read from localStorage and sync state
         // This will update isAuthenticated across all open tabs
         useAuthStore.persist.rehydrate();
