@@ -77,7 +77,7 @@ export default function LandingPage() {
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-[#050505] pb-8 text-white selection:bg-cyan-500/30">
       <Header />
 
       <main>

@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="relative mx-auto mb-8 w-[95%] max-w-7xl rounded-2xl border border-white/10 bg-black/40 py-8 shadow-2xl shadow-black/50 backdrop-blur-xl">
+    <footer className="relative mx-auto w-[95%] max-w-7xl rounded-2xl border border-white/10 bg-black/40 py-8 shadow-2xl shadow-black/50 backdrop-blur-xl">
       <div className="container mx-auto px-4 sm:px-8">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <p className="text-sm font-medium text-white/60">
