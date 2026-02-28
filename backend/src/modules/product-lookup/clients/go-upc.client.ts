@@ -7,7 +7,7 @@ export class GoUpcClient {
   constructor(apiKey: string) {
     this.apiKey = apiKey;
     this.axiosInstance = axios.create({
-      baseURL: 'https://api.go-upc.com/v1',
+      baseURL: 'https://go-upc.com/api/v1',
       timeout: 10000,
       headers: {
         Authorization: `Bearer ${this.apiKey}`,

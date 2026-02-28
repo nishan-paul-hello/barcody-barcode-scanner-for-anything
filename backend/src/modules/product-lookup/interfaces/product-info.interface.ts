@@ -32,6 +32,6 @@ export interface ProductInfo {
     ingredients?: string;
   };
 
-  source: 'openfoodfacts' | 'upcdatabase' | 'barcodelookup';
+  source: 'openfoodfacts' | 'upcdatabase';
   lastUpdated: Date;
 }

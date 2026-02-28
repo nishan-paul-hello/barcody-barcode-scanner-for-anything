@@ -52,7 +52,6 @@ export class UsersService {
 
   async getApiKeys(userId: string): Promise<{
     upcDatabaseApiKey: string | null;
-    barcodeLookupApiKey: string | null;
     usdaFoodDataApiKey: string | null;
     goUpcApiKey: string | null;
     searchUpcApiKey: string | null;
@@ -63,7 +62,6 @@ export class UsersService {
     }
     return {
       upcDatabaseApiKey: user.upcDatabaseApiKey || null,
-      barcodeLookupApiKey: user.barcodeLookupApiKey || null,
       usdaFoodDataApiKey: user.usdaFoodDataApiKey || null,
       goUpcApiKey: user.goUpcApiKey || null,
       searchUpcApiKey: user.searchUpcApiKey || null,
@@ -74,7 +72,6 @@ export class UsersService {
     userId: string,
     keys: {
       upcDatabaseApiKey?: string;
-      barcodeLookupApiKey?: string;
       usdaFoodDataApiKey?: string;
       goUpcApiKey?: string;
       searchUpcApiKey?: string;
@@ -82,7 +79,6 @@ export class UsersService {
   ): Promise<void> {
     await this.userRepository.update(userId, {
       upcDatabaseApiKey: keys.upcDatabaseApiKey ?? null,
-      barcodeLookupApiKey: keys.barcodeLookupApiKey ?? null,
       usdaFoodDataApiKey: keys.usdaFoodDataApiKey ?? null,
       goUpcApiKey: keys.goUpcApiKey ?? null,
       searchUpcApiKey: keys.searchUpcApiKey ?? null,

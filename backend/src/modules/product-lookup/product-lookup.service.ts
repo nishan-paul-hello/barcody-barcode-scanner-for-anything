@@ -2,7 +2,6 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { RedisService } from '@modules/redis/redis.service';
 import { OpenFoodFactsClient } from '@modules/product-lookup/clients/open-food-facts.client';
 import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.client';
-import { BarcodeLookupClient } from '@modules/product-lookup/clients/barcode-lookup.client';
 import { UsdaFoodDataClient } from '@modules/product-lookup/clients/usda-food-data.client';
 import { GoUpcClient } from '@modules/product-lookup/clients/go-upc.client';
 import { SearchUpcClient } from '@modules/product-lookup/clients/search-upc.client';
@@ -24,7 +23,6 @@ export class ProductLookupService {
 
   // API Limits
   private readonly UPC_LIMIT = 100;
-  private readonly BARCODE_LOOKUP_LIMIT = 50;
 
   constructor(
     private redisService: RedisService,
@@ -58,24 +56,31 @@ export class ProductLookupService {
 
   async globalRawLookup(barcode: string, source: string, userId: string): Promise<unknown> {
     const keys = await this.usersService.getApiKeys(userId);
+    const cleanBarcode = barcode?.trim() || '';
+    if (!cleanBarcode) throw new BadRequestException('Barcode is required');
 
-    switch (source) {
-      case 'off':
-        return this.openFoodFactsClient.lookupRaw(barcode);
-      case 'obf':
-        return this.openBeautyFactsClient.lookupRaw(barcode);
-      case 'usda':
-        return this.proxyUsda(barcode, keys.usdaFoodDataApiKey);
-      case 'upcitemdb':
-        return new UpcDatabaseClient(keys.upcDatabaseApiKey || 'trial').lookupRaw(barcode);
-      case 'barcodeLookup':
-        return this.proxyBarcodeLookup(barcode, keys.barcodeLookupApiKey);
-      case 'goUpc':
-        return this.proxyGoUpc(barcode, keys.goUpcApiKey);
-      case 'searchUpc':
-        return this.proxySearchUpc(barcode, keys.searchUpcApiKey);
-      default:
-        throw new BadRequestException(`Unknown source: ${source}`);
+    try {
+      switch (source) {
+        case 'off':
+          return this.openFoodFactsClient.lookupRaw(cleanBarcode);
+        case 'obf':
+          return this.openBeautyFactsClient.lookupRaw(cleanBarcode);
+        case 'usda':
+          return this.proxyUsda(cleanBarcode, keys.usdaFoodDataApiKey);
+        case 'upcitemdb':
+          return new UpcDatabaseClient(keys.upcDatabaseApiKey || 'trial').lookupRaw(cleanBarcode);
+        case 'goUpc':
+          return this.proxyGoUpc(cleanBarcode, keys.goUpcApiKey);
+        case 'searchUpc':
+          return this.proxySearchUpc(cleanBarcode, keys.searchUpcApiKey);
+        default:
+          throw new BadRequestException(`Unknown source: ${source}`);
+      }
+    } catch (err) {
+      if (err instanceof BadRequestException) throw err;
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Raw lookup failed [${source}]: ${message}`);
+      throw new BadRequestException(message || 'Lookup failed');
     }
   }
 
@@ -109,14 +114,13 @@ export class ProductLookupService {
     cacheHits: number;
     cacheMisses: number;
     hitRate: string;
-    apiUsage: { upc: number; barcode: number };
-    apiLimits: { upc: number; barcode: number };
+    apiUsage: { upc: number };
+    apiLimits: { upc: number };
   }> {
     const today = new Date().toISOString().split('T', 1)[0] || '';
     const cacheHits = (await this.redisService.get<number>(`stats:cache_hit:${today}`)) || 0;
     const cacheMisses = (await this.redisService.get<number>(`stats:cache_miss:${today}`)) || 0;
     const upcCalls = (await this.redisService.get<number>(`api:usage:upc:${today}`)) || 0;
-    const barcodeCalls = (await this.redisService.get<number>(`api:usage:barcode:${today}`)) || 0;
 
     const total = cacheHits + cacheMisses;
     const hitRateValue = total > 0 ? (cacheHits / total) * 100 : 0;
@@ -126,19 +130,15 @@ export class ProductLookupService {
       cacheHits,
       cacheMisses,
       hitRate: `${hitRateValue.toFixed(2)}%`,
-      apiUsage: { upc: upcCalls, barcode: barcodeCalls },
-      apiLimits: { upc: this.UPC_LIMIT, barcode: this.BARCODE_LOOKUP_LIMIT },
+      apiUsage: { upc: upcCalls },
+      apiLimits: { upc: this.UPC_LIMIT },
     };
   }
 
   private async proxyUsda(barcode: string, key?: string | null) {
-    if (!key) throw new BadRequestException('USDA API key not configured');
-    return new UsdaFoodDataClient(key).lookupRaw(barcode);
-  }
-
-  private async proxyBarcodeLookup(barcode: string, key?: string | null) {
-    if (!key) throw new BadRequestException('Barcode Lookup API key not configured');
-    return new BarcodeLookupClient(key).lookupRaw(barcode);
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) throw new BadRequestException('USDA API key not configured');
+    return new UsdaFoodDataClient(trimmedKey).lookupRaw(barcode.trim());
   }
 
   private async proxyGoUpc(barcode: string, key?: string | null) {
@@ -176,9 +176,6 @@ export class ProductLookupService {
     const upcResult = await this.tryUpcDatabase(barcode, userId);
     if (upcResult) return upcResult;
 
-    const blResult = await this.tryBarcodeLookup(barcode, userId);
-    if (blResult) return blResult;
-
     return null;
   }
 
@@ -205,23 +202,6 @@ export class ProductLookupService {
       return result;
     } catch (error: unknown) {
       this.logger.error(`UPC Database lookup failed: ${error}`);
-    }
-    return null;
-  }
-
-  private async tryBarcodeLookup(barcode: string, userId: string): Promise<ProductInfo | null> {
-    if (!(await this.checkLimit('barcode', this.BARCODE_LOOKUP_LIMIT))) return null;
-
-    const { barcodeLookupApiKey } = await this.usersService.getApiKeys(userId);
-    if (!barcodeLookupApiKey) return null;
-
-    const client = new BarcodeLookupClient(barcodeLookupApiKey);
-    try {
-      const result = await client.lookup(barcode);
-      await this.incrementUsage('barcode');
-      return result;
-    } catch (error: unknown) {
-      this.logger.error(`Barcode Lookup failed: ${error}`);
     }
     return null;
   }

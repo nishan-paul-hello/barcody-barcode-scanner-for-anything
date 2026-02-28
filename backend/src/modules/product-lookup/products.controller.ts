@@ -36,6 +36,22 @@ export class ProductsController {
     return this.productLookupService.getStats();
   }
 
+  @Get(':barcode/raw/:source')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get raw data from a specific API source (Proxy)' })
+  @ApiParam({ name: 'barcode', description: 'Barcode to lookup' })
+  @ApiParam({
+    name: 'source',
+    description: 'API source (off, obf, usda, upcitemdb, goUpc, searchUpc)',
+  })
+  async getRawLookup(
+    @Param('barcode') barcode: string,
+    @Param('source') source: string,
+    @CurrentUser('sub') userId: string,
+  ) {
+    return this.productLookupService.globalRawLookup(barcode, source, userId);
+  }
+
   @Get(':barcode')
   @UseGuards(JwtAuthGuard, ThrottlerGuard)
   @ApiOperation({ summary: 'Lookup product by barcode' })
@@ -67,22 +83,6 @@ export class ProductsController {
       data,
       cacheStatus,
     };
-  }
-
-  @Get(':barcode/raw/:source')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get raw data from a specific API source (Proxy)' })
-  @ApiParam({ name: 'barcode', description: 'Barcode to lookup' })
-  @ApiParam({
-    name: 'source',
-    description: 'API source (off, obf, usda, upcitemdb, barcodeLookup, goUpc, searchUpc)',
-  })
-  async getRawLookup(
-    @Param('barcode') barcode: string,
-    @Param('source') source: string,
-    @CurrentUser('sub') userId: string,
-  ) {
-    return this.productLookupService.globalRawLookup(barcode, source, userId);
   }
 
   @Post('compare')
