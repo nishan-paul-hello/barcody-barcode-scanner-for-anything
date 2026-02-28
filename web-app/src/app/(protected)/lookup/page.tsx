@@ -23,6 +23,7 @@ import {
   Code2,
   Settings2,
 } from 'lucide-react';
+import { RawDataPresenter } from '@/components/lookup/RawDataPresenter';
 
 // Simple internal interfaces to satisfy TS without complexity
 interface ApiResultState {
@@ -112,7 +113,10 @@ export default function GlobalLookupPage() {
           response?: { data?: { message?: string | string[] } };
         };
         const msg = ax.response?.data?.message;
-        message = Array.isArray(msg) ? msg[0] : msg || (err as Error).message;
+         
+        message = Array.isArray(msg)
+          ? msg[0]
+          : msg || (err as any).message || 'Unknown error';
       } else {
         message = err instanceof Error ? err.message : String(err);
       }
@@ -330,9 +334,9 @@ export default function GlobalLookupPage() {
                             )}
                           </div>
                         ) : res.data ? (
-                          <pre className="leading-relaxed text-cyan-50/70 selection:bg-cyan-500/30">
-                            {JSON.stringify(res.data, null, 2)}
-                          </pre>
+                          <div className="leading-relaxed selection:bg-cyan-500/30">
+                            <RawDataPresenter data={res.data} />
+                          </div>
                         ) : (
                           <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/10">
                             <Database className="h-10 w-10 opacity-20" />
