@@ -259,7 +259,7 @@ export default function GlobalLookupPage() {
 
         <Tabs defaultValue="off" className="w-full">
           <div className="mb-12">
-            <TabsList className="grid h-auto w-full grid-cols-1 gap-4 bg-transparent p-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <TabsList className="flex h-auto w-full flex-wrap justify-center gap-4 bg-transparent p-0">
               {APIS.map((api) => {
                 const res = results[api.id] || {
                   loading: false,
@@ -271,7 +271,7 @@ export default function GlobalLookupPage() {
                   <TabsTrigger
                     key={api.id}
                     value={api.id}
-                    className="group relative flex h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-white/5 p-6 text-white/40 transition-all hover:bg-white/[0.07] data-[state=active]:border-cyan-500/50 data-[state=active]:bg-cyan-500/10 data-[state=active]:text-white"
+                    className="group relative flex h-32 w-64 flex-none flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-white/5 p-6 text-white/40 transition-all hover:bg-white/[0.07] data-[state=active]:border-cyan-500/50 data-[state=active]:bg-cyan-500/10 data-[state=active]:text-white"
                   >
                     <api.icon
                       className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
