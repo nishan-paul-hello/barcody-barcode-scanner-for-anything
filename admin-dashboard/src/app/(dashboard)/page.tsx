@@ -92,7 +92,7 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 flex min-h-[75vh] flex-col items-center justify-start px-4 pt-16 text-center md:pt-24">
+      <section className="relative z-10 flex min-h-[75vh] flex-col items-center justify-start px-4 pt-[88px] text-center">
         <motion.div
           style={{ opacity, scale }}
           className="flex flex-col items-center space-y-8"
