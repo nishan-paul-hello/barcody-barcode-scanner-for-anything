@@ -56,10 +56,7 @@ export default function ScanPage() {
         className="text-center"
       >
         <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
-          PRECISION{' '}
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
-            SCANNER
-          </span>
+          PRECISION <span className="text-cyan-400">SCANNER</span>
         </h1>
         <p className="mx-auto max-w-2xl text-lg text-white/50">
           Professional-grade barcode recognition and data extraction.

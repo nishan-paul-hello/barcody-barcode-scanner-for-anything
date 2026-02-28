@@ -119,11 +119,7 @@ export default function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-8 text-5xl leading-[0.9] font-black tracking-tighter md:text-8xl"
             >
-              SCAN{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-                EVERYTHING
-              </span>{' '}
-              <br />
+              SCAN <span className="text-cyan-400">EVERYTHING</span> <br />
               MANAGE ANYTHING
             </motion.h1>
 

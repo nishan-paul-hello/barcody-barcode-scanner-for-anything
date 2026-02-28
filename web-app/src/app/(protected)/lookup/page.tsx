@@ -147,10 +147,7 @@ export default function GlobalLookupPage() {
           className="mb-12 text-center"
         >
           <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
-            BARCODE{' '}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
-              LOOKUP
-            </span>
+            BARCODE <span className="text-cyan-400">LOOKUP</span>
           </h1>
           <p className="mx-auto max-w-3xl text-lg text-white/50">
             Compare barcode data across multiple global databases.

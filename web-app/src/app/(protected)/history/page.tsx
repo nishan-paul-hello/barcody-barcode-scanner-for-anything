@@ -281,10 +281,7 @@ export default function HistoryPage() {
         className="mb-12 text-center"
       >
         <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
-          SCAN{' '}
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
-            HISTORY
-          </span>
+          SCAN <span className="text-cyan-400">HISTORY</span>
         </h1>
         <p className="mx-auto max-w-2xl text-lg text-white/50">
           View and manage your scan history, filter by type, and export data.
