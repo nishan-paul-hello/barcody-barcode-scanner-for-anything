@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Header } from '@/components/common/Header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -127,9 +126,7 @@ export default function GlobalLookupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
-      <Header />
-
+    <>
       <main className="container mx-auto max-w-6xl px-4 pt-12 pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -355,6 +352,6 @@ export default function GlobalLookupPage() {
         <div className="absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[150px]" />
         <div className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
       </div>
-    </div>
+    </>
   );
 }
