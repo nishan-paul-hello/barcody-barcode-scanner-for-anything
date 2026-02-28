@@ -55,84 +55,90 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-black/60 backdrop-blur-2xl transition-all duration-300">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="outline-none">
+    <header
+      className={cn(
+        'sticky top-6 z-50 mx-auto flex h-16 w-[95%] max-w-7xl items-center justify-between',
+        'rounded-2xl border border-white/10 bg-black/40 px-4 backdrop-blur-xl',
+        'shadow-2xl shadow-black/50 transition-all duration-500 hover:border-white/20 hover:bg-black/50 sm:px-8'
+      )}
+    >
+      <Link href="/" className="outline-none">
+        <motion.div
+          className="group flex cursor-pointer items-center space-x-3 transition-all"
+          whileHover="hover"
+          initial="initial"
+        >
           <motion.div
-            className="group flex cursor-pointer items-center space-x-3 transition-all"
-            whileHover="hover"
-            initial="initial"
+            variants={{
+              initial: { scale: 1 },
+              hover: { scale: 1.1 },
+            }}
+            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+            className="relative flex h-9 w-9 items-center justify-center"
           >
-            <motion.div
-              variants={{
-                initial: { scale: 1 },
-                hover: { scale: 1.1 },
-              }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-              className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl"
-            >
-              <Image
-                src="/brand-logo.svg"
-                alt="Barcody Logo"
-                width={40}
-                height={40}
-                className="h-full w-full object-contain"
-              />
-            </motion.div>
-            <span
-              className={cn(
-                'hidden text-2xl font-black tracking-tighter transition-colors group-hover:text-[#ee4b2b] sm:inline-block',
-                pathname === '/' ? 'text-[#ee4b2b]' : 'text-white'
-              )}
-            >
-              Barcody
-            </span>
+            <Image
+              src="/brand-logo.svg"
+              alt="Barcody Logo"
+              width={36}
+              height={36}
+              className="h-full w-full object-contain"
+            />
           </motion.div>
-        </Link>
+          <span
+            className={cn(
+              'hidden text-xl font-black tracking-tighter transition-all group-hover:text-[#ee4b2b] sm:inline-block',
+              pathname === '/' ? 'text-[#ee4b2b]' : 'text-white'
+            )}
+          >
+            Barcody
+          </span>
+        </motion.div>
+      </Link>
 
-        <div className="flex items-center gap-6">
-          <nav className="hidden items-center gap-2 md:flex">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => handleNavClick(e, item.href)}
+      <div className="flex items-center gap-4 sm:gap-8">
+        <nav className="hidden items-center gap-1 md:flex">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={(e) => handleNavClick(e, item.href)}
+                className={cn(
+                  'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all hover:text-white',
+                  isActive ? 'text-white' : 'text-white/40'
+                )}
+              >
+                <item.icon
                   className={cn(
-                    'relative flex h-10 cursor-pointer items-center gap-2 px-4 text-xs font-bold tracking-widest uppercase transition-all hover:text-white',
-                    isActive ? 'text-white' : 'text-white/40'
+                    'h-4 w-4 transition-transform',
+                    isActive && 'text-cyan-400'
                   )}
-                >
-                  <item.icon
-                    className={cn(
-                      'h-4 w-4 transition-transform',
-                      isActive && 'text-cyan-400'
-                    )}
+                />
+                {item.title}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNav"
+                    className="absolute inset-0 -z-10 rounded-full bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.05)] ring-1 ring-white/10"
+                    transition={{
+                      type: 'spring',
+                      bounce: 0.2,
+                      duration: 0.6,
+                    }}
                   />
-                  {item.title}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute inset-0 -z-10 rounded-full bg-white/5 ring-1 ring-white/10"
-                      transition={{
-                        type: 'spring',
-                        bounce: 0.2,
-                        duration: 0.6,
-                      }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
 
+        <div className="flex items-center gap-4">
           {user ? (
             <DropdownMenu key={user.id}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full p-0 ring-2 ring-white/10 transition-all hover:ring-cyan-400 data-[state=open]:ring-cyan-400"
+                  className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full p-0 ring-1 ring-white/10 transition-all hover:ring-[#ee4b2b]/50 data-[state=open]:ring-[#ee4b2b]"
                 >
                   {user.picture ? (
                     <Image
@@ -143,7 +149,7 @@ export function Header() {
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
-                      <span className="text-sm font-bold text-cyan-400">
+                      <span className="text-xs font-bold text-cyan-400">
                         {(user.name || user.email)?.charAt(0).toUpperCase()}
                       </span>
                     </div>
@@ -151,10 +157,10 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#1a1a1a] p-0 text-white shadow-xl"
+                className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#0a0a0a]/90 p-0 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl"
                 align="end"
               >
-                <div className="p-5">
+                <div className="bg-white/5 p-5">
                   <div className="flex flex-col gap-1">
                     <p className="truncate text-base font-bold tracking-tight text-white">
                       {user.name || 'Admin User'}
@@ -167,8 +173,8 @@ export function Header() {
 
                 <div className="space-y-1 p-2">
                   <DropdownMenuItem className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-zinc-500 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zinc-400 ring-1 ring-white/5 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
-                      <Trash2 className="h-5 w-5" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zinc-400 ring-1 ring-white/5 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
+                      <Trash2 className="h-4 w-4" />
                     </div>
                     <span className="text-sm font-bold tracking-tight">
                       Delete Account
@@ -179,8 +185,8 @@ export function Header() {
                     onClick={handleLogout}
                     className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600/10 text-red-400 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
-                      <LogOut className="h-5 w-5" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-600/10 text-red-500 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
+                      <LogOut className="h-4 w-4" />
                     </div>
                     <span className="text-sm font-bold tracking-tight">
                       Log out
@@ -192,10 +198,11 @@ export function Header() {
           ) : (
             <Button
               onClick={() => openLoginModal()}
-              className="group flex cursor-pointer items-center gap-2 rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
+              className="group relative flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400 active:scale-95"
             >
               <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
-              Get Started
+              <span className="text-sm">Get Started</span>
+              <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
             </Button>
           )}
         </div>
