@@ -33,6 +33,15 @@ export class User {
   @Column({ name: 'barcode_lookup_api_key', type: 'varchar', nullable: true })
   barcodeLookupApiKey?: string | null;
 
+  @Column({ name: 'usda_food_data_api_key', type: 'varchar', nullable: true })
+  usdaFoodDataApiKey?: string | null;
+
+  @Column({ name: 'go_upc_api_key', type: 'varchar', nullable: true })
+  goUpcApiKey?: string | null;
+
+  @Column({ name: 'search_upc_api_key', type: 'varchar', nullable: true })
+  searchUpcApiKey?: string | null;
+
   @OneToMany(() => Session, (session) => session.user)
   sessions!: Session[];
 

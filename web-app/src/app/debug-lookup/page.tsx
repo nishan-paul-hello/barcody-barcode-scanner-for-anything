@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useApiKeys } from '@/hooks/use-api-keys';
+import { useUIStore } from '@/store/useUIStore';
 import {
   Search,
   Database,
@@ -20,16 +22,8 @@ import {
   Loader2,
   Clock,
   Code2,
+  Settings2,
 } from 'lucide-react';
-
-// API Configuration (Loaded via environment variables)
-const API_KEYS = {
-  USDA_FOOD_DATA: process.env.NEXT_PUBLIC_USDA_FOOD_DATA_API_KEY || '',
-  BARCODE_LOOKUP: process.env.NEXT_PUBLIC_BARCODE_LOOKUP_API_KEY || '',
-  GO_UPC: process.env.NEXT_PUBLIC_GO_UPC_API_KEY || '',
-  SEARCH_UPC: process.env.NEXT_PUBLIC_SEARCH_UPC_API_KEY || '',
-  UPC_DATABASE: process.env.NEXT_PUBLIC_UPC_DATABASE_API_KEY || '',
-};
 
 // Simple internal interfaces to satisfy TS without complexity
 interface ApiResultState {
@@ -69,8 +63,11 @@ const APIS = [
   { id: 'searchUpc', name: 'SearchUPC', icon: Key, color: 'text-yellow-400' },
 ];
 
-export default function DebugLookupPage() {
+export default function GlobalLookupPage() {
   const [barcode, setBarcode] = useState('');
+  const { data: userKeys } = useApiKeys();
+  const setApiKeysModalOpen = useUIStore((state) => state.setApiKeysModalOpen);
+
   const [results, setResults] = useState<ResultsMap>(() => {
     const initial: ResultsMap = {};
     APIS.forEach((api) => {
@@ -109,21 +106,30 @@ export default function DebugLookupPage() {
           url = `https://world.openbeautyfacts.org/api/v2/product/${barcodeInput}.json`;
           break;
         case 'usda':
-          url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${barcodeInput}&api_key=${API_KEYS.USDA_FOOD_DATA}`;
+          if (!userKeys?.usdaFoodDataApiKey)
+            throw new Error('USDA API Key missing');
+          url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${barcodeInput}&api_key=${userKeys.usdaFoodDataApiKey}`;
           break;
         case 'upcitemdb':
           url = `https://api.upcitemdb.com/prod/trial/lookup?upc=${barcodeInput}`;
-          headers['user_key'] = API_KEYS.UPC_DATABASE;
+          if (userKeys?.upcDatabaseApiKey) {
+            headers['user_key'] = userKeys.upcDatabaseApiKey;
+          }
           break;
         case 'barcodeLookup':
-          url = `https://api.barcodelookup.com/v3/products?barcode=${barcodeInput}&key=${API_KEYS.BARCODE_LOOKUP}`;
+          if (!userKeys?.barcodeLookupApiKey)
+            throw new Error('Barcode Lookup API Key missing');
+          url = `https://api.barcodelookup.com/v3/products?barcode=${barcodeInput}&key=${userKeys.barcodeLookupApiKey}`;
           break;
         case 'goUpc':
+          if (!userKeys?.goUpcApiKey) throw new Error('Go-UPC API Key missing');
           url = `https://api.go-upc.com/v1/code/${barcodeInput}`;
-          headers['Authorization'] = `Bearer ${API_KEYS.GO_UPC}`;
+          headers['Authorization'] = `Bearer ${userKeys.goUpcApiKey}`;
           break;
         case 'searchUpc':
-          url = `https://api.searchupc.com/v1.1/?request_type=product&key=${API_KEYS.SEARCH_UPC}&upc=${barcodeInput}`;
+          if (!userKeys?.searchUpcApiKey)
+            throw new Error('SearchUPC API Key missing');
+          url = `https://api.searchupc.com/v1.1/?request_type=product&key=${userKeys.searchUpcApiKey}&upc=${barcodeInput}`;
           break;
       }
 
@@ -175,17 +181,17 @@ export default function DebugLookupPage() {
             variant="outline"
             className="mb-4 border-cyan-500/30 bg-cyan-500/5 px-4 py-1.5 text-cyan-400"
           >
-            Internal API Debugger
+            Universal Product Search
           </Badge>
           <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
-            MULTI-API{' '}
+            GLOBAL{' '}
             <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
               LOOKUP
             </span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-white/50">
-            Simultaneously query all 7 integrated services to compare raw data
-            responses for any barcode.
+            Compare data from across the web. This tool queries all integrated
+            commercial and open-data services simultaneously.
           </p>
         </motion.div>
 
@@ -326,12 +332,29 @@ export default function DebugLookupPage() {
                           <div className="flex h-60 flex-col items-center justify-center gap-4 text-red-400/70">
                             <XCircle className="h-10 w-10" />
                             <p className="text-center font-bold">{res.error}</p>
-                            <p className="max-w-md text-center text-xs text-white/20">
-                              This might be due to CORS security policies on the
-                              API provider side when called directly from a
-                              browser. Reference the browser console for
-                              details.
-                            </p>
+                            {res.error.includes('Key missing') ? (
+                              <div className="flex flex-col items-center gap-4">
+                                <p className="max-w-md text-center text-xs text-white/40">
+                                  You need to add your personal API key for this
+                                  service in the settings.
+                                </p>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
+                                  onClick={() => setApiKeysModalOpen(true)}
+                                >
+                                  <Settings2 className="mr-2 h-3.5 w-3.5" />
+                                  Open API Settings
+                                </Button>
+                              </div>
+                            ) : (
+                              <p className="max-w-md text-center text-xs text-white/20">
+                                This might be due to CORS security policies or
+                                an invalid API key. Reference the browser
+                                console for details.
+                              </p>
+                            )}
                           </div>
                         ) : res.data ? (
                           <pre className="leading-relaxed text-cyan-50/70 selection:bg-cyan-500/30">

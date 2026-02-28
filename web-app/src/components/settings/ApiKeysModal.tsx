@@ -16,7 +16,6 @@ import { useApiKeys, useUpdateApiKeys } from '@/hooks/use-api-keys';
 import { cn } from '@/lib/utils';
 import {
   Database,
-  Globe,
   Zap,
   X,
   ExternalLink,
@@ -24,6 +23,10 @@ import {
   Check,
   Trash2,
   KeyRound,
+  FlaskConical,
+  Search,
+  Key,
+  type LucideIcon,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -32,18 +35,113 @@ interface ApiKeysModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface ApiKeyInputProps {
+  label: string;
+  value: string;
+  setter: React.Dispatch<React.SetStateAction<string>>;
+  fieldId: string;
+  icon: LucideIcon;
+  color: string;
+  placeholder: string;
+  desc: string;
+  link?: string;
+  onCopy: (text: string, fieldId: string) => void;
+  copiedField: string | null;
+  onClear: (setter: React.Dispatch<React.SetStateAction<string>>) => void;
+}
+
+const ApiKeyInput = ({
+  label,
+  value,
+  setter,
+  fieldId,
+  icon: Icon,
+  color,
+  placeholder,
+  desc,
+  link,
+  onCopy,
+  copiedField,
+  onClear,
+}: ApiKeyInputProps) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="group space-y-3"
+  >
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Icon className={cn('h-4 w-4', color)} />
+        <label
+          className={cn(
+            'text-xs font-bold tracking-widest text-white/60 uppercase transition-colors group-focus-within:text-white',
+            color.replace('text-', 'group-focus-within:text-')
+          )}
+        >
+          {label}
+        </label>
+      </div>
+      {link && (
+        <Link
+          href={link}
+          target="_blank"
+          className="flex items-center gap-1 text-[10px] font-bold text-white/30 transition-colors hover:text-white"
+        >
+          GET KEY <ExternalLink className="h-2.5 w-2.5" />
+        </Link>
+      )}
+    </div>
+    <div className="group/input relative">
+      <Input
+        type="password"
+        placeholder={placeholder}
+        className="transition-get h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-white/20 focus-visible:ring-0"
+        value={value}
+        onChange={(e) => setter(e.target.value)}
+      />
+      <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 opacity-0 transition-opacity group-hover/input:opacity-100">
+        <button
+          onClick={() => onCopy(value, fieldId)}
+          className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+          title="Copy to clipboard"
+        >
+          {copiedField === fieldId ? (
+            <Check className="h-3.5 w-3.5 text-green-400" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" />
+          )}
+        </button>
+        <button
+          onClick={() => onClear(setter)}
+          className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-red-400"
+          title="Clear field"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+    <p className="px-1 text-[11px] leading-relaxed text-white/30">{desc}</p>
+  </motion.div>
+);
+
 export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
   const { data, isLoading } = useApiKeys();
   const updateMutation = useUpdateApiKeys();
 
   const [upcKey, setUpcKey] = React.useState('');
   const [barcodeKey, setBarcodeKey] = React.useState('');
+  const [usdaKey, setUsdaKey] = React.useState('');
+  const [goUpcKey, setGoUpcKey] = React.useState('');
+  const [searchUpcKey, setSearchUpcKey] = React.useState('');
   const [copiedField, setCopiedField] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (open && data && !isLoading) {
       setUpcKey(data.upcDatabaseApiKey || '');
       setBarcodeKey(data.barcodeLookupApiKey || '');
+      setUsdaKey(data.usdaFoodDataApiKey || '');
+      setGoUpcKey(data.goUpcApiKey || '');
+      setSearchUpcKey(data.searchUpcApiKey || '');
     }
   }, [open, data, isLoading]);
 
@@ -60,9 +158,12 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     setter('');
   };
 
-  const initialUpc = data?.upcDatabaseApiKey || '';
-  const initialBarcode = data?.barcodeLookupApiKey || '';
-  const hasChanges = upcKey !== initialUpc || barcodeKey !== initialBarcode;
+  const hasChanges =
+    upcKey !== (data?.upcDatabaseApiKey || '') ||
+    barcodeKey !== (data?.barcodeLookupApiKey || '') ||
+    usdaKey !== (data?.usdaFoodDataApiKey || '') ||
+    goUpcKey !== (data?.goUpcApiKey || '') ||
+    searchUpcKey !== (data?.searchUpcApiKey || '');
 
   const handleSave = () => {
     if (!hasChanges) return;
@@ -70,6 +171,9 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
       {
         upcDatabaseApiKey: upcKey || undefined,
         barcodeLookupApiKey: barcodeKey || undefined,
+        usdaFoodDataApiKey: usdaKey || undefined,
+        goUpcApiKey: goUpcKey || undefined,
+        searchUpcApiKey: searchUpcKey || undefined,
       },
       {
         onSuccess: () => {
@@ -83,9 +187,8 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="max-w-lg overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-2xl sm:rounded-[32px]"
+        className="max-w-2xl overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-2xl sm:rounded-[32px]"
       >
-        {/* Decorative background element */}
         <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-violet-500/10 blur-[80px]" />
         <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-fuchsia-600/10 blur-[80px]" />
 
@@ -96,10 +199,10 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 <KeyRound className="h-10 w-10 text-violet-400" />
                 <div>
                   <DialogTitle className="text-2xl font-bold tracking-tight text-white">
-                    Personal API Keys
+                    Power User API Keys
                   </DialogTitle>
                   <DialogDescription className="text-sm font-medium text-white/40">
-                    Boost scanning accuracy by connecting data sources.
+                    Connect more data sources for deep product insights.
                   </DialogDescription>
                 </div>
               </div>
@@ -112,120 +215,81 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             </div>
           </DialogHeader>
 
-          <div className="space-y-6">
-            {/* UPC Database Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="group space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Database className="h-4 w-4 text-cyan-400" />
-                  <label className="text-xs font-bold tracking-widest text-white/60 uppercase transition-colors group-focus-within:text-cyan-400">
-                    UPC Database Key
-                  </label>
-                </div>
-                <Link
-                  href="https://www.upcitemdb.com/api/explorer"
-                  target="_blank"
-                  className="flex items-center gap-1 text-[10px] font-bold text-white/30 transition-colors hover:text-cyan-400"
-                >
-                  GET KEY <ExternalLink className="h-2.5 w-2.5" />
-                </Link>
-              </div>
-              <div className="group/input relative">
-                <Input
-                  type="password"
-                  placeholder="Paste your UPC Item DB API key"
-                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-cyan-500/40 focus-visible:ring-0"
-                  value={upcKey}
-                  onChange={(e) => setUpcKey(e.target.value)}
-                />
-                <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 opacity-0 transition-opacity group-hover/input:opacity-100">
-                  <button
-                    onClick={() => handleCopy(upcKey, 'upc')}
-                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-cyan-400"
-                    title="Copy to clipboard"
-                  >
-                    {copiedField === 'upc' ? (
-                      <Check className="h-3.5 w-3.5 text-green-400" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => handleClear(setUpcKey)}
-                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-red-400"
-                    title="Clear field"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-              <p className="px-1 text-[11px] leading-relaxed text-white/30">
-                The main provider for global product info, ingredients, and
-                brands.
-              </p>
-            </motion.div>
+          <div className="scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent grid max-h-[60vh] gap-8 overflow-y-auto pr-4 lg:grid-cols-2">
+            <ApiKeyInput
+              label="UPC Database"
+              value={upcKey}
+              setter={setUpcKey}
+              fieldId="upc"
+              icon={Database}
+              color="text-cyan-400"
+              placeholder="Paste UPC Item DB API key"
+              desc="The main provider for global product info and brands."
+              link="https://www.upcitemdb.com/api/explorer"
+              onCopy={handleCopy}
+              copiedField={copiedField}
+              onClear={handleClear}
+            />
 
-            {/* Barcode Lookup Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="group space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Globe className="h-4 w-4 text-blue-400" />
-                  <label className="text-xs font-bold tracking-widest text-white/60 uppercase transition-colors group-focus-within:text-blue-400">
-                    Barcode Lookup Key
-                  </label>
-                </div>
-                <Link
-                  href="https://www.barcodelookup.com/api"
-                  target="_blank"
-                  className="flex items-center gap-1 text-[10px] font-bold text-white/30 transition-colors hover:text-blue-400"
-                >
-                  GET KEY <ExternalLink className="h-2.5 w-2.5" />
-                </Link>
-              </div>
-              <div className="group/input relative">
-                <Input
-                  type="password"
-                  placeholder="Paste your Barcode Lookup API key"
-                  className="h-12 border-white/5 bg-white/5 pr-24 pl-4 font-mono text-xs transition-all focus:bg-white/[0.08] focus-visible:border-2 focus-visible:border-blue-500/40 focus-visible:ring-0"
-                  value={barcodeKey}
-                  onChange={(e) => setBarcodeKey(e.target.value)}
-                />
-                <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 opacity-0 transition-opacity group-hover/input:opacity-100">
-                  <button
-                    onClick={() => handleCopy(barcodeKey, 'barcode')}
-                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-blue-400"
-                    title="Copy to clipboard"
-                  >
-                    {copiedField === 'barcode' ? (
-                      <Check className="h-3.5 w-3.5 text-green-400" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => handleClear(setBarcodeKey)}
-                    className="cursor-pointer rounded-lg p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-red-400"
-                    title="Clear field"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-              <p className="px-1 text-[11px] leading-relaxed text-white/30">
-                A reliable backup source for barcodes not found in standard
-                databases.
-              </p>
-            </motion.div>
+            <ApiKeyInput
+              label="Barcode Lookup"
+              value={barcodeKey}
+              setter={setBarcodeKey}
+              fieldId="barcode"
+              icon={Search}
+              color="text-blue-400"
+              placeholder="Paste Barcode Lookup API key"
+              desc="Reliable backup source for barcodes not in standard databases."
+              link="https://www.barcodelookup.com/api"
+              onCopy={handleCopy}
+              copiedField={copiedField}
+              onClear={handleClear}
+            />
+
+            <ApiKeyInput
+              label="USDA FoodData"
+              value={usdaKey}
+              setter={setUsdaKey}
+              fieldId="usda"
+              icon={FlaskConical}
+              color="text-green-400"
+              placeholder="Paste USDA API key"
+              desc="Official government database for nutritional facts (USA)."
+              link="https://fdc.nal.usda.gov/api-key-signup.html"
+              onCopy={handleCopy}
+              copiedField={copiedField}
+              onClear={handleClear}
+            />
+
+            <ApiKeyInput
+              label="Go-UPC"
+              value={goUpcKey}
+              setter={setGoUpcKey}
+              fieldId="goupc"
+              icon={Zap}
+              color="text-purple-400"
+              placeholder="Paste Go-UPC API key"
+              desc="Premium commercial database for high-accuracy product info."
+              link="https://go-upc.com/api"
+              onCopy={handleCopy}
+              copiedField={copiedField}
+              onClear={handleClear}
+            />
+
+            <ApiKeyInput
+              label="SearchUPC"
+              value={searchUpcKey}
+              setter={setSearchUpcKey}
+              fieldId="searchupc"
+              icon={Key}
+              color="text-yellow-400"
+              placeholder="Paste SearchUPC API key"
+              desc="Vast database for general consumer product identification."
+              link="https://www.searchupc.com/api-upc-database.aspx"
+              onCopy={handleCopy}
+              copiedField={copiedField}
+              onClear={handleClear}
+            />
           </div>
         </div>
 
@@ -248,7 +312,6 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 : 'cursor-not-allowed border-white/5 bg-white/5 text-white/20 shadow-none'
             )}
           >
-            {/* Decorative corners for active state */}
             {hasChanges && !updateMutation.isPending && (
               <>
                 <div className="absolute top-0 left-0 h-1.5 w-1.5 border-t-2 border-l-2 border-cyan-400 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -271,7 +334,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                     hasChanges && 'group-hover:scale-125 group-hover:rotate-12'
                   )}
                 />
-                Apply Keys
+                Apply All Keys
               </div>
             )}
           </Button>
