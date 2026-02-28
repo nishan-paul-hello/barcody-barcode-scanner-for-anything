@@ -179,8 +179,8 @@ export default function GlobalLookupPage() {
         </motion.div>
 
         <Tabs defaultValue="off" className="w-full">
-          <div className="scrollbar-none mb-8 overflow-x-auto pb-2">
-            <TabsList className="h-auto w-full justify-start gap-2 bg-transparent p-0">
+          <div className="mb-12">
+            <TabsList className="grid h-auto w-full grid-cols-1 gap-4 bg-transparent p-0 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {APIS.map((api) => {
                 const res = results[api.id] || {
                   loading: false,
@@ -192,17 +192,26 @@ export default function GlobalLookupPage() {
                   <TabsTrigger
                     key={api.id}
                     value={api.id}
-                    className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-white/5 bg-white/5 px-6 py-4 text-white/40 transition-all data-[state=active]:border-cyan-500/50 data-[state=active]:bg-cyan-500/10 data-[state=active]:text-white"
+                    className="group relative flex h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-white/5 p-6 text-white/40 transition-all hover:bg-white/[0.07] data-[state=active]:border-cyan-500/50 data-[state=active]:bg-cyan-500/10 data-[state=active]:text-white"
                   >
-                    <api.icon className={`h-4 w-4 ${api.color}`} />
-                    <span className="text-sm font-bold">{api.name}</span>
-                    {res.loading && (
-                      <Loader2 className="h-3 w-3 animate-spin text-white/40" />
-                    )}
-                    {res.data && !res.error && (
-                      <CheckCircle2 className="h-3 w-3 text-green-500" />
-                    )}
-                    {res.error && <XCircle className="h-3 w-3 text-red-500" />}
+                    <api.icon
+                      className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
+                    />
+                    <span className="text-center text-xs font-black tracking-widest uppercase">
+                      {api.name}
+                    </span>
+
+                    <div className="absolute top-3 right-3 flex gap-1.5">
+                      {res.loading && (
+                        <Loader2 className="h-4 w-4 animate-spin text-cyan-500/50" />
+                      )}
+                      {res.data && !res.error && (
+                        <CheckCircle2 className="h-4 w-4 text-green-500/50" />
+                      )}
+                      {res.error && (
+                        <XCircle className="h-4 w-4 text-red-500/50" />
+                      )}
+                    </div>
                   </TabsTrigger>
                 );
               })}
