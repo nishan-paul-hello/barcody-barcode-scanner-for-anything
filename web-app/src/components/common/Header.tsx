@@ -20,6 +20,7 @@ import {
   Fingerprint,
   KeyRound,
   Trash2,
+  Search,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
@@ -60,6 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const defaultNavItems = [
     { href: '/history', label: 'History', icon: History },
     { href: '/scan', label: 'Scanner', icon: Camera },
+    { href: '/debug-lookup', label: 'Lookup', icon: Search },
   ];
 
   const navItems = customNavItems || defaultNavItems;
