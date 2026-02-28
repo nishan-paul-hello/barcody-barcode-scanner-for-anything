@@ -212,7 +212,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                   <button
                     key={mainImage}
                     onClick={() => setSelectedImage(mainImage)}
-                    className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg transition-all duration-200 ${
+                    className={`h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                       (selectedImage ?? mainImage) === mainImage
                         ? 'outline outline-1 outline-white/30'
                         : 'opacity-50 hover:opacity-80'
@@ -234,7 +234,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     <button
                       key={img}
                       onClick={() => setSelectedImage(img)}
-                      className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg transition-all duration-200 ${
+                      className={`h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                         selectedImage === img
                           ? 'outline outline-1 outline-white/30'
                           : 'opacity-50 hover:opacity-80'
@@ -263,10 +263,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                   </Badge>
                 )}
                 {category && (
-                  <Badge
-                    variant="outline"
-                    className="border-white/10 font-medium text-white/40"
-                  >
+                  <Badge className="border-cyan-500/20 bg-cyan-500/10 font-bold tracking-wider text-cyan-400 uppercase">
                     {category.split(' > ').pop()}
                   </Badge>
                 )}
