@@ -13,10 +13,9 @@ import {
   Globe,
   Code,
   Layers,
-  Heart,
 } from 'lucide-react';
 import { Header } from '@/components/common/Header';
-import Image from 'next/image';
+import { Footer } from '@/components/common/Footer';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef } from 'react';
 import { useUIStore } from '@/store/useUIStore';
@@ -78,7 +77,7 @@ export default function LandingPage() {
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#050505] text-white selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30">
       <Header />
 
       <main>
@@ -338,50 +337,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="relative border-t border-white/5 bg-black/40 py-12 backdrop-blur-xl">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-sm font-medium text-white/40"
-            >
-              © {new Date().getFullYear()} Barcody. All rights reserved.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="group flex items-center gap-2 text-sm font-medium text-white/40"
-            >
-              <span>Built with</span>
-              <Heart className="h-4 w-4 fill-red-500 text-red-500" />
-              <span>by</span>
-              <Link
-                href="https://kaiverse.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/kai flex items-center gap-2 transition-all"
-              >
-                <div className="relative h-8 w-8 transition-transform duration-300 group-hover/kai:scale-110">
-                  <Image
-                    src="/company-logo.svg"
-                    alt="KAI Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="font-bold tracking-tight text-white/90 transition-colors duration-300 group-hover/kai:text-[#00F07C]">
-                  KAI
-                </span>
-              </Link>
-            </motion.div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
