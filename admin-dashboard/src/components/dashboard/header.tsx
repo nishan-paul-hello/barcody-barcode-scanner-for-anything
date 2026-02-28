@@ -57,9 +57,10 @@ export function Header() {
   return (
     <header
       className={cn(
-        'sticky top-6 z-50 mx-auto flex h-16 w-[95%] max-w-7xl items-center justify-between',
-        'rounded-2xl border border-white/10 bg-black/40 px-4 backdrop-blur-xl',
-        'shadow-2xl shadow-black/50 transition-all duration-500 hover:border-white/20 hover:bg-black/50 sm:px-8'
+        pathname === '/' ? 'fixed inset-x-0 top-6' : 'relative mt-6',
+        'z-50 mx-auto flex h-16 w-[95%] max-w-7xl items-center justify-between',
+        'rounded-2xl border border-white/10 bg-black/40 px-4 backdrop-blur-xl transition-all duration-300',
+        'shadow-2xl shadow-black/50 hover:border-white/20 hover:bg-black/50 sm:px-8'
       )}
     >
       <Link href="/" className="outline-none">
