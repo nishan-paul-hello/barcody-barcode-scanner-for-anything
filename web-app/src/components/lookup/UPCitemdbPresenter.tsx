@@ -132,7 +132,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
       >
         <div className="flex flex-col gap-8 md:flex-row">
           {/* Image Column */}
-          <div className="flex shrink-0 flex-col gap-4">
+          <div className="flex w-full shrink-0 flex-col gap-3 md:w-64">
             {/* Main Image Box */}
             <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-black/40 md:w-64">
               {mainImage ? (
@@ -206,7 +206,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
             {/* Visible thumbnail row — only if we have confirmed valid images */}
             {confirmedThumbnails.filter((img) => !brokenImages.has(img))
               .length > 0 && (
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="scrollbar-none flex w-full gap-2 overflow-x-auto">
                 {/* First tile: always show the mainImage so user can return to it */}
                 {mainImage && mainReady && (
                   <button
@@ -214,8 +214,8 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     onClick={() => setSelectedImage(mainImage)}
                     className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg transition-all duration-200 ${
                       (selectedImage ?? mainImage) === mainImage
-                        ? 'ring-2 ring-cyan-400 ring-offset-1 ring-offset-black/50'
-                        : 'opacity-60 hover:opacity-100'
+                        ? 'outline outline-1 outline-white/30'
+                        : 'opacity-50 hover:opacity-80'
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -236,8 +236,8 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                       onClick={() => setSelectedImage(img)}
                       className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg transition-all duration-200 ${
                         selectedImage === img
-                          ? 'ring-2 ring-cyan-400 ring-offset-1 ring-offset-black/50'
-                          : 'opacity-60 hover:opacity-100'
+                          ? 'outline outline-1 outline-white/30'
+                          : 'opacity-50 hover:opacity-80'
                       }`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}

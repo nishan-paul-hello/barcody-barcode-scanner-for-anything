@@ -145,3 +145,11 @@
 @utility animate-scan-line {
   animation: scan-line 2.5s ease-in-out infinite;
 }
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
