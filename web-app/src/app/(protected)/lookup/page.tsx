@@ -21,8 +21,13 @@ import {
   Loader2,
   Clock,
   Settings2,
+  Copy,
+  ClipboardPaste,
+  X,
+  Check,
 } from 'lucide-react';
 import { RawDataPresenter } from '@/components/lookup/RawDataPresenter';
+import { toast } from 'sonner';
 
 // Simple internal interfaces to satisfy TS without complexity
 interface ApiResultState {
@@ -64,6 +69,7 @@ const APIS = [
 
 export default function GlobalLookupPage() {
   const [barcode, setBarcode] = useState('');
+  const [copied, setCopied] = useState(false);
   const setApiKeysModalOpen = useUIStore((state) => state.setApiKeysModalOpen);
 
   const [results, setResults] = useState<ResultsMap>(() => {
@@ -138,6 +144,34 @@ export default function GlobalLookupPage() {
     APIS.forEach((api) => fetchApi(api.id, cleanBarcode));
   };
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setBarcode(text);
+        toast.success('Pasted from clipboard');
+      }
+    } catch (err) {
+      toast.error('Failed to paste: ' + err);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!barcode) return;
+    try {
+      await navigator.clipboard.writeText(barcode);
+      toast.success('Copied to clipboard');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error('Failed to copy: ' + err);
+    }
+  };
+
+  const handleClear = () => {
+    setBarcode('');
+  };
+
   return (
     <>
       <main className="container mx-auto max-w-6xl px-4 pt-0 pb-24">
@@ -165,9 +199,54 @@ export default function GlobalLookupPage() {
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Enter Barcode"
-              className="h-14 border-white/10 bg-white/5 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-400 focus-visible:border-cyan-400 focus-visible:ring-0"
+              className="h-14 border-white/10 bg-white/5 pr-28 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-400 focus-visible:border-cyan-400 focus-visible:ring-0"
               onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
             />
+            <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
+              <AnimatePresence mode="popLayout">
+                {barcode && (
+                  <>
+                    <motion.button
+                      key={copied ? 'checkmark' : 'copy'}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      onClick={handleCopy}
+                      className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
+                      title="Copy"
+                    >
+                      {copied ? (
+                        <Check className="h-4 w-4 text-green-400" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </motion.button>
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      onClick={handleClear}
+                      className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-red-400"
+                      title="Clear"
+                    >
+                      <X className="h-4 w-4" />
+                    </motion.button>
+                  </>
+                )}
+                {!barcode && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={handlePaste}
+                    className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
+                    title="Paste"
+                  >
+                    <ClipboardPaste className="h-4 w-4" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           <Button
             onClick={handleLookup}
