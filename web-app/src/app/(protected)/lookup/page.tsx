@@ -152,9 +152,8 @@ export default function GlobalLookupPage() {
               LOOKUP
             </span>
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-white/50">
-            Compare data from across the web. This tool queries all integrated
-            commercial and open-data services simultaneously.
+          <p className="mx-auto max-w-3xl text-lg text-white/50">
+            Compare barcode data across multiple global databases.
           </p>
         </motion.div>
 
