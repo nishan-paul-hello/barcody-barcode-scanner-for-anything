@@ -346,12 +346,6 @@ export default function GlobalLookupPage() {
           </AnimatePresence>
         </Tabs>
       </main>
-
-      <div className="pointer-events-none fixed inset-0 z-[-1] overflow-hidden">
-        <div className="absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-cyan-500/10 blur-[150px]" />
-        <div className="absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[150px]" />
-        <div className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
-      </div>
     </>
   );
 }

@@ -48,8 +48,24 @@ export default function ScanPage() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative container mx-auto max-w-6xl space-y-12 px-4 py-10 sm:px-6 lg:px-8"
+      className="relative container mx-auto max-w-6xl space-y-12 px-4 pt-12 pb-24 sm:px-6 lg:px-8"
     >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
+          PRECISION{' '}
+          <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
+            SCANNER
+          </span>
+        </h1>
+        <p className="mx-auto max-w-2xl text-lg text-white/50">
+          Professional-grade barcode recognition and data extraction.
+        </p>
+      </motion.div>
+
       <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[1fr_350px]">
         {/* Row 1: Main Scanning Interface - Aligned at bottom */}
         <div className="flex min-w-0 flex-col justify-end">

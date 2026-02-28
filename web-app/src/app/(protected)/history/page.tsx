@@ -29,6 +29,7 @@ import {
   Download,
 } from 'lucide-react';
 import { ExportModal } from '@/components/export/ExportModal';
+import { motion } from 'framer-motion';
 import { analytics } from '@/lib/analytics.service';
 import { api } from '@/lib/api/client';
 
@@ -274,37 +275,65 @@ export default function HistoryPage() {
 
   return (
     <div className="container mx-auto max-w-7xl space-y-6 py-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">Scan History</h1>
-          <p className="text-muted-foreground">
-            View and manage your scan history, filter by type, and export data.
-          </p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-12 text-center"
+      >
+        <div className="mb-4 inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/5 px-4 py-1.5 text-xs font-bold tracking-widest text-cyan-400 uppercase">
+          Activity Log
         </div>
-        <Button onClick={() => setShowExportModal(true)} className="sm:w-auto">
-          <Download className="mr-2 h-4 w-4" />
-          Export Data
-        </Button>
-      </div>
+        <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
+          SCAN{' '}
+          <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
+            HISTORY
+          </span>
+        </h1>
+        <p className="mx-auto max-w-2xl text-lg text-white/50">
+          View and manage your scan history, filter by type, and export data.
+        </p>
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={() => setShowExportModal(true)}
+            className="group cursor-pointer rounded-full bg-white/5 px-8 font-bold text-white transition-all hover:bg-white/10"
+          >
+            <Download className="mr-2 h-4 w-4 transition-transform group-hover:-translate-y-1" />
+            Export Data
+          </Button>
+        </div>
+      </motion.div>
 
       {/* Dashboard Stats */}
       {statsLoading ? (
-        <div className="bg-card mt-4 flex justify-center rounded-xl border py-6 shadow-sm">
-          <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+        <div className="mt-4 flex justify-center rounded-3xl border border-white/5 bg-white/5 py-12 backdrop-blur-xl">
+          <Loader2 className="h-6 w-6 animate-spin text-cyan-500/50" />
         </div>
       ) : (
         <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-card rounded-xl border p-6 shadow-sm">
-            <h2 className="mb-2 text-xl font-semibold">Total Scans</h2>
-            <p className="text-4xl font-bold">{stats.totalScans}</p>
+          <div className="group relative overflow-hidden rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-xl transition-all hover:bg-white/[0.08]">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <h2 className="relative z-10 mb-2 text-sm font-bold tracking-widest text-white/40 uppercase">
+              Total Scans
+            </h2>
+            <p className="relative z-10 text-4xl font-black text-white">
+              {stats.totalScans}
+            </p>
           </div>
-          <div className="bg-card rounded-xl border p-6 shadow-sm">
-            <h2 className="mb-2 text-xl font-semibold">Active Products</h2>
-            <p className="text-4xl font-bold">{stats.activeProducts}</p>
+          <div className="group relative overflow-hidden rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-xl transition-all hover:bg-white/[0.08]">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <h2 className="relative z-10 mb-2 text-sm font-bold tracking-widest text-white/40 uppercase">
+              Active Products
+            </h2>
+            <p className="relative z-10 text-4xl font-black text-white">
+              {stats.activeProducts}
+            </p>
           </div>
-          <div className="bg-card rounded-xl border p-6 shadow-sm">
-            <h2 className="mb-2 text-xl font-semibold">Recent Activity</h2>
-            <p className="text-muted-foreground text-sm">
+          <div className="group relative overflow-hidden rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-xl transition-all hover:bg-white/[0.08]">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <h2 className="relative z-10 mb-2 text-sm font-bold tracking-widest text-white/40 uppercase">
+              Recent Activity
+            </h2>
+            <p className="relative z-10 text-sm font-medium text-white/60">
               {formatActivity(stats.recentActivity)}
             </p>
           </div>
