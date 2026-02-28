@@ -20,7 +20,6 @@ import {
   XCircle,
   Loader2,
   Clock,
-  Code2,
   Settings2,
 } from 'lucide-react';
 import { RawDataPresenter } from '@/components/lookup/RawDataPresenter';
@@ -113,10 +112,11 @@ export default function GlobalLookupPage() {
           response?: { data?: { message?: string | string[] } };
         };
         const msg = ax.response?.data?.message;
-         
-        message = Array.isArray(msg)
-          ? msg[0]
-          : msg || (err as any).message || 'Unknown error';
+
+        message =
+          (Array.isArray(msg) ? msg[0] : msg) ||
+          (err as { message?: string }).message ||
+          'Unknown error';
       } else {
         message = err instanceof Error ? err.message : String(err);
       }
@@ -282,71 +282,55 @@ export default function GlobalLookupPage() {
                       </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black/60 shadow-inner">
-                      <div className="flex h-10 items-center justify-between border-b border-white/5 bg-white/5 px-4 backdrop-blur-md">
-                        <div className="flex items-center gap-2">
-                          <Code2 className="h-4 w-4 text-white/40" />
-                          <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">
-                            Raw JSON Payload
-                          </span>
+                    <div className="mt-4">
+                      {res.loading ? (
+                        <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/20">
+                          <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                          <p className="animate-pulse">
+                            Synthesizing response from {apiItem.name}...
+                          </p>
                         </div>
-                        <div className="flex gap-1.5">
-                          <div className="h-2 w-2 rounded-full bg-red-400/30" />
-                          <div className="h-2 w-2 rounded-full bg-yellow-400/30" />
-                          <div className="h-2 w-2 rounded-full bg-green-400/30" />
-                        </div>
-                      </div>
-                      <div className="scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent max-h-[600px] overflow-auto p-6 font-mono text-sm">
-                        {res.loading ? (
-                          <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/20">
-                            <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
-                            <p className="animate-pulse">
-                              Synthesizing response from {apiItem.name}...
-                            </p>
-                          </div>
-                        ) : res.error ? (
-                          <div className="flex h-60 flex-col items-center justify-center gap-4 text-red-400/70">
-                            <XCircle className="h-10 w-10" />
-                            <p className="text-center font-bold">{res.error}</p>
-                            {res.error.toLowerCase().includes('key') ||
-                            res.error.toLowerCase().includes('configure') ? (
-                              <div className="flex flex-col items-center gap-4">
-                                <p className="max-w-md text-center text-xs text-white/40">
-                                  You need to add your personal API key for this
-                                  service in the settings.
-                                </p>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
-                                  onClick={() => setApiKeysModalOpen(true)}
-                                >
-                                  <Settings2 className="mr-2 h-3.5 w-3.5" />
-                                  Open API Settings
-                                </Button>
-                              </div>
-                            ) : (
-                              <p className="max-w-md text-center text-xs text-white/20">
-                                This might be due to a service outage or an
-                                invalid Barcode. Backend proxy is now used to
-                                avoid CORS issues.
+                      ) : res.error ? (
+                        <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-red-500/10 bg-red-500/5 p-8 text-red-400/70">
+                          <XCircle className="h-10 w-10" />
+                          <p className="text-center font-bold">{res.error}</p>
+                          {res.error.toLowerCase().includes('key') ||
+                          res.error.toLowerCase().includes('configure') ? (
+                            <div className="flex flex-col items-center gap-4">
+                              <p className="max-w-md text-center text-xs text-white/40">
+                                You need to add your personal API key for this
+                                service in the settings.
                               </p>
-                            )}
-                          </div>
-                        ) : res.data ? (
-                          <div className="leading-relaxed selection:bg-cyan-500/30">
-                            <RawDataPresenter data={res.data} />
-                          </div>
-                        ) : (
-                          <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/10">
-                            <Database className="h-10 w-10 opacity-20" />
-                            <p>
-                              Enter a barcode above to trigger the lookup
-                              sequence
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
+                                onClick={() => setApiKeysModalOpen(true)}
+                              >
+                                <Settings2 className="mr-2 h-3.5 w-3.5" />
+                                Open API Settings
+                              </Button>
+                            </div>
+                          ) : (
+                            <p className="max-w-md text-center text-xs text-white/20">
+                              This might be due to a service outage or an
+                              invalid Barcode. Backend proxy is now used to
+                              avoid CORS issues.
                             </p>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      ) : res.data ? (
+                        <div className="leading-relaxed selection:bg-cyan-500/30">
+                          <RawDataPresenter data={res.data} />
+                        </div>
+                      ) : (
+                        <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-white/10">
+                          <Database className="h-10 w-10 opacity-20" />
+                          <p>
+                            Enter a barcode above to trigger the lookup sequence
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </TabsContent>
