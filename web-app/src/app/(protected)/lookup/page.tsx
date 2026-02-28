@@ -43,6 +43,19 @@ interface ResultsMap {
 }
 
 const APIS = [
+  {
+    id: 'upcitemdb',
+    name: 'UPCitemdb',
+    icon: ShoppingBag,
+    color: 'text-orange-400',
+  },
+  {
+    id: 'upcdatabase',
+    name: 'UPC Database',
+    icon: Database,
+    color: 'text-teal-400',
+  },
+  { id: 'goUpc', name: 'Go-UPC', icon: Zap, color: 'text-purple-400' },
   { id: 'off', name: 'Open Food Facts', icon: Globe, color: 'text-green-400' },
   {
     id: 'obf',
@@ -50,21 +63,8 @@ const APIS = [
     icon: FlaskConical,
     color: 'text-pink-400',
   },
-  { id: 'usda', name: 'USDA FoodData', icon: Database, color: 'text-blue-400' },
-  {
-    id: 'upcdatabase',
-    name: 'UPC Database',
-    icon: Database,
-    color: 'text-teal-400',
-  },
-  {
-    id: 'upcitemdb',
-    name: 'UPCitemdb',
-    icon: ShoppingBag,
-    color: 'text-orange-400',
-  },
-  { id: 'goUpc', name: 'Go-UPC', icon: Zap, color: 'text-purple-400' },
   { id: 'searchUpc', name: 'SearchUPC', icon: Key, color: 'text-yellow-400' },
+  { id: 'usda', name: 'USDA FoodData', icon: Database, color: 'text-blue-400' },
 ];
 
 export default function GlobalLookupPage() {

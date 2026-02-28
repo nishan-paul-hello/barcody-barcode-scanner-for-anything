@@ -246,23 +246,9 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 setter={setUpcKey}
                 fieldId="upc"
                 icon={Database}
-                color="text-cyan-400"
-                placeholder="Enter UPC Item DB Key"
-                link="https://www.upcitemdb.com/api/explorer"
-                onCopy={handleCopy}
-                copiedField={copiedField}
-                onClear={handleClear}
-              />
-
-              <ApiKeyInput
-                label="USDA FoodData"
-                value={usdaKey}
-                setter={setUsdaKey}
-                fieldId="usda"
-                icon={FlaskConical}
-                color="text-green-400"
-                placeholder="Enter USDA Central Key"
-                link="https://fdc.nal.usda.gov/api-key-signup.html"
+                color="text-teal-400"
+                placeholder="Enter upcdatabase.org Key"
+                link="https://upcdatabase.org/check-upc-api"
                 onCopy={handleCopy}
                 copiedField={copiedField}
                 onClear={handleClear}
@@ -291,6 +277,20 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
                 color="text-yellow-400"
                 placeholder="Enter SearchUPC Key"
                 link="https://www.searchupc.com/api-upc-database.aspx"
+                onCopy={handleCopy}
+                copiedField={copiedField}
+                onClear={handleClear}
+              />
+
+              <ApiKeyInput
+                label="USDA FoodData"
+                value={usdaKey}
+                setter={setUsdaKey}
+                fieldId="usda"
+                icon={FlaskConical}
+                color="text-green-400"
+                placeholder="Enter USDA Central Key"
+                link="https://fdc.nal.usda.gov/api-key-signup.html"
                 onCopy={handleCopy}
                 copiedField={copiedField}
                 onClear={handleClear}
