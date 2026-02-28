@@ -104,7 +104,7 @@ export default function LandingPage() {
             className="max-w-5xl text-6xl leading-[1.1] font-black tracking-tighter md:text-8xl"
           >
             ABSOLUTE <br className="hidden md:block" />
-            <span className="bg-gradient-to-br from-white via-[#00ffe7] to-[#00ffe7]/40 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(0,255,231,0.2)]">
+            <span className="text-[#00ffe7] drop-shadow-[0_0_15px_rgba(0,255,231,0.2)]">
               CONTROL
             </span>
             <span className="text-[#00ffe7]">.</span>
