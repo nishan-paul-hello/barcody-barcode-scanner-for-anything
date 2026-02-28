@@ -12,6 +12,7 @@ export class UsdaFoodDataClient {
     });
   }
 
+  // eslint-disable-next-line complexity
   async lookupRaw(barcode: string): Promise<unknown> {
     const query = String(barcode).trim();
     if (!query) throw new Error('Barcode is required');

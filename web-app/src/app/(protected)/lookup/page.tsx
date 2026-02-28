@@ -47,6 +47,12 @@ const APIS = [
   },
   { id: 'usda', name: 'USDA FoodData', icon: Database, color: 'text-blue-400' },
   {
+    id: 'upcdatabase',
+    name: 'UPC Database',
+    icon: Database,
+    color: 'text-teal-400',
+  },
+  {
     id: 'upcitemdb',
     name: 'UPCitemdb',
     icon: ShoppingBag,
