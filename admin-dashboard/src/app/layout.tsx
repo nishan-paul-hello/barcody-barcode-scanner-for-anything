@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 
 import { LoginModal } from '@/components/auth/LoginModal';
 import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler';
+import { AuthSyncHandler } from '@/components/auth/AuthSyncHandler';
 
 export default function RootLayout({
   children,
@@ -31,6 +32,7 @@ export default function RootLayout({
           {children}
           <LoginModal />
           <AuthRedirectHandler />
+          <AuthSyncHandler />
         </Providers>
       </body>
     </html>
