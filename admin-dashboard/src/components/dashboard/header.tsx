@@ -159,40 +159,47 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="mt-4 w-64 overflow-hidden rounded-3xl border border-white/5 bg-[#0a0a0a]/90 p-0 text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl"
+                className="mt-4 w-72 overflow-hidden rounded-[2rem] border border-white/10 bg-black/60 p-2 text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/10 backdrop-blur-3xl"
                 align="end"
               >
-                <div className="bg-white/5 p-5">
-                  <div className="flex flex-col gap-1">
-                    <p className="truncate text-base font-bold tracking-tight text-white">
+                <div className="relative mb-2 overflow-hidden rounded-2xl bg-white/5 p-4">
+                  <div className="flex flex-col gap-0.5">
+                    <p className="truncate text-base font-bold tracking-tight text-white/90">
                       {user.name || 'Admin User'}
                     </p>
-                    <p className="truncate text-xs font-medium text-white/50">
+                    <p className="truncate text-[11px] font-medium tracking-wider text-white/40">
                       {user.email}
                     </p>
                   </div>
+                  <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-orange-500/10 blur-2xl" />
                 </div>
 
-                <div className="space-y-1 p-2">
-                  <DropdownMenuItem className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-zinc-500 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zinc-400 ring-1 ring-white/5 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
-                      <Trash2 className="h-4 w-4" />
+                <div className="flex flex-col gap-1">
+                  <DropdownMenuItem className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-red-500/5 focus:bg-red-500/5">
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-red-400/50">
+                      <Trash2 className="h-5 w-5 text-red-400 transition-transform duration-300" />
+                      <div className="absolute inset-0 bg-red-400 opacity-0 blur-xl transition-opacity group-hover:opacity-30" />
                     </div>
-                    <span className="text-sm font-bold tracking-tight">
-                      Delete Account
-                    </span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[14px] font-semibold tracking-tight text-white/70 transition-colors group-hover:text-red-400">
+                        Delete Account
+                      </span>
+                    </div>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
                     onClick={handleLogout}
-                    className="group flex cursor-pointer items-center gap-4 rounded-xl p-3 text-red-400 transition-all hover:bg-red-600/10 hover:text-red-500 focus:bg-red-600/10 focus:text-red-500"
+                    className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-white/10 focus:bg-white/10"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-600/10 text-red-500 ring-1 ring-red-600/20 transition-all group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white group-hover:ring-red-600">
-                      <LogOut className="h-4 w-4" />
+                    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-blue-400/50">
+                      <LogOut className="h-5 w-5 text-blue-400 transition-transform duration-300" />
+                      <div className="absolute inset-0 bg-blue-400 opacity-0 blur-xl transition-opacity group-hover:opacity-10" />
                     </div>
-                    <span className="text-sm font-bold tracking-tight">
-                      Log out
-                    </span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[14px] font-semibold tracking-tight text-white/70 transition-colors group-hover:text-white">
+                        Log out
+                      </span>
+                    </div>
                   </DropdownMenuItem>
                 </div>
               </DropdownMenuContent>
