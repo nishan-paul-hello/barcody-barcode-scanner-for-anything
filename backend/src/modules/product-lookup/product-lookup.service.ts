@@ -9,6 +9,7 @@ import { SearchUpcClient } from '@modules/product-lookup/clients/search-upc.clie
 import { OpenBeautyFactsClient } from '@modules/product-lookup/clients/open-beauty-facts.client';
 import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 import { UsersService } from '@modules/users/users.service';
+export type { ProductComparison } from './comparison.service';
 import { ProductComparisonService, ProductComparison } from './comparison.service';
 
 @Injectable()
