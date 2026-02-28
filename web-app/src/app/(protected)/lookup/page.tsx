@@ -271,7 +271,7 @@ export default function GlobalLookupPage() {
                   <TabsTrigger
                     key={api.id}
                     value={api.id}
-                    className="group relative flex h-32 w-64 flex-none flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-white/5 p-6 text-white/40 transition-all hover:bg-white/[0.07] data-[state=active]:border-cyan-500/50 data-[state=active]:bg-cyan-500/10 data-[state=active]:text-white"
+                    className="group !data-[state=active]:border-cyan-400 relative flex h-32 w-64 flex-none cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-white/5 bg-white/5 p-6 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white dark:data-[state=active]:border-cyan-400"
                   >
                     <api.icon
                       className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
