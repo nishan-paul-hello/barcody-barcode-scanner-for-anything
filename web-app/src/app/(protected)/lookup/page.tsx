@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { RawDataPresenter } from '@/components/lookup/RawDataPresenter';
 import { UPCitemdbPresenter } from '@/components/lookup/UPCitemdbPresenter';
+import { GoUpcPresenter } from '@/components/lookup/GoUpcPresenter';
 import { toast } from 'sonner';
 
 // Simple internal interfaces to satisfy TS without complexity
@@ -390,6 +391,11 @@ export default function GlobalLookupPage() {
                                 res.data?.items?.[0]?.ean ||
                                 'upcitemdb'
                               }
+                              data={res.data}
+                            />
+                          ) : apiItem.id === 'goUpc' ? (
+                            <GoUpcPresenter
+                              key={res.data?.code ?? 'goupc'}
                               data={res.data}
                             />
                           ) : (
