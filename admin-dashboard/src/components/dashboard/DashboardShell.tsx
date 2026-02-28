@@ -14,10 +14,16 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   const isHomePage = pathname === '/';
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0a0a0a]">
+    <div className="flex min-h-screen flex-col bg-[#030303]">
       <Header />
       <div className="flex flex-1 flex-col">
-        <main className="container mx-auto flex-1 px-4 pt-12 pb-8 sm:px-6 lg:px-8">
+        <main
+          className={
+            isHomePage
+              ? 'flex-1 pt-12'
+              : 'container mx-auto flex-1 px-4 pt-12 pb-8 sm:px-6 lg:px-8'
+          }
+        >
           {isHomePage ? children : <ProtectedRoute>{children}</ProtectedRoute>}
         </main>
         {isHomePage && <Footer />}
