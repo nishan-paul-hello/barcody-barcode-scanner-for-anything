@@ -71,24 +71,22 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-5xl text-6xl leading-[1.1] font-black tracking-tighter md:text-8xl"
+            className="max-w-7xl text-6xl leading-[1.1] font-black tracking-tighter md:text-8xl"
           >
-            ABSOLUTE <br className="hidden md:block" />
+            TOTAL{' '}
             <span className="text-[#00ffe7] drop-shadow-[0_0_15px_rgba(0,255,231,0.2)]">
-              CONTROL
+              COMMAND
             </span>
-            <span className="text-[#00ffe7]">.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="max-w-2xl text-lg font-medium text-zinc-400 md:text-xl md:leading-relaxed"
+            className="max-w-4xl text-lg font-medium text-zinc-400 md:text-xl md:leading-relaxed"
           >
-            The executive command center for your Barcody ecosystem. Govern
-            users, monitor live data pipelines, and enforce system-wide security
-            policies from a single, omnipotent dashboard.
+            Manage users and monitor scan activity across your entire ecosystem
+            from single dashboard.
           </motion.p>
 
           <motion.div
