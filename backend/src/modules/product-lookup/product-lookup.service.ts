@@ -5,7 +5,6 @@ import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.
 import { UsdaFoodDataClient } from '@modules/product-lookup/clients/usda-food-data.client';
 import { GoUpcClient } from '@modules/product-lookup/clients/go-upc.client';
 import { SearchUpcClient } from '@modules/product-lookup/clients/search-upc.client';
-import { UpcDatabaseOrgClient } from '@modules/product-lookup/clients/upc-database-org.client';
 import { OpenBeautyFactsClient } from '@modules/product-lookup/clients/open-beauty-facts.client';
 import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 import { UsersService } from '@modules/users/users.service';
@@ -69,8 +68,6 @@ export class ProductLookupService {
           return this.openBeautyFactsClient.lookupRaw(cleanBarcode);
         case 'usda':
           return this.proxyUsda(cleanBarcode, keys.usdaFoodDataApiKey);
-        case 'upcdatabase':
-          return this.proxyUpcDatabaseOrg(cleanBarcode, keys.upcDatabaseApiKey);
         case 'upcitemdb':
           return new UpcDatabaseClient(keys.upcDatabaseApiKey || 'trial').lookupRaw(cleanBarcode);
         case 'goUpc':
@@ -143,11 +140,6 @@ export class ProductLookupService {
     const trimmedKey = key?.trim();
     if (!trimmedKey) throw new BadRequestException('USDA API key not configured');
     return new UsdaFoodDataClient(trimmedKey).lookupRaw(barcode.trim());
-  }
-
-  private async proxyUpcDatabaseOrg(barcode: string, key?: string | null) {
-    if (!key) throw new BadRequestException('UPC Database API key not configured');
-    return new UpcDatabaseOrgClient(key).lookupRaw(barcode);
   }
 
   private async proxyGoUpc(barcode: string, key?: string | null) {

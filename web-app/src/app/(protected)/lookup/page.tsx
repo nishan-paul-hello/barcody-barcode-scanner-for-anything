@@ -50,12 +50,6 @@ const APIS = [
     icon: ShoppingBag,
     color: 'text-orange-400',
   },
-  {
-    id: 'upcdatabase',
-    name: 'UPC Database',
-    icon: Database,
-    color: 'text-teal-400',
-  },
   { id: 'goUpc', name: 'Go-UPC', icon: Zap, color: 'text-purple-400' },
   { id: 'off', name: 'Open Food Facts', icon: Globe, color: 'text-green-400' },
   {
