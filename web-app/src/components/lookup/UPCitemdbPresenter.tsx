@@ -23,7 +23,7 @@ interface UPCitemdbPresenterProps {
 }
 
 const ProductPlaceholder = () => (
-  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-gradient-to-br from-white/[0.02] to-white/[0.08]">
+  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-white/[0.04]">
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="h-32 w-32 rounded-full bg-cyan-500/10 blur-[60px]" />
     </div>
@@ -324,10 +324,12 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
               <Info className="h-4 w-4 text-cyan-400" />
               Product Description
             </h3>
-            <p className="text-sm leading-relaxed text-white/70 selection:bg-cyan-500/30">
-              {description ||
-                'No detailed description available for this product.'}
-            </p>
+            <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
+              <p className="text-sm leading-relaxed text-white/80 selection:bg-cyan-500/30">
+                {description ||
+                  'No detailed description available for this product.'}
+              </p>
+            </div>
           </div>
 
           {(color || size || weight || dimension || asin || mpn) && (
