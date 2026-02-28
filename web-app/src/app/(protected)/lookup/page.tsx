@@ -27,6 +27,7 @@ import {
   Check,
 } from 'lucide-react';
 import { RawDataPresenter } from '@/components/lookup/RawDataPresenter';
+import { UPCitemdbPresenter } from '@/components/lookup/UPCitemdbPresenter';
 import { toast } from 'sonner';
 
 // Simple internal interfaces to satisfy TS without complexity
@@ -325,16 +326,8 @@ export default function GlobalLookupPage() {
                           <apiItem.icon
                             className={`h-6 w-6 ${apiItem.color}`}
                           />
-                          {apiItem.name} Response
+                          {apiItem.name}
                         </h2>
-                        <p className="mt-1 text-sm text-white/50">
-                          Detailed data trace for barcode:{' '}
-                          <span className="text-cyan-400">
-                            {barcode || 'None'}
-                          </span>
-                          . On the Scanner, results use a cascade (OFF → UPC
-                          DB); here each API is called directly.
-                        </p>
                       </div>
 
                       <div className="flex flex-wrap gap-3">
@@ -396,7 +389,11 @@ export default function GlobalLookupPage() {
                         </div>
                       ) : res.data ? (
                         <div className="leading-relaxed selection:bg-cyan-500/30">
-                          <RawDataPresenter data={res.data} />
+                          {apiItem.id === 'upcitemdb' ? (
+                            <UPCitemdbPresenter data={res.data} />
+                          ) : (
+                            <RawDataPresenter data={res.data} />
+                          )}
                         </div>
                       ) : (
                         <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-white/10">
