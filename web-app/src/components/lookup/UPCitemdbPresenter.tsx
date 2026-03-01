@@ -41,6 +41,18 @@ const ProductPlaceholder = () => (
   </div>
 );
 
+// ─── Single spec grid cell ────────────────────────────────────────────────────
+const SpecCell = ({ label, value }: { label: string; value: string }) => (
+  <div className="group flex flex-col gap-1.5 rounded-xl border border-white/[0.04] bg-white/[0.015] p-3.5 transition-all hover:border-orange-500/25 hover:bg-white/[0.035]">
+    <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase transition-colors group-hover:text-orange-400/60">
+      {label}
+    </span>
+    <span className="text-sm leading-tight font-bold text-slate-200">
+      {value}
+    </span>
+  </div>
+);
+
 export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
   const [mainReady, setMainReady] = useState(false);
@@ -116,6 +128,19 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   const itemAnim = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
+  };
+
+  // Helper to skip sections with placeholder text
+  const isDataEmpty = (text?: string) => {
+    if (!text || text.trim() === '') return true;
+    const lower = text.toLowerCase().trim();
+    return (
+      lower.includes('no description found') ||
+      lower.includes('no description available') ||
+      lower.includes('no detailed description') ||
+      lower === 'no description' ||
+      lower === 'none'
+    );
   };
 
   return (
@@ -319,18 +344,19 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
       <div className="grid gap-6 md:grid-cols-2">
         {/* Description & Specs */}
         <motion.div variants={itemAnim} className="space-y-6">
-          <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
-            <h3 className="mb-4 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
-              <Info className="h-4 w-4 text-cyan-400" />
-              Product Description
-            </h3>
-            <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
-              <p className="text-sm leading-relaxed text-white/80 selection:bg-cyan-500/30">
-                {description ||
-                  'No detailed description available for this product.'}
-              </p>
+          {!isDataEmpty(description) && (
+            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
+                <Info className="h-4 w-4 text-cyan-400" />
+                Product Description
+              </h3>
+              <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
+                <p className="text-sm leading-relaxed text-white/80 selection:bg-cyan-500/30">
+                  {description}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {(color || size || weight || dimension || asin || mpn) && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
@@ -338,59 +364,13 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                 <Layers className="h-4 w-4 text-orange-400" />
                 Specifications
               </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {color && (
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-white/20 uppercase">
-                      Color
-                    </span>
-                    <p className="text-sm text-white/80">{color}</p>
-                  </div>
-                )}
-                {size && (
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-white/20 uppercase">
-                      Size
-                    </span>
-                    <p className="text-sm text-white/80">{size}</p>
-                  </div>
-                )}
-                {dimension && (
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-white/20 uppercase">
-                      Dimensions
-                    </span>
-                    <p className="text-sm text-white/80">{dimension}</p>
-                  </div>
-                )}
-                {weight && (
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-white/20 uppercase">
-                      Weight
-                    </span>
-                    <p className="text-sm text-white/80">{weight}</p>
-                  </div>
-                )}
-                {asin && (
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-white/20 uppercase">
-                      ASIN
-                    </span>
-                    <p className="font-mono text-sm tracking-tight text-white/80">
-                      {asin}
-                    </p>
-                  </div>
-                )}
-                {mpn && (
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold tracking-wider text-white/20 uppercase">
-                      MPN
-                    </span>
-                    <p className="font-mono text-sm tracking-tight text-white/80">
-                      {mpn}
-                    </p>
-                  </div>
-                )}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {color && <SpecCell label="Color" value={color} />}
+                {size && <SpecCell label="Size" value={size} />}
+                {dimension && <SpecCell label="Dimensions" value={dimension} />}
+                {weight && <SpecCell label="Weight" value={weight} />}
+                {asin && <SpecCell label="ASIN" value={asin} />}
+                {mpn && <SpecCell label="MPN" value={mpn} />}
               </div>
             </div>
           )}
