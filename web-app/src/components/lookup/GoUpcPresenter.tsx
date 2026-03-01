@@ -13,7 +13,6 @@ import {
   ChevronDown,
   ChevronUp,
   FlaskConical,
-  ArrowUpRight,
   ListTree,
   ChevronRight,
 } from 'lucide-react';
@@ -55,21 +54,26 @@ const SpecRow = ({ label, value }: { label: string; value: string }) => (
 
 // ─── Category breadcrumb ──────────────────────────────────────────────────────
 const CategoryPath = ({ path }: { path: string[] }) => (
-  <div className="flex flex-wrap items-center gap-1 text-xs">
-    {path.map((segment, i) => (
-      <span key={i} className="flex items-center gap-1">
-        {i > 0 && <ChevronRight className="h-3 w-3 text-slate-600" />}
-        <span
-          className={
-            i === path.length - 1
-              ? 'font-semibold text-violet-300'
-              : 'text-slate-500'
-          }
-        >
-          {segment}
+  <div className="flex flex-wrap items-center gap-1.5">
+    {path.map((segment, i) => {
+      const isLast = i === path.length - 1;
+      return (
+        <span key={i} className="flex items-center gap-1.5">
+          {i > 0 && (
+            <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
+          )}
+          {isLast ? (
+            <span className="inline-flex items-center rounded-full border border-violet-400/30 bg-violet-500/15 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-violet-300 shadow-[0_0_10px_0px_rgba(139,92,246,0.2)]">
+              {segment}
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-white/35 transition-colors hover:border-white/10 hover:text-white/55">
+              {segment}
+            </span>
+          )}
         </span>
-      </span>
-    ))}
+      );
+    })}
   </div>
 );
 
@@ -261,7 +265,6 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   <span className="text-xs font-medium tracking-wide">
                     View on Go-UPC
                   </span>
-                  <ArrowUpRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
               )}
             </div>
