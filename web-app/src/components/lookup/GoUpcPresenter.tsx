@@ -10,10 +10,7 @@ import {
   Image as ImageIcon,
   ExternalLink,
   Barcode,
-  ChevronDown,
-  ChevronUp,
   FlaskConical,
-  ListTree,
   ChevronRight,
   Tag,
 } from 'lucide-react';
@@ -41,13 +38,13 @@ const ImagePlaceholder = () => (
   </div>
 );
 
-// ─── Spec row: label left, value right ────────────────────────────────────────
-const SpecRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex items-start justify-between gap-4 rounded-lg border-b border-white/[0.05] px-1 py-3 transition-colors last:border-0 hover:bg-white/[0.025]">
-    <span className="min-w-[110px] shrink-0 pt-0.5 text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+// ─── Single spec grid cell ────────────────────────────────────────────────────
+const SpecCell = ({ label, value }: { label: string; value: string }) => (
+  <div className="group flex flex-col gap-1.5 rounded-xl border border-white/[0.04] bg-white/[0.015] p-3.5 transition-all hover:border-violet-500/25 hover:bg-white/[0.035]">
+    <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase transition-colors group-hover:text-violet-400/60">
       {label}
     </span>
-    <span className="max-w-[calc(100%-130px)] text-right text-sm leading-snug font-medium break-words text-slate-200">
+    <span className="text-sm leading-tight font-bold text-slate-200">
       {value}
     </span>
   </div>
@@ -56,25 +53,16 @@ const SpecRow = ({ label, value }: { label: string; value: string }) => (
 // ─── Category breadcrumb ──────────────────────────────────────────────────────
 const CategoryPath = ({ path }: { path: string[] }) => (
   <div className="flex flex-wrap items-center gap-1.5">
-    {path.map((segment, i) => {
-      const isLast = i === path.length - 1;
-      return (
-        <span key={i} className="flex items-center gap-1.5">
-          {i > 0 && (
-            <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
-          )}
-          {isLast ? (
-            <span className="inline-flex items-center rounded-full border border-violet-400/30 bg-violet-500/15 px-2.5 py-0.5 text-[11px] font-bold tracking-wide text-violet-300 shadow-[0_0_10px_0px_rgba(139,92,246,0.2)]">
-              {segment}
-            </span>
-          ) : (
-            <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-white/35 transition-colors hover:border-white/10 hover:text-white/55">
-              {segment}
-            </span>
-          )}
+    {path.map((segment, i) => (
+      <span key={i} className="flex items-center gap-1.5">
+        {i > 0 && (
+          <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
+        )}
+        <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-white/35 transition-colors hover:border-white/10 hover:text-white/55">
+          {segment}
         </span>
-      );
-    })}
+      </span>
+    ))}
   </div>
 );
 
@@ -96,10 +84,6 @@ const card = {
 export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   const [imgBroken, setImgBroken] = useState(false);
   const [imgReady, setImgReady] = useState(false);
-  const [showAllSpecs, setShowAllSpecs] = useState(false);
-  const [showFullIngredients, setShowFullIngredients] = useState(false);
-  const [showFullEcommerceDescription, setShowFullEcommerceDescription] =
-    useState(false);
 
   const product = data?.product;
 
@@ -154,25 +138,19 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
     ? ecommerceDescriptionEntry[1]
     : '';
 
-  const SPEC_LIMIT = 8;
-  const visibleSpecs: [string, string][] = showAllSpecs
-    ? filteredSpecs
-    : filteredSpecs.slice(0, SPEC_LIMIT);
-  const hiddenCount = filteredSpecs.length - SPEC_LIMIT;
-
-  const INGR_LIMIT = 320;
-  const ingredientsTruncated =
-    ingredientText.length > INGR_LIMIT && !showFullIngredients;
-  const displayedIngredients = ingredientsTruncated
-    ? ingredientText.slice(0, INGR_LIMIT) + '…'
-    : ingredientText;
-
-  const ECO_LIMIT = 320;
-  const ecoTruncated =
-    ecommerceDescription.length > ECO_LIMIT && !showFullEcommerceDescription;
-  const displayedEcoDesc = ecoTruncated
-    ? ecommerceDescription.slice(0, ECO_LIMIT) + '…'
-    : ecommerceDescription;
+  // Helper to skip sections with placeholder text
+  const isDataEmpty = (text?: string) => {
+    if (!text || text.trim() === '') return true;
+    const lower = text.toLowerCase().trim();
+    return (
+      lower.includes('no description found') ||
+      lower.includes('no description available') ||
+      lower.includes('no ingredients found') ||
+      lower.includes('no ingredients available') ||
+      lower === 'no description' ||
+      lower === 'none'
+    );
+  };
 
   return (
     <motion.div
@@ -306,27 +284,25 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
         {/* ── Left column: Description + Ingredients ── */}
         <motion.div variants={card} className="space-y-5">
           {/* Description card – SKY BLUE */}
-          <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
-            <div className="mb-4 flex items-center gap-2.5">
-              {/* sky-blue icon bubble */}
-              <div className="rounded-lg bg-sky-500/15 p-1.5">
-                <Info className="h-3.5 w-3.5 text-sky-400" />
+          {!isDataEmpty(description) && (
+            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+              <div className="mb-4 flex items-center gap-2.5">
+                {/* sky-blue icon bubble */}
+                <div className="rounded-lg bg-sky-500/15 p-1.5">
+                  <Info className="h-3.5 w-3.5 text-sky-400" />
+                </div>
+                <h3 className="text-xs font-black tracking-[0.15em] text-sky-300/80 uppercase">
+                  Description
+                </h3>
               </div>
-              <h3 className="text-xs font-black tracking-[0.15em] text-sky-300/80 uppercase">
-                Description
-              </h3>
+              <p className="text-sm leading-relaxed text-slate-300 selection:bg-sky-500/25">
+                {description}
+              </p>
             </div>
-            <p className="text-sm leading-relaxed text-slate-300 selection:bg-sky-500/25">
-              {description || (
-                <span className="text-slate-500 italic">
-                  No description available for this product.
-                </span>
-              )}
-            </p>
-          </div>
+          )}
 
           {/* Ecommerce Description card – AMBER/SHOPPING */}
-          {ecommerceDescription && (
+          {ecommerceDescription && !isDataEmpty(ecommerceDescription) && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-amber-500/15 p-1.5">
@@ -337,29 +313,13 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                 </h3>
               </div>
               <p className="text-sm leading-relaxed text-slate-300 selection:bg-amber-500/20">
-                {displayedEcoDesc}
+                {ecommerceDescription}
               </p>
-              {ecommerceDescription.length > ECO_LIMIT && (
-                <button
-                  onClick={() => setShowFullEcommerceDescription((v) => !v)}
-                  className="mt-3 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-amber-400/70 transition-colors hover:text-amber-300"
-                >
-                  {showFullEcommerceDescription ? (
-                    <>
-                      <ChevronUp className="h-3.5 w-3.5" /> Show less
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="h-3.5 w-3.5" /> Show full list
-                    </>
-                  )}
-                </button>
-              )}
             </div>
           )}
 
           {/* Ingredients card – EMERALD GREEN */}
-          {ingredientText && (
+          {ingredientText && !isDataEmpty(ingredientText) && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 {/* emerald icon bubble */}
@@ -371,32 +331,16 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                 </h3>
               </div>
               <p className="text-sm leading-relaxed text-slate-300 selection:bg-emerald-500/20">
-                {displayedIngredients}
+                {ingredientText}
               </p>
-              {ingredientText.length > INGR_LIMIT && (
-                <button
-                  onClick={() => setShowFullIngredients((v) => !v)}
-                  className="mt-3 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-emerald-400/70 transition-colors hover:text-emerald-300"
-                >
-                  {showFullIngredients ? (
-                    <>
-                      <ChevronUp className="h-3.5 w-3.5" /> Show less
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="h-3.5 w-3.5" /> Show full list
-                    </>
-                  )}
-                </button>
-              )}
             </div>
           )}
         </motion.div>
 
         {/* ── Right column: Specifications ── */}
         <motion.div variants={card}>
-          {filteredSpecs.length > 0 ? (
-            <div className="h-full rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+          {filteredSpecs.length > 0 && (
+            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               {/* Specifications header – VIOLET */}
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-violet-500/15 p-1.5">
@@ -405,52 +349,25 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                 <h3 className="text-xs font-black tracking-[0.15em] text-violet-300/80 uppercase">
                   Specifications
                 </h3>
-                {/* count badge */}
-                <span className="ml-auto rounded-full border border-violet-500/20 bg-violet-500/10 px-2 py-0.5 text-[10px] font-bold text-violet-300/70">
-                  {filteredSpecs.length}
-                </span>
               </div>
 
-              <div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <AnimatePresence initial={false}>
-                  {visibleSpecs.map(
+                  {filteredSpecs.map(
                     ([label, value]: [string, string], i: number) => (
                       <motion.div
                         key={label + i}
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.18, delay: i * 0.015 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.2, delay: i * 0.02 }}
                       >
-                        <SpecRow label={label} value={value} />
+                        <SpecCell label={label} value={value} />
                       </motion.div>
                     )
                   )}
                 </AnimatePresence>
               </div>
-
-              {filteredSpecs.length > SPEC_LIMIT && (
-                <button
-                  onClick={() => setShowAllSpecs((v) => !v)}
-                  className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-500/15 bg-violet-500/5 py-2.5 text-xs font-bold text-violet-300/60 transition-all hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-300"
-                >
-                  {showAllSpecs ? (
-                    <>
-                      <ChevronUp className="h-3.5 w-3.5" /> Show fewer specs
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown className="h-3.5 w-3.5" /> {hiddenCount} more
-                      spec{hiddenCount !== 1 ? 's' : ''}
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="flex h-full min-h-[12rem] flex-col items-center justify-center gap-3 rounded-3xl border border-white/5 bg-white/[0.02] p-6 text-white/20">
-              <ListTree className="h-8 w-8 opacity-40" />
-              <p className="text-sm font-medium">No specifications provided</p>
             </div>
           )}
         </motion.div>
