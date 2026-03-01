@@ -29,6 +29,7 @@ import {
 import { RawDataPresenter } from '@/components/lookup/RawDataPresenter';
 import { UPCitemdbPresenter } from '@/components/lookup/UPCitemdbPresenter';
 import { GoUpcPresenter } from '@/components/lookup/GoUpcPresenter';
+import { OpenFoodFactsPresenter } from '@/components/lookup/OpenFoodFactsPresenter';
 import { toast } from 'sonner';
 
 // Simple internal interfaces to satisfy TS without complexity
@@ -396,6 +397,11 @@ export default function GlobalLookupPage() {
                           ) : apiItem.id === 'goUpc' ? (
                             <GoUpcPresenter
                               key={res.data?.code ?? 'goupc'}
+                              data={res.data}
+                            />
+                          ) : apiItem.id === 'off' || apiItem.id === 'obf' ? (
+                            <OpenFoodFactsPresenter
+                              key={res.data?.code ?? 'off'}
                               data={res.data}
                             />
                           ) : (

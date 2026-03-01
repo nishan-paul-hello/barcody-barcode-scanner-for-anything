@@ -13,6 +13,7 @@ import {
   FlaskConical,
   ChevronRight,
   Tag,
+  Compass,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -137,6 +138,11 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   const ecommerceDescription = ecommerceDescriptionEntry
     ? ecommerceDescriptionEntry[1]
     : '';
+
+  const directionsEntry = specs.find(
+    ([label]: [string, string]) => label.toLowerCase().trim() === 'directions'
+  );
+  const directions = directionsEntry ? directionsEntry[1] : '';
 
   // Helper to skip sections with placeholder text
   const isDataEmpty = (text?: string) => {
@@ -306,6 +312,25 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
               <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
                 <p className="text-sm leading-relaxed text-slate-300 selection:bg-sky-500/25">
                   {description}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Directions card – INDIGO */}
+          {directions && !isDataEmpty(directions) && (
+            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+              <div className="mb-4 flex items-center gap-2.5">
+                <div className="rounded-lg bg-indigo-500/15 p-1.5">
+                  <Compass className="h-3.5 w-3.5 text-indigo-400" />
+                </div>
+                <h3 className="text-xs font-black tracking-[0.15em] text-indigo-300/80 uppercase">
+                  Directions & Usage
+                </h3>
+              </div>
+              <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
+                <p className="text-sm leading-relaxed text-slate-300 selection:bg-indigo-500/25">
+                  {directions}
                 </p>
               </div>
             </div>
