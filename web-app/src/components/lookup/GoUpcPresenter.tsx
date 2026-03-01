@@ -317,25 +317,6 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
             </div>
           )}
 
-          {/* Directions card – INDIGO */}
-          {directions && !isDataEmpty(directions) && (
-            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
-              <div className="mb-4 flex items-center gap-2.5">
-                <div className="rounded-lg bg-indigo-500/15 p-1.5">
-                  <Compass className="h-3.5 w-3.5 text-indigo-400" />
-                </div>
-                <h3 className="text-xs font-black tracking-[0.15em] text-indigo-300/80 uppercase">
-                  Directions & Usage
-                </h3>
-              </div>
-              <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
-                <p className="text-sm leading-relaxed text-slate-300 selection:bg-indigo-500/25">
-                  {directions}
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* Ecommerce Description card – AMBER/SHOPPING */}
           {ecommerceDescription && !isDataEmpty(ecommerceDescription) && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
@@ -384,7 +365,26 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
         </motion.div>
 
         {/* ── Right column: Specifications ── */}
-        <motion.div variants={card}>
+        <motion.div variants={card} className="space-y-5">
+          {/* Directions card – INDIGO */}
+          {directions && !isDataEmpty(directions) && (
+            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+              <div className="mb-4 flex items-center gap-2.5">
+                <div className="rounded-lg bg-indigo-500/15 p-1.5">
+                  <Compass className="h-3.5 w-3.5 text-indigo-400" />
+                </div>
+                <h3 className="text-xs font-black tracking-[0.15em] text-indigo-300/80 uppercase">
+                  Directions & Usage
+                </h3>
+              </div>
+              <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
+                <p className="text-sm leading-relaxed text-slate-300 selection:bg-indigo-500/25">
+                  {directions}
+                </p>
+              </div>
+            </div>
+          )}
+
           {filteredSpecs.length > 0 && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               {/* Specifications header – VIOLET */}
