@@ -15,6 +15,7 @@ import {
   FlaskConical,
   ListTree,
   ChevronRight,
+  Tag,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -97,6 +98,8 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   const [imgReady, setImgReady] = useState(false);
   const [showAllSpecs, setShowAllSpecs] = useState(false);
   const [showFullIngredients, setShowFullIngredients] = useState(false);
+  const [showFullEcommerceDescription, setShowFullEcommerceDescription] =
+    useState(false);
 
   const product = data?.product;
 
@@ -132,11 +135,30 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   const hasImage = !!imageUrl && !imgBroken;
   const ingredientText: string = ingredients?.text ?? '';
 
+  // Keys rendered in dedicated cards — strip them from the specs list to avoid duplicates
+  const DEDICATED_SPEC_KEYS = new Set([
+    'ingredients',
+    'directions',
+    'ecommerce description',
+  ]);
+  const filteredSpecs: [string, string][] = specs.filter(
+    ([label]: [string, string]) =>
+      !DEDICATED_SPEC_KEYS.has(label.toLowerCase().trim())
+  );
+
+  const ecommerceDescriptionEntry = specs.find(
+    ([label]: [string, string]) =>
+      label.toLowerCase().trim() === 'ecommerce description'
+  );
+  const ecommerceDescription = ecommerceDescriptionEntry
+    ? ecommerceDescriptionEntry[1]
+    : '';
+
   const SPEC_LIMIT = 8;
   const visibleSpecs: [string, string][] = showAllSpecs
-    ? specs
-    : specs.slice(0, SPEC_LIMIT);
-  const hiddenCount = specs.length - SPEC_LIMIT;
+    ? filteredSpecs
+    : filteredSpecs.slice(0, SPEC_LIMIT);
+  const hiddenCount = filteredSpecs.length - SPEC_LIMIT;
 
   const INGR_LIMIT = 320;
   const ingredientsTruncated =
@@ -144,6 +166,13 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   const displayedIngredients = ingredientsTruncated
     ? ingredientText.slice(0, INGR_LIMIT) + '…'
     : ingredientText;
+
+  const ECO_LIMIT = 320;
+  const ecoTruncated =
+    ecommerceDescription.length > ECO_LIMIT && !showFullEcommerceDescription;
+  const displayedEcoDesc = ecoTruncated
+    ? ecommerceDescription.slice(0, ECO_LIMIT) + '…'
+    : ecommerceDescription;
 
   return (
     <motion.div
@@ -296,6 +325,39 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
             </p>
           </div>
 
+          {/* Ecommerce Description card – AMBER/SHOPPING */}
+          {ecommerceDescription && (
+            <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
+              <div className="mb-4 flex items-center gap-2.5">
+                <div className="rounded-lg bg-amber-500/15 p-1.5">
+                  <Tag className="h-3.5 w-3.5 text-amber-400" />
+                </div>
+                <h3 className="text-xs font-black tracking-[0.15em] text-amber-300/80 uppercase">
+                  Ecommerce Description
+                </h3>
+              </div>
+              <p className="text-sm leading-relaxed text-slate-300 selection:bg-amber-500/20">
+                {displayedEcoDesc}
+              </p>
+              {ecommerceDescription.length > ECO_LIMIT && (
+                <button
+                  onClick={() => setShowFullEcommerceDescription((v) => !v)}
+                  className="mt-3 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-amber-400/70 transition-colors hover:text-amber-300"
+                >
+                  {showFullEcommerceDescription ? (
+                    <>
+                      <ChevronUp className="h-3.5 w-3.5" /> Show less
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-3.5 w-3.5" /> Show full list
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Ingredients card – EMERALD GREEN */}
           {ingredientText && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
@@ -333,7 +395,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
 
         {/* ── Right column: Specifications ── */}
         <motion.div variants={card}>
-          {specs.length > 0 ? (
+          {filteredSpecs.length > 0 ? (
             <div className="h-full rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               {/* Specifications header – VIOLET */}
               <div className="mb-4 flex items-center gap-2.5">
@@ -345,7 +407,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                 </h3>
                 {/* count badge */}
                 <span className="ml-auto rounded-full border border-violet-500/20 bg-violet-500/10 px-2 py-0.5 text-[10px] font-bold text-violet-300/70">
-                  {specs.length}
+                  {filteredSpecs.length}
                 </span>
               </div>
 
@@ -367,7 +429,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                 </AnimatePresence>
               </div>
 
-              {specs.length > SPEC_LIMIT && (
+              {filteredSpecs.length > SPEC_LIMIT && (
                 <button
                   onClick={() => setShowAllSpecs((v) => !v)}
                   className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-500/15 bg-violet-500/5 py-2.5 text-xs font-bold text-violet-300/60 transition-all hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-300"
