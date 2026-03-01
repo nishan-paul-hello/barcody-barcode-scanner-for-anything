@@ -27,7 +27,7 @@ interface GoUpcPresenterProps {
 
 // ─── Placeholder when no image is available ───────────────────────────────────
 const ImagePlaceholder = () => (
-  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-white/[0.03]">
+  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-white/[0.04]">
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="h-32 w-32 rounded-full bg-purple-500/10 blur-[60px]" />
     </div>
@@ -44,8 +44,8 @@ const ImagePlaceholder = () => (
 
 // ─── Single spec pill ─────────────────────────────────────────────────────────
 const SpecPill = ({ label, value }: { label: string; value: string }) => (
-  <div className="group flex items-start gap-3 rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 transition-colors hover:border-purple-500/20 hover:bg-white/[0.06]">
-    <span className="mt-0.5 min-w-0 shrink-0 text-[10px] font-bold tracking-wider text-purple-400/60 uppercase">
+  <div className="group flex items-start gap-3 rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 transition-colors hover:border-violet-500/20 hover:bg-white/[0.06]">
+    <span className="mt-0.5 min-w-0 shrink-0 text-[10px] font-bold tracking-wider text-violet-400/70 uppercase">
       {label}
     </span>
     <span className="text-sm break-words text-white/80">{value}</span>
@@ -61,7 +61,7 @@ const CategoryPath = ({ path }: { path: string[] }) => (
         <span
           className={
             i === path.length - 1
-              ? 'font-semibold text-purple-400/80'
+              ? 'font-semibold text-violet-400/80'
               : 'text-white/30'
           }
         >
@@ -209,12 +209,12 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
             {/* Badges row */}
             <div className="flex flex-wrap items-center gap-2">
               {brand && (
-                <Badge className="border-purple-500/20 bg-purple-500/10 font-bold tracking-wider text-purple-300 uppercase">
+                <Badge className="border-purple-500/20 bg-purple-500/10 font-bold tracking-wider text-purple-400 uppercase">
                   {brand}
                 </Badge>
               )}
               {category && (
-                <Badge className="border-indigo-500/20 bg-indigo-500/10 font-bold tracking-wider text-indigo-300 uppercase">
+                <Badge className="border-violet-500/20 bg-violet-500/10 font-bold tracking-wider text-violet-400 uppercase">
                   {category}
                 </Badge>
               )}
@@ -241,7 +241,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
             {/* Barcode + links row */}
             <div className="flex flex-wrap items-center gap-5 text-sm">
               {(upc || ean || code) && (
-                <div className="flex items-center gap-2 text-white/50">
+                <div className="flex items-center gap-2 text-white/60">
                   <Barcode className="h-4 w-4 text-purple-400" />
                   <span className="font-mono tracking-wider">
                     {upc ?? ean ?? code}
@@ -253,7 +253,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   href={barcodeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-1.5 text-white/30 transition-colors hover:text-purple-400"
+                  className="group flex items-center gap-1.5 text-white/30 transition-colors hover:text-violet-400"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                   <span className="text-xs tracking-wide">View on Go-UPC</span>
@@ -284,16 +284,16 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
           {ingredientText && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <h3 className="mb-4 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
-                <FlaskConical className="h-4 w-4 text-indigo-400" />
+                <FlaskConical className="h-4 w-4 text-emerald-400" />
                 Ingredients
               </h3>
-              <p className="text-sm leading-relaxed text-white/65 selection:bg-purple-500/30">
+              <p className="text-sm leading-relaxed text-white/65 selection:bg-emerald-500/20">
                 {displayedIngredients}
               </p>
               {ingredientText.length > INGR_LIMIT && (
                 <button
                   onClick={() => setShowFullIngredients((v) => !v)}
-                  className="mt-3 flex cursor-pointer items-center gap-1.5 text-xs font-bold text-purple-400/70 transition-colors hover:text-purple-300"
+                  className="mt-3 flex cursor-pointer items-center gap-1.5 text-xs font-semibold text-emerald-400/60 transition-colors hover:text-emerald-400"
                 >
                   {showFullIngredients ? (
                     <>
@@ -315,9 +315,9 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
           {specs.length > 0 ? (
             <div className="h-full rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <h3 className="mb-5 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
-                <Layers className="h-4 w-4 text-purple-400" />
+                <Layers className="h-4 w-4 text-violet-400" />
                 Specifications
-                <span className="ml-auto rounded-full bg-purple-500/10 px-2 py-0.5 text-[10px] font-bold text-purple-400/70">
+                <span className="ml-auto rounded-full bg-violet-500/10 px-2 py-0.5 text-[10px] font-bold text-violet-400/70">
                   {specs.length}
                 </span>
               </h3>
@@ -343,7 +343,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
               {specs.length > SPEC_LIMIT && (
                 <button
                   onClick={() => setShowAllSpecs((v) => !v)}
-                  className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] py-2.5 text-xs font-bold text-white/30 transition-all hover:border-purple-500/20 hover:text-purple-400"
+                  className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] py-2.5 text-xs font-bold text-white/30 transition-all hover:border-violet-500/20 hover:text-violet-400"
                 >
                   {showAllSpecs ? (
                     <>
@@ -371,17 +371,17 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
       {/* ── "Powered by" footer strip ────────────────────────────────────── */}
       <motion.div variants={card}>
         <div className="flex items-center justify-center gap-2 rounded-2xl border border-white/5 bg-white/[0.02] py-3 text-[11px] tracking-widest text-white/20 uppercase">
-          <Sparkles className="h-3 w-3 text-purple-400/40" />
+          <Sparkles className="h-3 w-3 text-white/15" />
           Data sourced from Go-UPC
           <a
             href="https://go-upc.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-1 text-purple-400/50 underline-offset-2 hover:underline"
+            className="ml-1 text-white/30 underline-offset-2 hover:underline"
           >
             go-upc.com
           </a>
-          <Tag className="h-3 w-3 text-purple-400/40" />
+          <Tag className="h-3 w-3 text-white/15" />
         </div>
       </motion.div>
     </motion.div>
