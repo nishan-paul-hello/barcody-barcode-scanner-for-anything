@@ -152,6 +152,14 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
     );
   };
 
+  // Parse ingredients into a clean list for the UI
+  const ingredientList = !isDataEmpty(ingredientText)
+    ? ingredientText
+        .split(',')
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0)
+    : [];
+
   return (
     <motion.div
       variants={container}
@@ -295,9 +303,11 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   Description
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed text-slate-300 selection:bg-sky-500/25">
-                {description}
-              </p>
+              <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
+                <p className="text-sm leading-relaxed text-slate-300 selection:bg-sky-500/25">
+                  {description}
+                </p>
+              </div>
             </div>
           )}
 
@@ -312,9 +322,11 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   Ecommerce Description
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed text-slate-300 selection:bg-amber-500/20">
-                {ecommerceDescription}
-              </p>
+              <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
+                <p className="text-sm leading-relaxed text-slate-300 selection:bg-amber-500/20">
+                  {ecommerceDescription}
+                </p>
+              </div>
             </div>
           )}
 
@@ -330,9 +342,18 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   Ingredients
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed text-slate-300 selection:bg-emerald-500/20">
-                {ingredientText}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {ingredientList.map((ingredient, i) => (
+                  <div
+                    key={i}
+                    className="group flex items-center gap-2 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-1.5 transition-all hover:border-emerald-500/30 hover:bg-emerald-500/10"
+                  >
+                    <span className="text-xs font-semibold text-slate-300 transition-colors group-hover:text-emerald-100">
+                      {ingredient}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </motion.div>
