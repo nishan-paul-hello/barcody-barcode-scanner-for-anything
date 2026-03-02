@@ -3,8 +3,22 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Home } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LoadingScreen } from '@/components/common/loading-screen';
 
 export default function NotFound() {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    // Small timeout to ensure the loading screen is visible on fast refreshes
+    const timer = setTimeout(() => setIsHydrated(true), 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isHydrated) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white selection:bg-cyan-500/30">
       {/* Background Ambient Orbs - Matching Landing Page */}
@@ -40,7 +54,7 @@ export default function NotFound() {
           className="max-w-md space-y-4"
         >
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-            PAGE NOT <span className="text-cyan-400">FOUND</span>
+            PAGE <span className="text-cyan-400">NOT FOUND</span>
           </h2>
           <p className="leading-relaxed text-white/40">
             The page you are looking for doesn&apos;t exist or has been moved.
