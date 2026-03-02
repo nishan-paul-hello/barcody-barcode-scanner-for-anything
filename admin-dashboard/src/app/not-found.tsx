@@ -56,11 +56,11 @@ export default function NotFound() {
           className="max-w-2xl space-y-4"
         >
           <h2 className="text-3xl font-bold tracking-tight text-white uppercase md:text-4xl">
-            Admin <span className="text-zinc-500">Resource Not Found</span>
+            page <span className="text-[#ee4b2b]">not found</span>
           </h2>
           <p className="bg-gradient-to-b from-zinc-100/60 to-zinc-100/20 bg-clip-text text-lg leading-relaxed font-medium tracking-tight text-transparent">
-            The endpoint or resource you are trying to access does not exist or
-            has been restricted.
+            The page you are looking for doesn&apos;t exist or has been moved to
+            a new location.
           </p>
         </motion.div>
 
@@ -72,9 +72,9 @@ export default function NotFound() {
           className="mt-12 flex flex-col gap-4 sm:flex-row"
         >
           <Link href="/">
-            <button className="group flex cursor-pointer items-center gap-2 rounded-2xl bg-zinc-100 px-8 py-4 font-bold text-black shadow-lg shadow-white/5 transition-all hover:bg-white active:scale-95">
+            <button className="group flex cursor-pointer items-center gap-2 rounded-2xl bg-cyan-500 px-8 py-4 font-bold text-black shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 active:scale-95">
               <Home className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" />
-              Dashboard Home
+              Home
             </button>
           </Link>
 
