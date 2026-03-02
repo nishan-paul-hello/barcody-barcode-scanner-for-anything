@@ -72,7 +72,7 @@ services:
       dockerfile: web-app/Dockerfile
       target: runner
       args:
-        - NEXT_PUBLIC_API_URL=https://api-barcody.tamarin-ph.ts.net/api/v1
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     container_name: barcody_web
     ports:
       - '3000:3000'
@@ -97,7 +97,7 @@ services:
       dockerfile: admin-dashboard/Dockerfile
       target: runner
       args:
-        - NEXT_PUBLIC_API_URL=https://api-barcody.tamarin-ph.ts.net/api/v1
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     container_name: barcody_admin
     ports:
       - '3001:3001'

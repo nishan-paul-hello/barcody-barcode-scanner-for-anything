@@ -1,4 +1,4 @@
-.PHONY: switch-env dev-lh dev-ts ts-certs build up down restart refresh logs funnel-on funnel-off help
+.PHONY: switch-env dev-lh dev-ts ts-certs build-lh build-ts build up-lh up-ts up down restart refresh logs funnel-on funnel-off help
 
 ifneq (,$(wildcard ./.env))
     include .env
@@ -29,11 +29,25 @@ ts-certs:
 	@docker exec barcody-barcode-scanner-for-anything-ts-api-1 tailscale cert api-barcody.tamarin-ph.ts.net 2>/dev/null || true
 	@docker exec barcody-barcode-scanner-for-anything-ts-admin-1 tailscale cert admin-barcody.tamarin-ph.ts.net 2>/dev/null || true
 
-build:
-	docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --remove-orphans --force-recreate
+build-lh:
+	@$(MAKE) switch-env BACKEND=localhost
+	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --remove-orphans --force-recreate
 
-up:
-	docker compose up -d
+build-ts:
+	@$(MAKE) switch-env BACKEND=tailscale
+	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --remove-orphans --force-recreate
+
+build: build-lh
+
+up-lh:
+	@$(MAKE) switch-env BACKEND=localhost
+	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml up -d
+
+up-ts:
+	@$(MAKE) switch-env BACKEND=tailscale
+	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml up -d
+
+up: up-lh
 
 down:
 	docker compose down
@@ -56,15 +70,19 @@ funnel-off:
 	@docker compose restart ts-web ts-admin ts-api
 
 help:
-	@echo "    switch-env  					- Manually copy .env files (BACKEND=localhost|tailscale)"
-	@echo "    make dev-lh   				- Pure localhost, no Tailscale (fast)"
-	@echo "    make dev-ts   				- Dev via Tailscale network"
-	@echo "    make ts-certs        - Provision Tailscale TLS certs (run once on first setup)"
-	@echo "    build       					- Start production environment (Docker)"
-	@echo "    up          					- Start full environment (Docker)"
-	@echo "    down        					- Stop all containers"
-	@echo "    restart     					- Restart all containers"
-	@echo "    refresh     					- Deep rebuild (use if deps change)"
-	@echo "    logs        					- Tail logs of all containers"
-	@echo "    funnel-on   					- Enable public access via Tailscale Funnel"
-	@echo "    funnel-off  					- Disable public access (Tailnet only)"
+	@echo "    switch-env            - Manually copy .env files (BACKEND=localhost|tailscale)"
+	@echo "    make dev-lh           - Dev on localhost, no Tailscale (fast)"
+	@echo "    make dev-ts           - Dev via Tailscale network"
+	@echo "    make ts-certs         - Provision Tailscale TLS certs (run once on first setup)"
+	@echo "    make build-lh         - Build production Docker image for localhost"
+	@echo "    make build-ts         - Build production Docker image for Tailscale"
+	@echo "    make build            - Alias for build-lh"
+	@echo "    make up-lh            - Start production containers (localhost)"
+	@echo "    make up-ts            - Start production containers (Tailscale)"
+	@echo "    make up               - Alias for up-lh"
+	@echo "    down                  - Stop all containers"
+	@echo "    restart               - Restart all containers"
+	@echo "    refresh               - Deep rebuild (use if deps change)"
+	@echo "    logs                  - Tail logs of all containers"
+	@echo "    funnel-on             - Enable public access via Tailscale Funnel"
+	@echo "    funnel-off            - Disable public access (Tailnet only)"
