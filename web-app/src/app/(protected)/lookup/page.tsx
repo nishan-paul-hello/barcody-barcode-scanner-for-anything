@@ -256,7 +256,7 @@ export default function GlobalLookupPage() {
 
         <Tabs defaultValue="off" className="w-full">
           <div className="mb-12">
-            <TabsList className="flex h-auto w-full flex-wrap justify-center gap-4 bg-transparent p-0">
+            <TabsList className="grid h-auto w-full grid-cols-2 gap-4 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-6">
               {APIS.map((api) => {
                 const res = results[api.id] || {
                   loading: false,
@@ -268,7 +268,7 @@ export default function GlobalLookupPage() {
                   <TabsTrigger
                     key={api.id}
                     value={api.id}
-                    className="group !data-[state=active]:border-cyan-400 relative flex h-32 w-64 flex-none cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-white/5 bg-white/5 p-6 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white dark:data-[state=active]:border-cyan-400"
+                    className="group !data-[state=active]:border-cyan-400 relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white dark:data-[state=active]:border-cyan-400"
                   >
                     <api.icon
                       className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
