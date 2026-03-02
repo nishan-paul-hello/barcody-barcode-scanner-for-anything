@@ -1,5 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2 } from 'lucide-react';
+import { LoadingScreen as ModernLoadingScreen } from './loading-screen';
 
 export function LoadingSpinner({ className }: { className?: string }) {
   return (
@@ -8,14 +9,7 @@ export function LoadingSpinner({ className }: { className?: string }) {
 }
 
 export function LoadingScreen() {
-  return (
-    <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-      <div className="flex flex-col items-center gap-4">
-        <LoadingSpinner />
-        <p className="animate-pulse text-sm font-medium">Loading Barcody...</p>
-      </div>
-    </div>
-  );
+  return <ModernLoadingScreen />;
 }
 
 export function PageSkeleton() {
