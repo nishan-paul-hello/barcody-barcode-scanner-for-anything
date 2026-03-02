@@ -20,6 +20,8 @@ import { LoginModal } from '@/components/auth/LoginModal';
 import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler';
 import { AuthSyncHandler } from '@/components/auth/AuthSyncHandler';
 
+import { LoadingProvider } from '@/components/common/LoadingProvider';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,10 +31,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <Providers>
-          {children}
-          <LoginModal />
-          <AuthRedirectHandler />
-          <AuthSyncHandler />
+          <LoadingProvider>
+            {children}
+            <LoginModal />
+            <AuthRedirectHandler />
+            <AuthSyncHandler />
+          </LoadingProvider>
         </Providers>
       </body>
     </html>
