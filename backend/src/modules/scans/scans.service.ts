@@ -34,6 +34,7 @@ export class ScansService {
             nutrition: {
               grade: scan.nutritionGrade,
             },
+            attributes: scan.attributes,
           }
         : undefined,
     };
@@ -45,16 +46,15 @@ export class ScansService {
     // Auto-lookup product info if missing
     if (!createScanDto.productName) {
       try {
-        const { data: product } = await this.productLookupService.lookup(
-          createScanDto.barcodeData,
-          userId,
-        );
+        const result = await this.productLookupService.lookup(createScanDto.barcodeData, userId);
+        const product = result?.data;
         if (product) {
           createScanDto.productName = product.name;
           createScanDto.brand = product.brand;
           createScanDto.category = product.category;
           createScanDto.nutritionGrade = product.nutrition?.grade;
           createScanDto.imageUrl = product.images?.[0];
+          createScanDto.attributes = product.attributes;
         }
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);

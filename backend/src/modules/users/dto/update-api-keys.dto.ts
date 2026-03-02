@@ -7,5 +7,13 @@ export class UpdateApiKeysDto {
 
   @IsOptional()
   @IsString()
-  barcodeLookupApiKey?: string;
+  usdaFoodDataApiKey?: string;
+
+  @IsOptional()
+  @IsString()
+  goUpcApiKey?: string;
+
+  @IsOptional()
+  @IsString()
+  searchUpcApiKey?: string;
 }

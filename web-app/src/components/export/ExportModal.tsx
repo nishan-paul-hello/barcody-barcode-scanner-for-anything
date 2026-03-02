@@ -357,7 +357,7 @@ export function ExportModal({
                 Search Term
               </label>
               <Input
-                placeholder="Find in barcode data..."
+                placeholder="Find in barcode data"
                 value={filters.search}
                 onChange={(e) =>
                   setFilters({ ...filters, search: e.target.value })

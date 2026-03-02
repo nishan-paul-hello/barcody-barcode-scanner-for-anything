@@ -1,0 +1,60 @@
+services:
+  ts-web:
+    image: tailscale/tailscale:latest
+    hostname: barcody
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/web.json
+    volumes:
+      - ./infra/tailscale/web.json:/config/web.json
+      - ts_web_state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - barcody-network
+    restart: unless-stopped
+
+  ts-admin:
+    image: tailscale/tailscale:latest
+    hostname: admin-barcody
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/admin.json
+    volumes:
+      - ./infra/tailscale/admin.json:/config/admin.json
+      - ts_admin_state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - barcody-network
+    restart: unless-stopped
+
+  ts-api:
+    image: tailscale/tailscale:latest
+    hostname: api-barcody
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/api.json
+    volumes:
+      - ./infra/tailscale/api.json:/config/api.json
+      - ts_api_state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - barcody-network
+    restart: unless-stopped
+
+networks:
+  barcody-network:
+    driver: bridge
+
+volumes:
+  ts_web_state:
+  ts_admin_state:
+  ts_api_state:

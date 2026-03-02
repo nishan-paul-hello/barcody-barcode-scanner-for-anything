@@ -6,14 +6,14 @@ import { Heart } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-800 bg-black/40 py-8 backdrop-blur-xl">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="mx-auto mb-8 w-[95%] max-w-7xl rounded-2xl border border-white/10 bg-black/40 py-8 shadow-2xl shadow-black/50 backdrop-blur-xl">
+      <div className="container mx-auto px-4 sm:px-8">
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          <p className="text-sm font-medium text-zinc-500">
-            © {new Date().getFullYear()} Barcody. All rights reserved.
+          <p className="text-sm font-medium text-white/60">
+            © {new Date().getFullYear()} Barcody Admin. All rights reserved.
           </p>
 
-          <div className="group flex items-center gap-2 text-sm font-medium text-zinc-500">
+          <div className="group flex items-center gap-2 text-sm font-medium text-white/60">
             <span>Built with</span>
             <Heart className="h-4 w-4 fill-red-500 text-red-500" />
             <span>by</span>
@@ -31,7 +31,7 @@ export function Footer() {
                   className="object-contain"
                 />
               </div>
-              <span className="font-bold tracking-tight text-zinc-200 transition-colors duration-300 group-hover/kai:text-[#00F07C]">
+              <span className="font-bold tracking-tight text-white transition-colors duration-300 group-hover/kai:text-[#00F07C]">
                 KAI
               </span>
             </Link>

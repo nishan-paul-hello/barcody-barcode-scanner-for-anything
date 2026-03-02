@@ -60,39 +60,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="relative min-h-screen overflow-hidden bg-[#030303] text-zinc-100 selection:bg-[#00ffe7]/30 selection:text-[#00ffe7]"
-    >
-      {/* Static Background — no blur on animated elements for GPU performance */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] mix-blend-overlay" />
-        <div className="absolute top-0 right-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#00ffe7]/30 to-transparent" />
-
-        {/* Static gradient orbs — radial-gradient instead of blur on animated elements */}
-        <div
-          className="absolute -top-[20%] -right-[10%] h-[70vw] w-[70vw] rounded-full"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(0,255,231,0.07) 0%, transparent 70%)',
-            willChange: 'transform',
-          }}
-        />
-        <div
-          className="absolute -bottom-[20%] -left-[10%] h-[60vw] w-[60vw] rounded-full"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(0,255,231,0.045) 0%, transparent 70%)',
-            willChange: 'transform',
-          }}
-        />
-
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,#000_70%,transparent_100%)] bg-[size:64px_64px]" />
-      </div>
-
+    <div ref={containerRef} className="relative w-full">
       {/* Hero Section */}
-      <section className="relative z-10 flex min-h-[75vh] flex-col items-center justify-start px-4 pt-16 text-center md:pt-24">
+      <section className="relative z-10 flex min-h-[75vh] flex-col items-center justify-start px-4 pt-[88px] text-center">
         <motion.div
           style={{ opacity, scale }}
           className="flex flex-col items-center space-y-8"
@@ -101,24 +71,22 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-5xl text-6xl leading-[1.1] font-black tracking-tighter md:text-8xl"
+            className="max-w-7xl text-6xl leading-[1.1] font-black tracking-tighter md:text-8xl"
           >
-            ABSOLUTE <br className="hidden md:block" />
-            <span className="bg-gradient-to-br from-white via-[#00ffe7] to-[#00ffe7]/40 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(0,255,231,0.2)]">
-              CONTROL
+            TOTAL{' '}
+            <span className="text-[#00ffe7] drop-shadow-[0_0_15px_rgba(0,255,231,0.2)]">
+              COMMAND
             </span>
-            <span className="text-[#00ffe7]">.</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="max-w-2xl text-lg font-medium text-zinc-400 md:text-xl md:leading-relaxed"
+            className="max-w-4xl text-lg font-medium text-zinc-400 md:text-xl md:leading-relaxed"
           >
-            The executive command center for your Barcody ecosystem. Govern
-            users, monitor live data pipelines, and enforce system-wide security
-            policies from a single, omnipotent dashboard.
+            Manage users and monitor scan activity across your entire ecosystem
+            from single dashboard.
           </motion.p>
 
           <motion.div
@@ -231,7 +199,7 @@ export default function LandingPage() {
                 <Settings className="h-4 w-4" /> FEATURE 01
               </div>
               <h2 className="text-4xl leading-tight font-black tracking-tight lg:text-5xl">
-                Macroscopic Analytics Engine
+                Real-time Scanning Intelligence
               </h2>
               <p className="text-xl leading-relaxed text-zinc-400">
                 Stop guessing. Start knowing. Our analytics engine ingests
@@ -259,86 +227,94 @@ export default function LandingPage() {
               style={{ y: y1 }}
               className="relative aspect-square w-full rounded-full bg-gradient-to-br from-[#00ffe7]/20 to-transparent p-1 backdrop-blur-3xl"
             >
-              <div className="absolute inset-4 overflow-hidden rounded-full border border-[#00ffe7]/20 bg-zinc-950 shadow-[0_0_50px_rgba(0,255,231,0.05)]">
-                <div className="flex h-full flex-col p-10">
-                  {/* Header Metrics */}
-                  <div className="flex justify-between px-4 pt-6">
-                    <div>
-                      <div className="mb-1 text-xs font-semibold text-zinc-500">
-                        TOTAL SCANS (24H)
+              <div className="absolute inset-2 overflow-hidden rounded-full border border-[#00ffe7]/30 bg-[#050505] shadow-[inset_0_0_60px_rgba(0,255,231,0.05)]">
+                {/* Central Atmosphere */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,231,0.08)_0%,transparent_70%)]" />
+
+                <div className="relative flex h-full flex-col items-center justify-between px-12 py-12">
+                  {/* Header Metrics - Narrowed container to avoid circular cropping */}
+                  <div className="flex w-full max-w-[240px] items-start justify-between pt-4">
+                    <div className="space-y-1">
+                      <div className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                        Velocity
                       </div>
-                      <div className="font-mono text-3xl font-black text-white">
-                        2.4M
+                      <div className="flex items-baseline gap-1">
+                        <span className="font-mono text-2xl font-black text-white">
+                          12.8
+                        </span>
+                        <span className="text-[10px] font-bold text-[#00ffe7]">
+                          M
+                        </span>
                       </div>
-                      <div className="text-xs text-[#00ffe7]">
-                        +14.2% vs prev
+                      <div className="text-[9px] font-medium text-[#00ffe7]/80">
+                        ↑ 24%
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="mb-1 text-xs font-semibold text-zinc-500">
-                        ACTIVE NODES
+                    <div className="space-y-1 text-right">
+                      <div className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                        Force
                       </div>
-                      <div className="font-mono text-3xl font-black text-white">
-                        842
+                      <div className="flex items-baseline justify-end gap-1">
+                        <span className="font-mono text-2xl font-black text-white">
+                          1.4
+                        </span>
+                        <span className="text-[10px] font-bold text-zinc-400">
+                          K
+                        </span>
                       </div>
-                      <div className="text-xs text-green-400">
-                        All Systems Nominal
+                      <div className="text-[9px] font-medium text-green-400/80">
+                        98% Live
                       </div>
                     </div>
                   </div>
 
-                  {/* Chart Area */}
-                  <div className="relative mt-auto mb-4 flex h-1/2 items-end justify-between gap-1 px-2 opacity-80">
-                    {/* Grid lines */}
-                    <div className="absolute inset-0 flex flex-col justify-between border-y border-white/5 py-2">
-                      <div className="h-px w-full bg-white/5" />
-                      <div className="h-px w-full bg-white/5" />
-                      <div className="h-px w-full bg-white/5" />
-                    </div>
-                    {[40, 70, 45, 90, 65, 80, 50, 100, 60, 40, 75, 85].map(
+                  {/* Visual Centerpiece: Dynamic Activity Ring */}
+                  <div className="relative flex h-32 w-full items-end justify-center gap-[3px] px-10">
+                    {[35, 60, 45, 85, 70, 95, 50, 100, 75, 55, 80, 40].map(
                       (h, i) => (
                         <motion.div
                           key={i}
                           animate={{
-                            scaleY: [1, 0.7, 1],
+                            height: [`${h * 0.7}%`, `${h}%`, `${h * 0.8}%`],
+                            opacity: [0.4, 0.8, 0.4],
                           }}
                           transition={{
-                            duration: 2 + (i % 4) * 0.5,
+                            duration: 3 + (i % 5) * 0.6,
                             repeat: Infinity,
                             ease: 'easeInOut',
                           }}
-                          className="group relative z-10 w-full cursor-crosshair rounded-t-sm bg-gradient-to-t from-[#00ffe7]/80 to-[#00ffe7]/20 hover:from-[#00ffe7] hover:to-[#00ffe7]/40"
+                          className="w-full rounded-full bg-gradient-to-t from-[#00ffe7] to-[#00ffe7]/20"
                           style={{
-                            height: `${h}%`,
-                            transformOrigin: 'bottom',
-                            willChange: 'transform',
+                            minWidth: '4px',
+                            willChange: 'height, opacity',
                           }}
-                        >
-                          <div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded border border-[#00ffe7]/30 bg-black/80 px-2 py-1 font-mono text-[10px] text-[#00ffe7] opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
-                            {h * 12}k
-                          </div>
-                        </motion.div>
+                        />
                       )
                     )}
                   </div>
 
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-[#00ffe7]/40 to-transparent" />
+                  {/* Bottom Stats & Status */}
+                  <div className="w-full space-y-6 pb-2">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-[#00ffe7]/30 to-transparent" />
 
-                  {/* Footer Ticker */}
-                  <div className="mt-6 flex justify-between px-6 font-mono text-xs text-zinc-400">
-                    <div className="flex gap-4">
-                      <span className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 animate-pulse rounded-full bg-[#00ffe7]" />{' '}
-                        API HTTP/2
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-zinc-600" /> DB
-                        W/R
-                      </span>
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="flex items-center gap-6 font-mono text-[9px] tracking-widest text-zinc-500">
+                        <span className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#00ffe7] shadow-[0_0_8px_#00ffe7]" />
+                          MQTT EDGE
+                        </span>
+                        <span className="flex items-center gap-2 opacity-50">
+                          <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
+                          AUTH SYNC
+                        </span>
+                      </div>
+
+                      <div className="rounded-full border border-[#00ffe7]/20 bg-[#00ffe7]/5 px-4 py-1">
+                        <span className="animate-pulse text-[10px] font-black tracking-[0.3em] text-[#00ffe7] uppercase">
+                          System Active • Verified
+                        </span>
+                      </div>
                     </div>
-                    <span className="animate-pulse font-bold text-[#00ffe7] drop-shadow-[0_0_8px_rgba(0,255,231,0.8)]">
-                      LIVE • REC
-                    </span>
                   </div>
                 </div>
               </div>
@@ -377,35 +353,35 @@ export default function LandingPage() {
                   {
                     name: 'Sarah Jenkins',
                     role: 'Super Admin',
-                    dept: 'Security Ops',
+                    dept: 'Global Operations',
                     status: 'online',
                     color: 'bg-[#00ffe7]',
                   },
                   {
                     name: 'Marcus Chen',
                     role: 'Auditor',
-                    dept: 'Compliance',
+                    dept: 'Inventory Integrity',
                     status: 'away',
                     color: 'bg-yellow-400',
                   },
                   {
                     name: 'Elena Rostova',
                     role: 'Manager',
-                    dept: 'Logistics',
+                    dept: 'South-East Logistics',
                     status: 'online',
                     color: 'bg-[#00ffe7]',
                   },
                   {
                     name: 'David Kim',
                     role: 'Analyst',
-                    dept: 'Data Science',
+                    dept: 'Metric Intelligence',
                     status: 'offline',
                     color: 'bg-zinc-600',
                   },
                   {
                     name: 'Priya Patel',
                     role: 'Developer',
-                    dept: 'Engineering',
+                    dept: 'Edge Infrastructure',
                     status: 'online',
                     color: 'bg-[#00ffe7]',
                   },
@@ -458,7 +434,7 @@ export default function LandingPage() {
                 <Users className="h-4 w-4" /> FEATURE 02
               </div>
               <h2 className="text-4xl leading-tight font-black tracking-tight lg:text-5xl">
-                Global Workforce Management
+                Dynamic Workforce Governance
               </h2>
               <p className="text-xl leading-relaxed text-zinc-400">
                 A birds-eye view of your entire organization. Add, remove, or
@@ -481,7 +457,7 @@ export default function LandingPage() {
       </section>
 
       {/* Admin Benefits / Value Proposition */}
-      <section className="relative z-10 border-t border-zinc-800/50 bg-black/50 py-32 backdrop-blur-2xl">
+      <section className="relative z-10 py-32">
         <div className="container mx-auto max-w-5xl px-4 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

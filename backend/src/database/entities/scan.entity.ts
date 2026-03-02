@@ -8,8 +8,8 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { BarcodeType } from '../../common/enums/barcode-type.enum';
-import { DeviceType } from '../../common/enums/device-type.enum';
+import { BarcodeType } from '@common/enums/barcode-type.enum';
+import { DeviceType } from '@common/enums/device-type.enum';
 
 @Entity('scans')
 @Index('idx_scans_user_id_scanned_at', ['userId', 'scannedAt']) // Optimized for fetching user scan history ordered by date
@@ -62,4 +62,7 @@ export class Scan {
 
   @Column({ type: 'jsonb', nullable: true })
   metadata?: Record<string, unknown>;
+
+  @Column({ type: 'jsonb', nullable: true })
+  attributes?: Record<string, unknown>[];
 }

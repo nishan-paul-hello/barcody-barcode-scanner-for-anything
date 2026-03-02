@@ -26,20 +26,20 @@ The end-user experience optimized for speed and clarity.
 
 | Feature | Preview |
 |---|---|
-| **Modern Landing** | ![Home](preview/web-01-home.gif) |
-| **Precision Scanning** | ![Scan](preview/web-02-scan.gif) |
-| **Activity History** | ![History](preview/web-03-history.gif) |
+| **Modern Landing** | ![Home](assets/preview/web-01-home.gif) |
+| **Precision Scanning** | ![Scan](assets/preview/web-02-scan.gif) |
+| **Activity History** | ![History](assets/preview/web-03-history.gif) |
 
 ### 🛡️ Admin Dashboard
 Comprehensive management suite for system administrators.
 
 | Module | Preview |
 |---|---|
-| **Overview Console** | ![Admin Home](preview/admin-01-home.gif) |
-| **Control Center** | ![Admin Dashboard](preview/admin-02-dashboard.gif) |
-| **Intelligence Lab** | ![Admin Analytics](preview/admin-03-analytics.gif) |
-| **User Governance** | ![Admin Users](preview/admin-04-users.gif) |
-| **Global Audit** | ![Admin Scans](preview/admin-05-scans.gif) |
+| **Overview Console** | ![Admin Home](assets/preview/admin-01-home.gif) |
+| **Control Center** | ![Admin Dashboard](assets/preview/admin-02-dashboard.gif) |
+| **Intelligence Lab** | ![Admin Analytics](assets/preview/admin-03-analytics.gif) |
+| **User Governance** | ![Admin Users](assets/preview/admin-04-users.gif) |
+| **Global Audit** | ![Admin Scans](assets/preview/admin-05-scans.gif) |
 
 ---
 

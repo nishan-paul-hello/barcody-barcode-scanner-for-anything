@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { api } from '@/lib/api/client';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -14,8 +14,14 @@ export const LoginModal = () => {
   const { isLoginModalOpen, closeLoginModal, pendingRedirectPath } =
     useUIStore();
   const [isLoading, setIsLoading] = useState(false);
-  const { login, user } = useAuthStore();
+  const { login, user, isAuthenticated } = useAuthStore();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated && isLoginModalOpen) {
+      closeLoginModal();
+    }
+  }, [isAuthenticated, isLoginModalOpen, closeLoginModal]);
 
   const [isSuggestedDismissed, setIsSuggestedDismissed] = useState(false);
 

@@ -2,35 +2,20 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { RedisService } from '@modules/redis/redis.service';
 import { OpenFoodFactsClient } from '@modules/product-lookup/clients/open-food-facts.client';
 import { UpcDatabaseClient } from '@modules/product-lookup/clients/upc-database.client';
-import { BarcodeLookupClient } from '@modules/product-lookup/clients/barcode-lookup.client';
+import { UsdaFoodDataClient } from '@modules/product-lookup/clients/usda-food-data.client';
+import { GoUpcClient } from '@modules/product-lookup/clients/go-upc.client';
+import { SearchUpcClient } from '@modules/product-lookup/clients/search-upc.client';
+import { OpenBeautyFactsClient } from '@modules/product-lookup/clients/open-beauty-facts.client';
 import { ProductInfo } from '@modules/product-lookup/interfaces/product-info.interface';
 import { UsersService } from '@modules/users/users.service';
-
-export interface ProductComparison {
-  nutrients: Record<
-    string,
-    {
-      min: number;
-      max: number;
-      values: Record<string, number>;
-      best: string[];
-      worst: string[];
-    }
-  >;
-  allergens: {
-    common: string[];
-    byProduct: Record<string, string[]>;
-  };
-  nutritionGrades: Record<string, string | undefined>;
-  nutritionGradesSummary?: {
-    best: string[];
-  };
-}
+export type { ProductComparison } from './comparison.service';
+import { ProductComparisonService, ProductComparison } from './comparison.service';
 
 @Injectable()
 export class ProductLookupService {
   private readonly logger = new Logger(ProductLookupService.name);
   private readonly openFoodFactsClient: OpenFoodFactsClient;
+  private readonly openBeautyFactsClient: OpenBeautyFactsClient;
 
   // TTL constants (in seconds)
   private readonly PRODUCT_CACHE_TTL = 2592000; // 30 days
@@ -38,13 +23,14 @@ export class ProductLookupService {
 
   // API Limits
   private readonly UPC_LIMIT = 100;
-  private readonly BARCODE_LOOKUP_LIMIT = 50;
 
   constructor(
     private redisService: RedisService,
     private usersService: UsersService,
+    private comparisonService: ProductComparisonService,
   ) {
     this.openFoodFactsClient = new OpenFoodFactsClient();
+    this.openBeautyFactsClient = new OpenBeautyFactsClient();
   }
 
   async lookup(
@@ -53,18 +39,12 @@ export class ProductLookupService {
   ): Promise<{ data: ProductInfo | null; cacheStatus: 'hit' | 'miss' }> {
     this.logger.log(`Looking up barcode: ${barcode} for user ${userId}`);
 
-    // 1. Check Caches
     const cached = await this.checkCaches(barcode);
-    if (cached !== undefined) {
-      return { data: cached, cacheStatus: 'hit' };
-    }
+    if (cached !== undefined) return { data: cached, cacheStatus: 'hit' };
 
     await this.incrementStat('cache_miss');
-
-    // 2. Cascade Fallback
     const result = await this.performCascadeLookup(barcode, userId);
 
-    // 3. Cache result or Not Found
     if (result) {
       await this.cacheProduct(barcode, result);
     } else {
@@ -72,6 +52,104 @@ export class ProductLookupService {
     }
 
     return { data: result, cacheStatus: 'miss' };
+  }
+
+  // eslint-disable-next-line complexity
+  async globalRawLookup(barcode: string, source: string, userId: string): Promise<unknown> {
+    const keys = await this.usersService.getApiKeys(userId);
+    const cleanBarcode = barcode?.trim() || '';
+    if (!cleanBarcode) throw new BadRequestException('Barcode is required');
+
+    try {
+      switch (source) {
+        case 'off':
+          return this.openFoodFactsClient.lookupRaw(cleanBarcode);
+        case 'obf':
+          return this.openBeautyFactsClient.lookupRaw(cleanBarcode);
+        case 'usda':
+          return this.proxyUsda(cleanBarcode, keys.usdaFoodDataApiKey);
+        case 'upcitemdb':
+          return new UpcDatabaseClient(keys.upcDatabaseApiKey || 'trial').lookupRaw(cleanBarcode);
+        case 'goUpc':
+          return this.proxyGoUpc(cleanBarcode, keys.goUpcApiKey);
+        case 'searchUpc':
+          return this.proxySearchUpc(cleanBarcode, keys.searchUpcApiKey);
+        default:
+          throw new BadRequestException(`Unknown source: ${source}`);
+      }
+    } catch (err) {
+      if (err instanceof BadRequestException) throw err;
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Raw lookup failed [${source}]: ${message}`);
+      throw new BadRequestException(message || 'Lookup failed');
+    }
+  }
+
+  async compare(
+    barcodes: string[],
+    userId: string,
+  ): Promise<{ products: ProductInfo[]; comparison: ProductComparison }> {
+    this.logger.log(`Comparing barcodes: ${barcodes.join(', ')}`);
+
+    const productsData = await Promise.all(
+      barcodes.map(async (barcode) => {
+        const { data } = await this.lookup(barcode, userId);
+        return data;
+      }),
+    );
+
+    const products = productsData.filter((p): p is ProductInfo => p !== null);
+
+    if (products.length < 2) {
+      throw new BadRequestException('At least 2 valid products are required for comparison');
+    }
+
+    return {
+      products,
+      comparison: this.comparisonService.compare(products),
+    };
+  }
+
+  async getStats(): Promise<{
+    today: string;
+    cacheHits: number;
+    cacheMisses: number;
+    hitRate: string;
+    apiUsage: { upc: number };
+    apiLimits: { upc: number };
+  }> {
+    const today = new Date().toISOString().split('T', 1)[0] || '';
+    const cacheHits = (await this.redisService.get<number>(`stats:cache_hit:${today}`)) || 0;
+    const cacheMisses = (await this.redisService.get<number>(`stats:cache_miss:${today}`)) || 0;
+    const upcCalls = (await this.redisService.get<number>(`api:usage:upc:${today}`)) || 0;
+
+    const total = cacheHits + cacheMisses;
+    const hitRateValue = total > 0 ? (cacheHits / total) * 100 : 0;
+
+    return {
+      today,
+      cacheHits,
+      cacheMisses,
+      hitRate: `${hitRateValue.toFixed(2)}%`,
+      apiUsage: { upc: upcCalls },
+      apiLimits: { upc: this.UPC_LIMIT },
+    };
+  }
+
+  private async proxyUsda(barcode: string, key?: string | null) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) throw new BadRequestException('USDA API key not configured');
+    return new UsdaFoodDataClient(trimmedKey).lookupRaw(barcode.trim());
+  }
+
+  private async proxyGoUpc(barcode: string, key?: string | null) {
+    if (!key) throw new BadRequestException('Go-UPC API key not configured');
+    return new GoUpcClient(key).lookupRaw(barcode);
+  }
+
+  private async proxySearchUpc(barcode: string, key?: string | null) {
+    if (!key) throw new BadRequestException('SearchUPC API key not configured');
+    return new SearchUpcClient(key).lookupRaw(barcode);
   }
 
   private async checkCaches(barcode: string): Promise<ProductInfo | null | undefined> {
@@ -93,17 +171,11 @@ export class ProductLookupService {
   }
 
   private async performCascadeLookup(barcode: string, userId: string): Promise<ProductInfo | null> {
-    // Step 1: Open Food Facts (Free, Unlimited)
     const offResult = await this.tryOpenFoodFacts(barcode);
     if (offResult) return offResult;
 
-    // Step 2: UPC Database
     const upcResult = await this.tryUpcDatabase(barcode, userId);
     if (upcResult) return upcResult;
-
-    // Step 3: Barcode Lookup
-    const blResult = await this.tryBarcodeLookup(barcode, userId);
-    if (blResult) return blResult;
 
     return null;
   }
@@ -111,68 +183,26 @@ export class ProductLookupService {
   private async tryOpenFoodFacts(barcode: string): Promise<ProductInfo | null> {
     try {
       const result = await this.openFoodFactsClient.lookup(barcode);
-      if (result) {
-        this.logger.log(`Found ${barcode} on Open Food Facts`);
-        return result;
-      }
+      if (result) return result;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Open Food Facts lookup failed: ${message}`);
+      this.logger.error(`Open Food Facts lookup failed: ${error}`);
     }
     return null;
   }
 
   private async tryUpcDatabase(barcode: string, userId: string): Promise<ProductInfo | null> {
-    if (!(await this.checkLimit('upc', this.UPC_LIMIT))) {
-      this.logger.warn(`UPC Database limit reached for today`);
-      return null;
-    }
+    if (!(await this.checkLimit('upc', this.UPC_LIMIT))) return null;
 
     const { upcDatabaseApiKey } = await this.usersService.getApiKeys(userId);
-    if (!upcDatabaseApiKey) {
-      this.logger.warn(`No UPC Database API key configured for user ${userId}`);
-      return null;
-    }
+    if (!upcDatabaseApiKey) return null;
 
     try {
       const client = new UpcDatabaseClient(upcDatabaseApiKey);
       const result = await client.lookup(barcode);
       await this.incrementUsage('upc');
-      if (result) {
-        this.logger.log(`Found ${barcode} on UPC Database`);
-        return result;
-      }
+      return result;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.logger.error(`UPC Database lookup failed: ${message}`);
-    }
-    return null;
-  }
-
-  private async tryBarcodeLookup(barcode: string, userId: string): Promise<ProductInfo | null> {
-    if (!(await this.checkLimit('barcode', this.BARCODE_LOOKUP_LIMIT))) {
-      this.logger.warn(`Barcode Lookup limit reached for today`);
-      return null;
-    }
-
-    const { barcodeLookupApiKey } = await this.usersService.getApiKeys(userId);
-    if (!barcodeLookupApiKey) {
-      this.logger.warn(`No Barcode Lookup API key configured for user ${userId}`);
-      return null;
-    }
-
-    const client = new BarcodeLookupClient(barcodeLookupApiKey);
-
-    try {
-      const result = await client.lookup(barcode);
-      await this.incrementUsage('barcode');
-      if (result) {
-        this.logger.log(`Found ${barcode} on Barcode Lookup`);
-        return result;
-      }
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Barcode Lookup failed: ${message}`);
+      this.logger.error(`UPC Database lookup failed: ${error}`);
     }
     return null;
   }
@@ -182,7 +212,6 @@ export class ProductLookupService {
   }
 
   private async cacheNotFound(barcode: string): Promise<void> {
-    this.logger.warn(`Product not found for barcode: ${barcode}`);
     await this.redisService.set(
       `product:notfound:${barcode}`,
       'NOT_FOUND',
@@ -217,146 +246,6 @@ export class ProductLookupService {
     const today = new Date().toISOString().split('T', 1)[0] || '';
     const key = `stats:${stat}:${today}`;
     const newValue = await this.redisService.increment(key);
-    if (newValue === 1) {
-      await this.redisService.set(key, newValue, 86400 * 7); // Keep stats for 7 days
-    }
-  }
-
-  async compare(
-    barcodes: string[],
-    userId: string,
-  ): Promise<{ products: ProductInfo[]; comparison: ProductComparison }> {
-    this.logger.log(`Comparing barcodes: ${barcodes.join(', ')}`);
-
-    const productsData = await Promise.all(
-      barcodes.map(async (barcode) => {
-        const { data } = await this.lookup(barcode, userId);
-        return data;
-      }),
-    );
-
-    const products = productsData.filter((p): p is ProductInfo => p !== null);
-
-    if (products.length < 2) {
-      throw new BadRequestException('At least 2 valid products are required for comparison');
-    }
-
-    const nutrientsToCompare = ['calories', 'fat', 'carbs', 'protein', 'sugar', 'fiber', 'salt'];
-
-    const comparison: ProductComparison = {
-      nutrients: {},
-      allergens: {
-        common: [],
-        byProduct: {},
-      },
-      nutritionGrades: {},
-    };
-
-    // 1. Compare Nutrients
-    for (const nutrient of nutrientsToCompare) {
-      const values = products
-        .map((p: ProductInfo) => ({
-          barcode: p.barcode,
-          value: p.nutrition?.[nutrient as keyof typeof p.nutrition] as number | undefined,
-        }))
-        .filter((v): v is { barcode: string; value: number } => v.value !== undefined);
-
-      if (values.length > 0) {
-        const numericValues = values.map((v) => v.value);
-        const min = Math.min(...numericValues);
-        const max = Math.max(...numericValues);
-
-        comparison.nutrients[nutrient] = {
-          min,
-          max,
-          values: values.reduce(
-            (acc: Record<string, number>, v) => ({ ...acc, [v.barcode]: v.value }),
-            {},
-          ),
-          // For these nutrients, lower is generally better
-          best: ['calories', 'fat', 'sugar', 'salt'].includes(nutrient)
-            ? values.filter((v) => v.value === min).map((v) => v.barcode)
-            : values.filter((v) => v.value === max).map((v) => v.barcode),
-          worst: ['calories', 'fat', 'sugar', 'salt'].includes(nutrient)
-            ? values.filter((v) => v.value === max).map((v) => v.barcode)
-            : values.filter((v) => v.value === min).map((v) => v.barcode),
-        };
-      }
-    }
-
-    // 2. Compare Allergens
-    const allAllergenSets = products.map(
-      (p: ProductInfo) => new Set<string>(p.nutrition?.allergens || []),
-    );
-
-    if (allAllergenSets.length > 0) {
-      const commonAllergens = Array.from(allAllergenSets[0]!).filter((a) =>
-        allAllergenSets.every((set) => set.has(a)),
-      );
-      comparison.allergens.common = commonAllergens;
-    }
-
-    products.forEach((p: ProductInfo) => {
-      comparison.allergens.byProduct[p.barcode] = p.nutrition?.allergens || [];
-    });
-
-    // 3. Compare Nutrition Grades
-    const gradeScores = { A: 5, B: 4, C: 3, D: 2, E: 1 };
-    products.forEach((p: ProductInfo) => {
-      comparison.nutritionGrades[p.barcode] = p.nutrition?.grade;
-    });
-
-    const gradeValues = products
-      .map((p: ProductInfo) => ({
-        barcode: p.barcode,
-        grade: p.nutrition?.grade,
-        score: gradeScores[(p.nutrition?.grade as keyof typeof gradeScores) || 'C'] || 0,
-      }))
-      .filter((v) => v.grade);
-
-    if (gradeValues.length > 0) {
-      const maxScore = Math.max(...gradeValues.map((v) => v.score));
-      comparison.nutritionGradesSummary = {
-        best: gradeValues.filter((v) => v.score === maxScore).map((v) => v.barcode),
-      };
-    }
-
-    return {
-      products,
-      comparison,
-    };
-  }
-
-  async getStats(): Promise<{
-    today: string;
-    cacheHits: number;
-    cacheMisses: number;
-    hitRate: string;
-    apiUsage: { upc: number; barcode: number };
-    apiLimits: { upc: number; barcode: number };
-  }> {
-    const today = new Date().toISOString().split('T', 1)[0] || '';
-    const cacheHits = (await this.redisService.get<number>(`stats:cache_hit:${today}`)) || 0;
-    const cacheMisses = (await this.redisService.get<number>(`stats:cache_miss:${today}`)) || 0;
-    const upcCalls = (await this.redisService.get<number>(`api:usage:upc:${today}`)) || 0;
-    const barcodeCalls = (await this.redisService.get<number>(`api:usage:barcode:${today}`)) || 0;
-
-    const total = cacheHits + cacheMisses;
-    const hitRateValue = total > 0 ? (cacheHits / total) * 100 : 0;
-
-    return {
-      today,
-      cacheHits,
-      cacheMisses,
-      hitRate: `${hitRateValue.toFixed(2)}%`,
-      apiUsage: {
-        upc: upcCalls,
-        barcode: barcodeCalls,
-      },
-      apiLimits: {
-        upc: this.UPC_LIMIT,
-        barcode: this.BARCODE_LOOKUP_LIMIT,
-      },
-    };
+    if (newValue === 1) await this.redisService.set(key, newValue, 86400 * 7);
   }
 }

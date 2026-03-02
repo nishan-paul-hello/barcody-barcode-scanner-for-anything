@@ -5,7 +5,7 @@ import { ScansService } from '@modules/scans/scans.service';
 import { Scan } from '@database/entities/scan.entity';
 import { BarcodeType } from '@common/enums/barcode-type.enum';
 import { DeviceType } from '@common/enums/device-type.enum';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Logger } from '@nestjs/common';
 import { ScansGateway } from '@modules/scans/scans.gateway';
 import { ProductLookupService } from '@modules/product-lookup/product-lookup.service';
 
@@ -60,7 +60,15 @@ describe('ScansService', () => {
     createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
   };
 
+  beforeAll(() => {
+    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => {});
+  });
+
   beforeEach(async () => {
+    mockProductLookupService.lookup.mockResolvedValue({ data: null, cacheStatus: 'miss' });
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ScansService,

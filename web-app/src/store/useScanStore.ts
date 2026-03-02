@@ -1,51 +1,123 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-interface ScanState {
+interface TabResult {
   lastResult: string | null;
   scanMetadata: {
     format: string;
-    source: 'Camera' | 'Asset Upload' | 'Manual entry';
+    source: 'Camera' | 'Upload' | 'Manual entry';
     timestamp: string;
   } | null;
   hasError: boolean;
-  activeTab: 'camera' | 'file' | 'lookup';
-  previewUrl: string | null; // Base64 or Blob storage (Blob won't persist across reloads, so Base64 is better for true persistence)
+  previewUrl: string | null;
 }
 
+interface ScanState {
+  activeTab: 'camera' | 'file' | 'lookup';
+  results: Record<'camera' | 'file' | 'lookup', TabResult>;
+}
+
+const initialTabState: TabResult = {
+  lastResult: null,
+  scanMetadata: null,
+  hasError: false,
+  previewUrl: null,
+};
+
 interface ScanStore extends ScanState {
+  // Getters for active tab data
+  getLastResult: () => string | null;
+  getScanMetadata: () => TabResult['scanMetadata'];
+  getHasError: () => boolean;
+  getPreviewUrl: () => string | null;
+
+  // Seters for active tab data
   setLastResult: (result: string | null) => void;
-  setScanMetadata: (metadata: ScanState['scanMetadata']) => void;
+  setScanMetadata: (metadata: TabResult['scanMetadata']) => void;
   setHasError: (hasError: boolean) => void;
   setActiveTab: (tab: 'camera' | 'file' | 'lookup') => void;
   setPreviewUrl: (url: string | null) => void;
-  reset: () => void;
+  resetAll: () => void;
+  resetActiveTab: () => void;
 }
 
 export const useScanStore = create<ScanStore>()(
   persist(
-    (set) => ({
-      lastResult: null,
-      scanMetadata: null,
-      hasError: false,
+    (set, get) => ({
       activeTab: 'camera',
-      previewUrl: null,
+      results: {
+        camera: { ...initialTabState },
+        file: { ...initialTabState },
+        lookup: { ...initialTabState },
+      },
 
-      setLastResult: (lastResult) => set({ lastResult }),
-      setScanMetadata: (scanMetadata) => set({ scanMetadata }),
-      setHasError: (hasError) => set({ hasError }),
+      getLastResult: () => get().results[get().activeTab].lastResult,
+      getScanMetadata: () => get().results[get().activeTab].scanMetadata,
+      getHasError: () => get().results[get().activeTab].hasError,
+      getPreviewUrl: () => get().results[get().activeTab].previewUrl,
+
+      setLastResult: (lastResult) =>
+        set((state) => ({
+          results: {
+            ...state.results,
+            [state.activeTab]: {
+              ...state.results[state.activeTab],
+              lastResult,
+            },
+          },
+        })),
+
+      setScanMetadata: (scanMetadata) =>
+        set((state) => ({
+          results: {
+            ...state.results,
+            [state.activeTab]: {
+              ...state.results[state.activeTab],
+              scanMetadata,
+            },
+          },
+        })),
+
+      setHasError: (hasError) =>
+        set((state) => ({
+          results: {
+            ...state.results,
+            [state.activeTab]: { ...state.results[state.activeTab], hasError },
+          },
+        })),
+
       setActiveTab: (activeTab) => set({ activeTab }),
-      setPreviewUrl: (previewUrl) => set({ previewUrl }),
-      reset: () =>
+
+      setPreviewUrl: (previewUrl) =>
+        set((state) => ({
+          results: {
+            ...state.results,
+            [state.activeTab]: {
+              ...state.results[state.activeTab],
+              previewUrl,
+            },
+          },
+        })),
+
+      resetAll: () =>
         set({
-          lastResult: null,
-          scanMetadata: null,
-          hasError: false,
-          previewUrl: null,
+          results: {
+            camera: { ...initialTabState },
+            file: { ...initialTabState },
+            lookup: { ...initialTabState },
+          },
         }),
+
+      resetActiveTab: () =>
+        set((state) => ({
+          results: {
+            ...state.results,
+            [state.activeTab]: { ...initialTabState },
+          },
+        })),
     }),
     {
-      name: 'scan-storage',
+      name: 'scan-storage-v2',
       storage: createJSONStorage(() => localStorage),
     }
   )

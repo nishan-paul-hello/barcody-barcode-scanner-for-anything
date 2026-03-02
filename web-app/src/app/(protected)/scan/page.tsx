@@ -31,15 +31,15 @@ const itemVariants = {
 
 export default function ScanPage() {
   const {
-    lastResult,
-    scanMetadata,
-    hasError,
+    results,
     activeTab,
     setLastResult,
     setScanMetadata,
     setHasError,
     setActiveTab,
   } = useScanStore();
+
+  const { lastResult, scanMetadata, hasError } = results[activeTab];
 
   const { data: productData, isLoading } = useProduct(lastResult);
 
@@ -48,8 +48,21 @@ export default function ScanPage() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative container mx-auto max-w-6xl space-y-12 px-4 py-10 sm:px-6 lg:px-8"
+      className="relative container mx-auto max-w-6xl space-y-12 px-4 pt-0 pb-24 sm:px-6 lg:px-8"
     >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
+          PRECISION <span className="text-cyan-400">SCANNER</span>
+        </h1>
+        <p className="mx-auto max-w-2xl text-lg text-white/50">
+          Professional-grade barcode recognition and data extraction.
+        </p>
+      </motion.div>
+
       <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[1fr_350px]">
         {/* Row 1: Main Scanning Interface - Aligned at bottom */}
         <div className="flex min-w-0 flex-col justify-end">
@@ -62,24 +75,24 @@ export default function ScanPage() {
               className="w-full"
             >
               <div className="relative mb-8 flex items-center justify-center">
-                <TabsList className="h-14 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
+                <TabsList className="grid h-14 w-full max-w-[450px] grid-cols-3 rounded-full border border-white/5 bg-black/40 p-1.5 backdrop-blur-2xl">
                   <TabsTrigger
                     value="camera"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                    className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <Camera className="mr-2 h-3.5 w-3.5" />
-                    Live Capture
+                    Live
                   </TabsTrigger>
                   <TabsTrigger
                     value="file"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                    className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <FileUp className="mr-2 h-3.5 w-3.5" />
-                    Asset Upload
+                    Upload
                   </TabsTrigger>
                   <TabsTrigger
                     value="lookup"
-                    className="h-11 cursor-pointer rounded-full px-8 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
+                    className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
                     <Search className="mr-2 h-3.5 w-3.5" />
                     Lookup
@@ -120,7 +133,7 @@ export default function ScanPage() {
                       format: mapZxingFormatToReadable(
                         result.getBarcodeFormat()
                       ),
-                      source: 'Asset Upload',
+                      source: 'Upload',
                       timestamp: new Date().toISOString(),
                     });
                   }}

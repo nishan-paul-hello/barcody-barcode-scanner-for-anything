@@ -1,3 +1,11 @@
+export interface ProductAttribute {
+  group: string;
+  label: string;
+  value: string | number;
+  unit?: string;
+  [key: string]: unknown;
+}
+
 export interface ProductInfo {
   barcode: string;
   name?: string;
@@ -6,7 +14,11 @@ export interface ProductInfo {
   description?: string;
   manufacturer?: string;
   images?: string[];
-  // Nutrition (mostly from Open Food Facts)
+
+  // Flexible attributes (Nutrition, Specs, Details, etc.)
+  attributes?: ProductAttribute[];
+
+  // Keep nutrition for legacy/UI convenience if needed, but primarily use attributes
   nutrition?: {
     grade?: 'A' | 'B' | 'C' | 'D' | 'E';
     calories?: number;
@@ -20,6 +32,6 @@ export interface ProductInfo {
     ingredients?: string;
   };
 
-  source: 'openfoodfacts' | 'upcdatabase' | 'barcodelookup';
+  source: 'openfoodfacts' | 'upcdatabase';
   lastUpdated: Date;
 }

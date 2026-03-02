@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ScansGateway } from '@modules/scans/scans.gateway';
 import { JwtAuthService } from '@modules/auth/jwt-auth.service';
 import { Server, Socket } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
 describe('ScansGateway', () => {
   let gateway: ScansGateway;
@@ -43,6 +44,13 @@ describe('ScansGateway', () => {
     gateway = module.get<ScansGateway>(ScansGateway);
     jwtAuthService = module.get<JwtAuthService>(JwtAuthService);
     gateway.server = mockServer;
+  });
+
+  beforeAll(() => {
+    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
+    jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => {});
   });
 
   afterEach(() => {

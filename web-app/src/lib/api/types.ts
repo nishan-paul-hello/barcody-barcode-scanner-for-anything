@@ -105,6 +105,13 @@ export interface ProductNutrition {
   ingredients?: string;
 }
 
+export interface ProductAttribute {
+  group: string;
+  label: string;
+  value: string | number;
+  unit?: string;
+}
+
 export interface ProductResponseDto {
   barcode: string;
   name?: string;
@@ -114,7 +121,8 @@ export interface ProductResponseDto {
   manufacturer?: string;
   images?: string[];
   nutrition?: ProductNutrition;
-  source: 'openfoodfacts' | 'upcdatabase' | 'barcodelookup';
+  attributes?: ProductAttribute[];
+  source: 'openfoodfacts' | 'upcdatabase';
   lastUpdated: string;
 }
 

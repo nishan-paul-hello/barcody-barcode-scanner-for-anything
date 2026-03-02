@@ -73,7 +73,7 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-8 py-8">
+    <div className="container mx-auto max-w-7xl space-y-8 pt-0 pb-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">

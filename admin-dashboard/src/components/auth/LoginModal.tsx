@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
@@ -15,8 +15,15 @@ export const LoginModal = () => {
   const { isLoginModalOpen, closeLoginModal, pendingRedirectPath } =
     useUIStore();
   const [isLoading, setIsLoading] = useState(false);
-  const { setAuth, user, setError } = useAuthStore();
+  const { setAuth, user, setError, isAuthenticated } = useAuthStore();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated && isLoginModalOpen) {
+      closeLoginModal();
+    }
+  }, [isAuthenticated, isLoginModalOpen, closeLoginModal]);
+
   const [isSuggestedDismissed, setIsSuggestedDismissed] = useState(false);
 
   const MIN_SPINNER_MS = 500;
@@ -47,6 +54,8 @@ export const LoginModal = () => {
 
       if (pendingRedirectPath) {
         router.push(pendingRedirectPath);
+      } else if (window.location.search.includes('login=true')) {
+        router.replace(window.location.pathname);
       }
 
       closeLoginModal();
