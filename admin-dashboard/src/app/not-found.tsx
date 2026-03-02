@@ -10,6 +10,7 @@ export default function NotFound() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
+    document.title = 'Barcody - Not Found';
     const timer = setTimeout(() => setIsHydrated(true), 800);
     return () => clearTimeout(timer);
   }, []);

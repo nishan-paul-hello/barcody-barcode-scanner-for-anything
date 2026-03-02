@@ -3,8 +3,13 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Home } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function NotFound() {
+  useEffect(() => {
+    document.title = 'Barcody - Not Found';
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white selection:bg-cyan-500/30">
       {/* Background Ambient Orbs - Matching Landing Page */}
