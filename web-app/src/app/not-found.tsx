@@ -3,22 +3,8 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Home } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { LoadingScreen } from '@/components/common/loading-screen';
 
 export default function NotFound() {
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    // Small timeout to ensure the loading screen is visible on fast refreshes
-    const timer = setTimeout(() => setIsHydrated(true), 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!isHydrated) {
-    return <LoadingScreen />;
-  }
-
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white selection:bg-cyan-500/30">
       {/* Background Ambient Orbs - Matching Landing Page */}
