@@ -33,6 +33,8 @@ import { AnalyticsTracker } from '@/components/analytics-tracker';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler';
 
+import { LoadingProvider } from '@/components/providers/loading-provider';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -56,7 +58,9 @@ export default function RootLayout({
                 <AnalyticsTracker />
                 <LoginModal />
                 <AuthRedirectHandler />
-                <ErrorBoundary>{children}</ErrorBoundary>
+                <LoadingProvider>
+                  <ErrorBoundary>{children}</ErrorBoundary>
+                </LoadingProvider>
               </SocketProvider>
             </ThemeProvider>
           </GoogleAuthProvider>

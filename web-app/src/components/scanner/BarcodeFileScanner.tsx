@@ -5,7 +5,15 @@ import { analytics } from '@/lib/analytics.service';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
-import { Upload, X, Loader2, Download, ExternalLink } from 'lucide-react';
+import {
+  Upload,
+  X,
+  Loader2,
+  Download,
+  ExternalLink,
+  KeyRound,
+  ArrowRight,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
@@ -13,6 +21,8 @@ import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScanStore } from '@/store/useScanStore';
+import { useApiKeys } from '@/hooks/use-api-keys';
+import { useUIStore } from '@/store/useUIStore';
 
 interface BarcodeFileScannerProps {
   onScanSuccess?: (result: Result) => void;
@@ -28,13 +38,21 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   onScanError,
   onClear,
 }) => {
-  const { previewUrl, setPreviewUrl } = useScanStore();
+  const { results, activeTab, setPreviewUrl } = useScanStore();
+  const { previewUrl } = results[activeTab];
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [imgDims, setImgDims] = useState<{ w: number; h: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createScanMutation = useCreateScan();
+  const { data: apiKeys } = useApiKeys();
+  const { setApiKeysModalOpen } = useUIStore();
+
+  const hasApiConfigured = React.useMemo(() => {
+    if (!apiKeys) return true; // Assume true while loading to avoid flickering
+    return !!apiKeys.upcDatabaseApiKey;
+  }, [apiKeys]);
 
   // Restore image dimensions if preview exists on mount
   useEffect(() => {
@@ -313,6 +331,50 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             )}
           </AnimatePresence>
         </Card>
+
+        {/* API Warning Component */}
+        <AnimatePresence>
+          {previewUrl && !isScanning && !hasApiConfigured && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="group relative mt-6 overflow-hidden rounded-[2.5rem] border border-amber-500/20 bg-amber-500/5 p-6 backdrop-blur-xl transition-all hover:border-amber-500/40 hover:bg-amber-500/10"
+            >
+              <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl transition-opacity group-hover:opacity-40" />
+
+              <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30">
+                  <KeyRound className="h-6 w-6" />
+                </div>
+
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-[15px] font-bold tracking-tight text-white/90">
+                      Lookup API Configuration Required
+                    </h4>
+                    <span className="flex h-5 items-center rounded-full bg-amber-500/10 px-2 text-[10px] font-black tracking-widest text-amber-500 uppercase ring-1 ring-amber-500/20">
+                      Important
+                    </span>
+                  </div>
+                  <p className="max-w-md text-sm leading-relaxed text-white/50">
+                    To fetch detailed product information like names, images and
+                    brands, you&apos;ll need to set up your personal API keys in
+                    settings.
+                  </p>
+                </div>
+
+                <Button
+                  onClick={() => setApiKeysModalOpen(true)}
+                  className="h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] hover:bg-amber-400 active:scale-95 sm:ml-auto"
+                >
+                  <span className="font-bold">Set API Keys</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       <AnimatePresence>

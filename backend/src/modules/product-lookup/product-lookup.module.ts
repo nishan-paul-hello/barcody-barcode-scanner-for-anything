@@ -8,6 +8,8 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { UsersModule } from '@modules/users/users.module';
 import { UserThrottlerGuard } from '@/common/guards/user-throttler.guard';
 
+import { ProductComparisonService } from '@modules/product-lookup/comparison.service';
+
 @Module({
   imports: [
     ConfigModule,
@@ -24,11 +26,12 @@ import { UserThrottlerGuard } from '@/common/guards/user-throttler.guard';
   controllers: [ProductsController],
   providers: [
     ProductLookupService,
+    ProductComparisonService,
     {
       provide: ThrottlerGuard,
       useClass: UserThrottlerGuard,
     },
   ],
-  exports: [ProductLookupService],
+  exports: [ProductLookupService, ProductComparisonService],
 })
 export class ProductLookupModule {}

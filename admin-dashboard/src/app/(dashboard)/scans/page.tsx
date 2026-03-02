@@ -127,7 +127,9 @@ export default function ScansPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Scans</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-cyan-400">
+            Scans
+          </h1>
           <p className="text-muted-foreground mt-1 text-sm">
             Browse and filter all barcode scans across every user.
           </p>

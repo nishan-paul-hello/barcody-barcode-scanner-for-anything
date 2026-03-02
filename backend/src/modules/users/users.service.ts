@@ -25,26 +25,24 @@ export class UsersService {
     const { googleId, email } = googleInfo;
 
     return await this.dataSource.transaction(async (manager) => {
-      let user = await manager.findOne(User, {
+      const user = await manager.findOne(User, {
         where: { googleId },
         lock: { mode: 'pessimistic_write' },
       });
 
       if (!user) {
         this.logger.log(`Creating new user with googleId: ${googleId}`);
-        user = manager.create(User, {
+        const newUser = manager.create(User, {
           googleId,
           email,
           lastLogin: new Date(),
         });
-        user = await manager.save(User, user);
+        return await manager.save(User, newUser);
       } else {
         this.logger.log(`Updating last login for user: ${googleId}`);
         user.lastLogin = new Date();
-        user = await manager.save(User, user);
+        return await manager.save(User, user);
       }
-
-      return user;
     });
   }
 
@@ -54,7 +52,9 @@ export class UsersService {
 
   async getApiKeys(userId: string): Promise<{
     upcDatabaseApiKey: string | null;
-    barcodeLookupApiKey: string | null;
+    usdaFoodDataApiKey: string | null;
+    goUpcApiKey: string | null;
+    searchUpcApiKey: string | null;
   }> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
@@ -62,17 +62,26 @@ export class UsersService {
     }
     return {
       upcDatabaseApiKey: user.upcDatabaseApiKey || null,
-      barcodeLookupApiKey: user.barcodeLookupApiKey || null,
+      usdaFoodDataApiKey: user.usdaFoodDataApiKey || null,
+      goUpcApiKey: user.goUpcApiKey || null,
+      searchUpcApiKey: user.searchUpcApiKey || null,
     };
   }
 
   async updateApiKeys(
     userId: string,
-    keys: { upcDatabaseApiKey?: string; barcodeLookupApiKey?: string },
+    keys: {
+      upcDatabaseApiKey?: string;
+      usdaFoodDataApiKey?: string;
+      goUpcApiKey?: string;
+      searchUpcApiKey?: string;
+    },
   ): Promise<void> {
     await this.userRepository.update(userId, {
       upcDatabaseApiKey: keys.upcDatabaseApiKey ?? null,
-      barcodeLookupApiKey: keys.barcodeLookupApiKey ?? null,
+      usdaFoodDataApiKey: keys.usdaFoodDataApiKey ?? null,
+      goUpcApiKey: keys.goUpcApiKey ?? null,
+      searchUpcApiKey: keys.searchUpcApiKey ?? null,
     });
   }
 }

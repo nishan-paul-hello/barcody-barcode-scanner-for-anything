@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface ScanMetadataProps {
   result: string | null;
   format?: string;
-  source?: 'Camera' | 'Asset Upload' | 'Manual entry';
+  source?: 'Camera' | 'Upload' | 'Manual entry';
   timestamp?: string;
   isError?: boolean;
 }

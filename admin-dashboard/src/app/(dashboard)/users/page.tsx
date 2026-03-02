@@ -88,7 +88,9 @@ export default function UsersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-cyan-400">
+          Users
+        </h1>
         <p className="text-muted-foreground mt-1 text-sm">
           Manage and monitor all registered users across the platform.
         </p>

@@ -209,6 +209,8 @@ export const api = {
       apiClient
         .post<ProductComparisonResponse>('/products/compare', { barcodes })
         .then((r) => r.data),
+    getRawLookup: (barcode: string, source: string) =>
+      apiClient.get(`/products/${barcode}/raw/${source}`).then((r) => r.data),
   },
 
   // User settings
@@ -217,12 +219,16 @@ export const api = {
       apiClient
         .get<{
           upcDatabaseApiKey: string | null;
-          barcodeLookupApiKey: string | null;
+          usdaFoodDataApiKey: string | null;
+          goUpcApiKey: string | null;
+          searchUpcApiKey: string | null;
         }>('/users/me/api-keys')
         .then((r) => r.data),
     updateApiKeys: (dto: {
       upcDatabaseApiKey?: string;
-      barcodeLookupApiKey?: string;
+      usdaFoodDataApiKey?: string;
+      goUpcApiKey?: string;
+      searchUpcApiKey?: string;
     }) =>
       apiClient
         .put<{ success: boolean }>('/users/me/api-keys', dto)
