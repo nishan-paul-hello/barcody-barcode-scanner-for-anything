@@ -51,6 +51,7 @@ services:
       DATABASE_URL: postgresql://${DB_USERNAME:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_DATABASE:-barcody}
       REDIS_URL: redis://redis:6379
       PORT: 3002
+      NODE_ENV: production
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,6 +79,7 @@ services:
       - '3000:3000'
     environment:
       PORT: 3000
+      NODE_ENV: production
     depends_on:
       backend:
         condition: service_healthy
@@ -103,6 +105,7 @@ services:
       - '3001:3001'
     environment:
       PORT: 3001
+      NODE_ENV: production
     depends_on:
       backend:
         condition: service_healthy
@@ -116,57 +119,6 @@ services:
       start_period: 60s
     restart: unless-stopped
 
-  ts-web:
-    image: tailscale/tailscale:latest
-    hostname: barcody
-    environment:
-      - TS_AUTHKEY=${TS_AUTHKEY}
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/web.json
-    volumes:
-      - ./infra/tailscale/web.json:/config/web.json
-      - ts_web_state:/var/lib/tailscale
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-    networks:
-      - barcody-network
-    restart: unless-stopped
-
-  ts-admin:
-    image: tailscale/tailscale:latest
-    hostname: admin-barcody
-    environment:
-      - TS_AUTHKEY=${TS_AUTHKEY}
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/admin.json
-    volumes:
-      - ./infra/tailscale/admin.json:/config/admin.json
-      - ts_admin_state:/var/lib/tailscale
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-    networks:
-      - barcody-network
-    restart: unless-stopped
-
-  ts-api:
-    image: tailscale/tailscale:latest
-    hostname: api-barcody
-    environment:
-      - TS_AUTHKEY=${TS_AUTHKEY}
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/api.json
-    volumes:
-      - ./infra/tailscale/api.json:/config/api.json
-      - ts_api_state:/var/lib/tailscale
-      - /dev/net/tun:/dev/net/tun
-    cap_add:
-      - NET_ADMIN
-    networks:
-      - barcody-network
-    restart: unless-stopped
-
 networks:
   barcody-network:
     driver: bridge
@@ -174,6 +126,3 @@ networks:
 volumes:
   postgres_data:
   redis_data:
-  ts_web_state:
-  ts_admin_state:
-  ts_api_state:
