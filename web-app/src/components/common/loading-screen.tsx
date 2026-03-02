@@ -1,28 +1,9 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-
-const LOADING_TEXTS = [
-  'Initializing Barcody...',
-  'Synchronizing databases...',
-  'Analyzing scan patterns...',
-  'Optimizing interface...',
-  'Loading premium assets...',
-  'Connecting to global servers...',
-];
 
 export function LoadingScreen() {
-  const [textIndex, setTextIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIndex((prev) => (prev + 1) % LOADING_TEXTS.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505]">
       {/* Background Ambient Orbs */}
@@ -64,60 +45,19 @@ export function LoadingScreen() {
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className="relative z-10"
           >
-            <div className="absolute inset-0 scale-110 animate-pulse rounded-full bg-cyan-400/20 blur-3xl" />
             <Image
               src="/brand-logo.svg"
               alt="Barcody Logo"
               width={180}
               height={180}
-              className="relative z-10 drop-shadow-[0_0_15px_rgba(0,255,231,0.5)]"
+              className="relative z-10"
               priority
-            />
-          </motion.div>
-
-          {/* Scanning Line Effect */}
-          <motion.div
-            animate={{
-              top: ['0%', '100%', '0%'],
-              opacity: [0.3, 1, 0.3],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="absolute right-[-20%] left-[-20%] z-20 h-[2px] bg-cyan-400 shadow-[0_0_15px_#00ffe7,0_0_30px_#00ffe7]"
-          >
-            <motion.div
-              animate={{ opacity: [1, 0.8, 1, 0.5, 1] }}
-              transition={{ duration: 0.2, repeat: Infinity }}
-              className="absolute inset-0 bg-white/20"
             />
           </motion.div>
         </div>
 
-        {/* Text and Progress */}
+        {/* Progress Components */}
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="space-y-2">
-            <div className="h-6 overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={textIndex}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -20, opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-xs font-black tracking-[0.3em] text-cyan-400 uppercase select-none"
-                >
-                  {LOADING_TEXTS[textIndex]}
-                </motion.p>
-              </AnimatePresence>
-            </div>
-            <p className="text-[10px] font-medium tracking-[0.2em] text-white/20 uppercase">
-              System Status: Optimal
-            </p>
-          </div>
-
           {/* Premium Progress Bar */}
           <div className="relative h-[1px] w-64 overflow-hidden rounded-full bg-white/10">
             <motion.div
@@ -152,12 +92,6 @@ export function LoadingScreen() {
           </div>
         </div>
       </div>
-
-      {/* Decorative Corner Elements */}
-      <div className="absolute top-8 left-8 h-12 w-12 border-t-2 border-l-2 border-cyan-500/20" />
-      <div className="absolute top-8 right-8 h-12 w-12 border-t-2 border-r-2 border-cyan-500/20" />
-      <div className="absolute bottom-8 left-8 h-12 w-12 border-b-2 border-l-2 border-cyan-500/20" />
-      <div className="absolute right-8 bottom-8 h-12 w-12 border-r-2 border-b-2 border-cyan-500/20" />
 
       {/* Noise Overlay */}
       <div className="pointer-events-none absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]" />
