@@ -37,13 +37,14 @@ export default function NotFound() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="max-w-md space-y-4"
+          className="max-w-2xl space-y-4"
         >
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
             PAGE <span className="text-cyan-400">NOT FOUND</span>
           </h2>
-          <p className="leading-relaxed text-white/40">
-            The page you are looking for doesn&apos;t exist or has been moved.
+          <p className="bg-gradient-to-b from-white/60 to-white/20 bg-clip-text text-lg leading-relaxed font-medium tracking-tight text-transparent">
+            The page you are looking for doesn&apos;t exist or has been moved to
+            a new location.
           </p>
         </motion.div>
 
