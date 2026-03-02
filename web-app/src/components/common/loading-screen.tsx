@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 export function LoadingScreen() {
   return (
@@ -31,25 +30,6 @@ export function LoadingScreen() {
 
       {/* Main Content */}
       <div className="relative flex flex-col items-center gap-12">
-        {/* Logo Container with Glow */}
-        <div className="group relative">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="relative z-10"
-          >
-            <Image
-              src="/brand-logo.svg"
-              alt="Barcody Logo"
-              width={180}
-              height={180}
-              className="relative z-10"
-              priority
-            />
-          </motion.div>
-        </div>
-
         {/* Progress Components */}
         <div className="flex flex-col items-center gap-6 text-center">
           {/* Premium Progress Bar */}
