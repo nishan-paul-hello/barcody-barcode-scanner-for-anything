@@ -5,34 +5,28 @@ import Image from 'next/image';
 
 export function LoadingScreen() {
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505]">
-      {/* Background Ambient Orbs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] selection:bg-cyan-500/30">
+      {/* Background Ambient Orbs - Matching Landing Page */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <motion.div
           animate={{
+            x: [0, 100, 0],
+            y: [0, 50, 0],
             scale: [1, 1.2, 1],
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-            opacity: [0.1, 0.2, 0.1],
           }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-[10%] -left-[10%] h-[40%] w-[40%] rounded-full bg-cyan-500/20 blur-[100px]"
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-cyan-500/10 blur-[120px]"
         />
         <motion.div
           animate={{
-            scale: [1, 1.3, 1],
-            x: [0, -60, 0],
-            y: [0, 40, 0],
-            opacity: [0.05, 0.15, 0.05],
+            x: [0, -80, 0],
+            y: [0, 100, 0],
+            scale: [1, 1.1, 1],
           }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-          className="absolute -right-[10%] -bottom-[10%] h-[50%] w-[50%] rounded-full bg-blue-600/10 blur-[120px]"
+          transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-[20%] -right-[10%] h-[40%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]"
         />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
       </div>
 
       {/* Main Content */}

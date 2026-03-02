@@ -6,25 +6,28 @@ import { Home } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white">
-      {/* Background Ambient Orbs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white selection:bg-cyan-500/30">
+      {/* Background Ambient Orbs - Matching Landing Page */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <motion.div
           animate={{
+            x: [0, 100, 0],
+            y: [0, 50, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-cyan-500/10 blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, -80, 0],
+            y: [0, 100, 0],
             scale: [1, 1.1, 1],
-            opacity: [0.1, 0.15, 0.1],
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 h-[60%] w-[60%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-[120px]"
+          transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-[20%] -right-[10%] h-[40%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]"
         />
-        <motion.div
-          animate={{
-            x: [0, 30, 0],
-            y: [0, -20, 0],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-[10%] -right-[10%] h-[40%] w-[40%] rounded-full bg-cyan-500/5 blur-[100px]"
-        />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
       </div>
 
       {/* Main Content */}
