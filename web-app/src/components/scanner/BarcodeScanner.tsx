@@ -52,7 +52,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       return true;
     }
   });
-  const [flashActive, setFlashActive] = useState(false);
+  const [scanSuccess, setScanSuccess] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
   const startRetryCountRef = useRef(0);
@@ -104,35 +104,8 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   );
 
   const drawFeedback = useCallback(() => {
-    setFlashActive(true);
-    setTimeout(() => setFlashActive(false), 200);
-
-    if (!canvasRef.current || !videoRef.current) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = videoRef.current.clientWidth;
-    const height = videoRef.current.clientHeight;
-
-    if (width === 0 || height === 0) return;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.strokeStyle = 'rgba(34, 211, 238, 0.8)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    ctx.strokeRect(
-      canvas.width * 0.2,
-      canvas.height * 0.3,
-      canvas.width * 0.6,
-      canvas.height * 0.4
-    );
-
-    setTimeout(() => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 300);
+    setScanSuccess(true);
+    setTimeout(() => setScanSuccess(false), 600);
   }, []);
 
   const playBeep = useCallback(() => {
@@ -390,18 +363,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             className="pointer-events-none absolute inset-0 z-10"
           />
 
-          {/* Flash Effect on Success */}
-          <AnimatePresence>
-            {flashActive && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-20 bg-cyan-400"
-              />
-            )}
-          </AnimatePresence>
-
           <AnimatePresence>
             {isScanning && (
               <motion.div
@@ -411,10 +372,18 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 className="pointer-events-none absolute inset-0 z-10"
               >
                 {/* Corner Brackets */}
-                <div className="absolute top-0 left-0 h-20 w-20 rounded-tl-[2.5rem] border-t-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
-                <div className="absolute top-0 right-0 h-20 w-20 rounded-tr-[2.5rem] border-t-4 border-r-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
-                <div className="absolute bottom-0 left-0 h-20 w-20 rounded-bl-[2.5rem] border-b-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
-                <div className="absolute right-0 bottom-0 h-20 w-20 rounded-br-[2.5rem] border-r-4 border-b-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div
+                  className={`absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
+                />
+                <div
+                  className={`absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
+                />
+                <div
+                  className={`absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
+                />
+                <div
+                  className={`absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
+                />
 
                 {/* Vignette */}
                 <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
