@@ -50,11 +50,11 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
       className="w-full"
     >
       <Card className="relative flex h-[480px] flex-col gap-0 overflow-hidden rounded-[2.5rem] border-white/5 bg-black/40 py-0 shadow-2xl backdrop-blur-3xl">
-        <CardHeader className="relative z-10 border-b border-white/5 bg-white/[0.02] px-6 py-4">
+        <CardHeader className="relative z-10 border-b border-white/5 bg-white/[0.02] px-6 py-[18px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Activity className="h-5 w-5 text-cyan-400" />
-              <CardTitle className="text-[11px] font-black tracking-[0.2em] text-white/90 uppercase">
+              <CardTitle className="text-xs font-bold tracking-widest text-white/90 uppercase">
                 Barcode Details
               </CardTitle>
             </div>
