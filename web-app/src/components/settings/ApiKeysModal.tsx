@@ -160,7 +160,7 @@ const ApiKeyInput = ({
           type="password"
           placeholder={placeholder}
           className={cn(
-            'h-10 rounded-lg border-white/5 bg-white/5 pr-20 font-mono text-xs focus:bg-white/[0.08] focus-visible:ring-2',
+            'h-10 rounded-lg border-white/5 bg-white/5 pr-24 font-mono text-xs focus:bg-white/[0.08] focus-visible:ring-2',
             iconStyle.focusRing,
             iconStyle.focusBorder
           )}
