@@ -16,6 +16,7 @@ import {
   FlaskConical,
   Globe,
   Key,
+  Sparkles,
   CheckCircle2,
   XCircle,
   Loader2,
@@ -57,11 +58,16 @@ const APIS = [
   {
     id: 'obf',
     name: 'Open Beauty Facts',
-    icon: FlaskConical,
-    color: 'text-pink-400',
+    icon: Sparkles,
+    color: 'text-rose-400',
   },
   { id: 'searchUpc', name: 'SearchUPC', icon: Key, color: 'text-yellow-400' },
-  { id: 'usda', name: 'USDA FoodData', icon: Database, color: 'text-blue-400' },
+  {
+    id: 'usda',
+    name: 'USDA FoodData',
+    icon: FlaskConical,
+    color: 'text-green-400',
+  },
 ];
 
 export default function GlobalLookupPage() {
