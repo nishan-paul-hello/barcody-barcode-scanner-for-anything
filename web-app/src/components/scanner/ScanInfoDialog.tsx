@@ -48,17 +48,25 @@ const itemVariants = {
 
 export const ScanInfoDialog: React.FC = () => {
   const [showTooltip, setShowTooltip] = React.useState(false);
-  const protocols = [
-    'QR Code',
-    'EAN-13',
-    'EAN-8',
-    'UPC-A',
-    'UPC-E',
-    'Code 128',
-    'Code 39',
-    'DataMatrix',
-    'PDF417',
-    'ITF',
+  const protocolGroups = [
+    {
+      title: 'Linear Symbols (1D)',
+      items: [
+        'Codabar',
+        'Code 128',
+        'Code 39',
+        'Code 93',
+        'EAN-13',
+        'EAN-8',
+        'ISBN-13',
+        'ITF',
+        'UPC-A',
+      ],
+    },
+    {
+      title: 'Matrix Symbols (2D)',
+      items: ['Aztec', 'DataMatrix', 'PDF417', 'QR Code'],
+    },
   ];
 
   const uploadTypes = [
@@ -112,7 +120,7 @@ export const ScanInfoDialog: React.FC = () => {
             <X className="h-4 w-4" />
           </DialogClose>
 
-          <DialogHeader className="relative mb-10">
+          <DialogHeader className="relative mb-8">
             <div className="mb-4 flex items-center gap-4">
               <Cpu className="h-8 w-8 text-cyan-400" />
               <div>
@@ -127,10 +135,10 @@ export const ScanInfoDialog: React.FC = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid gap-10 md:grid-cols-2"
+            className="grid gap-8 md:grid-cols-2"
           >
             {/* Left Column */}
-            <div className="space-y-10">
+            <div className="space-y-8">
               <motion.section variants={itemVariants} className="space-y-4">
                 <div className="flex items-center gap-2 text-white/90">
                   <Box className="h-4 w-4 text-cyan-400" />
@@ -190,20 +198,31 @@ export const ScanInfoDialog: React.FC = () => {
                     Decoding Matrix
                   </h4>
                 </div>
-                <div className="relative rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-6 shadow-inner">
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-                    {protocols.map((protocol) => (
-                      <div
-                        key={protocol}
-                        className="group flex items-center gap-3"
-                      >
-                        <div className="h-1.5 w-1.5 rounded-full bg-white/20 ring-4 ring-transparent transition-all group-hover:bg-cyan-500 group-hover:ring-cyan-500/20" />
-                        <span className="text-[12px] font-bold text-white/70 transition-colors group-hover:text-white">
-                          {protocol}
-                        </span>
+
+                <div className="space-y-4">
+                  {protocolGroups.map((group) => (
+                    <div
+                      key={group.title}
+                      className="relative rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-6 shadow-inner"
+                    >
+                      <h5 className="mb-4 text-[10px] font-black tracking-widest text-white/20 uppercase">
+                        {group.title}
+                      </h5>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                        {group.items.map((protocol) => (
+                          <div
+                            key={protocol}
+                            className="group flex items-center gap-2.5"
+                          >
+                            <div className="h-1 w-1 rounded-full bg-white/20 ring-2 ring-transparent transition-all group-hover:bg-cyan-500 group-hover:ring-cyan-500/20" />
+                            <span className="text-[11px] font-bold text-white/60 transition-colors group-hover:text-white">
+                              {protocol}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </motion.section>
             </div>

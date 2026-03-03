@@ -48,13 +48,15 @@ SCAN_HINTS.set(DecodeHintType.POSSIBLE_FORMATS, [
   BarcodeFormat.QR_CODE,
   BarcodeFormat.EAN_13,
   BarcodeFormat.UPC_A,
-  BarcodeFormat.UPC_E,
   BarcodeFormat.CODE_128,
   BarcodeFormat.DATA_MATRIX,
   BarcodeFormat.PDF_417,
   BarcodeFormat.ITF,
   BarcodeFormat.EAN_8,
   BarcodeFormat.CODE_39,
+  BarcodeFormat.AZTEC,
+  BarcodeFormat.CODABAR,
+  BarcodeFormat.CODE_93,
 ]);
 SCAN_HINTS.set(DecodeHintType.TRY_HARDER, true);
 
@@ -121,13 +123,16 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           onScanSuccess?.(result);
 
           analytics.trackScanCreated(
-            mapZxingFormatToReadable(result.getBarcodeFormat()),
+            mapZxingFormatToReadable(result.getBarcodeFormat(), barcodeData),
             'file'
           );
 
           createScanMutation.mutate({
             barcodeData,
-            barcodeType: mapZxingFormatToReadable(result.getBarcodeFormat()),
+            barcodeType: mapZxingFormatToReadable(
+              result.getBarcodeFormat(),
+              barcodeData
+            ),
             rawData: barcodeData,
             deviceType: 'web',
             scannedAt: new Date().toISOString(),
