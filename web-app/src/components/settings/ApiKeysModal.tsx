@@ -17,7 +17,7 @@ import {
   Check,
   KeyRound,
   FlaskConical,
-  Database,
+  ShoppingBag,
   Zap,
   X,
   Loader2,
@@ -68,6 +68,12 @@ const ApiKeyInput = ({
     string,
     { bg: string; ring: string; focusRing: string; focusBorder: string }
   > = {
+    'text-orange-400': {
+      bg: 'bg-orange-400/10',
+      ring: 'ring-orange-400/30',
+      focusRing: 'focus-visible:ring-orange-400/50',
+      focusBorder: 'focus-visible:border-orange-400/40',
+    },
     'text-teal-400': {
       bg: 'bg-teal-400/10',
       ring: 'ring-teal-400/30',
@@ -108,13 +114,7 @@ const ApiKeyInput = ({
     >
       <div className="flex items-center justify-between gap-6">
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <div
-            className={cn(
-              'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-all group-hover:scale-110',
-              iconStyle.bg,
-              iconStyle.ring
-            )}
-          >
+          <div className="flex shrink-0 items-center justify-center transition-transform group-hover:scale-110">
             <Icon className={cn('h-5 w-5', color)} />
           </div>
           <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
@@ -285,14 +285,14 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           <div className="scrollbar-none sm:scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent flex-1 overflow-y-auto px-8 sm:px-10">
             <div className="grid gap-4 py-4 pb-10">
               <ApiKeyInput
-                label="UPC Database"
+                label="UPCitemdb"
                 value={upcKey}
                 setter={setUpcKey}
                 fieldId="upc"
-                icon={Database}
-                color="text-teal-400"
-                placeholder="Enter upcdatabase.org Key"
-                link="https://upcdatabase.org/check-upc-api"
+                icon={ShoppingBag}
+                color="text-orange-400"
+                placeholder="Enter UPCitemdb API Key"
+                link="https://devs.upcitemdb.com/"
                 onCopy={handleCopy}
                 copiedField={copiedField}
                 onClear={handleClear}
