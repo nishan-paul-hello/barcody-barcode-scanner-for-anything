@@ -104,4 +104,18 @@ A reference list of 3 real-world barcodes for the 10 most commonly scanned produ
 
 ---
 
-> ⚠️ **Note:** Barcodes may vary by region, package size, and production batch. Always verify against a live barcode database before use in production.
+## 11. Download
+
+| Image | Barcode |
+|---|---|
+| d-01 | `015000047757` |
+| d-02 | `5292705000064` |
+| d-03 | `011110449955` |
+| d-04 | `716270001660` |
+| d-05 | `9783981305449` |
+| d-06 | `5000171010025` |
+| d-07 | `` |
+| d-08 | `20011246` |
+| d-09 | `8434164555106` |
+| d-10 | `070970474088` |
+| d-11 | `051500241639` |
