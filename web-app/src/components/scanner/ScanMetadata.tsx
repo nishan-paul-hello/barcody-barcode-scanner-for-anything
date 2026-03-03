@@ -123,16 +123,16 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 </div>
 
                 {/* Barcode Content Block */}
-                <div className="group relative flex min-h-0 flex-1 flex-col space-y-2">
-                  <div className="flex items-center gap-2 px-1">
-                    <Barcode className="h-3 w-3 text-emerald-400/60" />
-                    <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
-                      Barcode Content
-                    </span>
-                  </div>
+                <div className="group relative flex min-h-0 flex-1 flex-col">
                   <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/5 bg-white/[0.03] transition-all group-hover:bg-white/[0.05]">
-                    {/* Utility Header Row */}
-                    <div className="flex items-center justify-end border-b border-white/5 bg-white/5 px-2 py-1">
+                    {/* Header segment inside the box */}
+                    <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-4 py-2">
+                      <div className="flex items-center gap-2">
+                        <Barcode className="h-3 w-3 text-emerald-400/60" />
+                        <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
+                          Barcode Content
+                        </span>
+                      </div>
                       <button
                         onClick={handleCopy}
                         className="cursor-pointer rounded-md p-1 opacity-60 transition-all hover:bg-cyan-500/10 hover:text-cyan-400 hover:opacity-100"
