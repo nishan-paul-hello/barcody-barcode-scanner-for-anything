@@ -23,7 +23,7 @@ import { useCreateScan } from '@/hooks/use-scans';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BarcodeScannerProps {
-  onScanSuccess?: (result: Result) => void;
+  onScanSuccess?: (result: Result, fileName?: string) => void;
   onScanError?: (error: unknown) => void;
   active?: boolean;
 }

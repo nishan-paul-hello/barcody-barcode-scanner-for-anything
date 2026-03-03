@@ -7,6 +7,7 @@ interface TabResult {
     format: string;
     source: 'Camera' | 'Upload' | 'Manual entry';
     timestamp: string;
+    fileName?: string;
   } | null;
   hasError: boolean;
   previewUrl: string | null;

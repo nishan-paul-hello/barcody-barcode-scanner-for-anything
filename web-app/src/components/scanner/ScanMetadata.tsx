@@ -2,23 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, Activity, Cpu, Barcode, Copy, Check } from 'lucide-react';
+import { Clock, Activity, FileText, Barcode, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScanMetadataProps {
   result: string | null;
   format?: string;
-  source?: 'Camera' | 'Upload' | 'Manual entry';
   timestamp?: string;
   isError?: boolean;
+  fileName?: string;
 }
 
 export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   result,
   format = 'Unknown',
-  source = 'Camera',
   timestamp,
   isError = false,
+  fileName,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -109,18 +109,20 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                   </div>
                 </div>
 
-                {/* Source Info */}
-                <div className="flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5">
-                  <div className="flex items-center gap-3">
-                    <Cpu className="h-3.5 w-3.5 text-yellow-400/60" />
-                    <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
-                      Input Source
+                {/* Asset Name */}
+                {fileName && (
+                  <div className="flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-3.5 w-3.5 text-yellow-400/60" />
+                      <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
+                        Asset Name
+                      </span>
+                    </div>
+                    <span className="max-w-[140px] truncate text-[10px] font-black tracking-widest text-white uppercase">
+                      {fileName}
                     </span>
                   </div>
-                  <span className="text-[10px] font-black tracking-widest text-white uppercase">
-                    {source}
-                  </span>
-                </div>
+                )}
 
                 {/* Barcode Content Block */}
                 <div className="group relative flex min-h-0 flex-1 flex-col">

@@ -28,7 +28,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { convertToProcessableImage } from '@/lib/utils/file-conversion';
 
 interface BarcodeFileScannerProps {
-  onScanSuccess?: (result: Result) => void;
+  onScanSuccess?: (result: Result, fileName?: string) => void;
   onScanError?: (error: unknown) => void;
   onClear?: () => void;
 }
@@ -83,7 +83,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   }, [previewUrl]);
 
   const scanImage = useCallback(
-    async (url: string) => {
+    async (url: string, fileName?: string) => {
       setIsScanning(true);
       setError(null);
 
@@ -110,7 +110,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           const barcodeData = result.getText();
           const formatName = result.getBarcodeFormat().toString();
 
-          onScanSuccess?.(result);
+          onScanSuccess?.(result, fileName);
 
           analytics.trackScanCreated(
             mapZxingFormatToReadable(result.getBarcodeFormat(), barcodeData),
@@ -191,7 +191,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           img.src = processableUrl!;
         });
 
-        await scanImage(processableUrl);
+        await scanImage(processableUrl, file.name);
       } catch (err) {
         console.error('File processing error:', err);
         setError(err instanceof Error ? err.message : 'Failed to process file');

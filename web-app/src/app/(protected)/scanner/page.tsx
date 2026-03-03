@@ -106,7 +106,7 @@ export default function ScanPage() {
               <TabsContent value="camera" className="m-0 outline-none">
                 <BarcodeScanner
                   active={activeTab === 'camera'}
-                  onScanSuccess={(result) => {
+                  onScanSuccess={(result, fileName) => {
                     setLastResult(result.getText());
                     setHasError(false);
                     setScanMetadata({
@@ -115,6 +115,7 @@ export default function ScanPage() {
                       ),
                       source: 'Camera',
                       timestamp: new Date().toISOString(),
+                      fileName,
                     });
                   }}
                   onScanError={() => {
@@ -126,7 +127,7 @@ export default function ScanPage() {
               </TabsContent>
               <TabsContent value="file" className="m-0 outline-none">
                 <BarcodeFileScanner
-                  onScanSuccess={(result) => {
+                  onScanSuccess={(result, fileName) => {
                     setLastResult(result.getText());
                     setHasError(false);
                     setScanMetadata({
@@ -135,6 +136,7 @@ export default function ScanPage() {
                       ),
                       source: 'Upload',
                       timestamp: new Date().toISOString(),
+                      fileName,
                     });
                   }}
                   onScanError={() => {
@@ -174,9 +176,9 @@ export default function ScanPage() {
             <ScanMetadata
               result={lastResult}
               format={scanMetadata?.format}
-              source={scanMetadata?.source}
               timestamp={scanMetadata?.timestamp}
               isError={hasError}
+              fileName={scanMetadata?.fileName}
             />
           </motion.aside>
         </div>
