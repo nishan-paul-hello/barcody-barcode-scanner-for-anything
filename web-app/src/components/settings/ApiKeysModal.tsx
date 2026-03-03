@@ -340,13 +340,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               />
 
               <ApiKeyInput
-                label="SearchUPC"
+                label="Search UPC"
                 value={searchUpcKey}
                 setter={setSearchUpcKey}
                 fieldId="searchupc"
                 icon={Key}
                 color="text-yellow-400"
-                placeholder="Enter SearchUPC Key"
+                placeholder="Enter Search UPC Key"
                 link="https://www.searchupc.com/api-upc-database.aspx"
                 onCopy={handleCopy}
                 copiedField={copiedField}
@@ -354,13 +354,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               />
 
               <ApiKeyInput
-                label="USDA FoodData"
+                label="FoodData Central"
                 value={usdaKey}
                 setter={setUsdaKey}
                 fieldId="usda"
                 icon={FlaskConical}
                 color="text-green-400"
-                placeholder="Enter USDA Central Key"
+                placeholder="Enter FoodData Central Key"
                 link="https://fdc.nal.usda.gov/api-key-signup.html"
                 onCopy={handleCopy}
                 copiedField={copiedField}

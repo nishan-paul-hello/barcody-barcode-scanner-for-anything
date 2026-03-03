@@ -54,10 +54,10 @@ const APIS = [
     color: 'text-orange-400',
   },
   { id: 'goUpc', name: 'Go-UPC', icon: Zap, color: 'text-purple-400' },
-  { id: 'searchUpc', name: 'SearchUPC', icon: Key, color: 'text-yellow-400' },
+  { id: 'searchUpc', name: 'Search UPC', icon: Key, color: 'text-yellow-400' },
   {
     id: 'usda',
-    name: 'USDA FoodData',
+    name: 'FoodData Central',
     icon: FlaskConical,
     color: 'text-green-400',
   },
@@ -296,7 +296,7 @@ export default function GlobalLookupPage() {
                     <api.icon
                       className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
                     />
-                    <span className="text-center text-xs font-black tracking-widest uppercase">
+                    <span className="text-center text-xs font-black tracking-tight">
                       {api.name}
                     </span>
 
