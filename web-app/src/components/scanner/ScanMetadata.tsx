@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, Activity, Cpu, Barcode, Scan, Copy, Check } from 'lucide-react';
+import { Clock, Activity, Cpu, Barcode, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScanMetadataProps {
@@ -87,7 +87,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
                     <div className="flex items-center gap-2">
-                      <Scan className="h-3 w-3 text-cyan-400/60" />
+                      <Barcode className="h-3 w-3 text-cyan-400/60" />
                       <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                         Code Type
                       </span>
@@ -154,24 +154,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                   </div>
                 </div>
               </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-1 flex-col items-center justify-center text-center"
-              >
-                <div className="relative mb-6 flex items-center justify-center">
-                  {/* Main Icon Container (Circular) - Size matched to Camera status icons (80px) */}
-                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
-                    <Scan className="h-10 w-10 text-white/30" />
-                  </div>
-                </div>
-                <p className="text-[11px] font-black tracking-[0.3em] text-white/20 uppercase">
-                  Waiting for Barcode
-                </p>
-              </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         </CardContent>
       </Card>
