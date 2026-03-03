@@ -45,7 +45,7 @@ export function LoadingScreen() {
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
-              className="absolute top-0 bottom-0 h-full w-full bg-gradient-to-r from-transparent via-zinc-400 to-transparent"
+              className="absolute top-0 bottom-0 h-full w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
             />
           </div>
 
@@ -55,14 +55,14 @@ export function LoadingScreen() {
                 key={i}
                 animate={{
                   scale: [1, 1.5, 1],
-                  opacity: [0.1, 0.4, 0.1],
+                  opacity: [0.3, 1, 0.3],
                 }}
                 transition={{
-                  duration: 1.2,
+                  duration: 1,
                   repeat: Infinity,
                   delay: i * 0.2,
                 }}
-                className="h-1 w-1 rounded-full bg-white"
+                className="h-1.5 w-1.5 rounded-full bg-cyan-400/50"
               />
             ))}
           </div>
