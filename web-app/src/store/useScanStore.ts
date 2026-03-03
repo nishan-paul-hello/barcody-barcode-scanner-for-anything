@@ -119,6 +119,29 @@ export const useScanStore = create<ScanStore>()(
     {
       name: 'scan-storage-v2',
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        activeTab: state.activeTab,
+        results: {
+          camera: {
+            lastResult: state.results.camera.lastResult,
+            scanMetadata: state.results.camera.scanMetadata,
+            hasError: false,
+            previewUrl: null,
+          },
+          file: {
+            lastResult: state.results.file.lastResult,
+            scanMetadata: state.results.file.scanMetadata,
+            hasError: false,
+            previewUrl: null,
+          },
+          lookup: {
+            lastResult: state.results.lookup.lastResult,
+            scanMetadata: state.results.lookup.scanMetadata,
+            hasError: false,
+            previewUrl: null,
+          },
+        },
+      }),
     }
   )
 );
