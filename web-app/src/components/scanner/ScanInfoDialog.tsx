@@ -21,6 +21,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FORMAT_GROUPS_1D,
+  FORMAT_GROUPS_2D,
+} from '@/lib/constants/barcode-formats';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -48,25 +52,10 @@ const itemVariants = {
 
 export const ScanInfoDialog: React.FC = () => {
   const [showTooltip, setShowTooltip] = React.useState(false);
+  // Groups are derived from BARCODE_FORMAT_REGISTRY — edit barcode-formats.ts to change.
   const protocolGroups = [
-    {
-      title: 'Linear Symbols (1D)',
-      items: [
-        'Codabar',
-        'Code 128',
-        'Code 39',
-        'Code 93',
-        'EAN-13',
-        'EAN-8',
-        'ISBN-13',
-        'ITF',
-        'UPC-A',
-      ],
-    },
-    {
-      title: 'Matrix Symbols (2D)',
-      items: ['Aztec', 'DataMatrix', 'PDF417', 'QR Code'],
-    },
+    { title: 'Linear Symbols (1D)', items: [...FORMAT_GROUPS_1D, 'ISBN-13'] },
+    { title: 'Matrix Symbols (2D)', items: FORMAT_GROUPS_2D },
   ];
 
   const uploadTypes = [

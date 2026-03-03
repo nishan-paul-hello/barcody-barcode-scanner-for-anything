@@ -4,7 +4,7 @@ import { analytics } from '@/lib/analytics.service';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
-import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
+import { DecodeHintType, type Result } from '@zxing/library';
 import {
   Upload,
   X,
@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
+import { SCAN_FORMAT_LIST } from '@/lib/constants/barcode-formats';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScanStore } from '@/store/useScanStore';
@@ -42,22 +43,10 @@ const ALLOWED_TYPES = [
   'image/heif',
 ];
 
-// Defined once at module level — shared by scanImage and scanFromCanvas
+// Defined once at module level — shared by scanImage and scanFromCanvas.
+// Format list is driven by BARCODE_FORMAT_REGISTRY in barcode-formats.ts.
 const SCAN_HINTS = new Map<DecodeHintType, unknown>();
-SCAN_HINTS.set(DecodeHintType.POSSIBLE_FORMATS, [
-  BarcodeFormat.QR_CODE,
-  BarcodeFormat.EAN_13,
-  BarcodeFormat.UPC_A,
-  BarcodeFormat.CODE_128,
-  BarcodeFormat.DATA_MATRIX,
-  BarcodeFormat.PDF_417,
-  BarcodeFormat.ITF,
-  BarcodeFormat.EAN_8,
-  BarcodeFormat.CODE_39,
-  BarcodeFormat.AZTEC,
-  BarcodeFormat.CODABAR,
-  BarcodeFormat.CODE_93,
-]);
+SCAN_HINTS.set(DecodeHintType.POSSIBLE_FORMATS, SCAN_FORMAT_LIST);
 SCAN_HINTS.set(DecodeHintType.TRY_HARDER, true);
 
 export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({

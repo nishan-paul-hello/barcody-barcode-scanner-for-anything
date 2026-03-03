@@ -1,4 +1,5 @@
 'use client';
+import { SCAN_FORMAT_LIST } from '@/lib/constants/barcode-formats';
 
 import { analytics, AnalyticsEventType } from '@/lib/analytics.service';
 
@@ -7,7 +8,7 @@ import {
   BrowserMultiFormatReader,
   type IScannerControls,
 } from '@zxing/browser';
-import { BarcodeFormat, DecodeHintType, type Result } from '@zxing/library';
+import { DecodeHintType, type Result } from '@zxing/library';
 import {
   Camera,
   CameraOff,
@@ -173,20 +174,8 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   // Initial device listing and reader setup
   useEffect(() => {
     const hints = new Map();
-    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-      BarcodeFormat.QR_CODE,
-      BarcodeFormat.EAN_13,
-      BarcodeFormat.UPC_A,
-      BarcodeFormat.CODE_128,
-      BarcodeFormat.DATA_MATRIX,
-      BarcodeFormat.PDF_417,
-      BarcodeFormat.ITF,
-      BarcodeFormat.EAN_8,
-      BarcodeFormat.CODE_39,
-      BarcodeFormat.AZTEC,
-      BarcodeFormat.CODABAR,
-      BarcodeFormat.CODE_93,
-    ]);
+    // Format list is driven by BARCODE_FORMAT_REGISTRY in barcode-formats.ts.
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, SCAN_FORMAT_LIST);
     hints.set(DecodeHintType.TRY_HARDER, true);
 
     readerRef.current = new BrowserMultiFormatReader(hints);
