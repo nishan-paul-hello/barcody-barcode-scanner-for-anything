@@ -432,41 +432,17 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             )}
           </AnimatePresence>
 
-          {!isScanning && !error && isCameraActive && (
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl">
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.5, 1, 0.5],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="rounded-full bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
-              >
-                <div className="relative">
-                  <Camera className="h-12 w-12 text-cyan-400" />
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                    className="absolute -inset-2 rounded-full border-b-2 border-cyan-400/30"
-                  />
-                </div>
-              </motion.div>
-              <p className="mt-6 text-sm font-medium tracking-widest text-cyan-400/80 uppercase">
-                Initializing Lens
-              </p>
-            </div>
-          )}
-
           {!isCameraActive && !error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
-              <Lock className="mb-4 h-8 w-8 text-white/20" strokeWidth={1} />
-              <p className="text-sm font-normal tracking-wide text-white/25">
-                Camera Paused
-              </p>
+              <div className="flex -translate-y-8 flex-col items-center">
+                <Lock
+                  className="mb-5 h-10 w-10 text-amber-400"
+                  strokeWidth={1.5}
+                />
+                <p className="text-base font-semibold tracking-widest text-white uppercase">
+                  Camera Paused
+                </p>
+              </div>
             </div>
           )}
 
