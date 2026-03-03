@@ -64,7 +64,10 @@ export const ScanInfoDialog: React.FC = () => {
   const uploadTypes = [
     { label: 'JPEG', color: 'bg-emerald-500/10 text-emerald-400' },
     { label: 'PNG', color: 'bg-blue-500/10 text-blue-400' },
-    { label: 'WEBP', color: 'bg-purple-500/10 text-purple-400' },
+    { label: 'WEBP', color: 'bg-indigo-500/10 text-indigo-400' },
+    { label: 'HEIC', color: 'bg-amber-500/10 text-amber-400' },
+    { label: 'AVIF', color: 'bg-cyan-500/10 text-cyan-400' },
+    { label: 'BMP', color: 'bg-slate-500/10 text-slate-400' },
   ];
 
   return (
@@ -135,22 +138,16 @@ export const ScanInfoDialog: React.FC = () => {
                     Input Sources
                   </h4>
                 </div>
-                <div className="grid grid-cols-1 gap-3">
+                <div className="flex flex-wrap gap-2">
                   {uploadTypes.map((type) => (
                     <div
                       key={type.label}
-                      className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-3.5 transition-all hover:border-white/10 hover:bg-white/[0.06]"
+                      className={`flex items-center gap-2 rounded-full border border-white/5 px-3 py-1.5 transition-all hover:border-white/10 hover:bg-white/[0.05] ${type.color}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`rounded-xl p-2.5 transition-transform group-hover:scale-110 ${type.color}`}
-                        >
-                          <FileType className="h-4 w-4" />
-                        </div>
-                        <span className="text-sm font-bold text-white/80">
-                          {type.label}
-                        </span>
-                      </div>
+                      <FileType className="h-3 w-3" />
+                      <span className="text-[11px] font-black tracking-wider whitespace-nowrap">
+                        {type.label}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -174,7 +171,7 @@ export const ScanInfoDialog: React.FC = () => {
                   </div>
                   <div className="flex items-baseline gap-3">
                     <span className="text-4xl font-black tracking-tighter text-white/90">
-                      10
+                      20
                     </span>
                     <span className="text-xs font-bold tracking-wider text-white/30 uppercase">
                       Megabytes / Asset
