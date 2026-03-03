@@ -13,6 +13,7 @@ import {
   ExternalLink,
   KeyRound,
   ArrowRight,
+  AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -157,7 +158,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
 
       if (!isAllowed) {
         setError(
-          'Unsupported file type. Please upload a supported image file.'
+          'Unsupported file type — try JPEG, PNG, WebP, HEIC, AVIF, or BMP.'
         );
         return;
       }
@@ -255,7 +256,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           className={`group relative flex aspect-video w-full flex-col overflow-hidden rounded-[2.5rem] border-2 transition-all duration-500 sm:aspect-square md:aspect-video ${
             previewUrl
               ? 'border-white/5 bg-transparent p-0'
-              : 'items-center justify-center border-dashed border-white/5 bg-white/[0.02] py-6 hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
+              : error
+                ? 'items-center justify-center border-red-500/20 bg-red-500/[0.02]'
+                : 'items-center justify-center border-dashed border-white/5 bg-white/[0.02] py-6 hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
           }`}
         >
           <AnimatePresence mode="wait">
@@ -303,6 +306,33 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 >
                   <X className="h-5 w-5" />
                 </Button>
+              </motion.div>
+            ) : error ? (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                className="flex h-full w-full flex-col items-center justify-center gap-5 p-8 text-center"
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-red-500/20">
+                  <AlertCircle className="h-8 w-8 text-red-400" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xl font-black tracking-tight text-white">
+                    Scan Failed
+                  </p>
+                  <p className="mx-auto max-w-sm text-[15px] leading-relaxed font-medium whitespace-normal text-white/70 md:max-w-none md:whitespace-nowrap">
+                    {error}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setError(null)}
+                  className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-bold text-white/50 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white/80"
+                >
+                  <X className="h-3 w-3" />
+                  Dismiss
+                </button>
               </motion.div>
             ) : (
               <motion.div
@@ -401,27 +431,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           )}
         </AnimatePresence>
       </motion.div>
-      <AnimatePresence>
-        {!isScanning && error && !previewUrl && (
-          <motion.div
-            key="system-error"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-red-500/20 bg-red-500/5 p-5"
-          >
-            <div className="flex items-center gap-4">
-              <div className="rounded-full bg-red-500/10 p-2.5 ring-1 ring-red-500/20">
-                <X className="h-5 w-5 text-red-500" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-white/90">System Error</p>
-                <p className="text-xs text-white/40">{error}</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {isPreviewOpen && previewUrl && (
