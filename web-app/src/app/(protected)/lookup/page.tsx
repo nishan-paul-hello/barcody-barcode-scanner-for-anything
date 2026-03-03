@@ -54,13 +54,6 @@ const APIS = [
     color: 'text-orange-400',
   },
   { id: 'goUpc', name: 'Go-UPC', icon: Zap, color: 'text-purple-400' },
-  { id: 'off', name: 'Open Food Facts', icon: Globe, color: 'text-green-400' },
-  {
-    id: 'obf',
-    name: 'Open Beauty Facts',
-    icon: Sparkles,
-    color: 'text-rose-400',
-  },
   { id: 'searchUpc', name: 'SearchUPC', icon: Key, color: 'text-yellow-400' },
   {
     id: 'usda',
@@ -68,11 +61,30 @@ const APIS = [
     icon: FlaskConical,
     color: 'text-green-400',
   },
+  { id: 'off', name: 'Open Food Facts', icon: Globe, color: 'text-lime-400' },
+  {
+    id: 'obf',
+    name: 'Open Beauty Facts',
+    icon: Sparkles,
+    color: 'text-rose-400',
+  },
 ];
+
+// Hex values for each Tailwind colour — used for inline border styles so the
+// active tab border always matches its icon colour (avoids Tailwind JIT issues).
+const COLOR_HEX: Record<string, string> = {
+  'text-orange-400': '#fb923c',
+  'text-purple-400': '#c084fc',
+  'text-yellow-400': '#facc15',
+  'text-green-400': '#4ade80',
+  'text-lime-400': '#a3e635',
+  'text-rose-400': '#fb7185',
+};
 
 export default function GlobalLookupPage() {
   const [barcode, setBarcode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState('upcitemdb');
   const setApiKeysModalOpen = useUIStore((state) => state.setApiKeysModalOpen);
 
   const [results, setResults] = useState<ResultsMap>(() => {
@@ -260,7 +272,7 @@ export default function GlobalLookupPage() {
           </Button>
         </motion.div>
 
-        <Tabs defaultValue="off" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="mb-12">
             <TabsList className="grid h-auto w-full grid-cols-2 gap-4 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-6">
               {APIS.map((api) => {
@@ -274,7 +286,12 @@ export default function GlobalLookupPage() {
                   <TabsTrigger
                     key={api.id}
                     value={api.id}
-                    className="group !data-[state=active]:border-cyan-400 relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white dark:data-[state=active]:border-cyan-400"
+                    style={
+                      activeTab === api.id
+                        ? { borderColor: COLOR_HEX[api.color] }
+                        : {}
+                    }
+                    className="group relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white"
                   >
                     <api.icon
                       className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
