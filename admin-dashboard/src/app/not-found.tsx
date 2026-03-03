@@ -1,12 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { Home } from 'lucide-react';
 import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
+  const router = useRouter();
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -71,12 +72,13 @@ export default function NotFound() {
           transition={{ delay: 0.7, duration: 0.6 }}
           className="mt-12 flex flex-col gap-4 sm:flex-row"
         >
-          <Link href="/">
-            <button className="group flex cursor-pointer items-center gap-2 rounded-2xl bg-cyan-500 px-8 py-4 font-bold text-black shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 active:scale-95">
-              <Home className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" />
-              Home
-            </button>
-          </Link>
+          <button
+            onClick={() => router.push('/')}
+            className="group flex cursor-pointer items-center gap-2 rounded-2xl bg-cyan-500 px-8 py-4 font-bold text-black transition-all hover:bg-cyan-400 active:scale-95"
+          >
+            <Home className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" />
+            Home
+          </button>
 
           <button
             onClick={() => window.history.back()}
