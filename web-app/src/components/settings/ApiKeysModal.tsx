@@ -23,9 +23,10 @@ import {
   Loader2,
   Trash2,
   Key,
+  ClipboardPaste,
   type LucideIcon,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ApiKeysModalProps {
   open: boolean;
@@ -60,6 +61,15 @@ const ApiKeyInput = ({
   onClear,
 }: ApiKeyInputProps) => {
   const isSet = value.length > 0;
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) setter(text.trim());
+    } catch {
+      // Clipboard access denied — silently ignore
+    }
+  };
 
   // Tailwind JIT only includes statically-written class strings.
   // Template literals like `ring-${base}/30` are stripped at build time.
@@ -158,34 +168,51 @@ const ApiKeyInput = ({
           onChange={(e) => setter(e.target.value)}
         />
         <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
-          <button
-            onClick={() => onCopy(value, fieldId)}
-            className={cn(
-              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-colors',
-              isSet
-                ? 'text-white/40 hover:text-white'
-                : 'pointer-events-none opacity-0'
-            )}
-            title="Copy entry"
-          >
-            {copiedField === fieldId ? (
-              <Check className="h-4 w-4 text-green-400" />
+          <AnimatePresence mode="wait">
+            {isSet ? (
+              <motion.div
+                key="actions"
+                className="flex items-center gap-1"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+              >
+                <button
+                  onClick={() => onCopy(value, fieldId)}
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-white"
+                  title="Copy entry"
+                >
+                  {copiedField === fieldId ? (
+                    <Check className="h-4 w-4 text-green-400" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </button>
+                <button
+                  onClick={() => onClear(setter)}
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-red-400"
+                  title="Clear field"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </motion.div>
             ) : (
-              <Copy className="h-4 w-4" />
+              <motion.button
+                key="paste"
+                type="button"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                onClick={handlePaste}
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/30 transition-colors hover:text-white"
+                title="Paste from clipboard"
+              >
+                <ClipboardPaste className="h-4 w-4" />
+              </motion.button>
             )}
-          </button>
-          <button
-            onClick={() => onClear(setter)}
-            className={cn(
-              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-colors',
-              isSet
-                ? 'text-white/40 hover:text-red-400'
-                : 'pointer-events-none opacity-0'
-            )}
-            title="Clear field"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>
@@ -275,7 +302,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             </div>
             <button
               onClick={() => onOpenChange(false)}
-              className="group flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
+              className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
             >
               <X className="h-5 w-5 text-white/40 transition-colors group-hover:text-white" />
             </button>
@@ -346,7 +373,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           <div className="flex items-center justify-between border-t border-white/5 bg-white/[0.02] px-8 py-4 sm:px-10">
             <button
               onClick={() => onOpenChange(false)}
-              className="text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
+              className="cursor-pointer text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
             >
               Dismiss
             </button>
@@ -355,7 +382,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               onClick={handleSave}
               disabled={!hasChanges || updateMutation.isPending}
               className={cn(
-                'group flex h-9 items-center gap-2 rounded-lg px-5 text-[10px] font-bold tracking-widest uppercase transition-all',
+                'group flex h-9 cursor-pointer items-center gap-2 rounded-lg px-5 text-[10px] font-bold tracking-widest uppercase transition-all',
                 hasChanges
                   ? 'bg-white text-black hover:scale-105 active:scale-95'
                   : 'bg-white/5 text-white/20'
