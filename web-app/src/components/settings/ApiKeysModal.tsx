@@ -61,6 +61,45 @@ const ApiKeyInput = ({
 }: ApiKeyInputProps) => {
   const isSet = value.length > 0;
 
+  // Tailwind JIT only includes statically-written class strings.
+  // Template literals like `ring-${base}/30` are stripped at build time.
+  // Use a fully-explicit map so every class is present in the bundle.
+  const iconStyleMap: Record<
+    string,
+    { bg: string; ring: string; focusRing: string; focusBorder: string }
+  > = {
+    'text-teal-400': {
+      bg: 'bg-teal-400/10',
+      ring: 'ring-teal-400/30',
+      focusRing: 'focus-visible:ring-teal-400/50',
+      focusBorder: 'focus-visible:border-teal-400/40',
+    },
+    'text-purple-400': {
+      bg: 'bg-purple-400/10',
+      ring: 'ring-purple-400/30',
+      focusRing: 'focus-visible:ring-purple-400/50',
+      focusBorder: 'focus-visible:border-purple-400/40',
+    },
+    'text-yellow-400': {
+      bg: 'bg-yellow-400/10',
+      ring: 'ring-yellow-400/30',
+      focusRing: 'focus-visible:ring-yellow-400/50',
+      focusBorder: 'focus-visible:border-yellow-400/40',
+    },
+    'text-green-400': {
+      bg: 'bg-green-400/10',
+      ring: 'ring-green-400/30',
+      focusRing: 'focus-visible:ring-green-400/50',
+      focusBorder: 'focus-visible:border-green-400/40',
+    },
+  };
+  const iconStyle = iconStyleMap[color] ?? {
+    bg: 'bg-white/10',
+    ring: 'ring-white/20',
+    focusRing: 'focus-visible:ring-white/20',
+    focusBorder: 'focus-visible:border-white/20',
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -72,8 +111,8 @@ const ApiKeyInput = ({
           <div
             className={cn(
               'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-all group-hover:scale-110',
-              color.replace('text-', 'bg-').replace('-400', '/10'),
-              color.replace('text-', 'ring-').replace('-400', '/20')
+              iconStyle.bg,
+              iconStyle.ring
             )}
           >
             <Icon className={cn('h-5 w-5', color)} />
@@ -110,7 +149,11 @@ const ApiKeyInput = ({
         <Input
           type="password"
           placeholder={placeholder}
-          className="h-10 rounded-lg border-white/5 bg-white/5 px-3 font-mono text-xs transition-all focus:border-white/10 focus:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-white/10"
+          className={cn(
+            'h-10 rounded-lg border-white/5 bg-white/5 pr-20 font-mono text-xs focus:bg-white/[0.08] focus-visible:ring-2',
+            iconStyle.focusRing,
+            iconStyle.focusBorder
+          )}
           value={value}
           onChange={(e) => setter(e.target.value)}
         />
@@ -118,9 +161,9 @@ const ApiKeyInput = ({
           <button
             onClick={() => onCopy(value, fieldId)}
             className={cn(
-              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-all',
+              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-colors',
               isSet
-                ? 'text-white/40 hover:bg-white/10 hover:text-white'
+                ? 'text-white/40 hover:text-white'
                 : 'pointer-events-none opacity-0'
             )}
             title="Copy entry"
@@ -134,9 +177,9 @@ const ApiKeyInput = ({
           <button
             onClick={() => onClear(setter)}
             className={cn(
-              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-all',
+              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-colors',
               isSet
-                ? 'text-white/40 hover:bg-white/10 hover:text-red-400'
+                ? 'text-white/40 hover:text-red-400'
                 : 'pointer-events-none opacity-0'
             )}
             title="Clear field"
@@ -222,10 +265,11 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  Connect Pro Sources
+                  Your Data Sources
                 </DialogTitle>
                 <DialogDescription className="text-sm font-medium text-white/40">
-                  Unlock limitless scanning data with your own API keys.
+                  Add your own keys to pull richer product details when scanning
+                  barcodes.
                 </DialogDescription>
               </div>
             </div>
