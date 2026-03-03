@@ -410,16 +410,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 exit={{ opacity: 0 }}
                 className="pointer-events-none absolute inset-0 z-10"
               >
-                {/* Sleek Minimalist Scan Line */}
-                <div className="animate-scan-line absolute left-0 flex w-full justify-center">
-                  <div className="relative flex w-[75%] items-center justify-center">
-                    {/* Core laser line */}
-                    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-                    {/* Center flare point */}
-                    <div className="absolute h-[2px] w-[30px] rounded-full bg-white opacity-90 blur-[1px]" />
-                  </div>
-                </div>
-
                 {/* Corner Brackets */}
                 <div className="absolute top-0 left-0 h-20 w-20 rounded-tl-[2.5rem] border-t-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
                 <div className="absolute top-0 right-0 h-20 w-20 rounded-tr-[2.5rem] border-t-4 border-r-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
