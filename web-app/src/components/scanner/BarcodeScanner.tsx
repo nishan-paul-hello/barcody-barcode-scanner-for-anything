@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Volume2,
   VolumeX,
+  Lock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -462,10 +463,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           {!isCameraActive && !error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
-              <div className="mb-6 rounded-full bg-cyan-500/10 p-4 ring-1 ring-cyan-500/20">
-                <CameraOff className="h-12 w-12 text-cyan-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white">Camera Paused</h3>
+              <Lock className="mb-4 h-8 w-8 text-white/20" strokeWidth={1} />
+              <p className="text-sm font-normal tracking-wide text-white/25">
+                Camera Paused
+              </p>
             </div>
           )}
 
@@ -491,7 +492,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           )}
 
           {/* Controls Bar */}
-          <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
+          <div
+            className={`absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 backdrop-blur-2xl transition-all ${!isCameraActive ? 'bottom-8 opacity-100' : 'bottom-6 opacity-0 group-hover:bottom-8 group-hover:opacity-100'}`}
+          >
             <button
               onClick={() => handleToggleCamera()}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
