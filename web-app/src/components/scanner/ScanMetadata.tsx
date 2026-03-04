@@ -168,7 +168,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 opacity-0 transition-all group-hover/img:opacity-100">
+                      <div className="flex items-center gap-1 transition-all">
                         <button
                           onClick={handleCopyImage}
                           title="Copy Image"
