@@ -9,7 +9,6 @@ interface ScanMetadataProps {
   result: string | null;
   format?: string;
   timestamp?: string;
-  isError?: boolean;
   fileName?: string;
 }
 
@@ -17,7 +16,6 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   result,
   format = 'Unknown',
   timestamp,
-  isError = false,
   fileName,
 }) => {
   const [copied, setCopied] = useState(false);
@@ -51,25 +49,11 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
     >
       <Card className="relative flex h-[480px] flex-col gap-0 overflow-hidden rounded-[2.5rem] border-white/5 bg-black/40 py-0 shadow-2xl backdrop-blur-3xl">
         <CardHeader className="relative z-10 border-b border-white/5 bg-white/[0.02] px-6 py-[18px]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Activity className="h-5 w-5 text-cyan-400" />
-              <CardTitle className="text-xs font-bold tracking-widest text-white/90 uppercase">
-                Barcode Details
-              </CardTitle>
-            </div>
-            {isError && (
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1"
-              >
-                <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
-                <span className="text-[9px] font-black tracking-widest text-red-500 uppercase">
-                  Failed
-                </span>
-              </motion.div>
-            )}
+          <div className="flex items-center gap-3">
+            <Activity className="h-5 w-5 text-cyan-400" />
+            <CardTitle className="text-xs font-bold tracking-widest text-white/90 uppercase">
+              Barcode Details
+            </CardTitle>
           </div>
         </CardHeader>
 

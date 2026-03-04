@@ -127,19 +127,20 @@ export const useScanStore = create<ScanStore>()(
             lastResult: state.results.camera.lastResult,
             scanMetadata: state.results.camera.scanMetadata,
             hasError: false,
-            previewUrl: null,
+            previewUrl: null, // camera stream frames are never persisted
           },
           file: {
             lastResult: state.results.file.lastResult,
             scanMetadata: state.results.file.scanMetadata,
             hasError: false,
-            previewUrl: null,
+            // data URL is session-persistent — safe to save to localStorage
+            previewUrl: state.results.file.previewUrl,
           },
           lookup: {
             lastResult: state.results.lookup.lastResult,
             scanMetadata: state.results.lookup.scanMetadata,
             hasError: false,
-            previewUrl: null,
+            previewUrl: null, // no image preview in lookup tab
           },
         },
       }),

@@ -134,6 +134,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           });
         }
       } catch (err) {
+        // Clear the preview so a failed upload never lingers
+        setPreviewUrl(null);
+        setImgDims(null);
         // Silencing expected scanning errors to prevent dev overlay
         const errorMessage =
           'No barcode found in this image. Try a clearer photo.';
@@ -144,7 +147,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         setIsScanning(false);
       }
     },
-    [onScanSuccess, onScanError, createScanMutation]
+    [onScanSuccess, onScanError, createScanMutation, setPreviewUrl]
   );
 
   const handleFile = useCallback(
@@ -171,12 +174,8 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
       let processableUrl: string | null = null;
 
       try {
+        onClear?.();
         processableUrl = await convertToProcessableImage(file);
-
-        // Revoke any previous blob: URL to prevent memory leaks
-        if (previewUrl?.startsWith('blob:')) {
-          URL.revokeObjectURL(previewUrl);
-        }
 
         setPreviewUrl(processableUrl);
 
@@ -197,7 +196,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         setError(err instanceof Error ? err.message : 'Failed to process file');
       }
     },
-    [scanImage, setPreviewUrl, previewUrl]
+    [scanImage, setPreviewUrl, onClear]
   );
 
   const onPaste = useCallback(
@@ -236,9 +235,6 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   };
 
   const clearFile = () => {
-    if (previewUrl?.startsWith('blob:')) {
-      URL.revokeObjectURL(previewUrl);
-    }
     setPreviewUrl(null);
     setError(null);
     if (fileInputRef.current) fileInputRef.current.value = '';

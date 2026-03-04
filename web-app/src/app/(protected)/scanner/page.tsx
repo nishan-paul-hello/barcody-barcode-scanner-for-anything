@@ -39,7 +39,7 @@ export default function ScanPage() {
     setActiveTab,
   } = useScanStore();
 
-  const { lastResult, scanMetadata, hasError } = results[activeTab];
+  const { lastResult, scanMetadata } = results[activeTab];
 
   const { data: productData, isLoading } = useProduct(lastResult);
 
@@ -141,6 +141,8 @@ export default function ScanPage() {
                   }}
                   onScanError={() => {
                     setHasError(true);
+                    setLastResult(null);
+                    setScanMetadata(null);
                   }}
                   onClear={() => {
                     setLastResult(null);
@@ -177,7 +179,6 @@ export default function ScanPage() {
               result={lastResult}
               format={scanMetadata?.format}
               timestamp={scanMetadata?.timestamp}
-              isError={hasError}
               fileName={scanMetadata?.fileName}
             />
           </motion.aside>

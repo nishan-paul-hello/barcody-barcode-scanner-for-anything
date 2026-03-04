@@ -1,10 +1,28 @@
 import heic2any from 'heic2any';
 
 /**
- * Normalizes special file formats into a blob: URL for ZXing scanning.
+ * Converts any File or Blob to a base64 data URL.
+ * Unlike blob: URLs, data URLs are persistent across sessions and
+ * survive Zustand store rehydration / page reloads.
+ */
+export const fileToDataUrl = (blob: Blob): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error('Failed to read file as data URL'));
+    reader.readAsDataURL(blob);
+  });
+
+/**
+ * Normalizes special file formats into a persistent data URL for ZXing scanning
+ * and preview display.
  *
  * - HEIC/HEIF: transcoded to JPEG via heic2any (no native browser canvas support)
- * - All other formats (JPEG, PNG, WebP, BMP, AVIF): returned as-is
+ * - All other formats (JPEG, PNG, WebP, BMP, AVIF): read as data URL directly
+ *
+ * Returns a base64 data URL (not a blob: URL) so the result can be safely
+ * stored in localStorage / Zustand persist and will remain valid after
+ * page reloads and store rehydration.
  */
 export const convertToProcessableImage = async (
   file: File
@@ -33,9 +51,9 @@ export const convertToProcessableImage = async (
       ? convertedBlob[0]
       : convertedBlob;
     if (!blob) throw new Error('HEIC conversion produced no output');
-    return URL.createObjectURL(blob);
+    return fileToDataUrl(blob);
   }
 
-  // All other native browser formats: return a blob URL directly.
-  return URL.createObjectURL(file);
+  // All other native browser formats: convert to a persistent data URL.
+  return fileToDataUrl(file);
 };
