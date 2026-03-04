@@ -448,6 +448,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
   const handleClearPreview = useCallback(() => {
     setCapturedPreview(null);
+    setIsCameraActive(true);
     onClear?.();
   }, [onClear]);
 
