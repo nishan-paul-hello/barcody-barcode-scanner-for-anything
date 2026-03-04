@@ -65,9 +65,9 @@ export default function ScanPage() {
         </p>
       </motion.div>
 
-      <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[1fr_350px]">
-        {/* Row 1: Main Scanning Interface - Aligned at top */}
-        <div className="flex min-w-0 flex-col justify-start">
+      <div className="grid items-end gap-x-12 gap-y-10 lg:grid-cols-[1fr_350px]">
+        {/* Row 1: Main Scanning Interface - Aligned at bottom */}
+        <div className="flex min-w-0 flex-col">
           <motion.div variants={itemVariants} className="relative">
             <Tabs
               value={activeTab}
@@ -180,7 +180,7 @@ export default function ScanPage() {
           </motion.div>
         </div>
 
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col">
           <motion.aside variants={itemVariants} className="space-y-8">
             <ScanMetadata
               result={lastResult}

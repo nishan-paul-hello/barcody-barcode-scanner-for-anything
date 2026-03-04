@@ -106,7 +106,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
           </div>
         </CardHeader>
 
-        <CardContent className="relative z-10 flex min-h-0 flex-1 flex-col space-y-6 p-6">
+        <CardContent className="relative z-10 flex min-h-0 flex-1 flex-col space-y-4 p-5">
           <AnimatePresence mode="wait">
             {result ? (
               <motion.div
@@ -114,7 +114,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="flex min-h-0 flex-1 flex-col space-y-6"
+                className="flex min-h-0 flex-1 flex-col space-y-4"
               >
                 {/* Metadata Grid */}
                 <div className="grid grid-cols-2 gap-3">
@@ -144,7 +144,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
 
                 {/* Asset Name */}
                 {fileName && (
-                  <div className="flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5">
+                  <div className="flex items-center justify-between rounded-2xl bg-white/[0.02] p-2.5 px-4 ring-1 ring-white/5">
                     <div className="flex items-center gap-3">
                       <FileText className="h-3.5 w-3.5 text-yellow-400/60" />
                       <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
@@ -159,7 +159,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
 
                 {/* Captured Image - Only shown for Live Camera scans */}
                 {previewUrl && source === 'Camera' && (
-                  <div className="group/img relative flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5 transition-all hover:bg-white/[0.04]">
+                  <div className="group/img relative flex items-center justify-between rounded-2xl bg-white/[0.02] p-2.5 px-4 ring-1 ring-white/5 transition-all hover:bg-white/[0.04]">
                     <div className="flex items-center gap-3">
                       <ImageIcon className="h-3.5 w-3.5 text-blue-400/60" />
                       <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
