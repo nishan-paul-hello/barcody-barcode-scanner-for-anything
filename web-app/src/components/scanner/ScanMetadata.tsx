@@ -2,7 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, Activity, FileText, Barcode, Copy, Check } from 'lucide-react';
+import {
+  Clock,
+  Activity,
+  FileText,
+  Barcode,
+  Copy,
+  Check,
+  QrCode,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScanMetadataProps {
@@ -71,7 +79,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
                     <div className="flex items-center gap-2">
-                      <Barcode className="h-3 w-3 text-cyan-400/60" />
+                      <QrCode className="h-3 w-3 text-orange-400/70" />
                       <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                         Code Type
                       </span>
