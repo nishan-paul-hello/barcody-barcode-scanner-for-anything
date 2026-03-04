@@ -32,6 +32,7 @@ interface BarcodeScannerProps {
   active?: boolean;
 }
 
+import { useScanStore } from '@/store/useScanStore';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 
 export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
@@ -40,6 +41,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   onClear,
   active = true,
 }) => {
+  const previewUrl = useScanStore((state) => state.getPreviewUrl());
+  const setPreviewUrl = useScanStore((state) => state.setPreviewUrl);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const readerRef = useRef<BrowserMultiFormatReader | null>(null);
@@ -58,7 +62,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   });
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
-  const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
   const startRetryCountRef = useRef(0);
   const playBeepRef = useRef<() => void>(() => {});
   const drawFeedbackRef = useRef<(result: Result) => void>(() => {});
@@ -203,11 +206,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     (result: Result) => {
       const frame = captureFrame(result);
       if (frame) {
-        setCapturedPreview(frame);
+        setPreviewUrl(frame);
         setIsCameraActive(false);
       }
     },
-    [captureFrame]
+    [captureFrame, setPreviewUrl]
   );
 
   const playBeep = useCallback(() => {
@@ -447,10 +450,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   }, [devices, selectedDeviceId]);
 
   const handleClearPreview = useCallback(() => {
-    setCapturedPreview(null);
+    setPreviewUrl(null);
     setIsCameraActive(true);
     onClear?.();
-  }, [onClear]);
+  }, [onClear, setPreviewUrl]);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
@@ -462,7 +465,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
           {/* Captured preview — shown after a successful scan */}
           <AnimatePresence>
-            {capturedPreview && (
+            {previewUrl && (
               <motion.div
                 key="captured"
                 initial={{ opacity: 0 }}
@@ -472,7 +475,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 className="absolute inset-0 z-30"
               >
                 <Image
-                  src={capturedPreview}
+                  src={previewUrl}
                   alt="Captured scan"
                   fill
                   className="object-cover"
@@ -503,7 +506,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           />
 
           <AnimatePresence>
-            {isScanning && !capturedPreview && (
+            {isScanning && !previewUrl && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -522,7 +525,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             )}
           </AnimatePresence>
 
-          {!isCameraActive && !capturedPreview && !error && (
+          {!isCameraActive && !previewUrl && !error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
               <div className="flex -translate-y-8 flex-col items-center">
                 <Lock
@@ -560,7 +563,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           {/* Controls Bar */}
           <div
             className={`absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 backdrop-blur-2xl transition-all ${
-              isCameraActive || capturedPreview
+              isCameraActive || previewUrl
                 ? 'bottom-6 opacity-0 group-hover:bottom-8 group-hover:opacity-100'
                 : 'bottom-8 opacity-100'
             }`}

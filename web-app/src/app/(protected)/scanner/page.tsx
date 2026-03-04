@@ -37,9 +37,11 @@ export default function ScanPage() {
     setScanMetadata,
     setHasError,
     setActiveTab,
+    getPreviewUrl,
   } = useScanStore();
 
   const { lastResult, scanMetadata } = results[activeTab];
+  const previewUrl = getPreviewUrl();
 
   const { data: productData, isLoading } = useProduct(lastResult);
 
@@ -185,6 +187,8 @@ export default function ScanPage() {
               format={scanMetadata?.format}
               timestamp={scanMetadata?.timestamp}
               fileName={scanMetadata?.fileName}
+              previewUrl={previewUrl}
+              source={scanMetadata?.source}
             />
           </motion.aside>
         </div>

@@ -10,14 +10,19 @@ import {
   Copy,
   Check,
   QrCode,
+  Image as ImageIcon,
+  Download,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface ScanMetadataProps {
   result: string | null;
   format?: string;
   timestamp?: string;
   fileName?: string;
+  previewUrl?: string | null;
+  source?: string;
 }
 
 export const ScanMetadata: React.FC<ScanMetadataProps> = ({
@@ -25,8 +30,11 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   format = 'Unknown',
   timestamp,
   fileName,
+  previewUrl,
+  source,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [imageCopied, setImageCopied] = useState(false);
 
   useEffect(() => {
     if (copied) {
@@ -35,11 +43,44 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
     }
   }, [copied]);
 
+  useEffect(() => {
+    if (imageCopied) {
+      const timer = setTimeout(() => setImageCopied(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [imageCopied]);
+
   const handleCopy = () => {
     if (result) {
       navigator.clipboard.writeText(result);
       setCopied(true);
     }
+  };
+
+  const handleCopyImage = async () => {
+    if (!previewUrl) return;
+    try {
+      const response = await fetch(previewUrl);
+      const blob = await response.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob }),
+      ]);
+      setImageCopied(true);
+    } catch (err) {
+      console.error('Failed to copy image:', err);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!previewUrl) return;
+    const link = document.createElement('a');
+    link.href = previewUrl;
+    link.download = fileName
+      ? `scan-${fileName}.png`
+      : `scan-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
   const displayTimestamp = timestamp
     ? new Date(timestamp).toLocaleTimeString([], {
@@ -113,6 +154,51 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                     <span className="max-w-[140px] truncate text-[10px] font-black tracking-widest text-white uppercase">
                       {fileName}
                     </span>
+                  </div>
+                )}
+
+                {/* Captured Image - Only shown for Live Camera scans */}
+                {previewUrl && source === 'Camera' && (
+                  <div className="group/img relative flex items-center justify-between rounded-2xl bg-white/[0.02] p-3 px-4 ring-1 ring-white/5 transition-all hover:bg-white/[0.04]">
+                    <div className="flex items-center gap-3">
+                      <ImageIcon className="h-3.5 w-3.5 text-blue-400/60" />
+                      <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
+                        Captured Image
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 opacity-0 transition-all group-hover/img:opacity-100">
+                        <button
+                          onClick={handleCopyImage}
+                          title="Copy Image"
+                          className="cursor-pointer rounded-md p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white"
+                        >
+                          {imageCopied ? (
+                            <Check className="h-3 w-3 text-emerald-400" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </button>
+                        <button
+                          onClick={handleDownload}
+                          title="Download Image"
+                          className="cursor-pointer rounded-md p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white"
+                        >
+                          <Download className="h-3 w-3" />
+                        </button>
+                      </div>
+
+                      <div className="relative h-8 w-12 overflow-hidden rounded-lg border border-white/10 bg-black/40 shadow-inner">
+                        <Image
+                          src={previewUrl}
+                          alt="Captured preview"
+                          fill
+                          className="object-cover transition-transform group-hover/img:scale-110"
+                          unoptimized
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
 
