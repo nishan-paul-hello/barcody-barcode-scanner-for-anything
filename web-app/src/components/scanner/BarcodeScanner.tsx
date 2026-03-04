@@ -56,7 +56,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       return true;
     }
   });
-  const [scanSuccess, setScanSuccess] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
   const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
@@ -119,21 +118,15 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', 0.92);
+    return canvas.toDataURL('image/png');
   }, []);
 
   const drawFeedback = useCallback(() => {
-    setScanSuccess(true);
-    // Capture the frame on success flash
     const frame = captureFrame();
     if (frame) {
-      // Delay slightly so the green flash is visible before preview takes over
-      setTimeout(() => {
-        setCapturedPreview(frame);
-        setIsCameraActive(false);
-      }, 650);
+      setCapturedPreview(frame);
+      setIsCameraActive(false);
     }
-    setTimeout(() => setScanSuccess(false), 600);
   }, [captureFrame]);
 
   const playBeep = useCallback(() => {
@@ -390,9 +383,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             {capturedPreview && (
               <motion.div
                 key="captured"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
                 className="absolute inset-0 z-30"
               >
                 <Image
@@ -435,18 +429,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 className="pointer-events-none absolute inset-0 z-10"
               >
                 {/* Corner Brackets */}
-                <div
-                  className={`absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
-                />
-                <div
-                  className={`absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
-                />
-                <div
-                  className={`absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
-                />
-                <div
-                  className={`absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] transition-all duration-150 ${scanSuccess ? 'border-green-400' : 'border-cyan-400'}`}
-                />
+                <div className="absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] border-cyan-400" />
+                <div className="absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] border-cyan-400" />
+                <div className="absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-cyan-400" />
+                <div className="absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-cyan-400" />
 
                 {/* Vignette */}
                 <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
