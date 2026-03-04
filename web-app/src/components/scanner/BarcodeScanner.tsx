@@ -409,7 +409,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   <div className="absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-green-400" />
                   <div className="absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-green-400" />
                 </div>
-                {/* Clear / new scan button */}
+                {/* Cross — top-right of preview, appears on hover (same as Upload tab) */}
                 <Button
                   variant="ghost"
                   size="icon"
@@ -461,7 +461,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             )}
           </AnimatePresence>
 
-          {!isCameraActive && !error && (
+          {!isCameraActive && !capturedPreview && !error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
               <div className="flex -translate-y-8 flex-col items-center">
                 <Lock
@@ -498,7 +498,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
           {/* Controls Bar */}
           <div
-            className={`absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 backdrop-blur-2xl transition-all ${!isCameraActive ? 'bottom-8 opacity-100' : 'bottom-6 opacity-0 group-hover:bottom-8 group-hover:opacity-100'}`}
+            className={`absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 backdrop-blur-2xl transition-all ${
+              isCameraActive || capturedPreview
+                ? 'bottom-6 opacity-0 group-hover:bottom-8 group-hover:opacity-100'
+                : 'bottom-8 opacity-100'
+            }`}
           >
             <button
               onClick={() => handleToggleCamera()}
