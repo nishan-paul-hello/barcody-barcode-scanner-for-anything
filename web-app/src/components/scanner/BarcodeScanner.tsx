@@ -17,15 +17,18 @@ import {
   Volume2,
   VolumeX,
   Lock,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface BarcodeScannerProps {
   onScanSuccess?: (result: Result, fileName?: string) => void;
   onScanError?: (error: unknown) => void;
+  onClear?: () => void;
   active?: boolean;
 }
 
@@ -34,6 +37,7 @@ import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   onScanSuccess,
   onScanError,
+  onClear,
   active = true,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -55,6 +59,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [scanSuccess, setScanSuccess] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
+  const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
   const startRetryCountRef = useRef(0);
   const playBeepRef = useRef<() => void>(() => {});
   const drawFeedbackRef = useRef<() => void>(() => {});
@@ -103,10 +108,33 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     [isCameraActive, selectedDeviceId, devices]
   );
 
+  // Capture a still frame from the video element and return as data URL
+  const captureFrame = useCallback((): string | null => {
+    const video = videoRef.current;
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0)
+      return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/jpeg', 0.92);
+  }, []);
+
   const drawFeedback = useCallback(() => {
     setScanSuccess(true);
+    // Capture the frame on success flash
+    const frame = captureFrame();
+    if (frame) {
+      // Delay slightly so the green flash is visible before preview takes over
+      setTimeout(() => {
+        setCapturedPreview(frame);
+        setIsCameraActive(false);
+      }, 650);
+    }
     setTimeout(() => setScanSuccess(false), 600);
-  }, []);
+  }, [captureFrame]);
 
   const playBeep = useCallback(() => {
     if (!soundEnabled) return;
@@ -344,6 +372,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     }
   }, [devices, selectedDeviceId]);
 
+  const handleClearPreview = useCallback(() => {
+    setCapturedPreview(null);
+    onClear?.();
+  }, [onClear]);
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
       <motion.div
@@ -352,6 +385,43 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         className="w-full"
       >
         <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
+          {/* Captured preview — shown after a successful scan */}
+          <AnimatePresence>
+            {capturedPreview && (
+              <motion.div
+                key="captured"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-30"
+              >
+                <Image
+                  src={capturedPreview}
+                  alt="Captured scan"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+                {/* Green success brackets overlay */}
+                <div className="pointer-events-none absolute inset-0">
+                  <div className="absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] border-green-400" />
+                  <div className="absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] border-green-400" />
+                  <div className="absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-green-400" />
+                  <div className="absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-green-400" />
+                </div>
+                {/* Clear / new scan button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClearPreview}
+                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700"
@@ -364,7 +434,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           />
 
           <AnimatePresence>
-            {isScanning && (
+            {isScanning && !capturedPreview && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

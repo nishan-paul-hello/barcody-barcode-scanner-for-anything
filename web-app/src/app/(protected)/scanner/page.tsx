@@ -123,6 +123,11 @@ export default function ScanPage() {
                     setLastResult(null);
                     setScanMetadata(null);
                   }}
+                  onClear={() => {
+                    setLastResult(null);
+                    setHasError(false);
+                    setScanMetadata(null);
+                  }}
                 />
               </TabsContent>
               <TabsContent value="file" className="m-0 outline-none">
