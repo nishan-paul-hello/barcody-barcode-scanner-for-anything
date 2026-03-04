@@ -61,7 +61,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
   const startRetryCountRef = useRef(0);
   const playBeepRef = useRef<() => void>(() => {});
-  const drawFeedbackRef = useRef<() => void>(() => {});
+  const drawFeedbackRef = useRef<(result: Result) => void>(() => {});
   const onScanSuccessRef = useRef(onScanSuccess);
   const onScanErrorRef = useRef(onScanError);
   const createScanMutation = useCreateScan();
@@ -108,26 +108,107 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   );
 
   // Capture a still frame from the video element and return as data URL
-  const captureFrame = useCallback((): string | null => {
+  // Matches the crop's aspect ratio to the UI container to prevent 'partial' cropping
+  const captureFrame = useCallback((result?: Result): string | null => {
     const video = videoRef.current;
     if (!video || video.videoWidth === 0 || video.videoHeight === 0)
       return null;
+
     const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const points = result?.getResultPoints();
+
+    if (points && points.length >= 2) {
+      // Find bounding box of barcode
+      const firstPoint = points[0];
+      if (!firstPoint) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/png');
+      }
+
+      let minX = firstPoint.getX();
+      let minY = firstPoint.getY();
+      let maxX = firstPoint.getX();
+      let maxY = firstPoint.getY();
+
+      for (let i = 1; i < points.length; i++) {
+        const p = points[i];
+        if (!p) continue;
+        const x = p.getX();
+        const y = p.getY();
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
+
+      const barcodeW = maxX - minX;
+      let barcodeH = maxY - minY;
+
+      // Handle 1D barcodes (often 0 height from ZXing points)
+      if (barcodeH < barcodeW * 0.05) {
+        barcodeH = barcodeW * 0.4;
+        minY -= barcodeH / 2;
+      }
+
+      // 1. Target Focused Crop (25% padding)
+      const padding = 0.25;
+      let cropW = barcodeW * (1 + padding * 2);
+      let cropH = barcodeH * (1 + padding * 2);
+
+      // 2. Adjust to 16:9 UI Aspect Ratio
+      const targetAR = 16 / 9;
+      const cropAR = cropW / cropH;
+
+      if (cropAR > targetAR) {
+        cropH = cropW / targetAR;
+      } else {
+        cropW = cropH * targetAR;
+      }
+
+      // 3. Center and Extract
+      const centerX = minX + barcodeW / 2;
+      const centerY = minY + barcodeH / 2;
+
+      let sx = Math.max(0, centerX - cropW / 2);
+      let sy = Math.max(0, centerY - cropH / 2);
+
+      // Keep within video bounds
+      if (sx + cropW > video.videoWidth)
+        sx = Math.max(0, video.videoWidth - cropW);
+      if (sy + cropH > video.videoHeight)
+        sy = Math.max(0, video.videoHeight - cropH);
+
+      const finalW = Math.min(cropW, video.videoWidth);
+      const finalH = Math.min(cropH, video.videoHeight);
+
+      canvas.width = finalW;
+      canvas.height = finalH;
+      ctx.drawImage(video, sx, sy, finalW, finalH, 0, 0, finalW, finalH);
+    } else {
+      // Fallback: Full Frame
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
+
     return canvas.toDataURL('image/png');
   }, []);
 
-  const drawFeedback = useCallback(() => {
-    const frame = captureFrame();
-    if (frame) {
-      setCapturedPreview(frame);
-      setIsCameraActive(false);
-    }
-  }, [captureFrame]);
+  const drawFeedback = useCallback(
+    (result: Result) => {
+      const frame = captureFrame(result);
+      if (frame) {
+        setCapturedPreview(frame);
+        setIsCameraActive(false);
+      }
+    },
+    [captureFrame]
+  );
 
   const playBeep = useCallback(() => {
     if (!soundEnabled) return;
@@ -274,7 +355,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           (result, err) => {
             if (result && isMounted) {
               playBeepRef.current();
-              drawFeedbackRef.current();
+              drawFeedbackRef.current(result);
 
               const barcodeData = result.getText();
               const formatName = result.getBarcodeFormat().toString();
