@@ -9,16 +9,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import {
-  Info,
-  FileType,
-  Cpu,
-  Zap,
-  X,
-  Binary,
-  Database,
-  Box,
-} from 'lucide-react';
+import { Info, X, Layers, ScanLine, HardDrive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -26,49 +17,76 @@ import {
   FORMAT_GROUPS_2D,
 } from '@/lib/constants/barcode-formats';
 
-const containerVariants = {
+const stagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.06, delayChildren: 0.05 },
   },
 } as const;
 
-const itemVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: 10 },
+const fadeUp = {
+  hidden: { opacity: 0, y: 8 },
   visible: {
     opacity: 1,
-    scale: 1,
     y: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 100,
-      damping: 15,
-    },
+    transition: { type: 'spring', stiffness: 160, damping: 18 },
   },
 } as const;
+
+// ── Tiny section label ───────────────────────────────────────────────────────
+function Label({
+  icon: Icon,
+  iconCls = 'text-cyan-400/70',
+  children,
+}: {
+  icon: React.ElementType;
+  iconCls?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <Icon className={`h-3 w-3 ${iconCls}`} />
+      <span className="text-[10px] font-black tracking-widest text-white/30 uppercase">
+        {children}
+      </span>
+    </div>
+  );
+}
+
+// ── Single format pill ────────────────────────────────────────────────────────
+function FormatPill({ name }: { name: string }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      className="group rounded-full border border-white/[0.06] bg-white/[0.03] px-2.5 py-1 transition-all hover:border-cyan-500/30 hover:bg-cyan-500/[0.06]"
+    >
+      <span className="text-[11px] font-semibold text-white/50 transition-colors group-hover:text-white/90">
+        {name}
+      </span>
+    </motion.div>
+  );
+}
 
 export const ScanInfoDialog: React.FC = () => {
   const [showTooltip, setShowTooltip] = React.useState(false);
-  // Groups are derived from BARCODE_FORMAT_REGISTRY — edit barcode-formats.ts to change.
-  const protocolGroups = [
-    { title: 'Linear Symbols (1D)', items: [...FORMAT_GROUPS_1D, 'ISBN-13'] },
-    { title: 'Matrix Symbols (2D)', items: FORMAT_GROUPS_2D },
+
+  const fileTypes = [
+    { label: 'JPEG', cls: 'text-emerald-400' },
+    { label: 'PNG', cls: 'text-blue-400' },
+    { label: 'WEBP', cls: 'text-indigo-400' },
+    { label: 'HEIC', cls: 'text-amber-400' },
+    { label: 'AVIF', cls: 'text-cyan-400' },
+    { label: 'BMP', cls: 'text-slate-400' },
   ];
 
-  const uploadTypes = [
-    { label: 'JPEG', color: 'bg-emerald-500/10 text-emerald-400' },
-    { label: 'PNG', color: 'bg-blue-500/10 text-blue-400' },
-    { label: 'WEBP', color: 'bg-indigo-500/10 text-indigo-400' },
-    { label: 'HEIC', color: 'bg-amber-500/10 text-amber-400' },
-    { label: 'AVIF', color: 'bg-cyan-500/10 text-cyan-400' },
-    { label: 'BMP', color: 'bg-slate-500/10 text-slate-400' },
-  ];
+  // ISBN-13 is content-derived from EAN-13, not a separate ZXing hint
+  const formats1D = [...FORMAT_GROUPS_1D, 'ISBN-13'];
+  const formats2D = FORMAT_GROUPS_2D;
 
   return (
     <Dialog>
+      {/* ── Trigger + tooltip ─────────────────────────────────────────────── */}
       <div
         className="relative"
         onMouseEnter={() => setShowTooltip(true)}
@@ -77,19 +95,20 @@ export const ScanInfoDialog: React.FC = () => {
         <AnimatePresence>
           {showTooltip && (
             <motion.div
-              initial={{ opacity: 0, y: 5, scale: 0.95 }}
+              initial={{ opacity: 0, y: 4, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 5, scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 px-3 py-1.5"
+              exit={{ opacity: 0, y: 4, scale: 0.94 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+              className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2"
             >
-              <div className="relative rounded-lg border border-white/10 bg-black/80 px-3 py-1.5 text-[10px] font-bold tracking-wider whitespace-nowrap text-white/50 uppercase shadow-2xl backdrop-blur-xl">
-                View Specifications
+              <div className="relative rounded-lg border border-white/10 bg-black/80 px-3 py-1.5 text-[10px] font-black tracking-wider whitespace-nowrap text-white/50 uppercase shadow-2xl backdrop-blur-xl">
+                Specifications
                 <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border-r border-b border-white/10 bg-black/80" />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
         <DialogTrigger asChild>
           <Button
             variant="ghost"
@@ -100,20 +119,29 @@ export const ScanInfoDialog: React.FC = () => {
           </Button>
         </DialogTrigger>
       </div>
+
+      {/* ── Dialog ─────────────────────────────────────────────────────────── */}
       <DialogContent
-        className="max-w-xl overflow-hidden rounded-[2.5rem] border-white/10 bg-black/90 p-0 text-white shadow-2xl backdrop-blur-3xl sm:max-w-2xl"
+        className="max-w-md overflow-hidden rounded-[2rem] border border-white/[0.07] bg-[#080808] p-0 text-white shadow-2xl backdrop-blur-3xl sm:max-w-lg"
         showCloseButton={false}
       >
-        <div className="relative p-8">
-          <DialogClose className="absolute top-6 right-6 z-50 cursor-pointer rounded-full bg-white/5 p-2 text-white/40 transition-all hover:bg-white/10 hover:text-white">
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
+
+        <div className="relative px-7 pt-7 pb-6">
+          {/* Close */}
+          <DialogClose className="absolute top-5 right-5 z-50 cursor-pointer rounded-full p-1.5 text-white/30 transition-all hover:bg-white/8 hover:text-white/80">
             <X className="h-4 w-4" />
           </DialogClose>
 
-          <DialogHeader className="relative mb-8">
-            <div className="mb-4 flex items-center gap-4">
-              <Cpu className="h-8 w-8 text-cyan-400" />
+          {/* Header */}
+          <DialogHeader className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-white/5">
+                <Info className="h-4 w-4 text-white/40" />
+              </div>
               <div>
-                <DialogTitle className="text-3xl font-black tracking-tight text-white">
+                <DialogTitle className="text-lg font-black tracking-tight text-white">
                   System Specification
                 </DialogTitle>
               </div>
@@ -121,100 +149,85 @@ export const ScanInfoDialog: React.FC = () => {
           </DialogHeader>
 
           <motion.div
-            variants={containerVariants}
+            variants={stagger}
             initial="hidden"
             animate="visible"
-            className="grid gap-8 md:grid-cols-2"
+            className="space-y-6"
           >
-            {/* Left Column */}
-            <div className="space-y-8">
-              <motion.section variants={itemVariants} className="space-y-4">
-                <div className="flex items-center gap-2 text-white/90">
-                  <Box className="h-4 w-4 text-cyan-400" />
-                  <h4 className="text-xs font-black tracking-widest text-white/60 uppercase">
-                    Input Sources
-                  </h4>
+            {/* ── File size + accepted types on one row ─────────────────── */}
+            <motion.div variants={fadeUp} className="flex items-start gap-6">
+              {/* Capacity pill */}
+              <div className="shrink-0">
+                <Label icon={HardDrive} iconCls="text-amber-400/80">
+                  Limit
+                </Label>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-3xl font-black tracking-tighter text-white">
+                    20
+                  </span>
+                  <span className="text-[10px] font-bold text-white/30 uppercase">
+                    MB
+                  </span>
+                  <span className="text-[10px] text-white/20">per asset</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {uploadTypes.map((type) => (
-                    <div
-                      key={type.label}
-                      className={`flex items-center gap-2 rounded-full border border-white/5 px-3 py-1.5 transition-all hover:border-white/10 hover:bg-white/[0.05] ${type.color}`}
+              </div>
+
+              {/* Vertical divider */}
+              <div className="mt-0.5 w-px self-stretch bg-white/5" />
+
+              {/* Accepted formats */}
+              <div className="min-w-0 flex-1">
+                <Label icon={Layers} iconCls="text-emerald-400/80">
+                  Accepted
+                </Label>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {fileTypes.map(({ label, cls }) => (
+                    <span
+                      key={label}
+                      className={`text-[10px] font-black tracking-wider ${cls}`}
                     >
-                      <FileType className="h-3 w-3" />
-                      <span className="text-[11px] font-black tracking-wider whitespace-nowrap">
-                        {type.label}
-                      </span>
-                    </div>
+                      {label}
+                    </span>
                   ))}
                 </div>
-              </motion.section>
+              </div>
+            </motion.div>
 
-              <motion.section variants={itemVariants} className="space-y-4">
-                <div className="flex items-center gap-2 text-white/90">
-                  <Database className="h-4 w-4 text-cyan-400" />
-                  <h4 className="text-xs font-black tracking-widest text-white/60 uppercase">
-                    Data Constraints
-                  </h4>
-                </div>
-                <div className="relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-6 shadow-inner">
-                  <div className="absolute top-0 right-0 p-4 opacity-5">
-                    <Zap className="h-12 w-12 text-white" />
-                  </div>
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-[10px] font-black tracking-widest text-white/20 uppercase">
-                      Capacity Limit
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-4xl font-black tracking-tighter text-white/90">
-                      20
-                    </span>
-                    <span className="text-xs font-bold tracking-wider text-white/30 uppercase">
-                      Megabytes / Asset
-                    </span>
+            {/* Divider */}
+            <div className="h-px bg-white/[0.05]" />
+
+            {/* ── Supported Formats ─────────────────────────────────────── */}
+            <motion.div variants={fadeUp} className="space-y-4">
+              <Label icon={ScanLine} iconCls="text-violet-400/80">
+                Supported Formats
+              </Label>
+
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                {/* 1D */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black tracking-widest text-white/20 uppercase">
+                    Linear · 1D
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {formats1D.map((f) => (
+                      <FormatPill key={f} name={f} />
+                    ))}
                   </div>
                 </div>
-              </motion.section>
-            </div>
 
-            {/* Right Column */}
-            <div className="space-y-6">
-              <motion.section variants={itemVariants} className="space-y-4">
-                <div className="flex items-center gap-2 text-white/90">
-                  <Binary className="h-4 w-4 text-cyan-400" />
-                  <h4 className="text-xs font-black tracking-widest text-white/60 uppercase">
-                    Decoding Matrix
-                  </h4>
+                {/* 2D */}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black tracking-widest text-white/20 uppercase">
+                    Matrix · 2D
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {formats2D.map((f) => (
+                      <FormatPill key={f} name={f} />
+                    ))}
+                  </div>
                 </div>
-
-                <div className="space-y-4">
-                  {protocolGroups.map((group) => (
-                    <div
-                      key={group.title}
-                      className="relative rounded-[2.5rem] border border-white/5 bg-white/[0.02] p-6 shadow-inner"
-                    >
-                      <h5 className="mb-4 text-[10px] font-black tracking-widest text-white/20 uppercase">
-                        {group.title}
-                      </h5>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                        {group.items.map((protocol) => (
-                          <div
-                            key={protocol}
-                            className="group flex items-center gap-2.5"
-                          >
-                            <div className="h-1 w-1 rounded-full bg-white/20 ring-2 ring-transparent transition-all group-hover:bg-cyan-500 group-hover:ring-cyan-500/20" />
-                            <span className="text-[11px] font-bold text-white/60 transition-colors group-hover:text-white">
-                              {protocol}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.section>
-            </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </DialogContent>
