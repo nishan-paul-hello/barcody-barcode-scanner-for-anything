@@ -402,13 +402,6 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   className="object-cover"
                   unoptimized
                 />
-                {/* Green success brackets overlay */}
-                <div className="pointer-events-none absolute inset-0">
-                  <div className="absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] border-green-400" />
-                  <div className="absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] border-green-400" />
-                  <div className="absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-green-400" />
-                  <div className="absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-green-400" />
-                </div>
                 {/* Cross — top-right of preview, appears on hover (same as Upload tab) */}
                 <Button
                   variant="ghost"
