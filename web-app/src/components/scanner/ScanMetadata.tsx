@@ -73,11 +73,25 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
 
   const handleDownload = () => {
     if (!previewUrl) return;
+
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = now.toLocaleString('en-US', { month: 'short' }).toLowerCase();
+    const year = now.getFullYear();
+
+    const hour24 = now.getHours();
+    const ampm = hour24 >= 12 ? 'pm' : 'am';
+    const hour12 = String(hour24 % 12 || 12).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const sec = String(now.getSeconds()).padStart(2, '0');
+    const ms = String(now.getMilliseconds()).padStart(3, '0');
+
+    const formattedDate = `${day}-${month}-${year}-${hour12}-${min}-${sec}-${ms}-${ampm}`;
+    const name = `scan-${formattedDate}.png`;
+
     const link = document.createElement('a');
     link.href = previewUrl;
-    link.download = fileName
-      ? `scan-${fileName}.png`
-      : `scan-${Date.now()}.png`;
+    link.download = name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
