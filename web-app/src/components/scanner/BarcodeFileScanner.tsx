@@ -4,7 +4,7 @@ import { analytics } from '@/lib/analytics.service';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
-import { DecodeHintType, BarcodeFormat, type Result } from '@zxing/library';
+import { DecodeHintType, type Result } from '@zxing/library';
 import {
   Upload,
   X,
@@ -13,25 +13,42 @@ import {
   ExternalLink,
   KeyRound,
   ArrowRight,
+  AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
+import { SCAN_FORMAT_LIST } from '@/lib/constants/barcode-formats';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScanStore } from '@/store/useScanStore';
 import { useApiKeys } from '@/hooks/use-api-keys';
 import { useUIStore } from '@/store/useUIStore';
+import { convertToProcessableImage } from '@/lib/utils/file-conversion';
 
 interface BarcodeFileScannerProps {
-  onScanSuccess?: (result: Result) => void;
+  onScanSuccess?: (result: Result, fileName?: string) => void;
   onScanError?: (error: unknown) => void;
   onClear?: () => void;
 }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB for HEIC
+const ALLOWED_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/bmp',
+  'image/avif',
+  'image/heic',
+  'image/heif',
+];
+
+// Defined once at module level — shared by scanImage and scanFromCanvas.
+// Format list is driven by BARCODE_FORMAT_REGISTRY in barcode-formats.ts.
+const SCAN_HINTS = new Map<DecodeHintType, unknown>();
+SCAN_HINTS.set(DecodeHintType.POSSIBLE_FORMATS, SCAN_FORMAT_LIST);
+SCAN_HINTS.set(DecodeHintType.TRY_HARDER, true);
 
 export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   onScanSuccess,
@@ -66,26 +83,11 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   }, [previewUrl]);
 
   const scanImage = useCallback(
-    async (url: string) => {
+    async (url: string, fileName?: string) => {
       setIsScanning(true);
       setError(null);
 
-      const hints = new Map();
-      hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-        BarcodeFormat.QR_CODE,
-        BarcodeFormat.EAN_13,
-        BarcodeFormat.UPC_A,
-        BarcodeFormat.UPC_E,
-        BarcodeFormat.CODE_128,
-        BarcodeFormat.DATA_MATRIX,
-        BarcodeFormat.PDF_417,
-        BarcodeFormat.ITF,
-        BarcodeFormat.EAN_8,
-        BarcodeFormat.CODE_39,
-      ]);
-      hints.set(DecodeHintType.TRY_HARDER, true);
-
-      const reader = new BrowserMultiFormatReader(hints);
+      const reader = new BrowserMultiFormatReader(SCAN_HINTS);
 
       try {
         // Pre-validate image dimensions to prevent IndexSizeError in ZXing internal canvas
@@ -108,16 +110,19 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           const barcodeData = result.getText();
           const formatName = result.getBarcodeFormat().toString();
 
-          onScanSuccess?.(result);
+          onScanSuccess?.(result, fileName);
 
           analytics.trackScanCreated(
-            mapZxingFormatToReadable(result.getBarcodeFormat()),
+            mapZxingFormatToReadable(result.getBarcodeFormat(), barcodeData),
             'file'
           );
 
           createScanMutation.mutate({
             barcodeData,
-            barcodeType: mapZxingFormatToReadable(result.getBarcodeFormat()),
+            barcodeType: mapZxingFormatToReadable(
+              result.getBarcodeFormat(),
+              barcodeData
+            ),
             rawData: barcodeData,
             deviceType: 'web',
             scannedAt: new Date().toISOString(),
@@ -129,6 +134,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           });
         }
       } catch (err) {
+        // Clear the preview so a failed upload never lingers
+        setPreviewUrl(null);
+        setImgDims(null);
         // Silencing expected scanning errors to prevent dev overlay
         const errorMessage =
           'No barcode found in this image. Try a clearer photo.';
@@ -139,42 +147,56 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
         setIsScanning(false);
       }
     },
-    [onScanSuccess, onScanError, createScanMutation]
+    [onScanSuccess, onScanError, createScanMutation, setPreviewUrl]
   );
 
   const handleFile = useCallback(
     async (file: File) => {
       setError(null);
 
-      if (!ALLOWED_TYPES.includes(file.type)) {
-        setError('Invalid file type. Please upload a JPG, PNG, or WebP image.');
+      const isAllowed =
+        ALLOWED_TYPES.includes(file.type) ||
+        file.name.toLowerCase().endsWith('.heic') ||
+        file.name.toLowerCase().endsWith('.heif');
+
+      if (!isAllowed) {
+        setError(
+          'Unsupported file type — try JPEG, PNG, WebP, HEIC, AVIF, or BMP.'
+        );
         return;
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        setError('File is too large. Maximum size is 10MB.');
+        setError('File is too large. Maximum size is 20MB.');
         return;
       }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPreviewUrl(base64String);
+      let processableUrl: string | null = null;
 
-        // Capture dimensions for proportional rounding
-        const img = new window.Image();
-        img.onload = () => {
-          setImgDims({ w: img.naturalWidth, h: img.naturalHeight });
-        };
-        img.src = base64String;
-      };
-      reader.readAsDataURL(file);
+      try {
+        onClear?.();
+        processableUrl = await convertToProcessableImage(file);
 
-      const url = URL.createObjectURL(file);
-      await scanImage(url);
-      URL.revokeObjectURL(url);
+        setPreviewUrl(processableUrl);
+
+        // Capture image dimensions for the proportional preview container
+        await new Promise<void>((resolve, reject) => {
+          const img = new window.Image();
+          img.onload = () => {
+            setImgDims({ w: img.naturalWidth, h: img.naturalHeight });
+            resolve();
+          };
+          img.onerror = () => reject(new Error('Failed to load preview image'));
+          img.src = processableUrl!;
+        });
+
+        await scanImage(processableUrl, file.name);
+      } catch (err) {
+        console.error('File processing error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to process file');
+      }
     },
-    [scanImage, setPreviewUrl]
+    [scanImage, setPreviewUrl, onClear]
   );
 
   const onPaste = useCallback(
@@ -230,7 +252,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
           className={`group relative flex aspect-video w-full flex-col overflow-hidden rounded-[2.5rem] border-2 transition-all duration-500 sm:aspect-square md:aspect-video ${
             previewUrl
               ? 'border-white/5 bg-transparent p-0'
-              : 'items-center justify-center border-dashed border-white/5 bg-white/[0.02] py-6 hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
+              : error
+                ? 'items-center justify-center border-red-500/20 bg-red-500/[0.02]'
+                : 'items-center justify-center border-dashed border-white/5 bg-white/[0.02] py-6 hover:border-cyan-500/30 hover:bg-cyan-500/[0.03]'
           }`}
         >
           <AnimatePresence mode="wait">
@@ -278,6 +302,33 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 >
                   <X className="h-5 w-5" />
                 </Button>
+              </motion.div>
+            ) : error ? (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                className="flex h-full w-full flex-col items-center justify-center gap-5 p-8 text-center"
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-red-500/20">
+                  <AlertCircle className="h-8 w-8 text-red-400" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xl font-black tracking-tight text-white">
+                    Scan Failed
+                  </p>
+                  <p className="mx-auto max-w-sm text-[15px] leading-relaxed font-medium whitespace-normal text-white/70 md:max-w-none md:whitespace-nowrap">
+                    {error}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setError(null)}
+                  className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-bold text-white/50 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white/80"
+                >
+                  <X className="h-3 w-3" />
+                  Dismiss
+                </button>
               </motion.div>
             ) : (
               <motion.div
@@ -378,88 +429,66 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
       </motion.div>
 
       <AnimatePresence>
-        {!isScanning && error && !previewUrl && (
+        {isPreviewOpen && previewUrl && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-red-500/20 bg-red-500/5 p-5"
+            key="preview-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md md:p-8"
+            onClick={() => setIsPreviewOpen(false)}
           >
-            <div className="flex items-center gap-4">
-              <div className="rounded-full bg-red-500/10 p-2.5 ring-1 ring-red-500/20">
-                <X className="h-5 w-5 text-red-500" />
+            <motion.div
+              key="preview-content"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="relative flex max-h-[85vh] w-full max-w-4xl flex-col items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-4 flex items-center gap-1 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
+                <button
+                  onClick={() => setIsPreviewOpen(false)}
+                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={downloadImage}
+                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
+                >
+                  <Download className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => window.open(previewUrl, '_blank')}
+                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </button>
               </div>
-              <div>
-                <p className="text-sm font-bold text-white/90">System Error</p>
-                <p className="text-xs text-white/40">{error}</p>
+
+              <div
+                className="relative overflow-hidden shadow-2xl ring-1 ring-white/5 backdrop-blur-3xl"
+                style={{
+                  borderRadius: imgDims
+                    ? `${Math.min(imgDims.w, imgDims.h) * 0.05}px`
+                    : '2rem',
+                  aspectRatio: imgDims ? `${imgDims.w} / ${imgDims.h}` : 'auto',
+                }}
+              >
+                <Image
+                  src={previewUrl}
+                  alt="Full Preview"
+                  width={imgDims?.w || 1600}
+                  height={imgDims?.h || 1200}
+                  className="h-auto max-h-[75vh] w-auto max-w-full object-contain"
+                  unoptimized
+                />
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
-        <AnimatePresence>
-          {isPreviewOpen && previewUrl && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md md:p-8"
-              onClick={() => setIsPreviewOpen(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="relative flex max-h-[85vh] w-full max-w-4xl flex-col items-center justify-center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Floating Action Toolbar */}
-                <div className="mb-4 flex items-center gap-1 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
-                  <button
-                    onClick={() => setIsPreviewOpen(false)}
-                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={downloadImage}
-                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
-                  >
-                    <Download className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => window.open(previewUrl, '_blank')}
-                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {/* Dynamic Image Container */}
-                <div
-                  className="relative overflow-hidden shadow-2xl ring-1 ring-white/5 backdrop-blur-3xl"
-                  style={{
-                    borderRadius: imgDims
-                      ? `${Math.min(imgDims.w, imgDims.h) * 0.05}px`
-                      : '2rem',
-                    aspectRatio: imgDims
-                      ? `${imgDims.w} / ${imgDims.h}`
-                      : 'auto',
-                  }}
-                >
-                  <Image
-                    src={previewUrl}
-                    alt="Full Preview"
-                    width={imgDims?.w || 1600}
-                    height={imgDims?.h || 1200}
-                    className="h-auto max-h-[75vh] w-auto max-w-full object-contain"
-                    unoptimized
-                  />
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </AnimatePresence>
     </div>
   );
