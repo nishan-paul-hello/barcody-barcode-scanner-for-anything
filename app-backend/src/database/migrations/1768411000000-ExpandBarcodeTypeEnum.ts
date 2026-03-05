@@ -4,19 +4,32 @@ export class ExpandBarcodeTypeEnum1768411000000 implements MigrationInterface {
   name = 'ExpandBarcodeTypeEnum1768411000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'AZTEC'`);
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'CODABAR'`);
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'CODE93'`);
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'MAXICODE'`);
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'RSS14'`);
-    await queryRunner.query(
-      `ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'RSS_EXPANDED'`,
-    );
-    await queryRunner.query(
-      `ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'DATA_MATRIX'`,
-    );
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'PDF417'`);
-    await queryRunner.query(`ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE 'ISBN13'`);
+    const enumTypes = [
+      'AZTEC',
+      'CODABAR',
+      'CODE93',
+      'MAXICODE',
+      'RSS14',
+      'RSS_EXPANDED',
+      'DATA_MATRIX',
+      'PDF417',
+      'ISBN13',
+    ];
+
+    for (const type of enumTypes) {
+      await queryRunner.query(`
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type t 
+                           JOIN pg_enum e ON t.oid = e.enumtypid 
+                           WHERE t.typname = 'scans_barcode_type_enum' 
+                           AND e.enumlabel = '${type}') THEN
+                ALTER TYPE "public"."scans_barcode_type_enum" ADD VALUE '${type}';
+            END IF;
+        END
+        $$;
+      `);
+    }
   }
 
   public async down(_queryRunner: QueryRunner): Promise<void> {

@@ -47,7 +47,7 @@ services:
       context: .
       dockerfile: app-backend/Dockerfile
       target: runner
-    container_name: barcody_backend
+    container_name: app-backend
     ports:
       - '3002:3002'
     env_file:
@@ -79,7 +79,7 @@ services:
       target: runner
       args:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-    container_name: barcody_web
+    container_name: app-web
     ports:
       - '3000:3000'
     environment:
@@ -105,7 +105,7 @@ services:
       target: runner
       args:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-    container_name: barcody_admin
+    container_name: app-admin
     ports:
       - '3001:3001'
     environment:

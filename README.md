@@ -229,7 +229,7 @@ Find your exact domain in the [Tailscale Admin Console](https://login.tailscale.
 
 Update all three serve config files:
 
-**`infra/tailscale/web.json`** — Web App (port 3000)
+**`infra/tailscale/app-web.json`** — Web App (port 3000)
 ```json
 {
   "TCP": { "443": { "HTTPS": true } },
@@ -246,7 +246,7 @@ Update all three serve config files:
 }
 ```
 
-**`infra/tailscale/admin.json`** — Admin Dashboard (port 3001)
+**`infra/tailscale/app-admin.json`** — Admin Dashboard (port 3001)
 ```json
 {
   "TCP": { "443": { "HTTPS": true } },
@@ -263,7 +263,7 @@ Update all three serve config files:
 }
 ```
 
-**`infra/tailscale/api.json`** — Backend API (port 3002)
+**`infra/tailscale/app-backend.json`** — Backend API (port 3002)
 ```json
 {
   "TCP": { "443": { "HTTPS": true } },

@@ -39,7 +39,6 @@
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@nestjs/cache-manager": "^3.1.0",
-    "@next/swc-linux-x64-gnu": "^16.1.6",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "audit-ci": "^7.1.0",
@@ -66,5 +65,9 @@
     "multer": "2.1.1",
     "webpack": "^5.105.2",
     "tar": "7.5.10"
+  },
+  "optionalDependencies": {
+    "@next/swc-linux-x64-musl": "^16.1.6",
+    "@next/swc-linux-x64-gnu": "^16.1.6"
   }
 }
