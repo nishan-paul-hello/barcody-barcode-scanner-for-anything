@@ -144,9 +144,9 @@ export default function LandingPage() {
                 size="lg"
                 onClick={() => {
                   if (isAuthenticated) {
-                    router.push('/scan');
+                    router.push('/scanner');
                   } else {
-                    openLoginModal('/scan');
+                    openLoginModal('/scanner');
                   }
                 }}
                 className="group h-14 cursor-pointer rounded-full bg-cyan-500 px-10 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"

@@ -7,6 +7,7 @@ interface TabResult {
     format: string;
     source: 'Camera' | 'Upload' | 'Manual entry';
     timestamp: string;
+    fileName?: string;
   } | null;
   hasError: boolean;
   previewUrl: string | null;
@@ -119,6 +120,30 @@ export const useScanStore = create<ScanStore>()(
     {
       name: 'scan-storage-v2',
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        activeTab: state.activeTab,
+        results: {
+          camera: {
+            lastResult: state.results.camera.lastResult,
+            scanMetadata: state.results.camera.scanMetadata,
+            hasError: false,
+            previewUrl: null, // camera stream frames are never persisted
+          },
+          file: {
+            lastResult: state.results.file.lastResult,
+            scanMetadata: state.results.file.scanMetadata,
+            hasError: false,
+            // data URL is session-persistent — safe to save to localStorage
+            previewUrl: state.results.file.previewUrl,
+          },
+          lookup: {
+            lastResult: state.results.lookup.lastResult,
+            scanMetadata: state.results.lookup.scanMetadata,
+            hasError: false,
+            previewUrl: null, // no image preview in lookup tab
+          },
+        },
+      }),
     }
   )
 );

@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
 
   const defaultNavItems = [
     { href: '/history', label: 'History', icon: History },
-    { href: '/scan', label: 'Scanner', icon: Camera },
+    { href: '/scanner', label: 'Scanner', icon: Camera },
     { href: '/lookup', label: 'Lookup', icon: Search },
   ];
 

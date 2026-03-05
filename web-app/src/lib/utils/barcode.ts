@@ -1,24 +1,49 @@
 import { BarcodeFormat } from '@zxing/library';
+import { ZXING_TO_BACKEND_KEY } from '@/lib/constants/barcode-formats';
 
-export const mapZxingFormatToReadable = (format: BarcodeFormat): string => {
-  const formatMap: Record<number, string> = {
-    [BarcodeFormat.AZTEC]: 'AZTEC',
-    [BarcodeFormat.CODABAR]: 'CODABAR',
-    [BarcodeFormat.CODE_39]: 'CODE39',
-    [BarcodeFormat.CODE_93]: 'CODE_93', // Backend doesn't support yet, keep original or map to UNKNOWN? Keeping for now.
-    [BarcodeFormat.CODE_128]: 'CODE128',
-    [BarcodeFormat.DATA_MATRIX]: 'DATA_MATRIX',
-    [BarcodeFormat.EAN_8]: 'EAN8',
-    [BarcodeFormat.EAN_13]: 'EAN13',
-    [BarcodeFormat.ITF]: 'ITF',
-    [BarcodeFormat.MAXICODE]: 'MAXICODE',
-    [BarcodeFormat.PDF_417]: 'PDF_417',
-    [BarcodeFormat.QR_CODE]: 'QR',
-    [BarcodeFormat.RSS_14]: 'RSS_14',
-    [BarcodeFormat.RSS_EXPANDED]: 'RSS_EXPANDED',
-    [BarcodeFormat.UPC_A]: 'UPCA',
-    [BarcodeFormat.UPC_E]: 'UPCE',
-    [BarcodeFormat.UPC_EAN_EXTENSION]: 'UPC_EAN_EXTENSION',
-  };
-  return formatMap[format] || 'UNKNOWN';
+export const mapZxingFormatToReadable = (
+  format: BarcodeFormat,
+  text: string = ''
+): string => {
+  // Specialty detection: ISBN-13 is a subset of EAN-13 used for books.
+  // Detected by content (978/979 prefix), not by a separate ZXing format.
+  if (
+    format === BarcodeFormat.EAN_13 &&
+    (text.startsWith('978') || text.startsWith('979'))
+  ) {
+    return 'ISBN13';
+  }
+
+  return ZXING_TO_BACKEND_KEY[format] ?? 'UNKNOWN';
+};
+
+export const generateScanFileName = (): string => {
+  const now = new Date();
+  const day = now.getDate();
+  const monthNames = [
+    'jan',
+    'feb',
+    'mar',
+    'apr',
+    'may',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'oct',
+    'nov',
+    'dec',
+  ];
+  const month = monthNames[now.getMonth()];
+  const year = now.getFullYear();
+
+  let hours = now.getHours();
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'pm' : 'am';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+
+  return `name-${day}-${month}-${year}-${hours}-${minutes}-${seconds}-${ampm}`;
 };

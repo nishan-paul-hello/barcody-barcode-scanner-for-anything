@@ -17,15 +17,16 @@ import {
   Check,
   KeyRound,
   FlaskConical,
-  Database,
+  ShoppingBag,
   Zap,
   X,
   Loader2,
   Trash2,
   Key,
+  ClipboardPaste,
   type LucideIcon,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ApiKeysModalProps {
   open: boolean;
@@ -61,6 +62,60 @@ const ApiKeyInput = ({
 }: ApiKeyInputProps) => {
   const isSet = value.length > 0;
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) setter(text.trim());
+    } catch {
+      // Clipboard access denied — silently ignore
+    }
+  };
+
+  // Tailwind JIT only includes statically-written class strings.
+  // Template literals like `ring-${base}/30` are stripped at build time.
+  // Use a fully-explicit map so every class is present in the bundle.
+  const iconStyleMap: Record<
+    string,
+    { bg: string; ring: string; focusRing: string; focusBorder: string }
+  > = {
+    'text-orange-400': {
+      bg: 'bg-orange-400/10',
+      ring: 'ring-orange-400/30',
+      focusRing: 'focus-visible:ring-orange-400/50',
+      focusBorder: 'focus-visible:border-orange-400/40',
+    },
+    'text-teal-400': {
+      bg: 'bg-teal-400/10',
+      ring: 'ring-teal-400/30',
+      focusRing: 'focus-visible:ring-teal-400/50',
+      focusBorder: 'focus-visible:border-teal-400/40',
+    },
+    'text-purple-400': {
+      bg: 'bg-purple-400/10',
+      ring: 'ring-purple-400/30',
+      focusRing: 'focus-visible:ring-purple-400/50',
+      focusBorder: 'focus-visible:border-purple-400/40',
+    },
+    'text-yellow-400': {
+      bg: 'bg-yellow-400/10',
+      ring: 'ring-yellow-400/30',
+      focusRing: 'focus-visible:ring-yellow-400/50',
+      focusBorder: 'focus-visible:border-yellow-400/40',
+    },
+    'text-green-400': {
+      bg: 'bg-green-400/10',
+      ring: 'ring-green-400/30',
+      focusRing: 'focus-visible:ring-green-400/50',
+      focusBorder: 'focus-visible:border-green-400/40',
+    },
+  };
+  const iconStyle = iconStyleMap[color] ?? {
+    bg: 'bg-white/10',
+    ring: 'ring-white/20',
+    focusRing: 'focus-visible:ring-white/20',
+    focusBorder: 'focus-visible:border-white/20',
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -69,13 +124,7 @@ const ApiKeyInput = ({
     >
       <div className="flex items-center justify-between gap-6">
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <div
-            className={cn(
-              'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-all group-hover:scale-110',
-              color.replace('text-', 'bg-').replace('-400', '/10'),
-              color.replace('text-', 'ring-').replace('-400', '/20')
-            )}
-          >
+          <div className="flex shrink-0 items-center justify-center transition-transform group-hover:scale-110">
             <Icon className={cn('h-5 w-5', color)} />
           </div>
           <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
@@ -110,39 +159,60 @@ const ApiKeyInput = ({
         <Input
           type="password"
           placeholder={placeholder}
-          className="h-10 rounded-lg border-white/5 bg-white/5 px-3 font-mono text-xs transition-all focus:border-white/10 focus:bg-white/[0.08] focus-visible:ring-2 focus-visible:ring-white/10"
+          className={cn(
+            'h-10 rounded-lg border-white/5 bg-white/5 pr-24 font-mono text-xs focus:bg-white/[0.08] focus-visible:ring-2',
+            iconStyle.focusRing,
+            iconStyle.focusBorder
+          )}
           value={value}
           onChange={(e) => setter(e.target.value)}
         />
         <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
-          <button
-            onClick={() => onCopy(value, fieldId)}
-            className={cn(
-              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-all',
-              isSet
-                ? 'text-white/40 hover:bg-white/10 hover:text-white'
-                : 'pointer-events-none opacity-0'
-            )}
-            title="Copy entry"
-          >
-            {copiedField === fieldId ? (
-              <Check className="h-4 w-4 text-green-400" />
+          <AnimatePresence mode="wait">
+            {isSet ? (
+              <motion.div
+                key="actions"
+                className="flex items-center gap-1"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+              >
+                <button
+                  onClick={() => onCopy(value, fieldId)}
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-white"
+                  title="Copy entry"
+                >
+                  {copiedField === fieldId ? (
+                    <Check className="h-4 w-4 text-green-400" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </button>
+                <button
+                  onClick={() => onClear(setter)}
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-red-400"
+                  title="Clear field"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </motion.div>
             ) : (
-              <Copy className="h-4 w-4" />
+              <motion.button
+                key="paste"
+                type="button"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                onClick={handlePaste}
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/30 transition-colors hover:text-white"
+                title="Paste from clipboard"
+              >
+                <ClipboardPaste className="h-4 w-4" />
+              </motion.button>
             )}
-          </button>
-          <button
-            onClick={() => onClear(setter)}
-            className={cn(
-              'flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl transition-all',
-              isSet
-                ? 'text-white/40 hover:bg-white/10 hover:text-red-400'
-                : 'pointer-events-none opacity-0'
-            )}
-            title="Clear field"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>
@@ -222,16 +292,17 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  Connect Pro Sources
+                  Your Data Sources
                 </DialogTitle>
                 <DialogDescription className="text-sm font-medium text-white/40">
-                  Unlock limitless scanning data with your own API keys.
+                  Add your own keys to pull richer product details when scanning
+                  barcodes.
                 </DialogDescription>
               </div>
             </div>
             <button
               onClick={() => onOpenChange(false)}
-              className="group flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
+              className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
             >
               <X className="h-5 w-5 text-white/40 transition-colors group-hover:text-white" />
             </button>
@@ -241,14 +312,14 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           <div className="scrollbar-none sm:scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent flex-1 overflow-y-auto px-8 sm:px-10">
             <div className="grid gap-4 py-4 pb-10">
               <ApiKeyInput
-                label="UPC Database"
+                label="UPCitemdb"
                 value={upcKey}
                 setter={setUpcKey}
                 fieldId="upc"
-                icon={Database}
-                color="text-teal-400"
-                placeholder="Enter upcdatabase.org Key"
-                link="https://upcdatabase.org/check-upc-api"
+                icon={ShoppingBag}
+                color="text-orange-400"
+                placeholder="Enter UPCitemdb API Key"
+                link="https://devs.upcitemdb.com/"
                 onCopy={handleCopy}
                 copiedField={copiedField}
                 onClear={handleClear}
@@ -269,13 +340,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               />
 
               <ApiKeyInput
-                label="SearchUPC"
+                label="Search UPC"
                 value={searchUpcKey}
                 setter={setSearchUpcKey}
                 fieldId="searchupc"
                 icon={Key}
                 color="text-yellow-400"
-                placeholder="Enter SearchUPC Key"
+                placeholder="Enter Search UPC Key"
                 link="https://www.searchupc.com/api-upc-database.aspx"
                 onCopy={handleCopy}
                 copiedField={copiedField}
@@ -283,13 +354,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               />
 
               <ApiKeyInput
-                label="USDA FoodData"
+                label="FoodData Central"
                 value={usdaKey}
                 setter={setUsdaKey}
                 fieldId="usda"
                 icon={FlaskConical}
                 color="text-green-400"
-                placeholder="Enter USDA Central Key"
+                placeholder="Enter FoodData Central Key"
                 link="https://fdc.nal.usda.gov/api-key-signup.html"
                 onCopy={handleCopy}
                 copiedField={copiedField}
@@ -302,7 +373,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           <div className="flex items-center justify-between border-t border-white/5 bg-white/[0.02] px-8 py-4 sm:px-10">
             <button
               onClick={() => onOpenChange(false)}
-              className="text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
+              className="cursor-pointer text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
             >
               Dismiss
             </button>
@@ -311,7 +382,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               onClick={handleSave}
               disabled={!hasChanges || updateMutation.isPending}
               className={cn(
-                'group flex h-9 items-center gap-2 rounded-lg px-5 text-[10px] font-bold tracking-widest uppercase transition-all',
+                'group flex h-9 cursor-pointer items-center gap-2 rounded-lg px-5 text-[10px] font-bold tracking-widest uppercase transition-all',
                 hasChanges
                   ? 'bg-white text-black hover:scale-105 active:scale-95'
                   : 'bg-white/5 text-white/20'

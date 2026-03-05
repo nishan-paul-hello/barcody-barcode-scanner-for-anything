@@ -7,5 +7,11 @@ export enum BarcodeType {
   CODE128 = 'CODE128',
   CODE39 = 'CODE39',
   ITF = 'ITF',
+  AZTEC = 'AZTEC',
+  CODABAR = 'CODABAR',
+  CODE93 = 'CODE93',
+  DATA_MATRIX = 'DATA_MATRIX',
+  PDF417 = 'PDF417',
+  ISBN13 = 'ISBN13',
   UNKNOWN = 'UNKNOWN',
 }

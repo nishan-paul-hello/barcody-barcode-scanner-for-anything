@@ -1,4 +1,5 @@
 'use client';
+import { SCAN_FORMAT_LIST } from '@/lib/constants/barcode-formats';
 
 import { analytics, AnalyticsEventType } from '@/lib/analytics.service';
 
@@ -7,7 +8,7 @@ import {
   BrowserMultiFormatReader,
   type IScannerControls,
 } from '@zxing/browser';
-import { BarcodeFormat, DecodeHintType, type Result } from '@zxing/library';
+import { DecodeHintType, type Result } from '@zxing/library';
 import {
   Camera,
   CameraOff,
@@ -15,25 +16,34 @@ import {
   AlertCircle,
   Volume2,
   VolumeX,
+  Lock,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCreateScan } from '@/hooks/use-scans';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface BarcodeScannerProps {
-  onScanSuccess?: (result: Result) => void;
+  onScanSuccess?: (result: Result, fileName?: string) => void;
   onScanError?: (error: unknown) => void;
+  onClear?: () => void;
   active?: boolean;
 }
 
+import { useScanStore } from '@/store/useScanStore';
 import { mapZxingFormatToReadable } from '@/lib/utils/barcode';
 
 export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   onScanSuccess,
   onScanError,
+  onClear,
   active = true,
 }) => {
+  const previewUrl = useScanStore((state) => state.getPreviewUrl());
+  const setPreviewUrl = useScanStore((state) => state.setPreviewUrl);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const readerRef = useRef<BrowserMultiFormatReader | null>(null);
@@ -50,12 +60,11 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       return true;
     }
   });
-  const [flashActive, setFlashActive] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
   const startRetryCountRef = useRef(0);
   const playBeepRef = useRef<() => void>(() => {});
-  const drawFeedbackRef = useRef<() => void>(() => {});
+  const drawFeedbackRef = useRef<(result: Result) => void>(() => {});
   const onScanSuccessRef = useRef(onScanSuccess);
   const onScanErrorRef = useRef(onScanError);
   const createScanMutation = useCreateScan();
@@ -101,37 +110,108 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     [isCameraActive, selectedDeviceId, devices]
   );
 
-  const drawFeedback = useCallback(() => {
-    setFlashActive(true);
-    setTimeout(() => setFlashActive(false), 200);
+  // Capture a still frame from the video element and return as data URL
+  // Matches the crop's aspect ratio to the UI container to prevent 'partial' cropping
+  const captureFrame = useCallback((result?: Result): string | null => {
+    const video = videoRef.current;
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0)
+      return null;
 
-    if (!canvasRef.current || !videoRef.current) return;
-    const canvas = canvasRef.current;
+    const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) return null;
 
-    const width = videoRef.current.clientWidth;
-    const height = videoRef.current.clientHeight;
+    const points = result?.getResultPoints();
 
-    if (width === 0 || height === 0) return;
+    if (points && points.length >= 2) {
+      // Find bounding box of barcode
+      const firstPoint = points[0];
+      if (!firstPoint) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/png');
+      }
 
-    canvas.width = width;
-    canvas.height = height;
+      let minX = firstPoint.getX();
+      let minY = firstPoint.getY();
+      let maxX = firstPoint.getX();
+      let maxY = firstPoint.getY();
 
-    ctx.strokeStyle = 'rgba(34, 211, 238, 0.8)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    ctx.strokeRect(
-      canvas.width * 0.2,
-      canvas.height * 0.3,
-      canvas.width * 0.6,
-      canvas.height * 0.4
-    );
+      for (let i = 1; i < points.length; i++) {
+        const p = points[i];
+        if (!p) continue;
+        const x = p.getX();
+        const y = p.getY();
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
 
-    setTimeout(() => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 300);
+      const barcodeW = maxX - minX;
+      let barcodeH = maxY - minY;
+
+      // Handle 1D barcodes (often 0 height from ZXing points)
+      if (barcodeH < barcodeW * 0.05) {
+        barcodeH = barcodeW * 0.4;
+        minY -= barcodeH / 2;
+      }
+
+      // 1. Target Focused Crop (25% padding)
+      const padding = 0.25;
+      let cropW = barcodeW * (1 + padding * 2);
+      let cropH = barcodeH * (1 + padding * 2);
+
+      // 2. Adjust to 16:9 UI Aspect Ratio
+      const targetAR = 16 / 9;
+      const cropAR = cropW / cropH;
+
+      if (cropAR > targetAR) {
+        cropH = cropW / targetAR;
+      } else {
+        cropW = cropH * targetAR;
+      }
+
+      // 3. Center and Extract
+      const centerX = minX + barcodeW / 2;
+      const centerY = minY + barcodeH / 2;
+
+      let sx = Math.max(0, centerX - cropW / 2);
+      let sy = Math.max(0, centerY - cropH / 2);
+
+      // Keep within video bounds
+      if (sx + cropW > video.videoWidth)
+        sx = Math.max(0, video.videoWidth - cropW);
+      if (sy + cropH > video.videoHeight)
+        sy = Math.max(0, video.videoHeight - cropH);
+
+      const finalW = Math.min(cropW, video.videoWidth);
+      const finalH = Math.min(cropH, video.videoHeight);
+
+      canvas.width = finalW;
+      canvas.height = finalH;
+      ctx.drawImage(video, sx, sy, finalW, finalH, 0, 0, finalW, finalH);
+    } else {
+      // Fallback: Full Frame
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
+
+    return canvas.toDataURL('image/png');
   }, []);
+
+  const drawFeedback = useCallback(
+    (result: Result) => {
+      const frame = captureFrame(result);
+      if (frame) {
+        setPreviewUrl(frame);
+        setIsCameraActive(false);
+      }
+    },
+    [captureFrame, setPreviewUrl]
+  );
 
   const playBeep = useCallback(() => {
     if (!soundEnabled) return;
@@ -173,18 +253,8 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   // Initial device listing and reader setup
   useEffect(() => {
     const hints = new Map();
-    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-      BarcodeFormat.QR_CODE,
-      BarcodeFormat.EAN_13,
-      BarcodeFormat.UPC_A,
-      BarcodeFormat.UPC_E,
-      BarcodeFormat.CODE_128,
-      BarcodeFormat.DATA_MATRIX,
-      BarcodeFormat.PDF_417,
-      BarcodeFormat.ITF,
-      BarcodeFormat.EAN_8,
-      BarcodeFormat.CODE_39,
-    ]);
+    // Format list is driven by BARCODE_FORMAT_REGISTRY in barcode-formats.ts.
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, SCAN_FORMAT_LIST);
     hints.set(DecodeHintType.TRY_HARDER, true);
 
     readerRef.current = new BrowserMultiFormatReader(hints);
@@ -288,7 +358,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           (result, err) => {
             if (result && isMounted) {
               playBeepRef.current();
-              drawFeedbackRef.current();
+              drawFeedbackRef.current(result);
 
               const barcodeData = result.getText();
               const formatName = result.getBarcodeFormat().toString();
@@ -296,14 +366,18 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
               onScanSuccessRef.current?.(result);
 
               analytics.trackScanCreated(
-                mapZxingFormatToReadable(result.getBarcodeFormat()),
+                mapZxingFormatToReadable(
+                  result.getBarcodeFormat(),
+                  barcodeData
+                ),
                 'camera'
               );
 
               createScanMutationRef.current.mutate({
                 barcodeData,
                 barcodeType: mapZxingFormatToReadable(
-                  result.getBarcodeFormat()
+                  result.getBarcodeFormat(),
+                  barcodeData
                 ),
                 rawData: barcodeData,
                 deviceType: 'web',
@@ -375,6 +449,12 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     }
   }, [devices, selectedDeviceId]);
 
+  const handleClearPreview = useCallback(() => {
+    setPreviewUrl(null);
+    setIsCameraActive(true);
+    onClear?.();
+  }, [onClear, setPreviewUrl]);
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
       <motion.div
@@ -383,6 +463,37 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
         className="w-full"
       >
         <Card className="group relative aspect-video w-full overflow-hidden rounded-[2.5rem] border-4 border-white/5 bg-black/40 shadow-2xl backdrop-blur-3xl sm:aspect-square md:aspect-video">
+          {/* Captured preview — shown after a successful scan */}
+          <AnimatePresence>
+            {previewUrl && (
+              <motion.div
+                key="captured"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 z-30"
+              >
+                <Image
+                  src={previewUrl}
+                  alt="Captured scan"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+                {/* Cross — top-right of preview, appears on hover (same as Upload tab) */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClearPreview}
+                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-700"
@@ -394,41 +505,19 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             className="pointer-events-none absolute inset-0 z-10"
           />
 
-          {/* Flash Effect on Success */}
           <AnimatePresence>
-            {flashActive && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-20 bg-cyan-400"
-              />
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {isScanning && (
+            {isScanning && !previewUrl && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="pointer-events-none absolute inset-0 z-10"
               >
-                {/* Sleek Minimalist Scan Line */}
-                <div className="animate-scan-line absolute left-0 flex w-full justify-center">
-                  <div className="relative flex w-[75%] items-center justify-center">
-                    {/* Core laser line */}
-                    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-                    {/* Center flare point */}
-                    <div className="absolute h-[2px] w-[30px] rounded-full bg-white opacity-90 blur-[1px]" />
-                  </div>
-                </div>
-
                 {/* Corner Brackets */}
-                <div className="absolute top-0 left-0 h-20 w-20 rounded-tl-[2.5rem] border-t-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
-                <div className="absolute top-0 right-0 h-20 w-20 rounded-tr-[2.5rem] border-t-4 border-r-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
-                <div className="absolute bottom-0 left-0 h-20 w-20 rounded-bl-[2.5rem] border-b-4 border-l-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
-                <div className="absolute right-0 bottom-0 h-20 w-20 rounded-br-[2.5rem] border-r-4 border-b-4 border-cyan-400/60 transition-all group-hover:border-cyan-400" />
+                <div className="absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] border-cyan-400" />
+                <div className="absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] border-cyan-400" />
+                <div className="absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-cyan-400" />
+                <div className="absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-cyan-400" />
 
                 {/* Vignette */}
                 <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
@@ -436,41 +525,17 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             )}
           </AnimatePresence>
 
-          {!isScanning && !error && isCameraActive && (
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl">
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.5, 1, 0.5],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="rounded-full bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
-              >
-                <div className="relative">
-                  <Camera className="h-12 w-12 text-cyan-400" />
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                    className="absolute -inset-2 rounded-full border-b-2 border-cyan-400/30"
-                  />
-                </div>
-              </motion.div>
-              <p className="mt-6 text-sm font-medium tracking-widest text-cyan-400/80 uppercase">
-                Initializing Lens
-              </p>
-            </div>
-          )}
-
-          {!isCameraActive && !error && (
+          {!isCameraActive && !previewUrl && !error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
-              <div className="mb-6 rounded-full bg-cyan-500/10 p-4 ring-1 ring-cyan-500/20">
-                <CameraOff className="h-12 w-12 text-cyan-400" />
+              <div className="flex -translate-y-8 flex-col items-center">
+                <Lock
+                  className="mb-5 h-10 w-10 text-amber-400"
+                  strokeWidth={1.5}
+                />
+                <p className="text-base font-semibold tracking-widest text-white uppercase">
+                  Camera Paused
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-white">Camera Paused</h3>
             </div>
           )}
 
@@ -496,7 +561,13 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           )}
 
           {/* Controls Bar */}
-          <div className="absolute bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 opacity-0 backdrop-blur-2xl transition-all group-hover:bottom-8 group-hover:opacity-100">
+          <div
+            className={`absolute left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/30 p-1.5 backdrop-blur-2xl transition-all ${
+              isCameraActive || previewUrl
+                ? 'bottom-6 opacity-0 group-hover:bottom-8 group-hover:opacity-100'
+                : 'bottom-8 opacity-100'
+            }`}
+          >
             <button
               onClick={() => handleToggleCamera()}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"

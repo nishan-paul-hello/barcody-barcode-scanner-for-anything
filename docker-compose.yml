@@ -23,6 +23,11 @@ services:
   redis:
     image: redis:7-alpine
     container_name: barcody_redis
+    # Enable RDB persistence: snapshot every 60 s if ≥1 key changed.
+    # This keeps refresh tokens alive across `make restart` / `make up-*`.
+    # A hard rebuild with `--force-recreate -V` still wipes the volume, so
+    # a full clean-slate dev environment is still achievable on demand.
+    command: redis-server --save 60 1 --loglevel warning
     ports:
       - '6379:6379'
     volumes:
