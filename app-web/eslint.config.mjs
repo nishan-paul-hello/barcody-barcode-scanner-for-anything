@@ -96,14 +96,27 @@ const eslintConfig = [
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/restrict-template-expressions': ['warn', { allowNumber: true }],
 
-      // React default rules
+      // React
       ...reactPlugin.configs.recommended.rules,
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/jsx-boolean-value': ['error', 'never'],
-      'react/no-array-index-key': 'warn',
+      'react/no-array-index-key': 'error',
+      'react/self-closing-comp': 'error',
+      'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
+      'react/jsx-no-useless-fragment': 'error',
+      'react/jsx-pascal-case': 'error',
+      'react/no-unescaped-entities': 'error',
+      'react/no-children-prop': 'error',
+      'react/no-unstable-nested-components': 'error',
+      'react/jsx-no-duplicate-props': 'error',
+      'react/button-has-type': 'error',
+      'react/hook-use-state': 'error',
+      'react/jsx-fragments': ['error', 'syntax'],
+      'react/destructuring-assignment': ['warn', 'always'],
+      'react/no-unknown-property': 'error',
       
-      // React Hooks rules
+      // React Hooks
       ...reactHooksPlugin.configs.recommended.rules,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
