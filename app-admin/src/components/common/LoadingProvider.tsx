@@ -5,7 +5,9 @@ import { LoadingScreen } from './LoadingScreen';
 
 const LoadingContext = createContext({
   isLoading: true,
-  setIsLoading: (_loading: boolean) => {},
+  setIsLoading: (_loading: boolean) => {
+    /* no-op */
+  },
 });
 
 export function LoadingProvider({ children }: { children: React.ReactNode }) {

@@ -45,12 +45,7 @@ export const LoginModal = () => {
         return;
       }
 
-      await setAuth(
-        data.user,
-        data.accessToken,
-        data.refreshToken,
-        data.isAdmin
-      );
+      setAuth(data.user, data.accessToken, data.refreshToken, data.isAdmin);
 
       if (pendingRedirectPath) {
         router.push(pendingRedirectPath);

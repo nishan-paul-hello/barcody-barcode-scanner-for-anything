@@ -27,20 +27,20 @@ import { format, formatDistanceToNow, subDays, isAfter } from 'date-fns';
 
 const PAGE_SIZE = 20;
 
-type User = {
+interface User {
   id: string;
   email: string;
   createdAt: string;
   lastLogin?: string | null;
-};
+}
 
-type UserListResponse = {
+interface UserListResponse {
   items: User[];
   total: number;
   page: number;
   limit: number;
   totalPages: number;
-};
+}
 
 function isActive(lastLogin?: string | null): boolean {
   if (!lastLogin) {

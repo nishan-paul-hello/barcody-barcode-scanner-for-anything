@@ -30,8 +30,11 @@ import {
 
 const PAGE_SIZE = 25;
 
-type ScanUser = { id: string; email: string };
-type Scan = {
+interface ScanUser {
+  id: string;
+  email: string;
+}
+interface Scan {
   id: string;
   userId: string;
   user?: ScanUser;
@@ -43,15 +46,15 @@ type Scan = {
   brand?: string | null;
   category?: string | null;
   nutritionGrade?: string | null;
-};
+}
 
-type ScanListResponse = {
+interface ScanListResponse {
   items: Scan[];
   total: number;
   page: number;
   limit: number;
   totalPages: number;
-};
+}
 
 const BARCODE_COLOR: Record<string, string> = {
   QR: 'bg-violet-500/10 text-violet-400',

@@ -4,21 +4,22 @@ export const useInvalidateAdmin = () => {
   const queryClient = useQueryClient();
 
   const invalidateAnalytics = () => {
-    queryClient.invalidateQueries({ queryKey: ['admin', 'analytics'] });
+    void queryClient.invalidateQueries({ queryKey: ['admin', 'analytics'] });
   };
 
   const invalidateUsers = () => {
-    queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+    void queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
   };
 
   const invalidateScans = () => {
-    queryClient.invalidateQueries({ queryKey: ['admin', 'scans'] });
+    void queryClient.invalidateQueries({ queryKey: ['admin', 'scans'] });
   };
 
   return {
     invalidateAnalytics,
     invalidateUsers,
     invalidateScans,
-    invalidateAll: () => queryClient.invalidateQueries({ queryKey: ['admin'] }),
+    invalidateAll: () =>
+      void queryClient.invalidateQueries({ queryKey: ['admin'] }),
   };
 };

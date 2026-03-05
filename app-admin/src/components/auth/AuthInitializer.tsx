@@ -28,7 +28,7 @@ export function AuthInitializer() {
   // ── 1. One-time startup token validation ──────────────────────────────────
   useEffect(() => {
     if (!initialized.current) {
-      checkAuthStatus();
+      void checkAuthStatus();
       initialized.current = true;
     }
   }, [checkAuthStatus]);
@@ -44,15 +44,12 @@ export function AuthInitializer() {
       // If the new value no longer contains `"isAuthenticated":true`, the user
       // logged out in another tab.  Flag sessionStorage so ProtectedRoute can
       // do a quiet redirect to '/' instead of opening the login modal.
-      if (
-        !event.newValue ||
-        !event.newValue.includes('"isAuthenticated":true')
-      ) {
+      if (!event.newValue?.includes('"isAuthenticated":true')) {
         sessionStorage.setItem('is_logout_redirect', 'true');
       }
 
       // Force the store to re-read from localStorage and sync in-memory state.
-      useAuthStore.persist.rehydrate();
+      void useAuthStore.persist.rehydrate();
     };
 
     window.addEventListener('storage', handleStorageChange);
