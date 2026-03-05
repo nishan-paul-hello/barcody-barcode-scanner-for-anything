@@ -75,7 +75,7 @@ graph TB
 #### Technical Architecture
 
 ```
-mobile-app/
+app-mobile/
 ├── src/
 │   ├── components/
 │   │   ├── scanner/          # Camera and scanning logic

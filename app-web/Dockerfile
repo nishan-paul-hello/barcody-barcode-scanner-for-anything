@@ -19,7 +19,7 @@ COPY package.json package-lock.json ./
 COPY app-backend/package.json ./app-backend/
 COPY app-web/package.json ./app-web/
 COPY app-admin/package.json ./app-admin/
-COPY mobile-app/package.json ./mobile-app/
+COPY app-mobile/package.json ./app-mobile/
 RUN npm config set fetch-retries 5 \
     && npm config set fetch-retry-mintimeout 20000 \
     && npm config set fetch-retry-maxtimeout 120000

@@ -1,5 +1,5 @@
 {
-  "name": "mobile-app",
+  "name": "app-mobile",
   "version": "1.0.0",
   "description": "Expo mobile app for Barcody",
   "main": "expo-router/entry",

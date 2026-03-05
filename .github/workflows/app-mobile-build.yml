@@ -41,7 +41,7 @@ jobs:
           fi
 
       - name: Build Android APK
-        working-directory: ./mobile-app
+        working-directory: ./app-mobile
         id: build
         run: |
           # Trigger EAS build and wait for the result
