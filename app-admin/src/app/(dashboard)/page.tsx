@@ -163,9 +163,9 @@ export default function LandingPage() {
                 title: 'Live Telemetry',
                 desc: 'Watch the system breathe. Live logs, scan rates, and error tracking to proactively resolve bottlenecks.',
               },
-            ].map((item, i) => (
+            ].map((item) => (
               <motion.div
-                key={i}
+                key={item.title}
                 variants={fadeIn}
                 className="group relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/30 p-8 backdrop-blur-sm transition-colors hover:border-[#00ffe7]/20 hover:bg-zinc-900/60"
               >
@@ -273,6 +273,7 @@ export default function LandingPage() {
                     {[35, 60, 45, 85, 70, 95, 50, 100, 75, 55, 80, 40].map(
                       (h, i) => (
                         <motion.div
+                          // eslint-disable-next-line react/no-array-index-key
                           key={i}
                           animate={{
                             height: [`${h * 0.7}%`, `${h}%`, `${h * 0.8}%`],
@@ -385,13 +386,12 @@ export default function LandingPage() {
                     status: 'online',
                     color: 'bg-[#00ffe7]',
                   },
-                ].map((user, i) => (
+                ].map((user) => (
                   <motion.div
-                    key={i}
+                    key={user.name}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
                     className="group flex items-center justify-between rounded-xl border border-white/5 bg-black/40 p-3 transition-colors hover:border-white/10 hover:bg-black/60"
                   >
                     <div className="flex items-center gap-4">
@@ -494,7 +494,7 @@ export default function LandingPage() {
               },
             ].map((benefit, i) => (
               <motion.div
-                key={i}
+                key={benefit.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

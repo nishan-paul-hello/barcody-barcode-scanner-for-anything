@@ -81,6 +81,7 @@ export const LoginModal = () => {
         <div className="relative flex flex-col items-center px-10 pt-16 pb-12">
           {/* Close Button */}
           <button
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -161,6 +162,7 @@ export const LoginModal = () => {
 
                       {/* Intercepting Dismiss Button (z-[100]) */}
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();

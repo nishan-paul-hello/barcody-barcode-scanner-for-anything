@@ -41,5 +41,5 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     return null;
   }
 
-  return <>{children}</>;
+  return children;
 }

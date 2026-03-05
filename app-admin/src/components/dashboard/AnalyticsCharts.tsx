@@ -122,12 +122,14 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
                     percent?: number;
                   }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                 >
-                  {barcodeData?.map((_entry: unknown, index: number) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
+                  {barcodeData?.map(
+                    (entry: { type: string }, index: number) => (
+                      <Cell
+                        key={`bc-cell-${entry.type}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    )
+                  )}
                 </Pie>
                 <Tooltip />
                 <Legend verticalAlign="bottom" height={36} />
@@ -162,12 +164,14 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
                     percent?: number;
                   }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                 >
-                  {deviceData?.map((_entry: unknown, index: number) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
+                  {deviceData?.map(
+                    (entry: { device: string }, index: number) => (
+                      <Cell
+                        key={`dev-cell-${entry.device}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    )
+                  )}
                 </Pie>
                 <Tooltip />
                 <Legend />

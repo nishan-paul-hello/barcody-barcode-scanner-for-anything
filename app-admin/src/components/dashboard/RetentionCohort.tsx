@@ -70,8 +70,10 @@ export function RetentionCohort() {
             <TableRow>
               <TableHead>Cohort (week of)</TableHead>
               <TableHead>New Users</TableHead>
-              {Array.from({ length: maxWeeks }).map((_, i) => (
-                <TableHead key={i}>Week {i}</TableHead>
+              {Array.from({ length: maxWeeks }, (_, i) => i).map((weekNum) => (
+                <TableHead key={`week-header-${weekNum}`}>
+                  Week {weekNum}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>
@@ -82,24 +84,30 @@ export function RetentionCohort() {
                   {format(new Date(cohort.weekStart), 'MMM d, yyyy')}
                 </TableCell>
                 <TableCell>{cohort.newUsers}</TableCell>
-                {Array.from({ length: maxWeeks }).map((_, i) => {
-                  const pct = cohort.retention[i];
-                  if (pct === undefined) {
-                    return (
-                      <TableCell
-                        key={i}
-                        className="text-muted-foreground text-xs"
-                      >
-                        —
-                      </TableCell>
-                    );
-                  }
+                {cohort.retention.map((pct, i) => {
+                  const weekId = `week-${i}`;
                   return (
-                    <TableCell key={i} className={getRetentionColor(pct)}>
+                    <TableCell
+                      key={`${cohort.weekStart}-${weekId}`}
+                      className={getRetentionColor(pct)}
+                    >
                       {pct}%
                     </TableCell>
                   );
                 })}
+                {Array.from(
+                  {
+                    length: Math.max(0, maxWeeks - cohort.retention.length),
+                  },
+                  (_, i) => i + cohort.retention.length
+                ).map((weekIdx) => (
+                  <TableCell
+                    key={`${cohort.weekStart}-empty-${weekIdx}`}
+                    className="text-muted-foreground text-xs"
+                  >
+                    —
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

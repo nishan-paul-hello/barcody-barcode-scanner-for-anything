@@ -309,7 +309,7 @@ export default function AnalyticsPage() {
                   />
                   <Bar dataKey="count" name="Scans" radius={[4, 4, 0, 0]}>
                     {formattedHourly.map(
-                      (entry: { count: number }, index: number) => {
+                      (entry: { label: string; count: number }) => {
                         const max = Math.max(
                           ...formattedHourly.map(
                             (d: { count: number }) => d.count
@@ -319,7 +319,7 @@ export default function AnalyticsPage() {
                         const opacity = 0.25 + intensity * 0.75;
                         return (
                           <Cell
-                            key={`cell-${index}`}
+                            key={`cell-${entry.label}`}
                             fill={`rgba(6, 182, 212, ${opacity})`}
                           />
                         );
@@ -360,11 +360,15 @@ export default function AnalyticsPage() {
                       dataKey="count"
                       nameKey="type"
                     >
-                      {((barcodeData as unknown[]) ?? []).map(
-                        (_: unknown, i: number) => (
+                      {((barcodeData as { type: string }[]) ?? []).map(
+                        (item) => (
                           <Cell
-                            key={`bc-${i}`}
-                            fill={PALETTE[i % PALETTE.length]}
+                            key={`bc-${item.type}`}
+                            fill={
+                              PALETTE[
+                                barcodeData.indexOf(item) % PALETTE.length
+                              ]
+                            }
                           />
                         )
                       )}
@@ -426,11 +430,13 @@ export default function AnalyticsPage() {
                       cursor={{ fill: '#27272a55' }}
                     />
                     <Bar dataKey="count" name="Scans" radius={[0, 4, 4, 0]}>
-                      {((deviceData as unknown[]) ?? []).map(
-                        (_: unknown, i: number) => (
+                      {((deviceData as { device: string }[]) ?? []).map(
+                        (item) => (
                           <Cell
-                            key={`dev-${i}`}
-                            fill={PALETTE[i % PALETTE.length]}
+                            key={`dev-${item.device}`}
+                            fill={
+                              PALETTE[deviceData.indexOf(item) % PALETTE.length]
+                            }
                           />
                         )
                       )}
@@ -454,8 +460,8 @@ export default function AnalyticsPage() {
         <CardContent>
           {loadingTop ? (
             <div className="space-y-2">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full" />
+              {['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8'].map((id) => (
+                <Skeleton key={id} className="h-10 w-full" />
               ))}
             </div>
           ) : !topBarcodes?.length ? (
@@ -497,7 +503,7 @@ export default function AnalyticsPage() {
                     const pct = Math.round((item.count / maxCount) * 100);
                     return (
                       <tr
-                        key={`${item.barcodeData}-${idx}`}
+                        key={item.barcodeData}
                         className="group border-b border-zinc-800/50 transition-colors hover:bg-zinc-900/40"
                       >
                         <td className="py-3 pr-4 text-zinc-500">{idx + 1}</td>

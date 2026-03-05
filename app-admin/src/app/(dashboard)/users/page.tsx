@@ -256,7 +256,8 @@ export default function UsersPage() {
                       const p = start + i;
                       return (
                         <button
-                          key={p}
+                          key={`page-${p}`}
+                          type="button"
                           onClick={() => setPage(p)}
                           className={`h-7 min-w-7 rounded px-2 text-xs font-medium transition ${
                             p === page
@@ -411,6 +412,7 @@ function PagBtn({
 }) {
   return (
     <button
+      type="button"
       title={title}
       onClick={onClick}
       disabled={disabled}
@@ -422,15 +424,27 @@ function PagBtn({
 }
 
 function TableSkeleton() {
+  const rowIds = [
+    'ur1',
+    'ur2',
+    'ur3',
+    'ur4',
+    'ur5',
+    'ur6',
+    'ur7',
+    'ur8',
+    'ur9',
+    'ur10',
+  ];
   return (
     <div className="space-y-3">
       <div className="flex gap-4 border-b border-zinc-800 pb-3">
-        {[160, 80, 100, 100, 80].map((w, i) => (
-          <Skeleton key={i} style={{ width: w }} className="h-3" />
+        {[160, 80, 100, 100, 80].map((w) => (
+          <Skeleton key={`uh-${w}`} style={{ width: w }} className="h-3" />
         ))}
       </div>
-      {Array.from({ length: 10 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4 py-2">
+      {rowIds.map((id) => (
+        <div key={id} className="flex items-center gap-4 py-2">
           <Skeleton className="h-7 w-7 rounded-full" />
           <Skeleton className="h-4 w-44" />
           <Skeleton className="h-5 w-16 rounded-full" />

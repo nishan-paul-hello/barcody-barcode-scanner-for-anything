@@ -100,7 +100,22 @@ const eslintConfig = [
       // React
       ...reactPlugin.configs.recommended.rules,
       'react/prop-types': 'off',
-      'react/react-in-jsx-scope': 'off', // Not needed in Next.js
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-boolean-value': ['error', 'never'],
+      'react/no-array-index-key': 'error',
+      'react/self-closing-comp': 'error',
+      'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
+      'react/jsx-no-useless-fragment': 'error',
+      'react/jsx-pascal-case': 'error',
+      'react/no-unescaped-entities': 'error',
+      'react/no-children-prop': 'error',
+      'react/no-unstable-nested-components': 'error',
+      'react/jsx-no-duplicate-props': 'error',
+      'react/button-has-type': 'error',
+      'react/hook-use-state': 'error',
+      'react/jsx-fragments': ['error', 'syntax'],
+      'react/destructuring-assignment': ['warn', 'always'],
+      'react/no-unknown-property': 'error',
       
       // React Hooks
       ...reactHooksPlugin.configs.recommended.rules,

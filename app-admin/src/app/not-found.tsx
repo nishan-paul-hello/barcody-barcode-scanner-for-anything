@@ -73,6 +73,7 @@ export default function NotFound() {
           className="mt-12 flex flex-col gap-4 sm:flex-row"
         >
           <button
+            type="button"
             onClick={() => router.push('/')}
             className="group flex cursor-pointer items-center gap-2 rounded-2xl bg-cyan-500 px-8 py-4 font-bold text-black transition-all hover:bg-cyan-400 active:scale-95"
           >
@@ -81,6 +82,7 @@ export default function NotFound() {
           </button>
 
           <button
+            type="button"
             onClick={() => window.history.back()}
             className="group flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-8 py-4 font-bold text-white transition-all hover:bg-white/10 active:scale-95"
           >

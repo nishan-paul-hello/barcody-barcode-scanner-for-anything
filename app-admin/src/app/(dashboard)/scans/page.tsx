@@ -289,6 +289,7 @@ export default function ScansPage() {
                       <ChevronLeft className="h-3.5 w-3.5" />
                     </PagBtn>
 
+                    {/* Page number pills */}
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       const start = Math.max(
                         1,
@@ -297,7 +298,8 @@ export default function ScansPage() {
                       const p = start + i;
                       return (
                         <button
-                          key={p}
+                          key={`page-btn-${p}`}
+                          type="button"
                           onClick={() => setPage(p)}
                           className={`h-7 min-w-7 rounded px-2 text-xs font-medium transition ${
                             p === page
@@ -469,6 +471,7 @@ function PagBtn({
 }) {
   return (
     <button
+      type="button"
       title={title}
       onClick={onClick}
       disabled={disabled}
@@ -480,15 +483,29 @@ function PagBtn({
 }
 
 function TableSkeleton() {
+  const rowIds = [
+    's1',
+    's2',
+    's3',
+    's4',
+    's5',
+    's6',
+    's7',
+    's8',
+    's9',
+    's10',
+    's11',
+    's12',
+  ];
   return (
     <div className="space-y-3">
       <div className="flex gap-6 border-b border-zinc-800 pb-3">
-        {[140, 80, 160, 140, 70, 100].map((w, i) => (
-          <Skeleton key={i} style={{ width: w }} className="h-3" />
+        {[140, 80, 160, 140, 70, 100].map((w) => (
+          <Skeleton key={`h-${w}`} style={{ width: w }} className="h-3" />
         ))}
       </div>
-      {Array.from({ length: 12 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-6 py-2">
+      {rowIds.map((id) => (
+        <div key={id} className="flex items-center gap-6 py-2">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-5 w-16 rounded-full" />
           <Skeleton className="h-4 w-36" />
