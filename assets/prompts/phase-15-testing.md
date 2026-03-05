@@ -9,9 +9,9 @@
 ## Task 15.1: Backend Testing
 
 ```
-TASK: Implement comprehensive backend testing suite achieving >75% code coverage.
+TASK: Implement comprehensive app-backend testing suite achieving >75% code coverage.
 
-SYSTEM CONTEXT: Ensure backend reliability, catch bugs early, validate business logic, and maintain code quality through comprehensive testing strategy.
+SYSTEM CONTEXT: Ensure app-backend reliability, catch bugs early, validate business logic, and maintain code quality through comprehensive testing strategy.
 
 REQUIREMENTS:
 
@@ -69,7 +69,7 @@ CONSTRAINTS:
 - No test interdependencies
 
 INTEGRATION POINTS:
-- All backend modules
+- All app-backend modules
 - Database from Task 3.1
 - WebSocket from Task 5.3
 - CI/CD from Task 2.1
@@ -112,7 +112,7 @@ DELIVERABLES:
 - CI configuration
 - Coverage reports
 
-SUCCESS METRIC: Comprehensive backend test coverage >75% with all tests passing and performance validated.
+SUCCESS METRIC: Comprehensive app-backend test coverage >75% with all tests passing and performance validated.
 ```
 
 ---
@@ -361,7 +361,7 @@ AUTHORIZATION TESTS:
 
 ANALYTICS ACCURACY TESTS:
 1. Data Accuracy: Verify analytics calculations are correct
-2. Chart Data: Verify chart data matches backend data
+2. Chart Data: Verify chart data matches app-backend data
 3. Metric Cards: Verify metric card values are accurate
 4. Trend Calculations: Verify trend percentage calculations
 
@@ -450,9 +450,9 @@ OFFLINE-ONLINE TRANSITION TESTS:
 5. Data Integrity: Verify no data loss during transitions
 
 TAILSCALE CONNECTIVITY TESTS:
-1. Mobile via Tailscale: Test mobile connecting to backend via Tailscale
-2. QR Code Setup: Test QR code scanning for backend URL
-3. Manual Entry: Test manual backend URL entry
+1. Mobile via Tailscale: Test mobile connecting to app-backend via Tailscale
+2. QR Code Setup: Test QR code scanning for app-backend URL
+3. Manual Entry: Test manual app-backend URL entry
 4. Connection Test: Test connection test functionality
 5. Network Switching: Test switching between networks
 

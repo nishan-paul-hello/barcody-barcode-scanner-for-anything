@@ -9,9 +9,9 @@
 ## Task 9.1: Backend Tailscale Configuration
 
 ```
-TASK: Configure NestJS backend to accept connections from Tailscale network with CORS, IP auto-detection, and trusted proxy configuration.
+TASK: Configure NestJS app-backend to accept connections from Tailscale network with CORS, IP auto-detection, and trusted proxy configuration.
 
-SYSTEM CONTEXT: Tailscale enables secure access to self-hosted backend from anywhere without port forwarding. Backend must bind to all interfaces and accept connections from Tailscale's IP range (100.64.0.0/10). Critical for users running backend on home servers or VPS who want mobile access.
+SYSTEM CONTEXT: Tailscale enables secure access to self-hosted app-backend from anywhere without port forwarding. Backend must bind to all interfaces and accept connections from Tailscale's IP range (100.64.0.0/10). Critical for users running app-backend on home servers or VPS who want mobile access.
 
 REQUIREMENTS:
 
@@ -30,7 +30,7 @@ REQUIREMENTS:
    - Log detection result
 4. Trusted Proxies: Add Tailscale IP to trusted proxy list for correct client IP detection
 5. Info Endpoint: Create GET /setup/tailscale-info endpoint:
-   - Return backend URL (http://{tailscale_ip}:8000)
+   - Return app-backend URL (http://{tailscale_ip}:8000)
    - Return Tailscale IP address
    - Return connection status
    - Protected by JWT auth
@@ -88,7 +88,7 @@ SUCCESS METRIC: Backend accessible from any device on Tailscale network with pro
 ```
 TASK: Create Tailscale setup page with QR code generation for easy mobile configuration.
 
-SYSTEM CONTEXT: Users need easy way to configure mobile app to connect to their self-hosted backend. QR code provides one-tap setup instead of manual IP entry.
+SYSTEM CONTEXT: Users need easy way to configure mobile app to connect to their self-hosted app-backend. QR code provides one-tap setup instead of manual IP entry.
 
 REQUIREMENTS:
 
@@ -98,7 +98,7 @@ REQUIREMENTS:
 4. QR Code Generation: Generate QR code containing:
    - Backend URL (http://{tailscale_ip}:8000)
 5. QR Code Display: Show large, scannable QR code (300x300px minimum)
-6. Manual Entry Option: Display backend URL as copyable text
+6. Manual Entry Option: Display app-backend URL as copyable text
 7. Connection Test: Implement test button:
    - Call /health endpoint via Tailscale IP
    - Show success/failure message
@@ -109,12 +109,12 @@ REQUIREMENTS:
    - Scan QR code in mobile app
    - Test connection
 9. Error Handling: Handle cases where Tailscale not configured
-10. Loading States: Show loading while fetching backend info
+10. Loading States: Show loading while fetching app-backend info
 
 CONSTRAINTS:
 - QR code must be easily scannable
 - Clear, user-friendly instructions
-- Handle backend not configured scenario
+- Handle app-backend not configured scenario
 - Mobile-responsive design
 
 INTEGRATION POINTS:
@@ -123,10 +123,10 @@ INTEGRATION POINTS:
 
 TESTING REQUIREMENTS:
 1. Setup page loads correctly
-2. QR code generates with backend URL
+2. QR code generates with app-backend URL
 3. Manual URL displays correctly
 4. Connection test works
-5. Error handling for unconfigured backend
+5. Error handling for unconfigured app-backend
 6. QR code scannable by mobile devices
 7. Responsive on all screen sizes
 
@@ -160,9 +160,9 @@ SUCCESS METRIC: Users can easily generate QR code and test Tailscale connection 
 ## Task 9.3: Mobile Tailscale Integration
 
 ```
-TASK: Implement Tailscale connectivity in mobile app with QR scanner and manual entry for backend URL configuration.
+TASK: Implement Tailscale connectivity in mobile app with QR scanner and manual entry for app-backend URL configuration.
 
-SYSTEM CONTEXT: Enable mobile app to connect to self-hosted backend via Tailscale. Users can scan QR code from web setup or manually enter backend URL. Critical for offline-first architecture with self-hosted backend.
+SYSTEM CONTEXT: Enable mobile app to connect to self-hosted app-backend via Tailscale. Users can scan QR code from web setup or manually enter app-backend URL. Critical for offline-first architecture with self-hosted app-backend.
 
 REQUIREMENTS:
 
@@ -171,14 +171,14 @@ REQUIREMENTS:
 3. QR Scanner: Implement QR code scanner:
    - Request camera permissions
    - Scan QR code from web setup page
-   - Extract backend URL
+   - Extract app-backend URL
    - Validate URL format
 4. Manual Entry: Add manual IP entry option:
-   - Text input for backend URL
+   - Text input for app-backend URL
    - Validate URL format (http://IP:PORT)
    - Test connection before saving
-5. URL Storage: Store backend URL in AsyncStorage:
-   - Key: 'backend_url'
+5. URL Storage: Store app-backend URL in AsyncStorage:
+   - Key: 'app-backend_url'
    - Persist across app restarts
    - Update API client base URL
 6. Connection Test Screen: Create test screen:
@@ -187,13 +187,13 @@ REQUIREMENTS:
    - Show response time
    - Test authentication endpoint
 7. Settings Integration: Add "Change Backend URL" in settings:
-   - Show current backend URL
+   - Show current app-backend URL
    - Button to rescan QR code
    - Button to manually edit
    - Test connection button
-8. API Client Update: Modify API client to use stored backend URL
+8. API Client Update: Modify API client to use stored app-backend URL
 9. Error Handling: Handle connection failures, invalid URLs, network errors
-10. First-Time Setup: Show onboarding only if backend URL not configured
+10. First-Time Setup: Show onboarding only if app-backend URL not configured
 
 CONSTRAINTS:
 - Must work with or without Tailscale
@@ -247,7 +247,7 @@ DELIVERABLES:
 - URL storage logic
 - API client update
 
-SUCCESS METRIC: Users can easily configure mobile app to connect to self-hosted backend via Tailscale using QR code or manual entry.
+SUCCESS METRIC: Users can easily configure mobile app to connect to self-hosted app-backend via Tailscale using QR code or manual entry.
 ```
 
 ---

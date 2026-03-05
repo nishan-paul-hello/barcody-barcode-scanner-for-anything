@@ -15,7 +15,7 @@ SYSTEM CONTEXT: Secure admin endpoints providing cross-user analytics and manage
 
 REQUIREMENTS:
 
-1. Module Setup: Create backend/src/modules/admin/ directory, create AdminModule
+1. Module Setup: Create app-backend/src/modules/admin/ directory, create AdminModule
 2. Admin Controller: Create AdminController with endpoints:
    - GET /api/v1/admin/analytics/overview - Total scans, users, active today
    - GET /api/v1/admin/analytics/trends - Daily scans trend with date range filter
@@ -106,7 +106,7 @@ SYSTEM CONTEXT: Track user behavior for product improvement while protecting pri
 
 REQUIREMENTS:
 
-1. Analytics Module: Create AnalyticsModule in backend
+1. Analytics Module: Create AnalyticsModule in app-backend
 2. Event Endpoint: Implement POST /analytics/event:
    - Accept event data (event_type, user_id, metadata, timestamp)
    - Validate event structure
@@ -404,7 +404,7 @@ SUCCESS METRIC: Interactive analytics dashboard with real-time charts providing 
 ```
 TASK: Add analytics tracking to web app for user behavior monitoring.
 
-SYSTEM CONTEXT: Track user interactions for product improvement. Send events to backend analytics endpoint. Respect user privacy while gathering insights.
+SYSTEM CONTEXT: Track user interactions for product improvement. Send events to app-backend analytics endpoint. Respect user privacy while gathering insights.
 
 REQUIREMENTS:
 
@@ -450,12 +450,12 @@ CONSTRAINTS:
 - TypeScript strict mode
 
 INTEGRATION POINTS:
-- Analytics backend from Task 13.2
+- Analytics app-backend from Task 13.2
 - Auth store from Task 4.2
 - React Router for navigation tracking
 
 TESTING REQUIREMENTS:
-1. Events sent to backend correctly
+1. Events sent to app-backend correctly
 2. Correct event data structure
 3. User ID included when authenticated
 4. Privacy respected (no PII in events)
@@ -469,7 +469,7 @@ ACCEPTANCE CRITERIA:
 - ✅ Page views tracked automatically
 - ✅ Scan events tracked
 - ✅ User actions tracked
-- ✅ Events sent to backend asynchronously
+- ✅ Events sent to app-backend asynchronously
 - ✅ Privacy respected (no PII)
 - ✅ Error handling implemented
 - ✅ Tests passing
@@ -500,7 +500,7 @@ SUCCESS METRIC: User behavior tracked efficiently on web with privacy protection
 ```
 TASK: Add analytics tracking to mobile app for user behavior monitoring.
 
-SYSTEM CONTEXT: Track user interactions for product improvement. Send events to backend analytics endpoint. Respect user privacy while gathering insights. Support offline usage.
+SYSTEM CONTEXT: Track user interactions for product improvement. Send events to app-backend analytics endpoint. Respect user privacy while gathering insights. Support offline usage.
 
 REQUIREMENTS:
 
@@ -555,13 +555,13 @@ CONSTRAINTS:
 - Minimal storage usage
 
 INTEGRATION POINTS:
-- Analytics backend from Task 13.2
+- Analytics app-backend from Task 13.2
 - Auth store from Task 4.7
 - React Navigation for screen tracking
 - NetInfo for connectivity status
 
 TESTING REQUIREMENTS:
-1. Events sent to backend from mobile
+1. Events sent to app-backend from mobile
 2. Correct event data structure
 3. User ID included when authenticated
 4. Privacy respected (no PII)
@@ -578,7 +578,7 @@ ACCEPTANCE CRITERIA:
 - ✅ Scan events tracked
 - ✅ Session tracking implemented
 - ✅ Device info tracked (anonymized)
-- ✅ Events sent to backend asynchronously
+- ✅ Events sent to app-backend asynchronously
 - ✅ Offline support with queueing
 - ✅ Privacy respected (no PII)
 - ✅ Tests passing

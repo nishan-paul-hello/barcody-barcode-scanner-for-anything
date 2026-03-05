@@ -16,7 +16,7 @@ Web authentication for Barcody using Google OAuth:
 - No username/password forms needed
 - Secure third-party authentication via Google
 - Seamless user experience
-- Integration with backend OAuth flow from Task 3.4
+- Integration with app-backend OAuth flow from Task 3.4
 
 REQUIREMENTS:
 
@@ -42,8 +42,8 @@ REQUIREMENTS:
 4. OAUTH CALLBACK HANDLER
    - Handle OAuth response from Google
    - Extract authorization code or credential
-   - Send to backend /auth/google endpoint
-   - Receive JWT tokens from backend
+   - Send to app-backend /auth/google endpoint
+   - Receive JWT tokens from app-backend
    - Store tokens securely (will integrate with state management in Task 4.2)
    - Redirect to dashboard on success
    - Display error message on failure
@@ -52,7 +52,7 @@ REQUIREMENTS:
    - Handle OAuth popup blocked
    - Handle OAuth cancellation by user
    - Handle network errors
-   - Handle backend authentication errors
+   - Handle app-backend authentication errors
    - Display user-friendly error messages
    - Provide retry mechanism
 
@@ -256,11 +256,11 @@ SUCCESS METRIC: User stays authenticated across page reloads, tokens refresh aut
 ## Task 4.3: Web API Client Service
 
 ```
-TASK: Create centralized, type-safe API client for all backend communication
+TASK: Create centralized, type-safe API client for all app-backend communication
 
 SYSTEM CONTEXT:
 Unified API layer for Barcody web app:
-- Single source for all backend calls
+- Single source for all app-backend calls
 - Consistent error handling
 - Automatic authentication
 - Request retry logic
@@ -284,7 +284,7 @@ REQUIREMENTS:
 
 3. ERROR HANDLING INTERCEPTOR
    - Response interceptor for error handling
-   - Parse backend error responses
+   - Parse app-backend error responses
    - Extract error message from response
    - Handle network errors (no response)
    - Handle timeout errors
@@ -315,7 +315,7 @@ REQUIREMENTS:
    - Define interfaces for all response DTOs
    - Use consistent naming: CreateScanDto, ScanResponseDto, etc.
    - Export all types for use in components
-   - Ensure types match backend Swagger definitions
+   - Ensure types match app-backend Swagger definitions
 
 7. PAGINATION SUPPORT
    - Helper method for paginated requests
@@ -385,7 +385,7 @@ DELIVERABLES:
 - Pagination helper
 - File upload helper
 
-SUCCESS METRIC: All backend communication goes through this client with proper typing, auth, and error handling.
+SUCCESS METRIC: All app-backend communication goes through this client with proper typing, auth, and error handling.
 ```
 
 ---
@@ -664,7 +664,7 @@ Mobile authentication for Barcody using Google OAuth:
 - Native OAuth flow with Expo
 - Secure authentication via Google
 - Seamless mobile UX
-- Integration with backend OAuth from Task 3.4
+- Integration with app-backend OAuth from Task 3.4
 
 REQUIREMENTS:
 
@@ -686,7 +686,7 @@ REQUIREMENTS:
    - Generate secure state parameter
    - Handle OAuth redirect
    - Extract authorization code
-   - Send code to backend /auth/google endpoint
+   - Send code to app-backend /auth/google endpoint
 
 4. OAUTH FLOW
    - User taps "Sign in with Google" button
@@ -694,7 +694,7 @@ REQUIREMENTS:
    - User authenticates with Google
    - Google redirects back to app
    - App receives authorization code
-   - Send code to backend
+   - Send code to app-backend
    - Receive JWT tokens
    - Store tokens securely (Task 4.7)
    - Navigate to main app
@@ -702,7 +702,7 @@ REQUIREMENTS:
 5. ERROR HANDLING
    - Handle OAuth cancellation
    - Handle network errors
-   - Handle backend errors
+   - Handle app-backend errors
    - Display error alerts
    - Provide retry mechanism
    - Log errors for debugging
@@ -826,7 +826,7 @@ REQUIREMENTS:
    - Clear Zustand state
    - Set isAuthenticated to false
    - Navigate to login screen
-   - Revoke tokens on backend (optional)
+   - Revoke tokens on app-backend (optional)
 
 6. AUTO-LOGIN ON APP LAUNCH
    - Create initialize action
@@ -1046,11 +1046,11 @@ SUCCESS METRIC: User can navigate through auth flow with clear, professional UI 
 ## Task 4.9: Mobile API Client Service
 
 ```
-TASK: Create centralized API client for mobile backend communication
+TASK: Create centralized API client for mobile app-backend communication
 
 SYSTEM CONTEXT:
 API layer for Barcody mobile app:
-- Single source for all backend calls
+- Single source for all app-backend calls
 - Automatic authentication
 - Offline detection
 - Request retry logic
@@ -1081,7 +1081,7 @@ REQUIREMENTS:
 
 4. ERROR HANDLING
    - Response interceptor for errors
-   - Parse backend error responses
+   - Parse app-backend error responses
    - Handle network errors
    - Handle timeout errors
    - Transform to consistent format
@@ -1107,7 +1107,7 @@ REQUIREMENTS:
    - Define interfaces for all DTOs
    - Consistent naming conventions
    - Export types for components
-   - Match backend Swagger definitions
+   - Match app-backend Swagger definitions
 
 8. OFFLINE QUEUE
    - Queue failed requests when offline
@@ -1171,7 +1171,7 @@ DELIVERABLES:
 - Retry mechanism
 - Offline queue
 
-SUCCESS METRIC: All backend communication works reliably with proper offline handling and type safety.
+SUCCESS METRIC: All app-backend communication works reliably with proper offline handling and type safety.
 ```
 
 ---
@@ -1524,7 +1524,7 @@ CONSTRAINTS:
 INTEGRATION POINTS:
 - API client from Task 4.3
 - Auth store from Task 4.2
-- Admin backend from Task 13.1
+- Admin app-backend from Task 13.1
 - Charts from Task 13.4
 
 TESTING REQUIREMENTS:
@@ -1611,7 +1611,7 @@ REQUIREMENTS:
    - Type-safe state
 
 5. ADMIN VERIFICATION
-   - After OAuth, send to backend /auth/google
+   - After OAuth, send to app-backend /auth/google
    - Backend validates email against ADMIN_EMAIL env var
    - Return isAdmin flag in response
    - Store isAdmin in auth store
@@ -1639,7 +1639,7 @@ REQUIREMENTS:
    - Clear auth store
    - Clear localStorage
    - Redirect to login
-   - Revoke tokens on backend (optional)
+   - Revoke tokens on app-backend (optional)
 
 9. TOKEN REFRESH
    - Monitor access token expiration

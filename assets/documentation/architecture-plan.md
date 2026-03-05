@@ -46,7 +46,7 @@ graph TB
 | **Database (Local)** | PostgreSQL               | Production-grade RDBMS, ACID compliance, excellent performance with proper indexing          |
 | **Cache**            | Redis                    | High-performance caching, session management, rate limiting                                  |
 | **Networking**       | Tailscale VPN            | Secure internet access to localhost, works from anywhere, zero-config mesh network           |
-| **Admin Dashboard**  | Next.js + Docker         | Same stack as web, localhost deployment, admin API module in backend                         |
+| **Admin Dashboard**  | Next.js + Docker         | Same stack as web, localhost deployment, admin API module in app-backend                         |
 | **Containerization** | Docker + Docker Compose  | Consistent environments, easy deployment, all services in one network                        |
 | **CI/CD**            | GitHub Actions           | Free for public repos, excellent Docker/mobile build support                                 |
 
@@ -62,7 +62,7 @@ graph TB
 - **Offline-First**: Scans work without internet connection
 - **Local Storage**: SQLite database on device for offline use
 - **Dual-Mode**: Connected (via Tailscale) or Offline mode
-- **Auto-Sync**: Automatic sync when connected to backend via Tailscale
+- **Auto-Sync**: Automatic sync when connected to app-backend via Tailscale
 - **Camera Integration**: Real-time scanning with ML Kit/Vision API
 - **History Management**: Scan history with search and filtering
 - **Batch Scanning**: Multiple barcode scanning in sequence
@@ -126,7 +126,7 @@ mobile-app/
 #### Technical Architecture
 
 ```
-web-app/
+app-web/
 ├── app/
 │   ├── (auth)/
 │   │   └── login/
@@ -174,7 +174,7 @@ web-app/
 #### Core Architecture
 
 ```
-backend/
+app-backend/
 ├── src/
 │   ├── main.ts
 │   ├── app.module.ts
@@ -293,7 +293,7 @@ CREATE INDEX idx_sessions_token ON sessions(session_token);
 #### Architecture
 
 ```
-admin-dashboard/
+app-admin/
 ├── app/
 │   ├── (dashboard)/
 │   │   ├── overview/
@@ -316,7 +316,7 @@ admin-dashboard/
 **Backend Admin API Module:**
 
 ```
-backend/src/modules/admin/
+app-backend/src/modules/admin/
 ├── admin.controller.ts       # Admin API endpoints
 ├── admin.service.ts          # Business logic
 ├── admin.module.ts
@@ -338,14 +338,14 @@ backend/src/modules/admin/
 
 **Authentication:**
 
-- Google OAuth (reuses backend auth module)
+- Google OAuth (reuses app-backend auth module)
 - Zustand state management
 - AdminGuard validates against `ADMIN_EMAIL` environment variable
 - Only authorized admin email can access dashboard
 
 **Privacy**: All user IDs hashed, no PII stored, opt-in telemetry
 
-**Deployment:** Docker Compose (localhost:3001), shares PostgreSQL with main backend
+**Deployment:** Docker Compose (localhost:3001), shares PostgreSQL with main app-backend
 
 ---
 
@@ -353,7 +353,7 @@ backend/src/modules/admin/
 
 ### 3.1 Why Tailscale?
 
-**Problem**: Localhost backend is only accessible on local network  
+**Problem**: Localhost app-backend is only accessible on local network  
 **Solution**: Tailscale creates a secure private network over the internet
 
 **Benefits:**
@@ -430,7 +430,7 @@ tailscale up
 tailscale ip -4
 # Output: 100.64.0.1
 
-# 4. Start Barcody backend
+# 4. Start Barcody app-backend
 docker-compose up -d
 ```
 
@@ -519,7 +519,7 @@ Mobile Scan → Local SQLite → Offline Queue
 **When mobile reconnects to internet:**
 
 ```typescript
-1. Detect backend connection via Tailscale (http://100.64.0.1:8000/health)
+1. Detect app-backend connection via Tailscale (http://100.64.0.1:8000/health)
 2. Upload offline scans to PostgreSQL
 3. Download new scans from web app
 4. Update local cache with new product data
@@ -556,7 +556,7 @@ Mobile Scan → Local SQLite → Offline Queue
 **Web app shows QR code:**
 
 - Contains: `http://100.64.0.1:8000`
-- Mobile scans → Auto-configures backend URL
+- Mobile scans → Auto-configures app-backend URL
 - Saved in mobile app settings
 - Works from anywhere in the world
 
@@ -903,8 +903,8 @@ CMD ["npm", "start"]
 version: '3.8'
 
 services:
-  backend:
-    image: yourusername/barcode-backend:latest
+  app-backend:
+    image: yourusername/barcode-app-backend:latest
     ports:
       - '8000:8000'
     environment:
@@ -924,7 +924,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
     depends_on:
-      - backend
+      - app-backend
     restart: unless-stopped
 
   db:
@@ -963,7 +963,7 @@ fi
 
 # Pull images
 echo "📦 Pulling Docker images..."
-docker pull yourusername/barcode-backend:latest
+docker pull yourusername/barcode-app-backend:latest
 docker pull yourusername/barcode-web:latest
 
 # Create .env file
@@ -1014,7 +1014,7 @@ on:
     branches: [main]
 
 jobs:
-  build-backend:
+  build-app-backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -1032,7 +1032,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: yourusername/barcode-backend
+          images: yourusername/barcode-app-backend
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -1041,7 +1041,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: ./app-backend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
@@ -1455,7 +1455,7 @@ docker start barcody-redis
 ### 12.2 Infrastructure Monitoring
 
 ```yaml
-# Docker health checks (NestJS backend)
+# Docker health checks (NestJS app-backend)
 healthcheck:
   test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:8000/health']
   interval: 30s
@@ -1507,7 +1507,7 @@ barcode-scanner/
 │ ├── docker-publish.yml
 │ ├── mobile-build.yml
 │ └── tests.yml
-├── backend/
+├── app-backend/
 │ ├── src/
 │ ├── test/
 │ ├── Dockerfile
@@ -1522,7 +1522,7 @@ barcode-scanner/
 │ ├── app.json
 │ ├── eas.json
 │ └── package.json
-├── admin-dashboard/
+├── app-admin/
 │ ├── app/
 │ └── package.json
 ├── docs/
@@ -1957,7 +1957,7 @@ graph TB
 1. **Review & Approve** - Stakeholder sign-off on architecture
 2. **Create Task List** - Break down into implementation tasks
 3. **Setup Repository** - Initialize project structure
-4. **Begin Development** - Start with backend foundation
+4. **Begin Development** - Start with app-backend foundation
 5. **Iterative Delivery** - Ship features incrementally
 
 ---

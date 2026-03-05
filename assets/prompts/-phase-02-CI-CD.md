@@ -9,13 +9,13 @@
 ## Task 2.1: Backend CI/CD
 
 ```
-TASK: Create GitHub Actions workflow for automated backend Docker builds with multi-platform support, semantic versioning, and Docker Hub publishing.
+TASK: Create GitHub Actions workflow for automated app-backend Docker builds with multi-platform support, semantic versioning, and Docker Hub publishing.
 
-SYSTEM CONTEXT: Automates backend deployment pipeline. Every push to main triggers a production-ready Docker image build and push to Docker Hub, enabling continuous delivery.
+SYSTEM CONTEXT: Automates app-backend deployment pipeline. Every push to main triggers a production-ready Docker image build and push to Docker Hub, enabling continuous delivery.
 
 REQUIREMENTS:
 
-1. Workflow File: Create .github/workflows/backend-build.yml
+1. Workflow File: Create .github/workflows/app-backend-build.yml
 2. Trigger: Configure on push to main branch and manual workflow_dispatch
 3. Docker Buildx: Set up Docker Buildx for multi-platform builds
 4. Authentication: Add Docker Hub login using secrets (DOCKERHUB_USERNAME, DOCKERHUB_TOKEN)
@@ -23,10 +23,10 @@ REQUIREMENTS:
 6. Semantic Versioning: Tag images with git commit SHA, branch name, and latest
 7. Build Caching: Configure Docker layer caching for faster builds
 8. Secret Documentation: Document required GitHub secrets in workflow comments
-9. Build Context: Use backend directory as build context
+9. Build Context: Use app-backend directory as build context
 
 CONSTRAINTS:
-- Workflow must only trigger on backend code changes (paths filter)
+- Workflow must only trigger on app-backend code changes (paths filter)
 - Secrets must never be exposed in logs
 - Build must fail if tests fail
 - Image tags must follow semantic versioning
@@ -55,7 +55,7 @@ QUALITY STANDARDS:
 
 
 DELIVERABLES:
-- .github/workflows/backend-build.yml
+- .github/workflows/app-backend-build.yml
 - Documentation of required secrets
 
 
@@ -90,7 +90,7 @@ CONSTRAINTS:
 - Image size must be optimized
 
 INTEGRATION POINTS:
-- Connects to backend API URL
+- Connects to app-backend API URL
 - Production deployment pulls these images
 
 TESTING REQUIREMENTS:
@@ -189,8 +189,8 @@ SYSTEM CONTEXT: Automates admin dashboard deployment. Builds separate from main 
 
 REQUIREMENTS:
 
-1. Workflow File: Create .github/workflows/admin-dashboard-build.yml
-2. Trigger: Push to main (paths: admin-dashboard/**)
+1. Workflow File: Create .github/workflows/app-admin-build.yml
+2. Trigger: Push to main (paths: app-admin/**)
 3. Docker Buildx: Multi-platform build setup
 4. Authentication: Docker Hub login
 5. Build Arguments: Pass admin-specific env vars
@@ -205,7 +205,7 @@ CONSTRAINTS:
 - Production-ready configuration
 
 INTEGRATION POINTS:
-- Connects to backend admin endpoints
+- Connects to app-backend admin endpoints
 - Deployed separately from web app
 
 TESTING REQUIREMENTS:
@@ -228,7 +228,7 @@ QUALITY STANDARDS:
 - Handle errors gracefully
 
 DELIVERABLES:
-- .github/workflows/admin-dashboard-build.yml
+- .github/workflows/app-admin-build.yml
 - Secret documentation
 
 
@@ -248,7 +248,7 @@ REQUIREMENTS:
 
 1. Workflow File: Create .github/workflows/pr-checks.yml
 2. Trigger: Pull requests targeting dev branch
-3. Lint Job: Run ESLint for backend, web, mobile, admin-dashboard in parallel
+3. Lint Job: Run ESLint for app-backend, web, mobile, app-admin in parallel
 4. Type-Check Job: Run TypeScript compiler in strict mode for all projects
 5. Test Job: Run Jest unit tests (exclude E2E), generate coverage report
 6. Build Job: Verify all projects build successfully

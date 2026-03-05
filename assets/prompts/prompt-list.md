@@ -79,7 +79,7 @@ This directory contains comprehensive, fully detailed prompts for implementing a
 
 ### ✅ Phase 5: Scanning Backend (3 tasks)
 
-**File**: `phase-05-scanning-backend.md`
+**File**: `phase-05-scanning-app-backend.md`
 
 - Task 5.1: Scans Database Operations
 - Task 5.2: Scans API Endpoints
@@ -188,7 +188,7 @@ This directory contains comprehensive, fully detailed prompts for implementing a
 | Phase 2   | 5      | ✅ Complete (Full Detail) | `phase-02-cicd.md`              |
 | Phase 3   | 6      | ✅ Complete (Full Detail) | `phase-03-database-auth.md`     |
 | Phase 4   | 13     | ✅ Complete (Full Detail) | `phase-04-auth-frontend.md`     |
-| Phase 5   | 3      | ✅ Complete (Full Detail) | `phase-05-scanning-backend.md`  |
+| Phase 5   | 3      | ✅ Complete (Full Detail) | `phase-05-scanning-app-backend.md`  |
 | Phase 6   | 4      | ✅ Complete (Full Detail) | `phase-06-scanning-web.md`      |
 | Phase 7   | 4      | ✅ Complete (Full Detail) | `phase-07-scanning-mobile.md`   |
 | Phase 8   | 4      | ✅ Complete (Full Detail) | `phase-08-offline-mobile.md`    |

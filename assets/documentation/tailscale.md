@@ -8,7 +8,7 @@ This guide provides a comprehensive "Zero-to-End" workflow for setting up Tailsc
 
 Tailscale creates a secure, private network (a "Tailnet") between your devices.
 
-- **Privacy**: Your backend is NEVER exposed to the public internet.
+- **Privacy**: Your app-backend is NEVER exposed to the public internet.
 - **Convenience**: Access your local services from your phone or laptop anywhere in the world as if they were local.
 - **Security**: Automatic HTTPS certificates and per-device access controls.
 
@@ -93,7 +93,7 @@ We define JSON files that tell Tailscale how to route incoming traffic inside Do
   "Web": {
     "api-barcody.tamarin-ph.ts.net:443": {
       "Handlers": {
-        "/": { "Proxy": "http://backend:3002" }
+        "/": { "Proxy": "http://app-backend:3002" }
       }
     }
   }

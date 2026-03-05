@@ -5,7 +5,7 @@ on:
     branches:
       - dev
     paths-ignore:
-      - 'docs/**'
+      - 'assets/**'
       - 'README.md'
       - '.github/CONTRIBUTING.md'
 
