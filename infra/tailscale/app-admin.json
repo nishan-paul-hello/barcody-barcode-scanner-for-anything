@@ -1,0 +1,19 @@
+{
+  "TCP": {
+    "443": {
+      "HTTPS": true
+    }
+  },
+  "Web": {
+    "admin-barcody.tamarin-ph.ts.net:443": {
+      "Handlers": {
+        "/": {
+          "Proxy": "http://app-admin:3001"
+        }
+      }
+    }
+  },
+  "AllowFunnel": {
+    "admin-barcody.tamarin-ph.ts.net:443": false
+  }
+}

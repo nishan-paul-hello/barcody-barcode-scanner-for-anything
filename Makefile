@@ -13,9 +13,9 @@ ADMIN_PORT ?= 3001
 BACKEND_PORT ?= 3002
 
 switch-env:
-	@cat envs/web-app/.env.base envs/web-app/.env.$(BACKEND) > web-app/.env
-	@cat envs/admin-dashboard/.env.base envs/admin-dashboard/.env.$(BACKEND) > admin-dashboard/.env
-	@cat envs/backend/.env.base envs/backend/.env.$(BACKEND) > backend/.env
+	@cat envs/app-web/.env.base envs/app-web/.env.$(BACKEND) > app-web/.env
+	@cat envs/app-admin/.env.base envs/app-admin/.env.$(BACKEND) > app-admin/.env
+	@cat envs/app-backend/.env.base envs/app-backend/.env.$(BACKEND) > app-backend/.env
 
 dev-lh:
 	@$(MAKE) switch-env BACKEND=localhost
@@ -24,15 +24,15 @@ dev-lh:
 
 build-lh:
 	@$(MAKE) switch-env BACKEND=localhost
-	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml up -d --build --remove-orphans --force-recreate
+	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml up -d --build --remove-orphans --force-recreate
 
 up-lh:
 	@$(MAKE) switch-env BACKEND=localhost
-	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml up -d
+	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml up -d
 
 refresh-lh:
 	@$(MAKE) switch-env BACKEND=localhost
-	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml up -d --build --force-recreate -V --remove-orphans
+	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml up -d --build --force-recreate -V --remove-orphans
 
 dev-ts:
 	@$(MAKE) switch-env BACKEND=tailscale
@@ -41,15 +41,15 @@ dev-ts:
 
 build-ts:
 	@$(MAKE) switch-env BACKEND=tailscale
-	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d --build --remove-orphans --force-recreate
+	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d --build --remove-orphans --force-recreate
 
 up-ts:
 	@$(MAKE) switch-env BACKEND=tailscale
-	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d
+	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d
 
 refresh-ts:
 	@$(MAKE) switch-env BACKEND=tailscale
-	@set -a && . ./web-app/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d --build --force-recreate -V --remove-orphans
+	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d --build --force-recreate -V --remove-orphans
 
 cert-ts:
 	@docker exec barcody-barcode-scanner-for-anything-ts-web-1 tailscale cert barcody.tamarin-ph.ts.net 2>/dev/null || true

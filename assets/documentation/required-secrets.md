@@ -10,7 +10,7 @@ These are required for building and pushing Docker images to Docker Hub.
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `DOCKERHUB_USERNAME`  | Your Docker Hub username.                                                                                                      |
 | `DOCKERHUB_TOKEN`     | Your Docker Hub Personal Access Token (PAT). It is recommended to use a token with read/write access instead of your password. |
-| `NEXT_PUBLIC_API_URL` | The production API URL for the backend (used during web and admin-dashboard builds).                                           |
+| `NEXT_PUBLIC_API_URL` | The production API URL for the app-backend (used during web and app-admin builds).                                           |
 
 ## Expo Secrets (Mobile)
 

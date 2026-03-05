@@ -166,7 +166,7 @@ SUCCESS METRIC: Cache hit rate >90%, API limits respected, daily counter resets 
 ```
 TASK: Create product lookup API endpoint with rate limiting and cache statistics.
 
-SYSTEM CONTEXT: Public API for product information retrieval. Must protect backend from abuse with rate limiting while providing fast responses through caching.
+SYSTEM CONTEXT: Public API for product information retrieval. Must protect app-backend from abuse with rate limiting while providing fast responses through caching.
 
 REQUIREMENTS:
 

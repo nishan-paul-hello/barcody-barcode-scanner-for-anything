@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="web-app/public/brand-logo.svg" alt="Barcody Logo" width="120" height="120" />
+  <img src="app-web/public/brand-logo.svg" alt="Barcody Logo" width="120" height="120" />
   <h1>Barcody</h1>
   <p>Universal Barcode Intelligence &amp; Scanning Suite</p>
 </div>
@@ -79,18 +79,18 @@ cd barcody-barcode-scanner-for-anything
 
 ### 3. Configuration
 
-Create your environment configuration in both the backend and web-app directories:
+Create your environment configuration in both the app-backend and app-web directories:
 
 ```bash
-cp backend/.env.example backend/.env
-cp web-app/.env.example web-app/.env
+cp app-backend/.env.example app-backend/.env
+cp app-web/.env.example app-web/.env
 ```
 
 #### 3.1 ⚙️ App Configuration
 Essential settings for the application server.
-- **Backend**: Update `backend/.env` with your secrets.
-- **Web App**: Update `web-app/.env` with the API URL.
-- **Hash Secret**: Run `openssl rand -hex 32` and paste into `ANALYTICS_HASH_SECRET` in `backend/.env`.
+- **Backend**: Update `app-backend/.env` with your secrets.
+- **Web App**: Update `app-web/.env` with the API URL.
+- **Hash Secret**: Run `openssl rand -hex 32` and paste into `ANALYTICS_HASH_SECRET` in `app-backend/.env`.
 
 #### 3.2 🌐 Google OAuth
 To enable user login, you must set up Google OAuth in the Google Cloud Console.
@@ -229,7 +229,7 @@ Find your exact domain in the [Tailscale Admin Console](https://login.tailscale.
 
 Update all three serve config files:
 
-**`infra/tailscale/web.json`** — Web App (port 3000)
+**`infra/tailscale/app-web.json`** — Web App (port 3000)
 ```json
 {
   "TCP": { "443": { "HTTPS": true } },
@@ -246,14 +246,14 @@ Update all three serve config files:
 }
 ```
 
-**`infra/tailscale/admin.json`** — Admin Dashboard (port 3001)
+**`infra/tailscale/app-admin.json`** — Admin Dashboard (port 3001)
 ```json
 {
   "TCP": { "443": { "HTTPS": true } },
   "Web": {
     "admin-barcody.<your-tailnet>.ts.net:443": {
       "Handlers": {
-        "/": { "Proxy": "http://admin-dashboard:3001" }
+        "/": { "Proxy": "http://app-admin:3001" }
       }
     }
   },
@@ -263,14 +263,14 @@ Update all three serve config files:
 }
 ```
 
-**`infra/tailscale/api.json`** — Backend API (port 3002)
+**`infra/tailscale/app-backend.json`** — Backend API (port 3002)
 ```json
 {
   "TCP": { "443": { "HTTPS": true } },
   "Web": {
     "api-barcody.<your-tailnet>.ts.net:443": {
       "Handlers": {
-        "/": { "Proxy": "http://backend:3002" }
+        "/": { "Proxy": "http://app-backend:3002" }
       }
     }
   },
@@ -291,7 +291,7 @@ When the web and admin containers are built, they need to know the Tailscale API
 args:
   - NEXT_PUBLIC_API_URL=https://api-barcody.<your-tailnet>.ts.net/api/v1
 
-# docker-compose.yml — admin-dashboard service
+# docker-compose.yml — app-admin service
 args:
   - NEXT_PUBLIC_API_URL=https://api-barcody.<your-tailnet>.ts.net/api/v1
 ```
@@ -398,11 +398,11 @@ Your Device (Tailscale ON)
 │  │ :443 SSL │    │ :443 SSL │    │ :443 SSL │   │
 │  └────┬─────┘    └────┬─────┘    └────┬─────┘   │
 │       │               │               │         │
-│  ┌────▼─────┐    ┌────▼─────┐    ┌────▼─────┐   │
-│  │  web     │    │ admin-   │    │ backend  │   │
-│  │  :3000   │    │ dashboard│    │  :3002   │   │
-│  └──────────┘    │  :3001   │    └──────────┘   │
-│                  └──────────┘                   │
+│  ┌────▼─────┐    ┌────▼─────┐    ┌────▼───────┐ │
+│  │  app-web │    │ app-admin│    │app-backend │ │
+│  │  :3000   │    │  :3001   │    │  :3002     │ │
+│  └──────────┘    └──────────┘    └────────────┘ │
+│                                                 │
 │  ┌──────────┐    ┌──────────┐                   │
 │  │ postgres │    │  redis   │                   │
 │  │  :5432   │    │  :6379   │                   │
@@ -434,6 +434,6 @@ Each app is paired with a dedicated Tailscale **sidecar container** that:
 ---
 
 <div align="center">
-  <img src="web-app/public/company-logo.svg" alt="KAI Logo" width="80" height="80" />
+  <img src="app-web/public/company-logo.svg" alt="KAI Logo" width="80" height="80" />
   <p>Built with ❤️ by <a href="https://kaiverse.vercel.app/" target="_blank"><b>KAI</b></a></p>
 </div>

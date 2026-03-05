@@ -5,9 +5,9 @@ services:
     environment:
       - TS_AUTHKEY=${TS_AUTHKEY}
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/web.json
+      - TS_SERVE_CONFIG=/config/app-web.json
     volumes:
-      - ./infra/tailscale/web.json:/config/web.json
+      - ./infra/tailscale/app-web.json:/config/app-web.json
       - ts_web_state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -22,9 +22,9 @@ services:
     environment:
       - TS_AUTHKEY=${TS_AUTHKEY}
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/admin.json
+      - TS_SERVE_CONFIG=/config/app-admin.json
     volumes:
-      - ./infra/tailscale/admin.json:/config/admin.json
+      - ./infra/tailscale/app-admin.json:/config/app-admin.json
       - ts_admin_state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
     cap_add:
@@ -39,9 +39,9 @@ services:
     environment:
       - TS_AUTHKEY=${TS_AUTHKEY}
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/api.json
+      - TS_SERVE_CONFIG=/config/app-backend.json
     volumes:
-      - ./infra/tailscale/api.json:/config/api.json
+      - ./infra/tailscale/app-backend.json:/config/app-backend.json
       - ts_api_state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
     cap_add:
