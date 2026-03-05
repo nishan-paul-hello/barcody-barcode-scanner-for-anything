@@ -1,44 +1,25 @@
-# Dependencies
-node_modules
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Build output
-dist
-build
-coverage
-.next
-out
-
-# Static assets
-public
-static
-
-# Generated files
-*.generated.*
 *.gen.*
-
-# Documentation
-docs
-CHANGELOG.md
-
-# IDE
-.vscode
-.idea
-
-# Environment
+*.generated.*
+*.log
+.cache
 .env
 .env.*
-
-# Logs
-*.log
-
-# Cache
-.cache
+.idea
+.next
 .parcel-cache
 .turbo
-
-# Test artifacts
-/test-results
+.vscode
 /playwright-report
+/test-results
+CHANGELOG.md
+build
+coverage
+dist
+docs
+node_modules
+out
+package-lock.json
+pnpm-lock.yaml
+public
+static
+yarn.lock

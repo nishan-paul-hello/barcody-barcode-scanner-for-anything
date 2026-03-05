@@ -1,29 +1,18 @@
-# Dependencies
-node_modules
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Build outputs
-.next
-out
-build
-dist
-
-# Production
+*.pem
 *.tsbuildinfo
-next-env.d.ts
-
-# Coverage
-coverage
-.nyc_output
-
-# Env files
+.DS_Store
 .env
 .env*.local
-
-# Misc
-.DS_Store
-*.pem
-.vercel
+.next
+.nyc_output
 .turbo
+.vercel
+build
+coverage
+dist
+next-env.d.ts
+node_modules
+out
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
