@@ -16,7 +16,7 @@
     "test": "npm run test --workspace=backend && npm run test --workspace=web-app && npm run test --workspace=mobile-app && npm run test --workspace=admin-dashboard",
     "build": "npm run build --workspace=backend && npm run build --workspace=web-app && npm run build --workspace=mobile-app && npm run build --workspace=admin-dashboard",
     "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"npm run start:dev --workspace=backend\" \"npm run dev --workspace=web-app -- -p 3000\" \"npm run dev --workspace=admin-dashboard -- -p 3001\"",
-    "audit:check": "audit-ci --config ./audit-ci.json"
+    "audit:check": "audit-ci --config ./audit-ci.json --package-manager npm"
   },
   "workspaces": [
     "backend",
@@ -62,7 +62,8 @@
     "minimatch": "^10.2.3",
     "rimraf": "^6.0.1",
     "serialize-javascript": "7.0.3",
-    "multer": "2.1.0",
-    "webpack": "^5.105.2"
+    "multer": "2.1.1",
+    "webpack": "^5.105.2",
+    "tar": "7.5.10"
   }
 }
