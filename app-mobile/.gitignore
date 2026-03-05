@@ -10,7 +10,6 @@
 *.class
 *.hmap
 *.hprof
-*.iml
 *.ipa
 *.jks
 *.key
@@ -27,15 +26,12 @@
 *.p8
 *.pbxuser
 *.perspectivev3
-*.swo
-*.swp
 *.xccheckout
 *.xcuserstate
 *~
 .AppleDouble
 .DS_Store
 .LSOverride
-._*
 .cache/
 .classpath
 .cxx
@@ -60,8 +56,6 @@
 .settings/
 .vscode/
 .yarn/build-state.yml
-.yarn/cache
-.yarn/install-state.gz
 .yarn/unplugged
 DerivedData/
 Podfile.lock
@@ -74,10 +68,7 @@ ios/.xcode.env.local
 ios/Pods/
 local.properties
 node_modules/
-npm-debug.log*
 temp/
 tmp/
 web-build/
 xcuserdata/
-yarn-debug.log*
-yarn-error.log*
