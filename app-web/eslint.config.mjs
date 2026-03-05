@@ -24,6 +24,8 @@ const eslintConfig = [
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
         ecmaVersion: 'latest',
         sourceType: 'module',
         ecmaFeatures: {
@@ -38,42 +40,6 @@ const eslintConfig = [
       '@next/next': nextPlugin,
     },
     rules: {
-      // TypeScript (Cleaned up recommended rules)
-      ...typescriptEslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-        },
-      ],
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/consistent-type-imports': [
-        'warn',
-        {
-          prefer: 'type-imports',
-          fixStyle: 'inline-type-imports',
-        },
-      ],
-
-      // React default rules
-      ...reactPlugin.configs.recommended.rules,
-      'react/prop-types': 'off',
-      'react/react-in-jsx-scope': 'off', // Not needed in Next.js
-      
-      // React Hooks rules
-      ...reactHooksPlugin.configs.recommended.rules,
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-
-      // TypeScript Compiler handles this
-      'no-undef': 'off',
-
-
-      // Next.js rules
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules,
-
       // General
       'no-console': [
         'warn',
@@ -81,8 +47,70 @@ const eslintConfig = [
           allow: ['warn', 'error'],
         },
       ],
-      'prefer-const': 'warn',
-      'no-unused-vars': 'off', // Using TypeScript version
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      'no-shadow': 'off',
+      'no-use-before-define': 'off',
+  
+      // Typescript
+      ...typescriptEslint.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'inline-type-imports',
+        },
+      ],
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/no-empty-interface': 'error',
+      '@typescript-eslint/no-inferrable-types': 'error',
+      '@typescript-eslint/prefer-as-const': 'error',
+      '@typescript-eslint/prefer-for-of': 'error',
+      '@typescript-eslint/prefer-function-type': 'error',
+      '@typescript-eslint/no-empty-function': 'error',
+      '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: {
+            attributes: false,
+          },
+        },
+      ],
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      '@typescript-eslint/restrict-template-expressions': ['warn', { allowNumber: true }],
+
+      // React default rules
+      ...reactPlugin.configs.recommended.rules,
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/jsx-boolean-value': ['error', 'never'],
+      'react/no-array-index-key': 'warn',
+      
+      // React Hooks rules
+      ...reactHooksPlugin.configs.recommended.rules,
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // Next.js rules
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
     },
     settings: {
       react: {
