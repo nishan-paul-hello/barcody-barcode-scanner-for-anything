@@ -17,7 +17,7 @@ REQUIREMENTS:
 
 README.MD:
 1. Project Overview: Write clear project description, list key features, explain use cases
-2. Tech Stack: Document all technologies used (backend, web, mobile, admin)
+2. Tech Stack: Document all technologies used (app-backend, web, mobile, admin)
 3. Quick Start: Provide quick start guide for local development
 4. Links: Add links to detailed documentation sections
 5. Badges: Add status badges (build status, coverage, version)
@@ -30,7 +30,7 @@ SETUP GUIDES:
    - Installation steps for each component
    - Environment variable configuration
    - Database setup and migrations
-   - Running locally (backend, web, mobile, admin)
+   - Running locally (app-backend, web, mobile, admin)
    - Troubleshooting common setup issues
 2. Production Setup Guide: Create docs/setup/production.md:
    - Server requirements
@@ -77,7 +77,7 @@ ARCHITECTURE DIAGRAMS:
    - CDN setup
 
 DEPLOYMENT GUIDES:
-1. Backend Deployment: Create docs/deployment/backend.md:
+1. Backend Deployment: Create docs/deployment/app-backend.md:
    - Local Docker environment setup
    - Docker deployment steps
    - Database migration process
@@ -111,7 +111,7 @@ ENVIRONMENT VARIABLES:
    - Mark required vs optional
    - Security considerations
 2. .env.example Files: Create .env.example for each component:
-   - backend/.env.example
+   - app-backend/.env.example
    - web/.env.example
    - mobile/.env.example
    - admin/.env.example
@@ -343,7 +343,7 @@ QUALITY STANDARDS:
 - Performance optimized
 
 DELIVERABLES:
-- Local backend deployment
+- Local app-backend deployment
 - Local web deployment
 - Mobile apps (APK/IPA)
 - Local admin dashboard deployment

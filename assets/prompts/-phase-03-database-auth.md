@@ -21,7 +21,7 @@ REQUIREMENTS:
    - min: 10 connections
    - idleTimeoutMillis: 30000
    - connectionTimeoutMillis: 2000
-3. DataSource Export: Create backend/src/config/typeorm.config.ts for CLI operations
+3. DataSource Export: Create app-backend/src/config/typeorm.config.ts for CLI operations
 4. Directory Structure: Create migrations/ and database/seeds/
 5. User Entity: Create with fields:
    - id: UUID (primary key)
@@ -231,7 +231,7 @@ SUCCESS METRIC: Redis caching functional with graceful degradation on failures.
 ```
 TASK: Implement Google OAuth 2.0 authentication strategy using Passport with user creation/retrieval.
 
-SYSTEM CONTEXT: Primary authentication method. Users sign in with Google, backend validates OAuth token, creates/retrieves user record, and issues JWT.
+SYSTEM CONTEXT: Primary authentication method. Users sign in with Google, app-backend validates OAuth token, creates/retrieves user record, and issues JWT.
 
 REQUIREMENTS:
 

@@ -12,24 +12,24 @@
 
 ### Phase 1: Foundation (Tasks 1-11)
 
-- ✅ [1.1 Backend Project Setup](#task-11-backend-project-setup)
-- ✅ [1.2 Backend Docker Setup](#task-12-backend-docker-setup)
-- ✅ [1.3 Backend Health Checks](#task-13-backend-health-checks)
-- ✅ [1.4 Backend API Documentation](#task-14-backend-api-documentation)
+- ✅ [1.1 Backend Project Setup](#task-11-app-backend-project-setup)
+- ✅ [1.2 Backend Docker Setup](#task-12-app-backend-docker-setup)
+- ✅ [1.3 Backend Health Checks](#task-13-app-backend-health-checks)
+- ✅ [1.4 Backend API Documentation](#task-14-app-backend-api-documentation)
 - ✅ [1.5 Web Project Setup](#task-15-web-project-setup)
 - ✅ [1.6 Web Docker Setup](#task-16-web-docker-setup)
 - ✅ [1.7 Mobile Project Setup](#task-17-mobile-project-setup)
-- ✅ [1.8 Admin Dashboard Setup](#task-18-admin-dashboard-setup)
-- ✅ [1.9 Admin Dashboard Docker Setup](#task-19-admin-dashboard-docker-setup)
+- ✅ [1.8 Admin Dashboard Setup](#task-18-app-admin-setup)
+- ✅ [1.9 Admin Dashboard Docker Setup](#task-19-app-admin-docker-setup)
 - ✅ [1.10 Git Hooks & Code Quality Setup](#task-110-git-hooks--code-quality-setup)
 - ⏳ [1.11 Error Monitoring Setup](#task-111-error-monitoring-setup)
 
 ### Phase 2: CI/CD Pipeline (Tasks 12-16)
 
-- ✅ [2.1 Backend CI/CD](#task-21-backend-cicd)
+- ✅ [2.1 Backend CI/CD](#task-21-app-backend-cicd)
 - ✅ [2.2 Web CI/CD](#task-22-web-cicd)
 - ✅ [2.3 Mobile CI/CD](#task-23-mobile-cicd)
-- ✅ [2.4 Admin Dashboard CI/CD](#task-24-admin-dashboard-cicd)
+- ✅ [2.4 Admin Dashboard CI/CD](#task-24-app-admin-cicd)
 - ✅ [2.5 PR Checks & Branch Protection](#task-25-pr-checks--branch-protection)
 
 ### Phase 3: Database & Auth Backend (Tasks 17-22)
@@ -37,9 +37,9 @@
 - ✅ [3.1 Database Schema](#task-31-database-schema)
 - ✅ [3.2 Database Indexes](#task-32-database-indexes--performance)
 - ✅ [3.3 Redis Setup](#task-33-redis-setup)
-- ✅ [3.4 Google OAuth Backend](#task-34-backend-auth---google-oauth)
-- ✅ [3.5 JWT Service](#task-35-backend-auth---jwt-service)
-- ✅ [3.6 Auth Endpoints](#task-36-backend-auth---endpoints)
+- ✅ [3.4 Google OAuth Backend](#task-34-app-backend-auth---google-oauth)
+- ✅ [3.5 JWT Service](#task-35-app-backend-auth---jwt-service)
+- ✅ [3.6 Auth Endpoints](#task-36-app-backend-auth---endpoints)
 
 ### Phase 4: Auth Frontend (Tasks 23-35)
 
@@ -54,14 +54,14 @@
 - ⏳ [4.9 Mobile API Client Service](#task-49-mobile-api-client-service)
 - ⏳ [4.10 Mobile Data Fetching Setup](#task-410-mobile-data-fetching-setup)
 - ⏳ [4.11 Mobile Auth - Protected Navigation](#task-411-mobile-auth---protected-navigation)
-- ✅ [4.12 Admin Dashboard Data Fetching](#task-412-admin-dashboard-data-fetching)
-- ✅ [4.13 Admin Dashboard Authentication](#task-413-admin-dashboard-authentication)
+- ✅ [4.12 Admin Dashboard Data Fetching](#task-412-app-admin-data-fetching)
+- ✅ [4.13 Admin Dashboard Authentication](#task-413-app-admin-authentication)
 
 ### Phase 5: Scanning Backend (Tasks 36-38)
 
-- ✅ [5.1 Scans Database Operations](#task-51-backend-scans---database-operations)
-- ✅ [5.2 Scans API](#task-52-backend-scans---api)
-- ✅ [5.3 WebSocket Gateway](#task-53-backend-scans---websocket-gateway)
+- ✅ [5.1 Scans Database Operations](#task-51-app-backend-scans---database-operations)
+- ✅ [5.2 Scans API](#task-52-app-backend-scans---api)
+- ✅ [5.3 WebSocket Gateway](#task-53-app-backend-scans---websocket-gateway)
 
 ### Phase 6: Scanning Web (Tasks 39-42)
 
@@ -86,22 +86,22 @@
 
 ### Phase 9: Tailscale Integration (Tasks 51-53)
 
-- ✅ [9.1 Backend Tailscale Configuration](#task-91-backend-tailscale-configuration)
+- ✅ [9.1 Backend Tailscale Configuration](#task-91-app-backend-tailscale-configuration)
 - ✅ [9.2 Web Tailscale Setup](#task-92-web-tailscale-setup-guide)
 - ⏳ [9.3 Mobile Tailscale Integration](#task-93-mobile-tailscale-integration)
 
 ### Phase 10: Product Lookup (Tasks 54-57)
 
-- ✅ [10.1 API Clients](#task-101-backend-product-lookup---api-clients)
-- ✅ [10.2 Caching Strategy](#task-102-backend-product-lookup---caching)
-- ✅ [10.3 Lookup Endpoint](#task-103-backend-product-lookup---endpoint)
+- ✅ [10.1 API Clients](#task-101-app-backend-product-lookup---api-clients)
+- ✅ [10.2 Caching Strategy](#task-102-app-backend-product-lookup---caching)
+- ✅ [10.3 Lookup Endpoint](#task-103-app-backend-product-lookup---endpoint)
 - ✅ [10.4 Frontend Product Display - Web](#task-104-frontend-product-display-web)
 - ⏳ [10.5 Frontend Product Display - Mobile](#task-104-frontend-product-display-mobile)
 
 ### Phase 11: Export Functionality (Tasks 58-60)
 
-- ✅ [11.1 CSV & JSON Export](#task-111-backend-export---csv--json)
-- ✅ [11.2 PDF & Excel Export](#task-112-backend-export---pdf--excel)
+- ✅ [11.1 CSV & JSON Export](#task-111-app-backend-export---csv--json)
+- ✅ [11.2 PDF & Excel Export](#task-112-app-backend-export---pdf--excel)
 - ✅ [11.3 Frontend Export UI - Web](#task-113-frontend-export-ui-web)
 - ⏳ [11.4: Frontend Export UI - Mobile](#task-113-frontend-export-ui-mobile)
 
@@ -112,10 +112,10 @@
 
 ### Phase 13: Analytics Dashboard (Tasks 63-67)
 
-- ✅ [13.1 Backend Admin Module](#task-131-backend-admin-module)
-- ✅ [13.2 Analytics Backend](#task-132-analytics-backend---event-tracking)
+- ✅ [13.1 Backend Admin Module](#task-131-app-backend-admin-module)
+- ✅ [13.2 Analytics Backend](#task-132-analytics-app-backend---event-tracking)
 - ✅ [13.3 Analytics Database Schema](#task-133-analytics-database-schema)
-- ✅ [13.4 Admin Dashboard Charts & Metrics](#task-134-admin-dashboard---charts--metrics)
+- ✅ [13.4 Admin Dashboard Charts & Metrics](#task-134-app-admin---charts--metrics)
 - ✅ [13.5 Frontend Analytics Integration - Web](#task-135-frontend-analytics-integration-web)
 - ⏳ [13.6 Frontend Analytics Integration - Mobile](#task-136-frontend-analytics-integration-mobile)
 
@@ -126,10 +126,10 @@
 
 ### Phase 15: Testing & Quality (Tasks 70-74)
 
-- ⏳ [15.1 Backend Testing](#task-151-backend-testing)
+- ⏳ [15.1 Backend Testing](#task-151-app-backend-testing)
 - ⏳ [15.2 Web Testing](#task-152-web-testing)
 - ⏳ [15.3 Mobile Testing](#task-153-mobile-testing)
-- ⏳ [15.4 Admin Dashboard Testing](#task-154-admin-dashboard-testing)
+- ⏳ [15.4 Admin Dashboard Testing](#task-154-app-admin-testing)
 - ⏳ [15.5 Cross-Platform Testing](#task-155-cross-platform-testing)
 
 ### Phase 16: Deployment (Tasks 75-76)
@@ -143,9 +143,9 @@
 
 ### Task 1.1: Backend Project Setup
 
-**Scope**: Initialize NestJS backend with core configuration
+**Scope**: Initialize NestJS app-backend with core configuration
 
-- [ ] Initialize NestJS project: `nest new backend`
+- [ ] Initialize NestJS project: `nest new app-backend`
 - [ ] Configure `tsconfig.json` with strict mode and path aliases (`@/modules`, `@/common`, `@/config`)
 - [ ] Create directory structure:
   - `src/common/` (decorators, filters, guards, interceptors, pipes)
@@ -169,7 +169,7 @@
 
 ### Task 1.2: Backend Docker Setup
 
-**Scope**: Containerize backend with multi-stage build
+**Scope**: Containerize app-backend with multi-stage build
 
 - [ ] Create `Dockerfile` with optimized multi-stage build:
   - Use alpine base images
@@ -177,7 +177,7 @@
   - Copy only production dependencies
   - Remove dev dependencies in final image
 - [ ] Create comprehensive `.dockerignore` file
-- [ ] Create `docker-compose.yml` with PostgreSQL, Redis, backend services
+- [ ] Create `docker-compose.yml` with PostgreSQL, Redis, app-backend services
 - [ ] Add named volumes for PostgreSQL data persistence
 - [ ] Add named volumes for Redis data persistence
 - [ ] Add health check to Dockerfile
@@ -187,7 +187,7 @@
 - [ ] Test: Data persists after container restart
 - [ ] Test: Production image size <200MB
 
-**Acceptance**: All containers start, backend responds to requests
+**Acceptance**: All containers start, app-backend responds to requests
 
 ---
 
@@ -287,7 +287,7 @@
 
 **Scope**: Initialize admin dashboard application
 
-- [ ] Initialize Next.js: `npx create-next-app@latest admin-dashboard --typescript --tailwind --app`
+- [ ] Initialize Next.js: `npx create-next-app@latest app-admin --typescript --tailwind --app`
 - [ ] Configure `tsconfig.json` with path aliases (`@/components`, `@/lib`, `@/app`)
 - [ ] Set up `.env.local.example` with `NEXT_PUBLIC_API_URL`
 - [ ] Install shadcn/ui: `npx shadcn-ui@latest init`
@@ -308,9 +308,9 @@
 
 - [ ] Create `Dockerfile` with multi-stage build
 - [ ] Create `.dockerignore`
-- [ ] Add admin-dashboard service to root `docker-compose.yml` (port 3001)
+- [ ] Add app-admin service to root `docker-compose.yml` (port 3001)
 - [ ] Configure environment variables in docker-compose
-- [ ] Test: `docker-compose up admin-dashboard` works
+- [ ] Test: `docker-compose up app-admin` works
 - [ ] Test: Dashboard accessible at `localhost:3001`
 
 **Acceptance**: Admin dashboard container runs, app accessible
@@ -419,9 +419,9 @@
 
 ### Task 2.1: Backend CI/CD
 
-**Scope**: Automate backend Docker builds
+**Scope**: Automate app-backend Docker builds
 
-- [ ] Create `.github/workflows/backend-build.yml`
+- [ ] Create `.github/workflows/app-backend-build.yml`
 - [ ] Configure Docker Buildx
 - [ ] Add Docker Hub login step
 - [ ] Implement multi-platform build (linux/amd64)
@@ -478,7 +478,7 @@
 
 **Scope**: Automate admin dashboard Docker builds
 
-- [ ] Create `.github/workflows/admin-dashboard-build.yml`
+- [ ] Create `.github/workflows/app-admin-build.yml`
 - [ ] Configure Docker Buildx
 - [ ] Add Docker Hub login step
 - [ ] Implement multi-platform build (linux/amd64)
@@ -500,20 +500,20 @@
 - [ ] Create `.github/workflows/pr-checks.yml`
 - [ ] Configure workflow triggers: `pull_request` to `dev` branch
 - [ ] Add lint job:
-  - Run ESLint for backend, web, mobile, admin-dashboard
+  - Run ESLint for app-backend, web, mobile, app-admin
   - Fail workflow if linting errors found
 - [ ] Add type-check job:
   - Run TypeScript compiler in strict mode
-  - Check backend, web, mobile, admin-dashboard
+  - Check app-backend, web, mobile, app-admin
 - [ ] Add test job:
-  - Run Jest unit tests for backend, web, mobile, admin-dashboard
+  - Run Jest unit tests for app-backend, web, mobile, app-admin
   - Exclude E2E tests (too slow for PR checks)
   - Generate coverage report
 - [ ] Add build job:
-  - Verify backend builds successfully
+  - Verify app-backend builds successfully
   - Verify web builds successfully
   - Verify mobile builds successfully (Expo)
-  - Verify admin-dashboard builds successfully
+  - Verify app-admin builds successfully
 - [ ] Create `.github/CONTRIBUTING.md` with git workflow documentation:
   - Branch strategy: `task-X.Y-description` from `dev`
   - Commit convention: conventional commits (feat, fix, docs, etc.)
@@ -547,9 +547,9 @@
   - min: 10 connections
   - idleTimeoutMillis: 30000
   - connectionTimeoutMillis: 2000
-- [ ] Create `backend/src/config/typeorm.config.ts` with DataSource export
-- [ ] Create migrations directory: `backend/src/migrations/`
-- [ ] Create seeds directory: `backend/src/database/seeds/`
+- [ ] Create `app-backend/src/config/typeorm.config.ts` with DataSource export
+- [ ] Create migrations directory: `app-backend/src/migrations/`
+- [ ] Create seeds directory: `app-backend/src/database/seeds/`
 - [ ] Create `User` entity (id UUID, google_id, email, created_at, last_login)
 - [ ] Create `Session` entity (id UUID, user_id, session_token, expires_at)
 - [ ] Create `Scan` entity (id UUID, user_id, barcode_data, barcode_type, raw_data, scanned_at, device_type, metadata JSONB)
@@ -888,12 +888,12 @@
 
 ### Task 4.13: Admin Dashboard Authentication
 
-**Scope**: Implement Gmail OAuth for admin access (reusing backend auth)
+**Scope**: Implement Gmail OAuth for admin access (reusing app-backend auth)
 
 - [ ] Install `@react-oauth/google`, `zustand`
 - [ ] Create Google OAuth provider wrapper
 - [ ] Create login page with Gmail sign-in button
-- [ ] Implement OAuth callback handler (exchanges code with backend)
+- [ ] Implement OAuth callback handler (exchanges code with app-backend)
 - [ ] Create auth store (user, tokens, isAuthenticated) with Zustand
 - [ ] Create API client service (`lib/api/client.ts`)
 - [ ] Configure base URL from `NEXT_PUBLIC_API_URL` environment variable
@@ -901,12 +901,12 @@
 - [ ] Implement error handling interceptor
 - [ ] Create protected route wrapper component
 - [ ] Add logout functionality
-- [ ] Test: OAuth flow completes with backend
-- [ ] Test: Only admin email can access dashboard (backend validates)
+- [ ] Test: OAuth flow completes with app-backend
+- [ ] Test: Only admin email can access dashboard (app-backend validates)
 - [ ] Test: Unauthorized users redirected to login
-- [ ] Test: Different Gmail accounts are rejected by backend
+- [ ] Test: Different Gmail accounts are rejected by app-backend
 
-**Acceptance**: Admin dashboard secured via backend OAuth, only authorized admin can access
+**Acceptance**: Admin dashboard secured via app-backend OAuth, only authorized admin can access
 
 ---
 
@@ -1017,7 +1017,7 @@
 - [ ] Add scan detail modal
 - [ ] Implement delete scan button
 - [ ] Add search and filter UI
-- [ ] Connect to backend API
+- [ ] Connect to app-backend API
 - [ ] Test: History displays, CRUD works
 
 **Acceptance**: Scan history UI functional
@@ -1066,7 +1066,7 @@
 - [ ] Create stores:
   - `authStore` (user, tokens, isAuthenticated)
   - `scanStore` (scans, filters, pagination)
-  - `settingsStore` (theme, backend URL, preferences)
+  - `settingsStore` (theme, app-backend URL, preferences)
   - `syncStore` (syncStatus, queueCount, lastSync)
 - [ ] Implement persist middleware for AsyncStorage
 - [ ] Create store hooks for each store
@@ -1124,7 +1124,7 @@
 - [ ] Implement pull-to-refresh
 - [ ] Add scan detail screen
 - [ ] Test: All screens render, navigation works
-- [ ] Test: Scan saves to backend when online
+- [ ] Test: Scan saves to app-backend when online
 - [ ] Test: Scan saves to SQLite when offline
 
 **Acceptance**: Scan UI complete, navigation smooth
@@ -1217,9 +1217,9 @@
 **Scope**: Implement sync on reconnection
 
 - [ ] Create sync service
-- [ ] Detect backend availability (health check)
-- [ ] Implement upload offline scans to backend
-- [ ] Implement download new scans from backend
+- [ ] Detect app-backend availability (health check)
+- [ ] Implement upload offline scans to app-backend
+- [ ] Implement download new scans from app-backend
 - [ ] Implement deduplication using composite key:
   - Combine: barcode_data + scanned_at (rounded to second) + user_id
   - Generate hash: SHA-256 of composite key
@@ -1242,9 +1242,9 @@
 
 ### Task 9.1: Backend Tailscale Configuration
 
-**Scope**: Configure backend for Tailscale access
+**Scope**: Configure app-backend for Tailscale access
 
-- [ ] Update backend to bind to `0.0.0.0` in main.ts
+- [ ] Update app-backend to bind to `0.0.0.0` in main.ts
 - [ ] Install CORS support (already in @nestjs/common)
 - [ ] Configure CORS in main.ts:
   - Allow origins: localhost:3000, 100.64.0.0/10 range
@@ -1254,7 +1254,7 @@
 - [ ] Add Tailscale IP to trusted proxies
 - [ ] Auto-detect Tailscale IP by executing `tailscale ip -4` command or read from TAILSCALE_IP env var
 - [ ] Cache detected Tailscale IP in memory
-- [ ] Create `/setup/tailscale-info` endpoint (returns backend URL, Tailscale IP)
+- [ ] Create `/setup/tailscale-info` endpoint (returns app-backend URL, Tailscale IP)
 - [ ] Test: Backend accessible via Tailscale IP
 - [ ] Test: CORS headers present in responses
 - [ ] Test: Tailscale IP auto-detection works
@@ -1269,7 +1269,7 @@
 
 - [ ] Create Tailscale setup page
 - [ ] Install `qrcode.react`
-- [ ] Generate QR code with backend URL
+- [ ] Generate QR code with app-backend URL
 - [ ] Add manual IP entry option
 - [ ] Create connection test utility
 - [ ] Test: QR code generates, test works
@@ -1284,9 +1284,9 @@
 
 - [ ] Create Tailscale onboarding screen
 - [ ] Install `expo-barcode-scanner` for QR scan
-- [ ] Implement QR code scanner for backend URL
+- [ ] Implement QR code scanner for app-backend URL
 - [ ] Add manual IP entry
-- [ ] Store backend URL in AsyncStorage
+- [ ] Store app-backend URL in AsyncStorage
 - [ ] Create connection test screen
 - [ ] Add "Change Backend URL" in settings
 - [ ] Test: QR scan works, connection test passes
@@ -1497,9 +1497,9 @@
 
 ### Task 13.1: Backend Admin Module
 
-**Scope**: Create admin API module for dashboard backend
+**Scope**: Create admin API module for dashboard app-backend
 
-- [ ] Create `backend/src/modules/admin/` directory
+- [ ] Create `app-backend/src/modules/admin/` directory
 - [ ] Create `AdminModule` in `admin.module.ts`
 - [ ] Create `AdminController` with endpoints:
   - `GET /api/v1/admin/analytics/overview` - Total scans, users, metrics
@@ -1580,7 +1580,7 @@
 
 ### Task 13.4: Admin Dashboard - Charts & Metrics
 
-**Scope**: Create analytics dashboard UI (fetches from backend admin API)
+**Scope**: Create analytics dashboard UI (fetches from app-backend admin API)
 
 - [ ] Install `recharts`, `@tanstack/react-query`
 - [ ] Create API hooks:
@@ -1595,9 +1595,9 @@
 - [ ] Create retention cohort table
 - [ ] Add device breakdown chart
 - [ ] Implement date range filter
-- [ ] Test: All charts render with real data from backend
+- [ ] Test: All charts render with real data from app-backend
 
-**Acceptance**: Admin dashboard shows all metrics from backend API
+**Acceptance**: Admin dashboard shows all metrics from app-backend API
 
 ---
 
@@ -1611,8 +1611,8 @@
 - [ ] Track page views (useEffect in layout)
 - [ ] Track scan events (success, failure, barcode type)
 - [ ] Track user actions (export, delete, search)
-- [ ] Send events to backend (`POST /analytics/event`)
-- [ ] Test: Events sent to backend
+- [ ] Send events to app-backend (`POST /analytics/event`)
+- [ ] Test: Events sent to app-backend
 
 **Mobile:**
 
@@ -1621,8 +1621,8 @@
 - [ ] Track scan events
 - [ ] Track session length
 - [ ] Track device info (anonymized: OS, model)
-- [ ] Send events to backend
-- [ ] Test: Events sent to backend
+- [ ] Send events to app-backend
+- [ ] Test: Events sent to app-backend
 
 **Acceptance**: Analytics events tracked from all platforms
 
@@ -1794,17 +1794,17 @@
 - [ ] Write component tests for chart components (Jest + RTL)
 - [ ] Add snapshot tests for dashboard layouts
 - [ ] Write E2E tests (Playwright):
-  - Gmail OAuth login flow with backend
+  - Gmail OAuth login flow with app-backend
   - Analytics dashboard rendering
   - Date range filtering
   - Chart interactions
-- [ ] Test: Only authorized admin email can access (backend validates)
+- [ ] Test: Only authorized admin email can access (app-backend validates)
 - [ ] Test: Unauthorized users redirected to login
 - [ ] Test: All charts render with mock data
 - [ ] Test: API client handles errors correctly
 - [ ] Test: Auth interceptor attaches tokens to requests
 
-**Acceptance**: Admin dashboard tests pass, backend auth integration verified
+**Acceptance**: Admin dashboard tests pass, app-backend auth integration verified
 
 ---
 

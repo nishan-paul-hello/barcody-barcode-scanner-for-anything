@@ -24,7 +24,7 @@ REQUIREMENTS:
    - selectedScans: string[] (for bulk operations)
 4. Settings Store: Create with state:
    - theme: 'dark' | 'light'
-   - backendURL: string
+   - app-backendURL: string
    - cameraPreferences: CameraSettings
    - notificationsEnabled: boolean
 5. Sync Store: Create with state:

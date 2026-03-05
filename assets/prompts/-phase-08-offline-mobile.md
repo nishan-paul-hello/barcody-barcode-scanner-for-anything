@@ -227,16 +227,16 @@ SUCCESS METRIC: Users always know their connection status and app works seamless
 ## Task 8.4: Mobile Offline - Auto-Sync
 
 ```
-TASK: Implement automatic synchronization with backend when connection restored, including deduplication and retry logic.
+TASK: Implement automatic synchronization with app-backend when connection restored, including deduplication and retry logic.
 
-SYSTEM CONTEXT: Critical for offline-first experience. Must sync local changes to backend without creating duplicates, with robust retry mechanism.
+SYSTEM CONTEXT: Critical for offline-first experience. Must sync local changes to app-backend without creating duplicates, with robust retry mechanism.
 
 REQUIREMENTS:
 
 1. Sync Service: Create sync service for bidirectional sync
-2. Backend Health Check: Detect backend availability before sync
-3. Upload Offline Scans: POST unsynced scans to backend
-4. Download New Scans: GET scans from backend since last sync
+2. Backend Health Check: Detect app-backend availability before sync
+3. Upload Offline Scans: POST unsynced scans to app-backend
+4. Download New Scans: GET scans from app-backend since last sync
 5. Deduplication: Implement using composite key:
    - Combine: barcode_data + scanned_at (rounded to second) + user_id
    - Generate SHA-256 hash of composite key
@@ -248,7 +248,7 @@ REQUIREMENTS:
 9. Max Retries: Limit to 10 attempts
 10. Failed Syncs: Mark as failed after max retries
 11. Sync Status: Update sync store with progress
-12. Error Handling: Handle network errors, backend errors
+12. Error Handling: Handle network errors, app-backend errors
 
 CONSTRAINTS:
 - No duplicate scans

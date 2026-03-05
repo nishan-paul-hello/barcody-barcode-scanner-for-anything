@@ -18,7 +18,7 @@ REQUIREMENTS:
 1. Dependencies: Install socket.io-client package
 2. WebSocket Service: Create WebSocket service in lib/websocket/
 3. Connection Setup: Initialize Socket.IO client:
-   - Connect to backend WebSocket server
+   - Connect to app-backend WebSocket server
    - Pass JWT token in auth object: { auth: { token: accessToken } }
    - Fallback to query param if auth object not supported
    - Set reconnection options
@@ -114,9 +114,9 @@ REQUIREMENTS:
 1. Dependencies: Install socket.io-client package
 2. WebSocket Service: Create WebSocket service in services/websocket/
 3. Connection Setup: Initialize Socket.IO client:
-   - Connect to backend WebSocket server
+   - Connect to app-backend WebSocket server
    - Pass JWT token in auth object
-   - Handle dynamic backend URL from AsyncStorage
+   - Handle dynamic app-backend URL from AsyncStorage
    - Set reconnection options
 4. User Room: Join user-specific room after connection
 5. Event Listeners: Subscribe to events:

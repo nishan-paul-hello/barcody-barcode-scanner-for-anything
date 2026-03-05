@@ -3,19 +3,25 @@ services:
     image: tailscale/tailscale:latest
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      - TS_SERVE_CONFIG=/config/app-web.json
     volumes:
-      - ./infra/tailscale/web-local.json:/config/web.json
+      - ./infra/tailscale/app-web-local.json:/config/app-web.json
 
   ts-admin:
     image: tailscale/tailscale:latest
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      - TS_SERVE_CONFIG=/config/app-admin.json
     volumes:
-      - ./infra/tailscale/admin-local.json:/config/admin.json
+      - ./infra/tailscale/app-admin-local.json:/config/app-admin.json
 
   ts-api:
     image: tailscale/tailscale:latest
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      - TS_SERVE_CONFIG=/config/app-backend.json
     volumes:
-      - ./infra/tailscale/api-local.json:/config/api.json
+      - ./infra/tailscale/app-backend-local.json:/config/app-backend.json

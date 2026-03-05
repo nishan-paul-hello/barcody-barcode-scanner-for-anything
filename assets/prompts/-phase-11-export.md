@@ -16,7 +16,7 @@ SYSTEM CONTEXT: Users need to export scan data for external analysis, reporting,
 REQUIREMENTS:
 
 1. Dependencies: Install json2csv package for CSV generation
-2. Export Module: Create ExportModule in backend
+2. Export Module: Create ExportModule in app-backend
 3. CSV Endpoint: Implement GET /export/csv:
    - Accept query parameters: startDate, endDate, barcodeType, deviceType
    - Apply filters to database query

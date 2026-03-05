@@ -35,7 +35,7 @@ CONSTRAINTS:
 - Mobile-responsive
 
 INTEGRATION POINTS:
-- Scan results sent to backend (Task 5.2)
+- Scan results sent to app-backend (Task 5.2)
 - Product lookup triggered (Task 10.3)
 - React Query mutations (Task 4.4)
 
@@ -102,7 +102,7 @@ CONSTRAINTS:
 - Clear user feedback
 
 INTEGRATION POINTS:
-- Scan results sent to backend (Task 5.2)
+- Scan results sent to app-backend (Task 5.2)
 - Product lookup triggered (Task 10.3)
 
 TESTING REQUIREMENTS:

@@ -9,9 +9,9 @@
 ## Task 1.1: Backend Project Setup
 
 ```
-TASK: Initialize production-ready NestJS backend with enterprise configuration, strict TypeScript, comprehensive logging, and environment validation.
+TASK: Initialize production-ready NestJS app-backend with enterprise configuration, strict TypeScript, comprehensive logging, and environment validation.
 
-SYSTEM CONTEXT: Foundation for all backend services. Must establish patterns for configuration management, logging standards, error handling, and API versioning that all future modules will follow.
+SYSTEM CONTEXT: Foundation for all app-backend services. Must establish patterns for configuration management, logging standards, error handling, and API versioning that all future modules will follow.
 
 REQUIREMENTS:
 
@@ -74,7 +74,7 @@ SUCCESS METRIC: Backend starts cleanly, logs structured output, and enforces env
 ## Task 1.2: Backend Docker Setup
 
 ```
-TASK: Create optimized multi-stage Docker build for NestJS backend with PostgreSQL and Redis orchestration.
+TASK: Create optimized multi-stage Docker build for NestJS app-backend with PostgreSQL and Redis orchestration.
 
 SYSTEM CONTEXT: Containerization enables consistent development/production environments and simplifies deployment. Multi-stage builds minimize image size and attack surface.
 
@@ -84,7 +84,7 @@ REQUIREMENTS:
 2. Base Image: Use Alpine Linux for minimal image size
 3. Dependency Optimization: Copy only production dependencies to final image
 4. Health Check: Add Docker health check using /health endpoint
-5. Docker Compose: Orchestrate backend, PostgreSQL, Redis services
+5. Docker Compose: Orchestrate app-backend, PostgreSQL, Redis services
 6. Named Volumes: Configure persistent volumes for PostgreSQL data and Redis data
 7. Environment Variables: Pass all required env vars through docker-compose
 8. Networking: Create custom bridge network for service communication
@@ -266,7 +266,7 @@ CONSTRAINTS:
 - TypeScript strict mode enabled
 
 INTEGRATION POINTS:
-- Will connect to backend API (Task 4.3)
+- Will connect to app-backend API (Task 4.3)
 - Will use auth state management (Task 4.2)
 
 TESTING REQUIREMENTS:
@@ -321,7 +321,7 @@ CONSTRAINTS:
 - Production build must be optimized
 
 INTEGRATION POINTS:
-- Connects to backend service in Docker network
+- Connects to app-backend service in Docker network
 
 TESTING REQUIREMENTS:
 1. docker-compose up web starts successfully
@@ -376,7 +376,7 @@ CONSTRAINTS:
 - App icon must follow platform guidelines
 
 INTEGRATION POINTS:
-- Will connect to backend API (Task 4.9)
+- Will connect to app-backend API (Task 4.9)
 - Will use auth flow (Task 4.6-4.8)
 - Will use camera for scanning (Task 7.2)
 
@@ -435,7 +435,7 @@ CONSTRAINTS:
 - Admin-specific UI components
 
 INTEGRATION POINTS:
-- Connects to backend admin endpoints (Task 13.1)
+- Connects to app-backend admin endpoints (Task 13.1)
 - Uses admin authentication (Task 4.13)
 
 TESTING REQUIREMENTS:
@@ -474,7 +474,7 @@ SYSTEM CONTEXT: Enables deployment of admin dashboard alongside main web app.
 REQUIREMENTS:
 
 1. Dockerfile: Multi-stage build for admin dashboard
-2. Docker Compose: Add admin-dashboard service (port 3001)
+2. Docker Compose: Add app-admin service (port 3001)
 3. Environment Variables: Configure NEXT_PUBLIC_API_URL
 4. Dockerignore: Exclude build artifacts
 
@@ -484,10 +484,10 @@ CONSTRAINTS:
 - Standalone output enabled
 
 INTEGRATION POINTS:
-- Shares Docker network with backend
+- Shares Docker network with app-backend
 
 TESTING REQUIREMENTS:
-1. docker-compose up admin-dashboard works
+1. docker-compose up app-admin works
 2. Dashboard accessible at localhost:3001
 3. Production build optimized
 
@@ -575,7 +575,7 @@ SUCCESS METRIC: Hooks prevent bad code, enforce formatting, and require conventi
 ## Task 1.11: Error Monitoring Setup
 
 ```
-TASK: Configure Sentry error tracking for backend, web, mobile, and admin dashboard.
+TASK: Configure Sentry error tracking for app-backend, web, mobile, and admin dashboard.
 
 SYSTEM CONTEXT: Centralized error monitoring enables proactive bug detection and debugging in production.
 
