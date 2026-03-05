@@ -106,7 +106,9 @@ export const useAuthStore = create<AuthState>()(
 
       refreshAccessToken: async () => {
         const { refreshToken } = get();
-        if (!refreshToken) return null;
+        if (!refreshToken) {
+          return null;
+        }
 
         try {
           // Use a raw axios instance — NOT the apiClient — to avoid triggering

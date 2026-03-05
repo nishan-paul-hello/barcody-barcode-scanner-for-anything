@@ -43,7 +43,9 @@ type UserListResponse = {
 };
 
 function isActive(lastLogin?: string | null): boolean {
-  if (!lastLogin) return false;
+  if (!lastLogin) {
+    return false;
+  }
   return isAfter(new Date(lastLogin), subDays(new Date(), 30));
 }
 
@@ -58,7 +60,9 @@ export default function UsersPage() {
 
   // Client-side search filter (backend doesn't support search on users endpoint)
   const filtered = useMemo(() => {
-    if (!search.trim()) return items;
+    if (!search.trim()) {
+      return items;
+    }
     const q = search.toLowerCase();
     return items.filter(
       (u) => u.email.toLowerCase().includes(q) || u.id.toLowerCase().includes(q)

@@ -37,7 +37,9 @@ export function AuthInitializer() {
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
       // Only react to changes on the key managed by our Zustand persist store.
-      if (event.key !== 'auth-storage') return;
+      if (event.key !== 'auth-storage') {
+        return;
+      }
 
       // If the new value no longer contains `"isAuthenticated":true`, the user
       // logged out in another tab.  Flag sessionStorage so ProtectedRoute can

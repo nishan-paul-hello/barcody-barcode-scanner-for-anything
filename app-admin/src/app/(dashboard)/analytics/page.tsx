@@ -93,7 +93,9 @@ export default function AnalyticsPage() {
     useHourlyActivity(dateRange);
 
   const formattedTrends = useMemo(() => {
-    if (!trendData?.data) return [];
+    if (!trendData?.data) {
+      return [];
+    }
     return trendData.data.map((item: { date: string; count: number }) => ({
       ...item,
       label: format(new Date(item.date), 'MMM d'),
@@ -101,7 +103,9 @@ export default function AnalyticsPage() {
   }, [trendData]);
 
   const formattedHourly = useMemo(() => {
-    if (!hourlyData) return [];
+    if (!hourlyData) {
+      return [];
+    }
     return (hourlyData as { hour: number; count: number }[]).map((item) => ({
       ...item,
       label: HOUR_LABELS[item.hour] ?? `${item.hour}h`,
@@ -118,7 +122,9 @@ export default function AnalyticsPage() {
   );
 
   const peakDay = useMemo(() => {
-    if (!formattedTrends.length) return null;
+    if (!formattedTrends.length) {
+      return null;
+    }
     return formattedTrends.reduce(
       (
         max: { label: string; count: number },
@@ -133,7 +139,9 @@ export default function AnalyticsPage() {
     : '—';
 
   const peakHour = useMemo(() => {
-    if (!formattedHourly.length) return null;
+    if (!formattedHourly.length) {
+      return null;
+    }
     return formattedHourly.reduce(
       (
         max: { label: string; hour: number; count: number },

@@ -13,7 +13,9 @@ function AuthRedirectHandlerContent() {
   const { isAuthenticated, isAdmin, isLoading } = useAuthStore();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
 
     if (searchParams.get('login') === 'true') {
       const redirect = searchParams.get('redirect');

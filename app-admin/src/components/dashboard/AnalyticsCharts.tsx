@@ -38,7 +38,9 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
     useDeviceBreakdown();
 
   const formattedTrendData = useMemo(() => {
-    if (!trendData?.data) return [];
+    if (!trendData?.data) {
+      return [];
+    }
     return trendData.data.map((item: { date: string; count: number }) => ({
       ...item,
       dateFormatted: format(new Date(item.date), 'MMM d'),

@@ -24,6 +24,8 @@ const eslintConfig = [
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
         ecmaVersion: 'latest',
         sourceType: 'module',
         ecmaFeatures: {
@@ -38,7 +40,22 @@ const eslintConfig = [
       '@next/next': nextPlugin,
     },
     rules: {
-      // TypeScript (Cleaned up recommended rules)
+      // General
+      'no-console': [
+        'warn',
+        {
+          allow: ['warn', 'error'],
+        },
+      ],
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'curly': ['error', 'all'],
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      'no-shadow': 'off',
+      'no-use-before-define': 'off',
+
+      // TypeScript
       ...typescriptEslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': [
         'warn',
@@ -56,32 +73,19 @@ const eslintConfig = [
         },
       ],
 
-      // React default rules
+      // React
       ...reactPlugin.configs.recommended.rules,
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off', // Not needed in Next.js
       
-      // React Hooks rules
+      // React Hooks
       ...reactHooksPlugin.configs.recommended.rules,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
 
-      // Next.js rules
+      // Next.js
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
-
-      // TypeScript Compiler handles this
-      'no-undef': 'off',
-
-      // General
-      'no-console': [
-        'warn',
-        {
-          allow: ['warn', 'error'],
-        },
-      ],
-      'prefer-const': 'warn',
-      'no-unused-vars': 'off', // Using TypeScript version
     },
     settings: {
       react: {
