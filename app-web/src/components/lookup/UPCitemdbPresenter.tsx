@@ -236,6 +236,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                 {mainImage && mainReady && (
                   <button
                     key={mainImage}
+                    type="button"
                     onClick={() => setSelectedImage(mainImage)}
                     className={`h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                       (selectedImage ?? mainImage) === mainImage
@@ -258,6 +259,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                   .map((img) => (
                     <button
                       key={img}
+                      type="button"
                       onClick={() => setSelectedImage(img)}
                       className={`h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                         selectedImage === img

@@ -112,7 +112,7 @@ export default function TailscaleSetupPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-600" />
           <h2 className="text-xl font-semibold text-gray-700">
             Loading Tailscale Configuration...
           </h2>
@@ -133,6 +133,7 @@ export default function TailscaleSetupPage() {
           </h3>
           <p className="mb-6 text-gray-500">{error}</p>
           <button
+            type="button"
             onClick={() => {
               void fetchInfo();
             }}
@@ -185,6 +186,7 @@ export default function TailscaleSetupPage() {
                   className="w-full truncate border-none bg-transparent pr-8 text-sm text-indigo-50 focus:ring-0"
                 />
                 <button
+                  type="button"
                   onClick={copyToClipboard}
                   className="absolute right-2 rounded-md p-1.5 text-indigo-200 transition-colors hover:bg-indigo-700"
                   title="Copy URL"
@@ -200,6 +202,7 @@ export default function TailscaleSetupPage() {
 
             <div className="mt-8 w-full">
               <button
+                type="button"
                 onClick={() => {
                   void handleTestConnection();
                 }}

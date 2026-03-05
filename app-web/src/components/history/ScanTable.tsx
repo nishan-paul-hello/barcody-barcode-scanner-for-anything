@@ -70,7 +70,7 @@ export function ScanTable({
               <TableHead>Grade</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Device</TableHead>
-              <TableHead className="w-[80px]"></TableHead>
+              <TableHead className="w-[80px]" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -175,7 +175,7 @@ export function ScanTable({
               Date {renderSortIcon('scannedAt')}
             </TableHead>
             <TableHead>Device</TableHead>
-            <TableHead className="w-[80px]"></TableHead>
+            <TableHead className="w-[80px]" />
           </TableRow>
         </TableHeader>
         <TableBody>

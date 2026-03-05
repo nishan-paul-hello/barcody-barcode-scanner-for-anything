@@ -190,136 +190,92 @@ export default function GlobalLookupPage() {
   };
 
   return (
-    <>
-      <main className="container mx-auto max-w-6xl px-4 pt-0 pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12 text-center"
-        >
-          <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
-            BARCODE <span className="text-cyan-400">LOOKUP</span>
-          </h1>
-          <p className="mx-auto max-w-3xl text-lg text-white/50">
-            Compare barcode data across multiple global databases.
-          </p>
-        </motion.div>
+    <main className="container mx-auto max-w-6xl px-4 pt-0 pb-24">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-12 text-center"
+      >
+        <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-6xl">
+          BARCODE <span className="text-cyan-400">LOOKUP</span>
+        </h1>
+        <p className="mx-auto max-w-3xl text-lg text-white/50">
+          Compare barcode data across multiple global databases.
+        </p>
+      </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
-          <div className="relative w-full max-w-md">
-            <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-white/30" />
-            <Input
-              value={barcode}
-              onChange={(e) => setBarcode(e.target.value)}
-              placeholder="Enter Barcode"
-              className="h-14 border-white/10 bg-white/5 pr-28 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-400 focus-visible:border-cyan-400 focus-visible:ring-0"
-              onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
-            />
-            <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
-              <AnimatePresence mode="popLayout">
-                {barcode && (
-                  <>
-                    <motion.button
-                      key={copied ? 'checkmark' : 'copy'}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      onClick={handleCopy}
-                      className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
-                      title="Copy"
-                    >
-                      {copied ? (
-                        <Check className="h-4 w-4 text-green-400" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </motion.button>
-                    <motion.button
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      onClick={handleClear}
-                      className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-red-400"
-                      title="Clear"
-                    >
-                      <X className="h-4 w-4" />
-                    </motion.button>
-                  </>
-                )}
-                {!barcode && (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
+      >
+        <div className="relative w-full max-w-md">
+          <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-white/30" />
+          <Input
+            value={barcode}
+            onChange={(e) => setBarcode(e.target.value)}
+            placeholder="Enter Barcode"
+            className="h-14 border-white/10 bg-white/5 pr-28 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-400 focus-visible:border-cyan-400 focus-visible:ring-0"
+            onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
+          />
+          <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
+            <AnimatePresence mode="popLayout">
+              {barcode && (
+                <>
+                  <motion.button
+                    key={copied ? 'checkmark' : 'copy'}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={handleCopy}
+                    className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
+                    title="Copy"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-400" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </motion.button>
                   <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    onClick={handlePaste}
-                    className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
-                    title="Paste"
+                    onClick={handleClear}
+                    className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-red-400"
+                    title="Clear"
                   >
-                    <ClipboardPaste className="h-4 w-4" />
+                    <X className="h-4 w-4" />
                   </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
+                </>
+              )}
+              {!barcode && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={handlePaste}
+                  className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
+                  title="Paste"
+                >
+                  <ClipboardPaste className="h-4 w-4" />
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
-          <Button
-            onClick={handleLookup}
-            size="lg"
-            className="h-14 w-full cursor-pointer bg-cyan-500 px-10 font-bold text-black shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 active:scale-95 sm:w-auto"
-          >
-            Lookup
-          </Button>
-        </motion.div>
+        </div>
+        <Button
+          onClick={handleLookup}
+          size="lg"
+          className="h-14 w-full cursor-pointer bg-cyan-500 px-10 font-bold text-black shadow-lg shadow-cyan-500/20 transition-all hover:bg-cyan-400 active:scale-95 sm:w-auto"
+        >
+          Lookup
+        </Button>
+      </motion.div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="mb-12">
-            <TabsList className="grid h-auto w-full grid-cols-2 gap-4 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-6">
-              {APIS.map((apiItem) => {
-                const res = results[apiItem.id] || {
-                  loading: false,
-                  data: null,
-                  error: null,
-                  responseTime: null,
-                };
-                return (
-                  <TabsTrigger
-                    key={apiItem.id}
-                    value={apiItem.id}
-                    style={
-                      activeTab === apiItem.id
-                        ? { borderColor: COLOR_HEX[apiItem.color] }
-                        : {}
-                    }
-                    className="group relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white"
-                  >
-                    <apiItem.icon
-                      className={`h-6 w-6 transition-transform group-hover:scale-110 ${apiItem.color}`}
-                    />
-                    <span className="text-center text-xs font-black tracking-tight">
-                      {apiItem.name}
-                    </span>
-
-                    <div className="absolute top-3 right-3 flex gap-1.5">
-                      {res.loading && (
-                        <Loader2 className="h-4 w-4 animate-spin text-cyan-500/50" />
-                      )}
-                      {res.data && !res.error && (
-                        <CheckCircle2 className="h-4 w-4 text-green-500/50" />
-                      )}
-                      {res.error && (
-                        <XCircle className="h-4 w-4 text-red-500/50" />
-                      )}
-                    </div>
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
-          </div>
-
-          <AnimatePresence mode="wait">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="mb-12">
+          <TabsList className="grid h-auto w-full grid-cols-2 gap-4 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-6">
             {APIS.map((apiItem) => {
               const res = results[apiItem.id] || {
                 loading: false,
@@ -328,127 +284,167 @@ export default function GlobalLookupPage() {
                 responseTime: null,
               };
               return (
-                <TabsContent
+                <TabsTrigger
                   key={apiItem.id}
                   value={apiItem.id}
-                  className="focus-visible:outline-none"
+                  style={
+                    activeTab === apiItem.id
+                      ? { borderColor: COLOR_HEX[apiItem.color] }
+                      : {}
+                  }
+                  className="group relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white"
                 >
-                  <motion.div
-                    key={apiItem.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="rounded-3xl border border-white/5 bg-white/5 p-8 backdrop-blur-xl"
-                  >
-                    <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                      <div>
-                        <h2 className="flex items-center gap-3 text-2xl font-bold text-white">
-                          <apiItem.icon
-                            className={`h-6 w-6 ${apiItem.color}`}
-                          />
-                          {apiItem.name}
-                        </h2>
-                      </div>
+                  <apiItem.icon
+                    className={`h-6 w-6 transition-transform group-hover:scale-110 ${apiItem.color}`}
+                  />
+                  <span className="text-center text-xs font-black tracking-tight">
+                    {apiItem.name}
+                  </span>
 
-                      <div className="flex flex-wrap gap-3">
-                        {res.responseTime && (
-                          <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 ring-1 ring-white/10">
-                            <Clock className="h-3.5 w-3.5" />
-                            {res.responseTime}ms
-                          </div>
-                        )}
-                        {res.data && (
-                          <Badge className="border-green-500/20 bg-green-500/10 px-3 py-1 font-bold text-green-400">
-                            Success
-                          </Badge>
-                        )}
-                        {res.error && (
-                          <Badge className="border-red-500/20 bg-red-500/10 px-3 py-1 font-bold text-red-400">
-                            Error
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      {res.loading ? (
-                        <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/20">
-                          <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
-                          <p className="animate-pulse">
-                            Synthesizing response from {apiItem.name}...
-                          </p>
-                        </div>
-                      ) : res.error ? (
-                        <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-red-500/10 bg-red-500/5 p-8 text-red-400/70">
-                          <XCircle className="h-10 w-10" />
-                          <p className="text-center font-bold">{res.error}</p>
-                          {res.error.toLowerCase().includes('key') ||
-                          res.error.toLowerCase().includes('configure') ? (
-                            <div className="flex flex-col items-center gap-4">
-                              <p className="max-w-md text-center text-xs text-white/40">
-                                You need to add your personal API key for this
-                                service in the settings.
-                              </p>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
-                                onClick={() => setApiKeysModalOpen(true)}
-                              >
-                                <Settings2 className="mr-2 h-3.5 w-3.5" />
-                                Open API Settings
-                              </Button>
-                            </div>
-                          ) : (
-                            <p className="max-w-md text-center text-xs text-white/20">
-                              This might be due to a service outage or an
-                              invalid Barcode. Backend proxy is now used to
-                              avoid CORS issues.
-                            </p>
-                          )}
-                        </div>
-                      ) : res.data ? (
-                        <div className="leading-relaxed selection:bg-cyan-500/30">
-                          {apiItem.id === 'upcitemdb' ? (
-                            <UPCitemdbPresenter
-                              key={
-                                res.data?.items?.[0]?.upc ||
-                                res.data?.items?.[0]?.ean ||
-                                'upcitemdb'
-                              }
-                              data={res.data}
-                            />
-                          ) : apiItem.id === 'goUpc' ? (
-                            <GoUpcPresenter
-                              key={res.data?.code ?? 'goupc'}
-                              data={res.data}
-                            />
-                          ) : apiItem.id === 'off' || apiItem.id === 'obf' ? (
-                            <OpenFoodFactsPresenter
-                              key={res.data?.code ?? 'off'}
-                              data={res.data}
-                            />
-                          ) : (
-                            <RawDataPresenter data={res.data} />
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-white/10">
-                          <Database className="h-10 w-10 opacity-20" />
-                          <p>
-                            Enter a barcode above to trigger the lookup sequence
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                </TabsContent>
+                  <div className="absolute top-3 right-3 flex gap-1.5">
+                    {res.loading && (
+                      <Loader2 className="h-4 w-4 animate-spin text-cyan-500/50" />
+                    )}
+                    {res.data && !res.error && (
+                      <CheckCircle2 className="h-4 w-4 text-green-500/50" />
+                    )}
+                    {res.error && (
+                      <XCircle className="h-4 w-4 text-red-500/50" />
+                    )}
+                  </div>
+                </TabsTrigger>
               );
             })}
-          </AnimatePresence>
-        </Tabs>
-      </main>
-    </>
+          </TabsList>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {APIS.map((apiItem) => {
+            const res = results[apiItem.id] || {
+              loading: false,
+              data: null,
+              error: null,
+              responseTime: null,
+            };
+            return (
+              <TabsContent
+                key={apiItem.id}
+                value={apiItem.id}
+                className="focus-visible:outline-none"
+              >
+                <motion.div
+                  key={apiItem.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="rounded-3xl border border-white/5 bg-white/5 p-8 backdrop-blur-xl"
+                >
+                  <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                    <div>
+                      <h2 className="flex items-center gap-3 text-2xl font-bold text-white">
+                        <apiItem.icon className={`h-6 w-6 ${apiItem.color}`} />
+                        {apiItem.name}
+                      </h2>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3">
+                      {res.responseTime && (
+                        <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 ring-1 ring-white/10">
+                          <Clock className="h-3.5 w-3.5" />
+                          {res.responseTime}ms
+                        </div>
+                      )}
+                      {res.data && (
+                        <Badge className="border-green-500/20 bg-green-500/10 px-3 py-1 font-bold text-green-400">
+                          Success
+                        </Badge>
+                      )}
+                      {res.error && (
+                        <Badge className="border-red-500/20 bg-red-500/10 px-3 py-1 font-bold text-red-400">
+                          Error
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    {res.loading ? (
+                      <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/20">
+                        <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                        <p className="animate-pulse">
+                          Synthesizing response from {apiItem.name}...
+                        </p>
+                      </div>
+                    ) : res.error ? (
+                      <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-red-500/10 bg-red-500/5 p-8 text-red-400/70">
+                        <XCircle className="h-10 w-10" />
+                        <p className="text-center font-bold">{res.error}</p>
+                        {res.error.toLowerCase().includes('key') ||
+                        res.error.toLowerCase().includes('configure') ? (
+                          <div className="flex flex-col items-center gap-4">
+                            <p className="max-w-md text-center text-xs text-white/40">
+                              You need to add your personal API key for this
+                              service in the settings.
+                            </p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
+                              onClick={() => setApiKeysModalOpen(true)}
+                            >
+                              <Settings2 className="mr-2 h-3.5 w-3.5" />
+                              Open API Settings
+                            </Button>
+                          </div>
+                        ) : (
+                          <p className="max-w-md text-center text-xs text-white/20">
+                            This might be due to a service outage or an invalid
+                            Barcode. Backend proxy is now used to avoid CORS
+                            issues.
+                          </p>
+                        )}
+                      </div>
+                    ) : res.data ? (
+                      <div className="leading-relaxed selection:bg-cyan-500/30">
+                        {apiItem.id === 'upcitemdb' ? (
+                          <UPCitemdbPresenter
+                            key={
+                              res.data?.items?.[0]?.upc ||
+                              res.data?.items?.[0]?.ean ||
+                              'upcitemdb'
+                            }
+                            data={res.data}
+                          />
+                        ) : apiItem.id === 'goUpc' ? (
+                          <GoUpcPresenter
+                            key={res.data?.code ?? 'goupc'}
+                            data={res.data}
+                          />
+                        ) : apiItem.id === 'off' || apiItem.id === 'obf' ? (
+                          <OpenFoodFactsPresenter
+                            key={res.data?.code ?? 'off'}
+                            data={res.data}
+                          />
+                        ) : (
+                          <RawDataPresenter data={res.data} />
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-white/10">
+                        <Database className="h-10 w-10 opacity-20" />
+                        <p>
+                          Enter a barcode above to trigger the lookup sequence
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </TabsContent>
+            );
+          })}
+        </AnimatePresence>
+      </Tabs>
+    </main>
   );
 }

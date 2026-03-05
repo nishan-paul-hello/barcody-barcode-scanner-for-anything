@@ -572,6 +572,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             }`}
           >
             <button
+              type="button"
               onClick={() => handleToggleCamera()}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
@@ -582,6 +583,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
               )}
             </button>
             <button
+              type="button"
               onClick={handleToggleSound}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
@@ -594,6 +596,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
             {devices.length > 1 && (
               <button
+                type="button"
                 onClick={switchCamera}
                 className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
               >

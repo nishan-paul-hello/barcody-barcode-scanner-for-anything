@@ -184,6 +184,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1 transition-all">
                         <button
+                          type="button"
                           onClick={handleCopyImage}
                           title="Copy Image"
                           className="cursor-pointer rounded-md p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white"
@@ -195,6 +196,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                           )}
                         </button>
                         <button
+                          type="button"
                           onClick={handleDownload}
                           title="Download Image"
                           className="cursor-pointer rounded-md p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white"
@@ -228,6 +230,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                         </span>
                       </div>
                       <button
+                        type="button"
                         onClick={handleCopy}
                         className="cursor-pointer rounded-md p-1 opacity-60 transition-all hover:bg-cyan-500/10 hover:text-cyan-400 hover:opacity-100"
                       >

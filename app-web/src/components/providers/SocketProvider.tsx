@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { socketService } from '@/lib/websocket/socket-service';
 
@@ -26,5 +27,5 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [isAuthenticated, accessToken]);
 
-  return <>{children}</>;
+  return children;
 };

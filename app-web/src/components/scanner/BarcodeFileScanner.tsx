@@ -322,6 +322,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setError(null)}
                   className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-bold text-white/50 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white/80"
                 >
@@ -448,18 +449,21 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             >
               <div className="mb-4 flex items-center gap-1 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
                 <button
+                  type="button"
                   onClick={() => setIsPreviewOpen(false)}
                   className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
                   <X className="h-5 w-5" />
                 </button>
                 <button
+                  type="button"
                   onClick={downloadImage}
                   className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
                   <Download className="h-4 w-4" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => window.open(previewUrl, '_blank')}
                   className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >

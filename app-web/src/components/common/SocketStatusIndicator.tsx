@@ -59,11 +59,11 @@ export const SocketStatusIndicator: React.FC = () => {
               config.animation,
               config.bg
             )}
-          ></span>
+          />
         )}
         <span
           className={cn('relative inline-flex h-2 w-2 rounded-full', config.bg)}
-        ></span>
+        />
       </div>
       <span
         className={cn(

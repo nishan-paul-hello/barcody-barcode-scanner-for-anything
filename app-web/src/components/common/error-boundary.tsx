@@ -35,9 +35,12 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   public override render() {
-    if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
+    const { hasError, error } = this.state;
+    const { fallback, children } = this.props;
+
+    if (hasError) {
+      if (fallback) {
+        return fallback;
       }
 
       return (
@@ -67,15 +70,15 @@ export class ErrorBoundary extends Component<Props, State> {
           {process.env.NODE_ENV === 'development' && (
             <div className="bg-muted mt-8 w-full max-w-2xl overflow-auto rounded-md border p-4 text-left font-mono text-xs">
               <p className="text-destructive mb-2 font-bold">
-                {this.state.error?.name}: {this.state.error?.message}
+                {error?.name}: {error?.message}
               </p>
-              <pre>{this.state.error?.stack}</pre>
+              <pre>{error?.stack}</pre>
             </div>
           )}
         </div>
       );
     }
 
-    return this.props.children;
+    return children;
   }
 }

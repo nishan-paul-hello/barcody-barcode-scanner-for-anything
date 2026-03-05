@@ -59,6 +59,7 @@ export function ScanFilters({
         <span className="text-muted-foreground font-normal">{label}:</span>
         <span>{String(value)}</span>
         <button
+          type="button"
           onClick={() => onFilterChange(key, undefined)}
           className="hover:bg-muted ml-1 rounded-full p-0.5"
         >
@@ -89,6 +90,7 @@ export function ScanFilters({
                 {recentSearches.map((term) => (
                   <button
                     key={term}
+                    type="button"
                     className="hover:bg-accent flex w-full items-center rounded-sm px-2 py-1.5 text-sm"
                     onClick={() => onFilterChange('search', term)}
                   >
@@ -315,6 +317,7 @@ export function ScanFilters({
               <span className="text-muted-foreground font-normal">From:</span>
               <span>{filters.startDate.split('T')[0]}</span>
               <button
+                type="button"
                 onClick={() => onFilterChange('startDate', undefined)}
                 className="hover:bg-muted ml-1 rounded-full p-0.5"
               >
@@ -330,6 +333,7 @@ export function ScanFilters({
               <span className="text-muted-foreground font-normal">To:</span>
               <span>{filters.endDate.split('T')[0]}</span>
               <button
+                type="button"
                 onClick={() => onFilterChange('endDate', undefined)}
                 className="hover:bg-muted ml-1 rounded-full p-0.5"
               >

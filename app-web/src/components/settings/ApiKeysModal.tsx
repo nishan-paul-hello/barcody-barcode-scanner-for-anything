@@ -179,6 +179,7 @@ const ApiKeyInput = ({
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
               >
                 <button
+                  type="button"
                   onClick={() => onCopy(value, fieldId)}
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-white"
                   title="Copy entry"
@@ -190,6 +191,7 @@ const ApiKeyInput = ({
                   )}
                 </button>
                 <button
+                  type="button"
                   onClick={() => onClear(setter)}
                   className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-red-400"
                   title="Clear field"
@@ -301,6 +303,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               </div>
             </div>
             <button
+              type="button"
               onClick={() => onOpenChange(false)}
               className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
             >
@@ -372,6 +375,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-white/5 bg-white/[0.02] px-8 py-4 sm:px-10">
             <button
+              type="button"
               onClick={() => onOpenChange(false)}
               className="cursor-pointer text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
             >
@@ -379,6 +383,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             </button>
 
             <button
+              type="button"
               onClick={handleSave}
               disabled={!hasChanges || updateMutation.isPending}
               className={cn(
