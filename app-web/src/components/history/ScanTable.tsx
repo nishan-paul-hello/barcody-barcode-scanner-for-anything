@@ -51,7 +51,9 @@ export function ScanTable({
     selectedIds.length > 0 && selectedIds.length < scans.length;
 
   const renderSortIcon = (column: string) => {
-    if (sortBy !== column) return null;
+    if (sortBy !== column) {
+      return null;
+    }
     return sortOrder === 'ASC' ? ' ↑' : ' ↓';
   };
 

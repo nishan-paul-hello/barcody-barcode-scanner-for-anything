@@ -29,7 +29,9 @@ export function BarcodeInputDialog({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = value.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      return;
+    }
     onLookup(trimmed);
     setValue('');
     onOpenChange(false);

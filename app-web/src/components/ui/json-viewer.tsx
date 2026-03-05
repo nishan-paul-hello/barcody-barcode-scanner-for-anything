@@ -23,9 +23,13 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({
 
   if (!isObject(data)) {
     let valueColor = 'text-green-400';
-    if (typeof data === 'number') valueColor = 'text-orange-400';
-    else if (typeof data === 'boolean') valueColor = 'text-pink-400';
-    else if (data === null) valueColor = 'text-white/40';
+    if (typeof data === 'number') {
+      valueColor = 'text-orange-400';
+    } else if (typeof data === 'boolean') {
+      valueColor = 'text-pink-400';
+    } else if (data === null) {
+      valueColor = 'text-white/40';
+    }
 
     return (
       <div className="flex font-mono text-sm leading-6">

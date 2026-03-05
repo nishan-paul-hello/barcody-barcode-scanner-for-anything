@@ -135,7 +135,9 @@ class AnalyticsService {
    * Process the event queue
    */
   private async processQueue() {
-    if (this.isProcessing || this.queue.length === 0) return;
+    if (this.isProcessing || this.queue.length === 0) {
+      return;
+    }
 
     this.isProcessing = true;
 
@@ -185,7 +187,9 @@ class AnalyticsService {
   private sanitizeMetadata(
     metadata?: Record<string, unknown>
   ): Record<string, unknown> | undefined {
-    if (!metadata) return undefined;
+    if (!metadata) {
+      return undefined;
+    }
 
     const sanitized = { ...metadata };
     // Remove potential PII fields if they slip in

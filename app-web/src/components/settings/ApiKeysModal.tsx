@@ -65,7 +65,9 @@ const ApiKeyInput = ({
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      if (text) setter(text.trim());
+      if (text) {
+        setter(text.trim());
+      }
     } catch {
       // Clipboard access denied — silently ignore
     }
@@ -241,7 +243,9 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
   }, [open, data, isLoading]);
 
   const handleCopy = (text: string, fieldId: string) => {
-    if (!text) return;
+    if (!text) {
+      return;
+    }
     void navigator.clipboard.writeText(text);
     setCopiedField(fieldId);
     setTimeout(() => setCopiedField(null), 2000);
@@ -260,7 +264,9 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     searchUpcKey !== (data?.searchUpcApiKey || '');
 
   const handleSave = () => {
-    if (!hasChanges) return;
+    if (!hasChanges) {
+      return;
+    }
     updateMutation.mutate(
       {
         upcDatabaseApiKey: upcKey || undefined,

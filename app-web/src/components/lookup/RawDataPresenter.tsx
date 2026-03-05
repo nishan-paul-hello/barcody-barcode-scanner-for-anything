@@ -14,7 +14,9 @@ interface RawDataPresenterProps {
 // Helper to determine if a value is a string URL to an image
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isImageUrl = (val: any) => {
-  if (typeof val !== 'string') return false;
+  if (typeof val !== 'string') {
+    return false;
+  }
   return (
     val.startsWith('http') &&
     (val.includes('.jpg') ||
@@ -26,7 +28,9 @@ const isImageUrl = (val: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extractCommon = (data: any) => {
-  if (!data || typeof data !== 'object') return { images: [] };
+  if (!data || typeof data !== 'object') {
+    return { images: [] };
+  }
 
   // Try to find common fields across varying API response formats
   // OpenFoodFacts, UPC Database, GoUPC, etc.
@@ -64,11 +68,15 @@ const extractCommon = (data: any) => {
 
   // Extract images
   let images: string[] = [];
-  if (data.image_url) images.push(data.image_url);
+  if (data.image_url) {
+    images.push(data.image_url);
+  }
   if (data.images && Array.isArray(data.images)) {
     images = [...images, ...data.images.filter(isImageUrl)];
   }
-  if (data.product?.imageUrl) images.push(data.product.imageUrl);
+  if (data.product?.imageUrl) {
+    images.push(data.product.imageUrl);
+  }
   if (data.items?.[0]?.images && Array.isArray(data.items[0].images)) {
     images = [...images, ...data.items[0].images.filter(isImageUrl)];
   }
@@ -81,9 +89,10 @@ const extractCommon = (data: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderValue = (val: any): React.ReactNode => {
-  if (val === null || val === undefined)
+  if (val === null || val === undefined) {
     return <span className="text-white/20">N/A</span>;
-  if (typeof val === 'boolean')
+  }
+  if (typeof val === 'boolean') {
     return (
       <Badge
         className={cn(
@@ -96,6 +105,7 @@ const renderValue = (val: any): React.ReactNode => {
         {val ? 'TRUE' : 'FALSE'}
       </Badge>
     );
+  }
   if (typeof val === 'string' || typeof val === 'number') {
     if (isImageUrl(val)) {
       // Small image preview inline
@@ -113,7 +123,9 @@ const renderValue = (val: any): React.ReactNode => {
     return <span className="text-white/80">{String(val)}</span>;
   }
   if (Array.isArray(val)) {
-    if (val.length === 0) return <span className="text-white/20">[]</span>;
+    if (val.length === 0) {
+      return <span className="text-white/20">[]</span>;
+    }
     if (typeof val[0] !== 'object') {
       return (
         <div className="flex flex-wrap gap-1.5">
@@ -158,14 +170,18 @@ const DataCard = ({
   data: any;
   depth?: number;
 }) => {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return null;
+  }
 
   const keys = Object.keys(data).filter(
     (k) =>
       typeof data[k] !== 'function' && data[k] !== null && data[k] !== undefined
   );
 
-  if (keys.length === 0) return null;
+  if (keys.length === 0) {
+    return null;
+  }
 
   const primitives = keys.filter(
     (k) => typeof data[k] !== 'object' || Array.isArray(data[k])
@@ -225,7 +241,9 @@ const DataCard = ({
 };
 
 export function RawDataPresenter({ data }: RawDataPresenterProps) {
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
 
   const { title, brand, description, category, barcode, images } =
     extractCommon(data);

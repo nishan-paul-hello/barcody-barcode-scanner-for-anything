@@ -52,7 +52,9 @@ export default function TailscaleSetupPage() {
   }, [fetchInfo]);
 
   const handleTestConnection = async () => {
-    if (!info?.backendUrl) return;
+    if (!info?.backendUrl) {
+      return;
+    }
 
     setTesting(true);
     setTestResult(null);

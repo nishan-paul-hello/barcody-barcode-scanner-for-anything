@@ -58,7 +58,9 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   };
 
   const handleCopyImage = async () => {
-    if (!previewUrl) return;
+    if (!previewUrl) {
+      return;
+    }
     try {
       const response = await fetch(previewUrl);
       const blob = await response.blob();
@@ -72,7 +74,9 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
   };
 
   const handleDownload = () => {
-    if (!previewUrl) return;
+    if (!previewUrl) {
+      return;
+    }
 
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');

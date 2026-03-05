@@ -20,7 +20,9 @@ export function ScanDetailsDialog({
   isOpen,
   onClose,
 }: ScanDetailsDialogProps) {
-  if (!scan) return null;
+  if (!scan) {
+    return null;
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

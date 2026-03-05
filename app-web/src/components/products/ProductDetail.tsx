@@ -132,24 +132,34 @@ type GroupSemantic = 'safety' | 'identity' | 'default';
 
 /** Classify how to render a single value based purely on its content */
 function detectValueShape(value: string | number): ValueShape {
-  if (typeof value === 'number') return 'stat';
+  if (typeof value === 'number') {
+    return 'stat';
+  }
   const str = String(value).trim();
 
   // Is it a parseable number?
-  if (/^\d+(\.\d+)?$/.test(str)) return 'stat';
+  if (/^\d+(\.\d+)?$/.test(str)) {
+    return 'stat';
+  }
 
   // Grade scale A–E
-  if (/^[A-E]$/.test(str)) return 'grade';
+  if (/^[A-E]$/.test(str)) {
+    return 'grade';
+  }
 
   // Comma-separated list with 4+ parts (ingredients, tags, categories…)
   const parts = str
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
-  if (parts.length >= 4 && str.length > 50) return 'chips';
+  if (parts.length >= 4 && str.length > 50) {
+    return 'chips';
+  }
 
   // Long freeform text (>90 chars)
-  if (str.length > 90) return 'prose';
+  if (str.length > 90) {
+    return 'prose';
+  }
 
   return 'label';
 }
@@ -161,8 +171,9 @@ function detectGroupSemantic(group: string): GroupSemantic {
     ['safety', 'warning', 'hazard', 'allergen', 'danger'].some((k) =>
       g.includes(k)
     )
-  )
+  ) {
     return 'safety';
+  }
   if (
     [
       'manufacturer',
@@ -172,8 +183,9 @@ function detectGroupSemantic(group: string): GroupSemantic {
       'classification',
       'origin',
     ].some((k) => g.includes(k))
-  )
+  ) {
     return 'identity';
+  }
   return 'default';
 }
 
@@ -187,7 +199,9 @@ function isFood(
   source: string,
   attributes: ProductAttribute[] | undefined
 ): boolean {
-  if (source === 'openfoodfacts') return true;
+  if (source === 'openfoodfacts') {
+    return true;
+  }
   const groups = new Set((attributes ?? []).map((a) => a.group));
   return groups.has('Nutrition');
 }
@@ -311,8 +325,9 @@ function FoodLayout({
   }
   nutriAttrs.forEach((a) => {
     const key = a.label.toLowerCase();
-    if (macroValues[key] === undefined)
+    if (macroValues[key] === undefined) {
       macroValues[key] = parseFloat(String(a.value));
+    }
   });
 
   return (
@@ -416,7 +431,9 @@ function FoodLayout({
           <div className="space-y-4">
             {MACROS.map((macro) => {
               const val = macroValues[macro.key];
-              if (val === undefined) return null;
+              if (val === undefined) {
+                return null;
+              }
               return (
                 <MacroBar
                   key={macro.key}
@@ -644,16 +661,20 @@ function RenderLabel({
 /** Route each attribute to the right renderer */
 function AttributeValue({ attr }: { attr: ProductAttribute }) {
   const shape = detectValueShape(attr.value);
-  if (shape === 'stat')
+  if (shape === 'stat') {
     return (
       <RenderStat value={attr.value} unit={attr.unit} label={attr.label} />
     );
-  if (shape === 'grade')
+  }
+  if (shape === 'grade') {
     return <RenderGrade value={attr.value} label={attr.label} />;
-  if (shape === 'chips')
+  }
+  if (shape === 'chips') {
     return <RenderChips value={attr.value} label={attr.label} />;
-  if (shape === 'prose')
+  }
+  if (shape === 'prose') {
     return <RenderProse value={attr.value} label={attr.label} />;
+  }
   return <RenderLabel value={attr.value} unit={attr.unit} label={attr.label} />;
 }
 
@@ -1030,11 +1051,15 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
   );
 
   const groupedAttrs = useMemo(() => {
-    if (!attributes || attributes.length === 0) return {};
+    if (!attributes || attributes.length === 0) {
+      return {};
+    }
     return attributes.reduce(
       (acc, attr) => {
         const group = attr.group || 'General';
-        if (!acc[group]) acc[group] = [];
+        if (!acc[group]) {
+          acc[group] = [];
+        }
         acc[group].push(attr);
         return acc;
       },

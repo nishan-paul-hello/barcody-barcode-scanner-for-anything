@@ -67,7 +67,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   const { setApiKeysModalOpen } = useUIStore();
 
   const hasApiConfigured = React.useMemo(() => {
-    if (!apiKeys) return true; // Assume true while loading to avoid flickering
+    if (!apiKeys) {
+      return true;
+    } // Assume true while loading to avoid flickering
     return !!apiKeys.upcDatabaseApiKey;
   }, [apiKeys]);
 
@@ -201,9 +203,13 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
 
   const onPaste = useCallback(
     (e: ClipboardEvent) => {
-      if (!e.clipboardData) return;
+      if (!e.clipboardData) {
+        return;
+      }
       const items = e.clipboardData.items;
-      if (!items) return;
+      if (!items) {
+        return;
+      }
 
       for (const item of items) {
         if (item && item.type.indexOf('image') !== -1) {
@@ -224,7 +230,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   }, [onPaste]);
 
   const downloadImage = () => {
-    if (!previewUrl) return;
+    if (!previewUrl) {
+      return;
+    }
     const link = document.createElement('a');
     link.href = previewUrl;
     link.download = `barcode-asset-${Date.now()}.png`;
@@ -236,7 +244,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
   const clearFile = () => {
     setPreviewUrl(null);
     setError(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     onClear?.();
   };
 
@@ -346,7 +356,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   accept={ALLOWED_TYPES.join(',')}
                   onChange={(e) => {
                     const selectedFile = e.target.files?.[0];
-                    if (selectedFile) void handleFile(selectedFile);
+                    if (selectedFile) {
+                      void handleFile(selectedFile);
+                    }
                   }}
                 />
                 <label

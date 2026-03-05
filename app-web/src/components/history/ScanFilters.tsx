@@ -48,7 +48,9 @@ export function ScanFilters({
 
   const renderFilterChip = (key: keyof PaginationParams, label: string) => {
     const value = filters[key];
-    if (!value) return null;
+    if (!value) {
+      return null;
+    }
 
     return (
       <Badge

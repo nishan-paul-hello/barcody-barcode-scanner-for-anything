@@ -49,7 +49,9 @@ class SocketService {
   }
 
   private setupListeners() {
-    if (!this.socket) return;
+    if (!this.socket) {
+      return;
+    }
 
     const { setStatus, setLastError } = useSocketStore.getState();
 
@@ -112,7 +114,9 @@ class SocketService {
     queryClient.setQueryData(
       ['scans'],
       (oldData: PaginatedResponse<ScanResponseDto> | undefined) => {
-        if (!oldData?.items) return oldData;
+        if (!oldData?.items) {
+          return oldData;
+        }
         return {
           ...oldData,
           items: [scan, ...oldData.items].slice(0, oldData.meta.limit || 50),
@@ -132,7 +136,9 @@ class SocketService {
     queryClient.setQueryData(
       ['scans'],
       (oldData: PaginatedResponse<ScanResponseDto> | undefined) => {
-        if (!oldData?.items) return oldData;
+        if (!oldData?.items) {
+          return oldData;
+        }
         return {
           ...oldData,
           items: oldData.items.filter(
@@ -160,7 +166,9 @@ class SocketService {
   }
 
   private flushQueue() {
-    if (!this.socket?.connected) return;
+    if (!this.socket?.connected) {
+      return;
+    }
 
     console.warn(`Flushing ${this.messageQueue.length} queued messages`);
     while (this.messageQueue.length > 0) {

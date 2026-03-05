@@ -155,7 +155,9 @@ export default function GlobalLookupPage() {
 
   const handleLookup = () => {
     const cleanBarcode = barcode.trim();
-    if (!cleanBarcode) return;
+    if (!cleanBarcode) {
+      return;
+    }
     APIS.forEach((apiItem) => {
       void fetchApi(apiItem.id, cleanBarcode);
     });
@@ -174,7 +176,9 @@ export default function GlobalLookupPage() {
   };
 
   const handleCopy = async () => {
-    if (!barcode) return;
+    if (!barcode) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(barcode);
       toast.success('Copied to clipboard');

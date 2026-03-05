@@ -146,7 +146,9 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
 
   // Helper to skip sections with placeholder text
   const isDataEmpty = (text?: string) => {
-    if (!text || text.trim() === '') return true;
+    if (!text || text.trim() === '') {
+      return true;
+    }
     const lower = text.toLowerCase().trim();
     return (
       lower.includes('no description found') ||

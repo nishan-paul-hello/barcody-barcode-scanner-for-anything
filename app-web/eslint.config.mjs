@@ -49,6 +49,7 @@ const eslintConfig = [
       ],
       'prefer-const': 'error',
       'no-var': 'error',
+      'curly': ['error', 'all'],
       'no-undef': 'off',
       'no-unused-vars': 'off',
       'no-shadow': 'off',

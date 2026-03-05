@@ -35,9 +35,15 @@ export function CompareTable({ products, comparison }: CompareTableProps) {
 
   const getNutrientStatus = (barcode: string, nutrient: string) => {
     const detail = comparison.nutrients[nutrient];
-    if (!detail) return null;
-    if (detail.best.includes(barcode)) return 'best';
-    if (detail.worst.includes(barcode)) return 'worst';
+    if (!detail) {
+      return null;
+    }
+    if (detail.best.includes(barcode)) {
+      return 'best';
+    }
+    if (detail.worst.includes(barcode)) {
+      return 'worst';
+    }
     return null;
   };
 

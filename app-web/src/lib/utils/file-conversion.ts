@@ -50,7 +50,9 @@ export const convertToProcessableImage = async (
     const blob = Array.isArray(convertedBlob)
       ? convertedBlob[0]
       : convertedBlob;
-    if (!blob) throw new Error('HEIC conversion produced no output');
+    if (!blob) {
+      throw new Error('HEIC conversion produced no output');
+    }
     return fileToDataUrl(blob);
   }
 

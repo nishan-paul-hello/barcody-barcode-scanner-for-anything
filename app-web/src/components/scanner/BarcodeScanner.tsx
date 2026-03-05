@@ -118,12 +118,15 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   // Matches the crop's aspect ratio to the UI container to prevent 'partial' cropping
   const captureFrame = useCallback((result?: Result): string | null => {
     const video = videoRef.current;
-    if (!video || video.videoWidth === 0 || video.videoHeight === 0)
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
       return null;
+    }
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
+    if (!ctx) {
+      return null;
+    }
 
     const points = result?.getResultPoints();
 
@@ -144,13 +147,23 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
       for (let i = 1; i < points.length; i++) {
         const p = points[i];
-        if (!p) continue;
+        if (!p) {
+          continue;
+        }
         const x = p.getX();
         const y = p.getY();
-        if (x < minX) minX = x;
-        if (y < minY) minY = y;
-        if (x > maxX) maxX = x;
-        if (y > maxY) maxY = y;
+        if (x < minX) {
+          minX = x;
+        }
+        if (y < minY) {
+          minY = y;
+        }
+        if (x > maxX) {
+          maxX = x;
+        }
+        if (y > maxY) {
+          maxY = y;
+        }
       }
 
       const barcodeW = maxX - minX;
@@ -185,10 +198,12 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       let sy = Math.max(0, centerY - cropH / 2);
 
       // Keep within video bounds
-      if (sx + cropW > video.videoWidth)
+      if (sx + cropW > video.videoWidth) {
         sx = Math.max(0, video.videoWidth - cropW);
-      if (sy + cropH > video.videoHeight)
+      }
+      if (sy + cropH > video.videoHeight) {
         sy = Math.max(0, video.videoHeight - cropH);
+      }
 
       const finalW = Math.min(cropW, video.videoWidth);
       const finalH = Math.min(cropH, video.videoHeight);
@@ -218,13 +233,17 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   );
 
   const playBeep = useCallback(() => {
-    if (!soundEnabled) return;
+    if (!soundEnabled) {
+      return;
+    }
     try {
       const AudioContextClass =
         window.AudioContext ||
         (window as unknown as { webkitAudioContext: typeof AudioContext })
           .webkitAudioContext;
-      if (!AudioContextClass) return;
+      if (!AudioContextClass) {
+        return;
+      }
 
       const audioCtx = new AudioContextClass();
       const oscillator = audioCtx.createOscillator();
@@ -432,7 +451,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     return () => {
       isMounted = false;
-      if (retryTimeoutId) clearTimeout(retryTimeoutId);
+      if (retryTimeoutId) {
+        clearTimeout(retryTimeoutId);
+      }
       if (controls) {
         controls.stop();
       }
@@ -441,7 +462,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   }, [active, isCameraActive, selectedDeviceId, devices, startRetryTrigger]);
 
   const switchCamera = useCallback(() => {
-    if (devices.length < 2) return;
+    if (devices.length < 2) {
+      return;
+    }
     const currentIndex = devices.findIndex(
       (d) => d.deviceId === selectedDeviceId
     );

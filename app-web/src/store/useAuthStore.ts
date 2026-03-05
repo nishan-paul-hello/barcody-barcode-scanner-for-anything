@@ -77,7 +77,9 @@ export const useAuthStore = create<AuthStore>()(
 
       refreshAccessToken: async () => {
         const { refreshToken } = get();
-        if (!refreshToken) return null;
+        if (!refreshToken) {
+          return null;
+        }
 
         try {
           // Use raw axios to avoid interceptor loop

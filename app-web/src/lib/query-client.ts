@@ -7,7 +7,9 @@ export const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
       retry: (failureCount, error) => {
-        if (failureCount >= 3) return false;
+        if (failureCount >= 3) {
+          return false;
+        }
 
         // Don't retry on certain status codes
         if (error instanceof AxiosError) {

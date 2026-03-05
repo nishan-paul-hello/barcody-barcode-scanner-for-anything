@@ -72,7 +72,9 @@ export default function ComparePage() {
     }
   };
 
-  if (!data) return null;
+  if (!data) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto max-w-7xl space-y-8 pt-0 pb-12">

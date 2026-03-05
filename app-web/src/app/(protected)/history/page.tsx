@@ -86,7 +86,9 @@ export default function HistoryPage() {
   });
 
   const addRecentSearch = useCallback((term: string) => {
-    if (!term || term.trim() === '') return;
+    if (!term || term.trim() === '') {
+      return;
+    }
     setRecentSearches((prev) => {
       const newSearches = [term, ...prev.filter((s) => s !== term)].slice(0, 5);
       if (typeof window !== 'undefined') {
@@ -155,7 +157,9 @@ export default function HistoryPage() {
   }, []);
 
   const formatActivity = (scan: ScanResponseDto | null) => {
-    if (!scan) return 'No recent activity';
+    if (!scan) {
+      return 'No recent activity';
+    }
 
     const date = new Date(scan.scannedAt);
     const now = new Date();
@@ -165,10 +169,15 @@ export default function HistoryPage() {
     const diffDays = Math.round(diffHours / 24);
 
     let timeAgo = '';
-    if (diffMins < 1) timeAgo = 'Just now';
-    else if (diffMins < 60) timeAgo = `${diffMins} mins ago`;
-    else if (diffHours < 24) timeAgo = `${diffHours} hours ago`;
-    else timeAgo = `${diffDays} days ago`;
+    if (diffMins < 1) {
+      timeAgo = 'Just now';
+    } else if (diffMins < 60) {
+      timeAgo = `${diffMins} mins ago`;
+    } else if (diffHours < 24) {
+      timeAgo = `${diffHours} hours ago`;
+    } else {
+      timeAgo = `${diffDays} days ago`;
+    }
 
     return `Scanned "${scan.product?.name || scan.barcodeData}" ${timeAgo}`;
   };

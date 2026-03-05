@@ -32,7 +32,9 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
   const { setApiKeysModalOpen } = useUIStore();
 
   const hasApiConfigured = React.useMemo(() => {
-    if (!apiKeys) return true;
+    if (!apiKeys) {
+      return true;
+    }
     return !!apiKeys.upcDatabaseApiKey;
   }, [apiKeys]);
 
@@ -49,7 +51,9 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
   };
 
   const handleCopy = () => {
-    if (!barcode) return;
+    if (!barcode) {
+      return;
+    }
     void navigator.clipboard.writeText(barcode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
