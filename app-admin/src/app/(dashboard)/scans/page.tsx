@@ -500,8 +500,15 @@ function TableSkeleton() {
   return (
     <div className="space-y-3">
       <div className="flex gap-6 border-b border-zinc-800 pb-3">
-        {[140, 80, 160, 140, 70, 100].map((w) => (
-          <Skeleton key={`h-${w}`} style={{ width: w }} className="h-3" />
+        {[
+          { id: 'h1', w: 140 },
+          { id: 'h2', w: 80 },
+          { id: 'h3', w: 160 },
+          { id: 'h4', w: 140 },
+          { id: 'h5', w: 70 },
+          { id: 'h6', w: 100 },
+        ].map((h) => (
+          <Skeleton key={h.id} style={{ width: h.w }} className="h-3" />
         ))}
       </div>
       {rowIds.map((id) => (

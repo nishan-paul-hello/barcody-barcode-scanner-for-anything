@@ -439,8 +439,14 @@ function TableSkeleton() {
   return (
     <div className="space-y-3">
       <div className="flex gap-4 border-b border-zinc-800 pb-3">
-        {[160, 80, 100, 100, 80].map((w) => (
-          <Skeleton key={`uh-${w}`} style={{ width: w }} className="h-3" />
+        {[
+          { id: 'uh1', w: 160 },
+          { id: 'uh2', w: 80 },
+          { id: 'uh3', w: 100 },
+          { id: 'uh4', w: 100 },
+          { id: 'uh5', w: 80 },
+        ].map((h) => (
+          <Skeleton key={h.id} style={{ width: h.w }} className="h-3" />
         ))}
       </div>
       {rowIds.map((id) => (
