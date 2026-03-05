@@ -27,13 +27,13 @@ interface OpenFoodFactsPresenterProps {
 
 // ─── Placeholder when no image is available ────────────────────────────────────
 const ImagePlaceholder = () => (
-  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-emerald-950/20">
+  <div className="relative flex size-full items-center justify-center overflow-hidden bg-emerald-950/20">
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="h-32 w-32 rounded-full bg-emerald-500/10 blur-[70px]" />
+      <div className="size-32 rounded-full bg-emerald-500/10 blur-[70px]" />
     </div>
     <div className="relative flex flex-col items-center gap-3">
       <div className="rounded-2xl border border-white/8 bg-white/5 p-5 backdrop-blur-xl">
-        <ImageIcon className="h-10 w-10 text-white/20" />
+        <ImageIcon className="size-10 text-white/20" />
       </div>
       <span className="text-[10px] font-bold tracking-[0.25em] text-white/20 uppercase">
         No Visual
@@ -149,7 +149,7 @@ const CategoryPath = ({ path }: { path: string[] }) => (
     {path.map((segment, i) => (
       <span key={segment} className="flex items-center gap-1.5">
         {i > 0 && (
-          <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
+          <ChevronRight className="size-[2.5] shrink-0 text-white/15" />
         )}
         <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-white/35 transition-colors hover:border-white/10 hover:text-white/55">
           {segment}
@@ -183,7 +183,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
   if (!product) {
     return (
       <div className="flex h-48 flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-emerald-950/20 text-slate-500">
-        <Package className="h-10 w-10 opacity-30" />
+        <Package className="size-10 opacity-30" />
         <p className="text-sm font-medium">
           No product data found in Open Food Facts
         </p>
@@ -367,7 +367,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
 
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.08] px-3 py-1.5 ring-1 ring-emerald-500/20">
-                <Barcode className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                <Barcode className="size-[3.5] shrink-0 text-emerald-400" />
                 <span className="font-mono text-xs tracking-wider text-emerald-200/80">
                   {code}
                 </span>
@@ -378,7 +378,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 rounded-lg border border-white/5 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-400 transition-all hover:bg-white/10 hover:text-white"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
+                <ExternalLink className="size-[3.5]" />
                 OFF Page
               </a>
             </div>
@@ -395,7 +395,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-emerald-500/15 p-1.5">
-                  <FlaskConical className="h-3.5 w-3.5 text-emerald-400" />
+                  <FlaskConical className="size-[3.5] text-emerald-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-emerald-300/80 uppercase">
                   Ingredients
@@ -422,7 +422,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
               <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <div className="rounded-lg bg-sky-500/15 p-1.5">
-                    <Activity className="h-3.5 w-3.5 text-sky-400" />
+                    <Activity className="size-[3.5] text-sky-400" />
                   </div>
                   <h3 className="text-xs font-black tracking-[0.15em] text-sky-300/80 uppercase">
                     Nutrition
@@ -486,7 +486,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-red-500/15 p-1.5">
-                  <ShieldAlert className="h-3.5 w-3.5 text-red-400" />
+                  <ShieldAlert className="size-[3.5] text-red-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-red-300/80 uppercase">
                   Safety & Dietary
@@ -498,12 +498,12 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
                 <div className="flex flex-wrap gap-2">
                   {isVegan && (
                     <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-[10px] font-black text-emerald-400 uppercase">
-                      <ShieldCheck className="h-3 w-3" /> Vegan
+                      <ShieldCheck className="size-3" /> Vegan
                     </div>
                   )}
                   {isVeggie && (
                     <div className="flex items-center gap-1.5 rounded-full border border-green-500/30 bg-green-500/15 px-3 py-1 text-[10px] font-black text-green-400 uppercase">
-                      <ShieldCheck className="h-3 w-3" /> Vegetarian
+                      <ShieldCheck className="size-3" /> Vegetarian
                     </div>
                   )}
                 </div>
@@ -555,7 +555,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-5 flex items-center gap-2.5">
                 <div className="rounded-lg bg-violet-500/15 p-1.5">
-                  <Layers className="h-3.5 w-3.5 text-violet-400" />
+                  <Layers className="size-[3.5] text-violet-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-violet-300/80 uppercase">
                   Details
@@ -601,7 +601,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-amber-500/15 p-1.5">
-                  <Leaf className="h-3.5 w-3.5 text-amber-400" />
+                  <Leaf className="size-[3.5] text-amber-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-amber-300/80 uppercase">
                   Sustainability & Labels
@@ -641,7 +641,7 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-sky-500/15 p-1.5">
-                  <MapPin className="h-3.5 w-3.5 text-sky-400" />
+                  <MapPin className="size-[3.5] text-sky-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-sky-300/80 uppercase">
                   Availability

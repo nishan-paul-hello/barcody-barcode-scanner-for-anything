@@ -45,8 +45,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="flex min-h-[400px] flex-col items-center justify-center p-6 text-center">
-          <div className="bg-destructive/10 text-destructive mb-4 flex h-16 w-16 items-center justify-center rounded-full">
-            <AlertTriangle className="h-8 w-8" />
+          <div className="bg-destructive/10 text-destructive mb-4 flex size-16 items-center justify-center rounded-full">
+            <AlertTriangle className="size-8" />
           </div>
           <h2 className="mb-2 text-2xl font-bold tracking-tight">
             Something went wrong
@@ -57,7 +57,7 @@ export class ErrorBoundary extends Component<Props, State> {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button variant="outline" onClick={this.handleRetry}>
-              <RefreshCw className="mr-2 h-4 w-4" />
+              <RefreshCw className="mr-2 size-4" />
               Try Again
             </Button>
             <Button

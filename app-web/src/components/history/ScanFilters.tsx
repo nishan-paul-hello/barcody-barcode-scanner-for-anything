@@ -65,7 +65,7 @@ export function ScanFilters({
           onClick={() => onFilterChange(key, undefined)}
           className="hover:bg-muted ml-1 rounded-full p-0.5"
         >
-          <X className="h-3 w-3" />
+          <X className="size-3" />
         </button>
       </Badge>
     );
@@ -77,7 +77,7 @@ export function ScanFilters({
         <div className="flex flex-col gap-3 md:flex-row">
           {/* Search bar with suggestions */}
           <div className="group relative flex-1">
-            <Search className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
+            <Search className="text-muted-foreground absolute top-3 left-3 size-4" />
             <Input
               placeholder="Search by barcode or product name"
               className="h-10 pl-10"
@@ -96,7 +96,7 @@ export function ScanFilters({
                     className="hover:bg-accent flex w-full items-center rounded-sm px-2 py-1.5 text-sm"
                     onClick={() => onFilterChange('search', term)}
                   >
-                    <Search className="text-muted-foreground mr-2 h-3.5 w-3.5" />
+                    <Search className="text-muted-foreground mr-2 size-[3.5]" />
                     {term}
                   </button>
                 ))}
@@ -108,17 +108,17 @@ export function ScanFilters({
             <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
                 <Button variant="outline" className="relative h-10">
-                  <Filter className="mr-2 h-4 w-4" />
+                  <Filter className="mr-2 size-4" />
                   Filters
                   {activeFilterCount > 0 && (
-                    <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold">
+                    <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full text-[10px] font-bold">
                       {activeFilterCount}
                     </span>
                   )}
                   {isOpen ? (
-                    <ChevronUp className="ml-2 h-4 w-4" />
+                    <ChevronUp className="ml-2 size-4" />
                   ) : (
-                    <ChevronDown className="ml-2 h-4 w-4" />
+                    <ChevronDown className="ml-2 size-4" />
                   )}
                 </Button>
               </CollapsibleTrigger>
@@ -323,7 +323,7 @@ export function ScanFilters({
                 onClick={() => onFilterChange('startDate', undefined)}
                 className="hover:bg-muted ml-1 rounded-full p-0.5"
               >
-                <X className="h-3 w-3" />
+                <X className="size-3" />
               </button>
             </Badge>
           )}
@@ -339,7 +339,7 @@ export function ScanFilters({
                 onClick={() => onFilterChange('endDate', undefined)}
                 className="hover:bg-muted ml-1 rounded-full p-0.5"
               >
-                <X className="h-3 w-3" />
+                <X className="size-3" />
               </button>
             </Badge>
           )}

@@ -300,7 +300,7 @@ export default function HistoryPage() {
             onClick={() => setShowExportModal(true)}
             className="group cursor-pointer rounded-full bg-white/5 px-8 font-bold text-white transition-all hover:bg-white/10"
           >
-            <Download className="mr-2 h-4 w-4 transition-transform group-hover:-translate-y-1" />
+            <Download className="mr-2 size-4 transition-transform group-hover:-translate-y-1" />
             Export Data
           </Button>
         </div>
@@ -309,7 +309,7 @@ export default function HistoryPage() {
       {/* Dashboard Stats */}
       {statsLoading ? (
         <div className="mt-4 flex justify-center rounded-3xl border border-white/5 bg-white/5 py-12 backdrop-blur-xl">
-          <Loader2 className="h-6 w-6 animate-spin text-cyan-500/50" />
+          <Loader2 className="size-6 animate-spin text-cyan-500/50" />
         </div>
       ) : (
         <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -362,7 +362,7 @@ export default function HistoryPage() {
             onClick={() => setShowBulkDeleteConfirm(true)}
             disabled={bulkDeleteMutation.isPending}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 size-4" />
             Delete Selected
           </Button>
           <Button
@@ -419,7 +419,7 @@ export default function HistoryPage() {
               onClick={() => handlePageChange((filters.page || 1) - 1)}
               disabled={data.meta.page <= 1}
             >
-              <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+              <ChevronLeft className="mr-1 size-4" /> Previous
             </Button>
             <Button
               variant="outline"
@@ -427,7 +427,7 @@ export default function HistoryPage() {
               onClick={() => handlePageChange((filters.page || 1) + 1)}
               disabled={data.meta.page >= data.meta.totalPages}
             >
-              Next <ChevronRight className="ml-1 h-4 w-4" />
+              Next <ChevronRight className="ml-1 size-4" />
             </Button>
           </div>
         </div>
@@ -465,7 +465,7 @@ export default function HistoryPage() {
               disabled={bulkDeleteMutation.isPending}
             >
               {bulkDeleteMutation.isPending && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 size-4 animate-spin" />
               )}
               Delete
             </Button>

@@ -262,7 +262,7 @@ function MacroBar({
 function AllergenPill({ name }: { name: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-[11px] font-black tracking-wider text-red-300 uppercase">
-      <AlertTriangle className="h-2.5 w-2.5" />
+      <AlertTriangle className="size-[2.5]" />
       {name.replace('en:', '')}
     </span>
   );
@@ -349,7 +349,7 @@ function FoodLayout({
                 <div className="flex items-end gap-3">
                   <div
                     className={cn(
-                      'flex h-16 w-16 items-center justify-center rounded-2xl text-3xl font-black text-white shadow-xl ring-2',
+                      'flex size-16 items-center justify-center rounded-2xl text-3xl font-black text-white shadow-xl ring-2',
                       gradeInfo.bg,
                       gradeInfo.ring,
                       gradeInfo.glow
@@ -398,7 +398,7 @@ function FoodLayout({
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Flame className="h-3 w-3 text-orange-500" />
+                  <Flame className="size-3 text-orange-500" />
                   <span className="text-[10px] text-white/30">
                     per 100g serving
                   </span>
@@ -419,7 +419,7 @@ function FoodLayout({
         >
           <div className="mb-5 flex items-center gap-3">
             <div className="rounded-2xl bg-white/5 p-2.5 ring-1 ring-white/10">
-              <BarChart3 className="h-5 w-5 text-white/50" />
+              <BarChart3 className="size-5 text-white/50" />
             </div>
             <div>
               <h3 className="text-sm font-black text-white/80">
@@ -461,7 +461,7 @@ function FoodLayout({
         >
           <div className="mb-4 flex items-center gap-3">
             <div className="rounded-2xl bg-emerald-500/10 p-2.5 ring-1 ring-emerald-500/20">
-              <Leaf className="h-5 w-5 text-emerald-400" />
+              <Leaf className="size-5 text-emerald-400" />
             </div>
             <h3 className="text-sm font-black text-white/80">Ingredients</h3>
           </div>
@@ -479,7 +479,7 @@ function FoodLayout({
         >
           <div className="mb-4 flex items-center gap-3">
             <div className="rounded-2xl bg-red-500/20 p-2.5 ring-1 ring-red-500/30">
-              <ShieldCheck className="h-5 w-5 text-red-400" />
+              <ShieldCheck className="size-5 text-red-400" />
             </div>
             <div>
               <h3 className="text-sm font-black text-red-300">
@@ -550,7 +550,7 @@ function RenderGrade({
       <div className="flex items-center gap-2">
         <div
           className={cn(
-            'flex h-9 w-9 items-center justify-center rounded-xl text-sm font-black text-white ring-2',
+            'flex size-9 items-center justify-center rounded-xl text-sm font-black text-white ring-2',
             info?.bg ?? 'bg-white/10',
             info?.ring ?? ''
           )}
@@ -621,12 +621,12 @@ function RenderProse({
         >
           {expanded ? (
             <>
-              <ChevronUp className="h-3 w-3" />
+              <ChevronUp className="size-3" />
               Less
             </>
           ) : (
             <>
-              <ChevronDown className="h-3 w-3" />
+              <ChevronDown className="size-3" />
               More
             </>
           )}
@@ -719,7 +719,7 @@ function UniversalGroupCard({
     isSafety ? 'bg-amber-500/10 ring-amber-500/25' : 'bg-white/5 ring-white/10'
   );
   const iconClass = cn(
-    'h-4 w-4',
+    'size-4',
     isSafety ? 'text-amber-400' : isIdentity ? 'text-white/40' : 'text-white/30'
   );
   const titleClass = cn(
@@ -819,7 +819,7 @@ function UniversalLayout({
         >
           <div className="mb-3 flex items-center gap-3">
             <div className="rounded-xl bg-white/5 p-2 ring-1 ring-white/10">
-              <Hash className="h-4 w-4 text-white/30" />
+              <Hash className="size-4 text-white/30" />
             </div>
             <span className="text-xs font-black tracking-[0.15em] text-white/35 uppercase">
               Overview
@@ -836,7 +836,7 @@ function UniversalLayout({
 
       {!hasAnything && (
         <div className="flex flex-col items-center justify-center rounded-[2rem] border border-dashed border-white/5 py-16 text-center">
-          <Info className="mb-3 h-8 w-8 text-white/10" />
+          <Info className="mb-3 size-8 text-white/10" />
           <p className="text-sm font-bold text-white/20">
             No extra detail available for this product.
           </p>
@@ -899,8 +899,8 @@ function HeroCard({
               priority
             />
           ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-3">
-              <Package className="h-14 w-14 text-white/5" />
+            <div className="flex size-full flex-col items-center justify-center gap-3">
+              <Package className="size-14 text-white/5" />
               <span className="text-[9px] font-black tracking-[0.25em] text-white/10 uppercase">
                 No Image
               </span>
@@ -915,7 +915,7 @@ function HeroCard({
                   type="button"
                   onClick={() => setSelectedIndex(displayImages.indexOf(src))}
                   className={cn(
-                    'relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all',
+                    'relative size-10 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all',
                     selectedIndex === displayImages.indexOf(src)
                       ? 'scale-105 border-white/60'
                       : 'border-transparent opacity-50 hover:opacity-80'
@@ -937,7 +937,7 @@ function HeroCard({
           {cacheStatus === 'hit' && (
             <div className="absolute top-4 right-4">
               <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-black/70 px-3 py-1.5 backdrop-blur-xl">
-                <Layers className="h-2.5 w-2.5 text-white/30" />
+                <Layers className="size-[2.5] text-white/30" />
                 <span className="text-[9px] font-black tracking-widest text-white/30 uppercase">
                   cached
                 </span>
@@ -977,7 +977,7 @@ function HeroCard({
               </h1>
               {(brand || manufacturer) && (
                 <p className="mt-2 flex items-center gap-2 text-base font-medium text-white/30">
-                  <Building2 className="h-4 w-4 shrink-0 text-white/20" />
+                  <Building2 className="size-4 shrink-0 text-white/20" />
                   {brand || manufacturer}
                 </p>
               )}
@@ -995,12 +995,12 @@ function HeroCard({
                   >
                     {expanded ? (
                       <>
-                        <ChevronUp className="h-3 w-3" />
+                        <ChevronUp className="size-3" />
                         Less
                       </>
                     ) : (
                       <>
-                        <ChevronDown className="h-3 w-3" />
+                        <ChevronDown className="size-3" />
                         More
                       </>
                     )}
@@ -1013,13 +1013,13 @@ function HeroCard({
           {/* Footer meta */}
           <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-white/5 pt-5">
             <div className="flex items-center gap-1.5">
-              <Database className="h-3 w-3 text-white/15" />
+              <Database className="size-3 text-white/15" />
               <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">
                 {sourceLabel}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <History className="h-3 w-3 text-white/15" />
+              <History className="size-3 text-white/15" />
               <span className="text-[10px] font-bold tracking-widest text-white/20 uppercase">
                 {new Date(lastUpdated).toLocaleDateString(undefined, {
                   month: 'short',
@@ -1109,7 +1109,7 @@ export function ProductDetail({ product, cacheStatus }: ProductDetailProps) {
       {/* No data */}
       {!hasContent && (
         <div className="flex flex-col items-center justify-center rounded-[2rem] border border-dashed border-white/5 bg-white/[0.01] py-20 text-center">
-          <Info className="mb-4 h-10 w-10 text-white/10" />
+          <Info className="mb-4 size-10 text-white/10" />
           <p className="text-sm font-bold text-white/25">
             No detailed data available
           </p>

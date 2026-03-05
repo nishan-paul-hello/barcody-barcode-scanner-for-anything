@@ -23,7 +23,7 @@ export default function NotFound() {
             scale: [1, 1.2, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-cyan-500/10 blur-[120px]"
+          className="absolute -top-[10%] -left-[10%] size-1/2 rounded-full bg-cyan-500/10 blur-[120px]"
         />
         <motion.div
           animate={{
@@ -32,9 +32,9 @@ export default function NotFound() {
             scale: [1, 1.1, 1],
           }}
           transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-          className="absolute top-[20%] -right-[10%] h-[40%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]"
+          className="absolute top-[20%] -right-[10%] size-[40%] rounded-full bg-blue-600/10 blur-[120px]"
         />
-        <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 size-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
       </div>
 
       {/* Main Content */}
@@ -67,7 +67,7 @@ export default function NotFound() {
             onClick={() => router.push('/')}
             className="group flex cursor-pointer items-center gap-2 rounded-2xl bg-cyan-500 px-8 py-4 font-bold text-black transition-all hover:bg-cyan-400 active:scale-95"
           >
-            <Home className="h-5 w-5 transition-transform group-hover:-translate-y-0.5" />
+            <Home className="size-5 transition-transform group-hover:-translate-y-0.5" />
             Home
           </button>
 

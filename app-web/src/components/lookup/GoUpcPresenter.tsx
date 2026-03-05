@@ -24,13 +24,13 @@ interface GoUpcPresenterProps {
 
 // ─── Placeholder when no image is available ────────────────────────────────────
 const ImagePlaceholder = () => (
-  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-slate-800/60">
+  <div className="relative flex size-full items-center justify-center overflow-hidden bg-slate-800/60">
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="h-32 w-32 rounded-full bg-violet-500/15 blur-[70px]" />
+      <div className="size-32 rounded-full bg-violet-500/15 blur-[70px]" />
     </div>
     <div className="relative flex flex-col items-center gap-3">
       <div className="rounded-2xl border border-white/8 bg-white/5 p-5 backdrop-blur-xl">
-        <ImageIcon className="h-10 w-10 text-white/20" />
+        <ImageIcon className="size-10 text-white/20" />
       </div>
       <span className="text-[10px] font-bold tracking-[0.25em] text-white/20 uppercase">
         No Visual
@@ -57,7 +57,7 @@ const CategoryPath = ({ path }: { path: string[] }) => (
     {path.map((segment, i) => (
       <span key={segment} className="flex items-center gap-1.5">
         {i > 0 && (
-          <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
+          <ChevronRight className="size-[2.5] shrink-0 text-white/15" />
         )}
         <span className="inline-flex items-center rounded-full border border-white/[0.06] bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-white/35 transition-colors hover:border-white/10 hover:text-white/55">
           {segment}
@@ -91,7 +91,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   if (!product) {
     return (
       <div className="flex h-48 flex-col items-center justify-center gap-3 rounded-2xl border border-white/5 bg-slate-800/30 text-slate-500">
-        <Package className="h-10 w-10 opacity-30" />
+        <Package className="size-10 opacity-30" />
         <p className="text-sm font-medium">
           No product data returned by Go-UPC
         </p>
@@ -271,7 +271,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
               {(upc || ean || code) && (
                 /* Amber-tinted barcode pill */
                 <div className="flex items-center gap-2 rounded-lg border border-amber-500/20 bg-amber-500/[0.08] px-3 py-1.5">
-                  <Barcode className="h-3.5 w-3.5 shrink-0 text-amber-400" />
+                  <Barcode className="size-[3.5] shrink-0 text-amber-400" />
                   <span className="font-mono text-xs tracking-wider text-amber-200/80">
                     {upc ?? ean ?? code}
                   </span>
@@ -284,7 +284,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-1.5 text-slate-500 transition-all hover:text-violet-400"
                 >
-                  <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                  <ExternalLink className="size-[3.5] shrink-0" />
                   <span className="text-xs font-medium tracking-wide">
                     View on Go-UPC
                   </span>
@@ -305,7 +305,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
               <div className="mb-4 flex items-center gap-2.5">
                 {/* sky-blue icon bubble */}
                 <div className="rounded-lg bg-sky-500/15 p-1.5">
-                  <Info className="h-3.5 w-3.5 text-sky-400" />
+                  <Info className="size-[3.5] text-sky-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-sky-300/80 uppercase">
                   Description
@@ -324,7 +324,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-amber-500/15 p-1.5">
-                  <Tag className="h-3.5 w-3.5 text-amber-400" />
+                  <Tag className="size-[3.5] text-amber-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-amber-300/80 uppercase">
                   Ecommerce Description
@@ -344,7 +344,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
               <div className="mb-4 flex items-center gap-2.5">
                 {/* emerald icon bubble */}
                 <div className="rounded-lg bg-emerald-500/15 p-1.5">
-                  <FlaskConical className="h-3.5 w-3.5 text-emerald-400" />
+                  <FlaskConical className="size-[3.5] text-emerald-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-emerald-300/80 uppercase">
                   Ingredients
@@ -373,7 +373,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-indigo-500/15 p-1.5">
-                  <Compass className="h-3.5 w-3.5 text-indigo-400" />
+                  <Compass className="size-[3.5] text-indigo-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-indigo-300/80 uppercase">
                   Directions & Usage
@@ -392,7 +392,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
               {/* Specifications header – VIOLET */}
               <div className="mb-4 flex items-center gap-2.5">
                 <div className="rounded-lg bg-violet-500/15 p-1.5">
-                  <Layers className="h-3.5 w-3.5 text-violet-400" />
+                  <Layers className="size-[3.5] text-violet-400" />
                 </div>
                 <h3 className="text-xs font-black tracking-[0.15em] text-violet-300/80 uppercase">
                   Specifications

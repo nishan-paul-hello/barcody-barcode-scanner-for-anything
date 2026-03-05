@@ -43,7 +43,7 @@ export function BarcodeInputDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg font-bold text-white">
             <div className="rounded-full bg-cyan-500/10 p-2 ring-1 ring-cyan-500/20">
-              <Barcode className="h-4 w-4 text-cyan-400" />
+              <Barcode className="size-4 text-cyan-400" />
             </div>
             Enter barcode
           </DialogTitle>

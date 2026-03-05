@@ -30,7 +30,7 @@ export function ProductSkeleton() {
         <Card className="rounded-[2.5rem] border-white/5 bg-black/40">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
-              <Skeleton className="h-10 w-10 rounded-full bg-white/5" />
+              <Skeleton className="size-10 rounded-full bg-white/5" />
               <Skeleton className="h-5 w-32 bg-white/5" />
             </div>
           </CardHeader>
@@ -50,7 +50,7 @@ export function ProductSkeleton() {
         <Card className="rounded-[2.5rem] border-white/5 bg-black/40">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
-              <Skeleton className="h-10 w-10 rounded-full bg-white/5" />
+              <Skeleton className="size-10 rounded-full bg-white/5" />
               <Skeleton className="h-5 w-36 bg-white/5" />
             </div>
           </CardHeader>

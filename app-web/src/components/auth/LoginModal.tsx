@@ -87,7 +87,7 @@ export const LoginModal = () => {
             className="absolute top-8 right-8 z-[100] cursor-pointer p-2 text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
             aria-label="Close"
           >
-            <X size={20} />
+            <X className="size-5" />
           </button>
 
           <div className="mb-10 text-center">
@@ -108,7 +108,7 @@ export const LoginModal = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="flex w-full flex-col items-center justify-center py-12"
               >
-                <div className="relative h-16 w-16">
+                <div className="relative size-16">
                   <div className="absolute inset-0 rounded-full border-2 border-white/5" />
                   <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-white" />
                 </div>
@@ -139,7 +139,7 @@ export const LoginModal = () => {
 
                       {/* Visual Content (z-10) */}
                       <div className="pointer-events-none relative z-10 flex w-full items-center px-6 select-none">
-                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#9c27b0] text-xl font-medium text-white shadow-lg">
+                        <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#9c27b0] text-xl font-medium text-white shadow-lg">
                           {user?.name
                             ?.split(' ')
                             .map((n) => n[0])
@@ -166,7 +166,7 @@ export const LoginModal = () => {
                         className="absolute right-6 z-[100] cursor-pointer p-3 text-white/30 transition-all hover:scale-110 hover:text-white active:scale-90"
                         aria-label="Dismiss"
                       >
-                        <X size={18} />
+                        <X className="size-[18px]" />
                       </button>
                     </div>
 
@@ -189,7 +189,7 @@ export const LoginModal = () => {
                         />
                       </div>
                       <div className="pointer-events-none relative z-10 flex h-16 w-full items-center justify-center gap-3 select-none">
-                        <svg width="20" height="20" viewBox="0 0 24 24">
+                        <svg className="size-5" viewBox="0 0 24 24">
                           <path
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                             fill="#4285F4"
@@ -224,7 +224,7 @@ export const LoginModal = () => {
                       />
                     </div>
                     <div className="pointer-events-none relative z-10 flex h-16 w-full items-center justify-center gap-3 select-none">
-                      <svg width="20" height="20" viewBox="0 0 24 24">
+                      <svg className="size-5" viewBox="0 0 24 24">
                         <path
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                           fill="#4285F4"

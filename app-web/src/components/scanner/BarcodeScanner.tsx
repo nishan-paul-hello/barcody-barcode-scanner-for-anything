@@ -512,9 +512,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                   variant="ghost"
                   size="icon"
                   onClick={handleClearPreview}
-                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
+                  className="absolute top-6 right-6 size-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="size-5" />
                 </Button>
               </motion.div>
             )}
@@ -540,10 +540,10 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
                 className="pointer-events-none absolute inset-0 z-10"
               >
                 {/* Corner Brackets */}
-                <div className="absolute -top-px -left-px h-28 w-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] border-cyan-400" />
-                <div className="absolute -top-px -right-px h-28 w-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] border-cyan-400" />
-                <div className="absolute -bottom-px -left-px h-28 w-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-cyan-400" />
-                <div className="absolute -right-px -bottom-px h-28 w-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-cyan-400" />
+                <div className="absolute -top-px -left-px size-28 rounded-tl-[2.5rem] border-t-[6px] border-l-[6px] border-cyan-400" />
+                <div className="absolute -top-px -right-px size-28 rounded-tr-[2.5rem] border-t-[6px] border-r-[6px] border-cyan-400" />
+                <div className="absolute -bottom-px -left-px size-28 rounded-bl-[2.5rem] border-b-[6px] border-l-[6px] border-cyan-400" />
+                <div className="absolute -right-px -bottom-px size-28 rounded-br-[2.5rem] border-r-[6px] border-b-[6px] border-cyan-400" />
 
                 {/* Vignette */}
                 <div className="bg-radial-gradient absolute inset-0 from-transparent via-transparent to-black/40" />
@@ -555,7 +555,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
               <div className="flex -translate-y-8 flex-col items-center">
                 <Lock
-                  className="mb-5 h-10 w-10 text-amber-400"
+                  className="mb-5 size-10 text-amber-400"
                   strokeWidth={1.5}
                 />
                 <p className="text-base font-semibold tracking-widest text-white uppercase">
@@ -568,7 +568,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           {error && (
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 p-8 text-center backdrop-blur-2xl">
               <div className="mb-6 rounded-full bg-red-500/10 p-4 ring-1 ring-red-500/20">
-                <AlertCircle className="h-12 w-12 text-red-400" />
+                <AlertCircle className="size-12 text-red-400" />
               </div>
               <h3 className="mb-3 text-2xl font-bold text-white">
                 Vision Blocked
@@ -597,23 +597,23 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
             <button
               type="button"
               onClick={() => handleToggleCamera()}
-              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
+              className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {isCameraActive ? (
-                <Camera className="h-5 w-5" />
+                <Camera className="size-5" />
               ) : (
-                <CameraOff className="h-5 w-5" />
+                <CameraOff className="size-5" />
               )}
             </button>
             <button
               type="button"
               onClick={handleToggleSound}
-              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
+              className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {soundEnabled ? (
-                <Volume2 className="h-5 w-5" />
+                <Volume2 className="size-5" />
               ) : (
-                <VolumeX className="h-5 w-5" />
+                <VolumeX className="size-5" />
               )}
             </button>
 
@@ -621,9 +621,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
               <button
                 type="button"
                 onClick={switchCamera}
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
+                className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
               >
-                <RefreshCcw className="h-5 w-5" />
+                <RefreshCcw className="size-5" />
               </button>
             )}
           </div>

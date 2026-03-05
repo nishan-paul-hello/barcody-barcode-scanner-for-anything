@@ -30,7 +30,7 @@ export function AllergenMatrix({ data, products }: AllergenMatrixProps) {
     return (
       <div className="flex h-[200px] flex-col items-center justify-center text-center">
         <div className="rounded-full bg-green-100 p-3 dark:bg-green-900/20">
-          <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
+          <Check className="size-6 text-green-600 dark:text-green-400" />
         </div>
         <p className="text-muted-foreground mt-2 font-medium">
           No allergens identified in these products.
@@ -75,13 +75,13 @@ export function AllergenMatrix({ data, products }: AllergenMatrixProps) {
                     {hasAllergen ? (
                       <div className="flex justify-center">
                         <div className="rounded-full bg-red-100 p-1 dark:bg-red-900/30">
-                          <X className="h-4 w-4 text-red-600 dark:text-red-400" />
+                          <X className="size-4 text-red-600 dark:text-red-400" />
                         </div>
                       </div>
                     ) : (
                       <div className="flex justify-center">
                         <div className="rounded-full bg-green-100 p-1 dark:bg-green-900/30">
-                          <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
+                          <Check className="size-4 text-green-600 dark:text-green-400" />
                         </div>
                       </div>
                     )}
@@ -94,7 +94,7 @@ export function AllergenMatrix({ data, products }: AllergenMatrixProps) {
       </Table>
 
       <div className="mt-4 flex items-start gap-2 rounded-lg bg-orange-50 p-3 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+        <AlertCircle className="mt-0.5 size-4 shrink-0" />
         <p className="text-[10px] leading-tight">
           <strong>Note:</strong> Allergen information is based on manufacturer
           data. Always check the physical packaging for the most accurate and

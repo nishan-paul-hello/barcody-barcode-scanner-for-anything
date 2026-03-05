@@ -62,7 +62,7 @@ export function CompareTable({ products, comparison }: CompareTableProps) {
                   className="min-w-[200px] text-center"
                 >
                   <div className="flex flex-col items-center gap-2 py-4">
-                    <div className="relative h-24 w-24 overflow-hidden rounded-md border bg-white">
+                    <div className="relative size-24 overflow-hidden rounded-md border bg-white">
                       {p.images?.[0] ? (
                         <Image
                           src={p.images[0]}
@@ -96,7 +96,7 @@ export function CompareTable({ products, comparison }: CompareTableProps) {
                 <TableCell key={p.barcode} className="text-center">
                   <Badge
                     className={cn(
-                      'flex h-8 w-8 items-center justify-center p-0 text-lg font-bold',
+                      'flex size-8 items-center justify-center p-0 text-lg font-bold',
                       p.nutrition?.grade === 'A' && 'bg-green-600',
                       p.nutrition?.grade === 'B' && 'bg-lime-500',
                       p.nutrition?.grade === 'C' && 'bg-yellow-500',

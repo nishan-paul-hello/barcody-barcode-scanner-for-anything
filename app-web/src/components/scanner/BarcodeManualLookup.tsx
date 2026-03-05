@@ -69,12 +69,12 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
         <Card className="group relative aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-[2.5rem] border border-white/5 bg-black/40 p-8 shadow-2xl backdrop-blur-3xl transition-all duration-700 hover:border-cyan-500/10 sm:aspect-square md:aspect-video">
           {/* Animated Background Motifs */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-cyan-500/5 blur-[100px] transition-opacity group-hover:opacity-100" />
-            <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-purple-500/5 blur-[100px] transition-opacity group-hover:opacity-100" />
+            <div className="absolute -top-24 -right-24 size-64 rounded-full bg-cyan-500/5 blur-[100px] transition-opacity group-hover:opacity-100" />
+            <div className="absolute -bottom-24 -left-24 size-64 rounded-full bg-purple-500/5 blur-[100px] transition-opacity group-hover:opacity-100" />
 
             {/* Grid Pattern */}
             <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent)] opacity-[0.02]">
-              <div className="h-full w-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px]" />
+              <div className="size-full bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px]" />
             </div>
           </div>
 
@@ -85,8 +85,8 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
           >
             {/* Header Icon Section */}
             <div className="mb-6">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/20">
-                <Search className="h-8 w-8 transition-transform duration-500 group-hover:scale-110" />
+              <div className="flex size-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/20">
+                <Search className="size-8 transition-transform duration-500 group-hover:scale-110" />
               </div>
             </div>
 
@@ -109,7 +109,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                     className="h-14 border-white/5 bg-white/5 pr-24 pl-12 font-mono text-lg font-bold tracking-[0.2em] text-cyan-400 transition-all placeholder:font-sans placeholder:text-xs placeholder:tracking-widest placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-cyan-500/30"
                   />
                   <div className="absolute top-1/2 left-4 -translate-y-1/2 text-white/20">
-                    <Scan className="h-4 w-4" />
+                    <Scan className="size-4" />
                   </div>
 
                   {/* Inline Actions */}
@@ -123,13 +123,13 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                             exit={{ opacity: 0, scale: 0.8 }}
                             type="button"
                             onClick={handleCopy}
-                            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-cyan-400"
+                            className="flex size-9 cursor-pointer items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-cyan-400"
                             title="Copy barcode"
                           >
                             {copied ? (
-                              <Check className="h-4 w-4 text-green-500" />
+                              <Check className="size-4 text-green-500" />
                             ) : (
-                              <Copy className="h-4 w-4" />
+                              <Copy className="size-4" />
                             )}
                           </motion.button>
                           <motion.button
@@ -138,10 +138,10 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                             exit={{ opacity: 0, scale: 0.8 }}
                             type="button"
                             onClick={handleClear}
-                            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-red-400"
+                            className="flex size-9 cursor-pointer items-center justify-center rounded-lg text-white/20 transition-colors hover:bg-white/5 hover:text-red-400"
                             title="Clear input"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="size-4" />
                           </motion.button>
                         </>
                       )}
@@ -172,11 +172,11 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="group relative mt-6 overflow-hidden rounded-[2.5rem] border border-amber-500/20 bg-amber-500/5 p-6 backdrop-blur-xl transition-all hover:border-amber-500/40 hover:bg-amber-500/10"
             >
-              <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl transition-opacity group-hover:opacity-40" />
+              <div className="absolute -top-8 -right-8 size-32 rounded-full bg-amber-500/10 blur-3xl transition-opacity group-hover:opacity-40" />
 
               <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30">
-                  <KeyRound className="h-6 w-6" />
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30">
+                  <KeyRound className="size-6" />
                 </div>
 
                 <div className="flex-1 space-y-1">
@@ -199,7 +199,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                   className="h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] hover:bg-amber-400 active:scale-95 sm:ml-auto"
                 >
                   <span className="border-black font-bold">Set API Keys</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Button>
               </div>
             </motion.div>

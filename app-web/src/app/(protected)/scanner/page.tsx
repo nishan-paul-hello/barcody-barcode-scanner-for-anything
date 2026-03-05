@@ -82,21 +82,21 @@ export default function ScanPage() {
                     value="camera"
                     className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
-                    <Camera className="mr-2 h-3.5 w-3.5" />
+                    <Camera className="mr-2 size-[3.5]" />
                     Live
                   </TabsTrigger>
                   <TabsTrigger
                     value="file"
                     className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
-                    <FileUp className="mr-2 h-3.5 w-3.5" />
+                    <FileUp className="mr-2 size-[3.5]" />
                     Upload
                   </TabsTrigger>
                   <TabsTrigger
                     value="lookup"
                     className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
-                    <Search className="mr-2 h-3.5 w-3.5" />
+                    <Search className="mr-2 size-[3.5]" />
                     Lookup
                   </TabsTrigger>
                 </TabsList>
@@ -206,7 +206,7 @@ export default function ScanPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="rounded-full bg-cyan-500/10 p-2.5 ring-1 ring-cyan-500/20">
-                      <PackageSearch className="h-5 w-5 text-cyan-400" />
+                      <PackageSearch className="size-5 text-cyan-400" />
                     </div>
                     <h2 className="text-xl font-bold tracking-tight">
                       Extraction Results
@@ -246,7 +246,7 @@ export default function ScanPage() {
                       animate={{ opacity: 1, y: 0 }}
                       className="flex flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-amber-500/20 bg-amber-500/5 py-16 text-center"
                     >
-                      <PackageSearch className="mb-4 h-12 w-12 text-amber-500/50" />
+                      <PackageSearch className="mb-4 size-12 text-amber-500/50" />
                       <p className="text-sm font-bold text-white/80">
                         No product data for this barcode
                       </p>

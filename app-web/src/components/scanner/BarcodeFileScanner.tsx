@@ -293,7 +293,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                       <>
                         <div className="animate-scan-line absolute top-0 left-0 h-[1px] w-full bg-cyan-400/50 shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-transparent backdrop-blur-[1px]">
-                          <Loader2 className="h-8 w-8 animate-spin text-cyan-400/60" />
+                          <Loader2 className="size-8 animate-spin text-cyan-400/60" />
                         </div>
                       </>
                     )}
@@ -307,9 +307,9 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                     e.stopPropagation();
                     clearFile();
                   }}
-                  className="absolute top-6 right-6 h-10 w-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
+                  className="absolute top-6 right-6 size-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="size-5" />
                 </Button>
               </motion.div>
             ) : error ? (
@@ -320,8 +320,8 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 exit={{ opacity: 0, scale: 0.97 }}
                 className="flex h-full w-full flex-col items-center justify-center gap-5 p-8 text-center"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-red-500/20">
-                  <AlertCircle className="h-8 w-8 text-red-400" />
+                <div className="flex size-16 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-red-500/20">
+                  <AlertCircle className="size-8 text-red-400" />
                 </div>
                 <div className="space-y-2">
                   <p className="text-xl font-black tracking-tight text-white">
@@ -336,7 +336,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   onClick={() => setError(null)}
                   className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-bold text-white/50 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white/80"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="size-3" />
                   Dismiss
                 </button>
               </motion.div>
@@ -369,7 +369,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                     whileHover={{ scale: 1.1 }}
                     className="mb-6 rounded-[2rem] bg-cyan-500/10 p-6 ring-1 ring-cyan-500/20"
                   >
-                    <Upload className="h-10 w-10 text-cyan-400" />
+                    <Upload className="size-10 text-cyan-400" />
                   </motion.div>
                 </label>
                 <h3 className="mb-2 text-xl font-bold tracking-tight text-white/90">
@@ -407,8 +407,8 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
               <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-amber-500/10 blur-3xl transition-opacity group-hover:opacity-40" />
 
               <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30">
-                  <KeyRound className="h-6 w-6" />
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 text-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30">
+                  <KeyRound className="size-6" />
                 </div>
 
                 <div className="flex-1 space-y-1">
@@ -432,7 +432,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   className="h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] hover:bg-amber-400 active:scale-95 sm:ml-auto"
                 >
                   <span className="font-bold">Set API Keys</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Button>
               </div>
             </motion.div>
@@ -463,23 +463,23 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsPreviewOpen(false)}
-                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
+                  className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="size-5" />
                 </button>
                 <button
                   type="button"
                   onClick={downloadImage}
-                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
+                  className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className="size-4" />
                 </button>
                 <button
                   type="button"
                   onClick={() => window.open(previewUrl, '_blank')}
-                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
+                  className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="size-4" />
                 </button>
               </div>
 

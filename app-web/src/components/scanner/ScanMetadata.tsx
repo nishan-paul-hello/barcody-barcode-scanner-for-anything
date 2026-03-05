@@ -117,7 +117,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
       <Card className="relative flex h-[480px] flex-col gap-0 overflow-hidden rounded-[2.5rem] border-white/5 bg-black/40 py-0 shadow-2xl backdrop-blur-3xl">
         <CardHeader className="relative z-10 border-b border-white/5 bg-white/[0.02] px-6 py-[18px]">
           <div className="flex items-center gap-3">
-            <Activity className="h-5 w-5 text-cyan-400" />
+            <Activity className="size-5 text-cyan-400" />
             <CardTitle className="text-xs font-bold tracking-widest text-white/90 uppercase">
               Barcode Details
             </CardTitle>
@@ -138,7 +138,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
                     <div className="flex items-center gap-2">
-                      <QrCode className="h-3 w-3 text-orange-400/70" />
+                      <QrCode className="size-3 text-orange-400/70" />
                       <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                         Code Type
                       </span>
@@ -149,7 +149,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                   </div>
                   <div className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
                     <div className="flex items-center gap-2">
-                      <Clock className="h-3 w-3 text-purple-400/60" />
+                      <Clock className="size-3 text-purple-400/60" />
                       <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                         Detected At
                       </span>
@@ -164,7 +164,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 {fileName && (
                   <div className="flex h-[52px] items-center justify-between rounded-2xl bg-white/[0.02] px-4 ring-1 ring-white/5">
                     <div className="flex items-center gap-3">
-                      <FileText className="h-3.5 w-3.5 text-yellow-400/60" />
+                      <FileText className="size-[3.5] text-yellow-400/60" />
                       <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
                         Asset Name
                       </span>
@@ -179,7 +179,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                 {previewUrl && source === 'Camera' && (
                   <div className="group/img relative flex h-[52px] items-center justify-between rounded-2xl bg-white/[0.02] px-4 ring-1 ring-white/5 transition-all hover:bg-white/[0.04]">
                     <div className="flex items-center gap-3">
-                      <ImageIcon className="h-3.5 w-3.5 text-blue-400/60" />
+                      <ImageIcon className="size-[3.5] text-blue-400/60" />
                       <span className="text-[10px] font-bold tracking-wider text-white/40 uppercase">
                         Captured Image
                       </span>
@@ -194,9 +194,9 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                           className="cursor-pointer rounded-md p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white"
                         >
                           {imageCopied ? (
-                            <Check className="h-3 w-3 text-emerald-400" />
+                            <Check className="size-3 text-emerald-400" />
                           ) : (
-                            <Copy className="h-3 w-3" />
+                            <Copy className="size-3" />
                           )}
                         </button>
                         <button
@@ -205,7 +205,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                           title="Download Image"
                           className="cursor-pointer rounded-md p-1.5 text-white/40 transition-all hover:bg-white/10 hover:text-white"
                         >
-                          <Download className="h-3 w-3" />
+                          <Download className="size-3" />
                         </button>
                       </div>
 
@@ -228,7 +228,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                     {/* Header segment inside the box */}
                     <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-4 py-2">
                       <div className="flex items-center gap-2">
-                        <Barcode className="h-3 w-3 text-emerald-400/60" />
+                        <Barcode className="size-3 text-emerald-400/60" />
                         <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">
                           Barcode Content
                         </span>
@@ -239,9 +239,9 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
                         className="cursor-pointer rounded-md p-1 opacity-60 transition-all hover:bg-cyan-500/10 hover:text-cyan-400 hover:opacity-100"
                       >
                         {copied ? (
-                          <Check className="h-3 w-3" />
+                          <Check className="size-3" />
                         ) : (
-                          <Copy className="h-3 w-3" />
+                          <Copy className="size-3" />
                         )}
                       </button>
                     </div>

@@ -23,13 +23,13 @@ interface UPCitemdbPresenterProps {
 }
 
 const ProductPlaceholder = () => (
-  <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-white/[0.04]">
+  <div className="relative flex size-full items-center justify-center overflow-hidden bg-white/[0.04]">
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="h-32 w-32 rounded-full bg-cyan-500/10 blur-[60px]" />
+      <div className="size-32 rounded-full bg-cyan-500/10 blur-[60px]" />
     </div>
     <div className="relative flex flex-col items-center gap-4 text-white/10">
       <div className="rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-xl">
-        <ImageIcon className="h-12 w-12 opacity-20" />
+        <ImageIcon className="size-12 opacity-20" />
       </div>
       <div className="flex flex-col items-center gap-1">
         <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-30">
@@ -64,7 +64,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   if (!item) {
     return (
       <div className="flex h-40 flex-col items-center justify-center gap-3 rounded-3xl border border-white/5 bg-white/[0.02] text-white/20">
-        <Package className="h-10 w-10 opacity-20" />
+        <Package className="size-10 opacity-20" />
         <p>No item data found in UPCitemdb</p>
       </div>
     );
@@ -240,7 +240,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     key={mainImage}
                     type="button"
                     onClick={() => setSelectedImage(mainImage)}
-                    className={`h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
+                    className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                       (selectedImage ?? mainImage) === mainImage
                         ? 'outline outline-1 outline-white/30'
                         : 'opacity-50 hover:opacity-80'
@@ -250,7 +250,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     <img
                       src={mainImage}
                       alt={title}
-                      className="h-full w-full object-cover"
+                      className="size-full object-cover"
                     />
                   </button>
                 )}
@@ -263,7 +263,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                       key={img}
                       type="button"
                       onClick={() => setSelectedImage(img)}
-                      className={`h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
+                      className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                         selectedImage === img
                           ? 'outline outline-1 outline-white/30'
                           : 'opacity-50 hover:opacity-80'
@@ -273,7 +273,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                       <img
                         src={img}
                         alt={title}
-                        className="h-full w-full object-cover"
+                        className="size-full object-cover"
                         onError={() => markBroken(img)}
                       />
                     </button>
@@ -304,14 +304,14 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
 
               <div className="flex flex-wrap items-center gap-6">
                 <div className="flex items-center gap-2 text-white/60">
-                  <Barcode className="h-4 w-4 text-cyan-400" />
+                  <Barcode className="size-4 text-cyan-400" />
                   <span className="font-mono text-sm tracking-widest">
                     {upc || ean}
                   </span>
                 </div>
                 {model && (
                   <div className="flex items-center gap-2 text-white/60">
-                    <Tag className="h-4 w-4 text-orange-400" />
+                    <Tag className="size-4 text-orange-400" />
                     <span className="text-sm font-medium">Model: {model}</span>
                   </div>
                 )}
@@ -351,7 +351,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
           {!isDataEmpty(description) && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <h3 className="mb-4 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
-                <Info className="h-4 w-4 text-cyan-400" />
+                <Info className="size-4 text-cyan-400" />
                 Product Description
               </h3>
               <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4 ring-1 ring-white/5">
@@ -365,7 +365,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
           {(color || size || weight || dimension || asin || mpn) && (
             <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
               <h3 className="mb-4 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
-                <Layers className="h-4 w-4 text-orange-400" />
+                <Layers className="size-4 text-orange-400" />
                 Specifications
               </h3>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -384,7 +384,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
         <motion.div variants={itemAnim}>
           <div className="h-full rounded-3xl border border-white/5 bg-white/[0.02] p-6 backdrop-blur-md">
             <h3 className="mb-6 flex items-center gap-2 text-sm font-black tracking-widest text-white/40 uppercase">
-              <ShoppingBag className="h-4 w-4 text-green-400" />
+              <ShoppingBag className="size-4 text-green-400" />
               Live Retailer Offers
             </h3>
             <div className="space-y-3">
@@ -407,8 +407,8 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                         className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/20 group-hover:text-cyan-400">
-                            <DollarSign className="h-5 w-5" />
+                          <div className="flex size-10 items-center justify-center rounded-xl bg-white/5 text-white/20 group-hover:text-cyan-400">
+                            <DollarSign className="size-5" />
                           </div>
                           <div>
                             <p className="text-sm font-bold text-white/90">
@@ -429,14 +429,14 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                               View Store
                             </p>
                           </div>
-                          <ArrowUpRight className="h-4 w-4 text-white/10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
+                          <ArrowUpRight className="size-4 text-white/10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
                         </div>
                       </a>
                     )
                   )
               ) : (
                 <div className="flex h-40 flex-col items-center justify-center gap-2 text-center text-white/10">
-                  <ExternalLink className="h-8 w-8 opacity-20" />
+                  <ExternalLink className="size-8 opacity-20" />
                   <p className="text-sm">No live offers currently recorded</p>
                 </div>
               )}

@@ -32,6 +32,7 @@ import { UPCitemdbPresenter } from '@/components/lookup/UPCitemdbPresenter';
 import { GoUpcPresenter } from '@/components/lookup/GoUpcPresenter';
 import { OpenFoodFactsPresenter } from '@/components/lookup/OpenFoodFactsPresenter';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 // Simple internal interfaces to satisfy TS without complexity
 interface ApiResultState {
@@ -214,7 +215,7 @@ export default function GlobalLookupPage() {
         className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
       >
         <div className="relative w-full max-w-md">
-          <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-white/30" />
+          <Search className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/30" />
           <Input
             value={barcode}
             onChange={(e) => setBarcode(e.target.value)}
@@ -236,9 +237,9 @@ export default function GlobalLookupPage() {
                     title="Copy"
                   >
                     {copied ? (
-                      <Check className="h-4 w-4 text-green-400" />
+                      <Check className="size-4 text-green-400" />
                     ) : (
-                      <Copy className="h-4 w-4" />
+                      <Copy className="size-4" />
                     )}
                   </motion.button>
                   <motion.button
@@ -249,7 +250,7 @@ export default function GlobalLookupPage() {
                     className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-red-400"
                     title="Clear"
                   >
-                    <X className="h-4 w-4" />
+                    <X className="size-4" />
                   </motion.button>
                 </>
               )}
@@ -262,7 +263,7 @@ export default function GlobalLookupPage() {
                   className="cursor-pointer rounded-lg p-2 text-white/30 transition-colors hover:bg-white/5 hover:text-cyan-400"
                   title="Paste"
                 >
-                  <ClipboardPaste className="h-4 w-4" />
+                  <ClipboardPaste className="size-4" />
                 </motion.button>
               )}
             </AnimatePresence>
@@ -299,7 +300,10 @@ export default function GlobalLookupPage() {
                   className="group relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white"
                 >
                   <apiItem.icon
-                    className={`h-6 w-6 transition-transform group-hover:scale-110 ${apiItem.color}`}
+                    className={cn(
+                      'size-6 transition-transform group-hover:scale-110',
+                      apiItem.color
+                    )}
                   />
                   <span className="text-center text-xs font-black tracking-tight">
                     {apiItem.name}
@@ -307,13 +311,13 @@ export default function GlobalLookupPage() {
 
                   <div className="absolute top-3 right-3 flex gap-1.5">
                     {res.loading && (
-                      <Loader2 className="h-4 w-4 animate-spin text-cyan-500/50" />
+                      <Loader2 className="size-4 animate-spin text-cyan-500/50" />
                     )}
                     {res.data && !res.error && (
-                      <CheckCircle2 className="h-4 w-4 text-green-500/50" />
+                      <CheckCircle2 className="size-4 text-green-500/50" />
                     )}
                     {res.error && (
-                      <XCircle className="h-4 w-4 text-red-500/50" />
+                      <XCircle className="size-4 text-red-500/50" />
                     )}
                   </div>
                 </TabsTrigger>
@@ -347,7 +351,7 @@ export default function GlobalLookupPage() {
                   <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
                     <div>
                       <h2 className="flex items-center gap-3 text-2xl font-bold text-white">
-                        <apiItem.icon className={`h-6 w-6 ${apiItem.color}`} />
+                        <apiItem.icon className={cn('size-6', apiItem.color)} />
                         {apiItem.name}
                       </h2>
                     </div>
@@ -355,7 +359,7 @@ export default function GlobalLookupPage() {
                     <div className="flex flex-wrap gap-3">
                       {res.responseTime && (
                         <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 ring-1 ring-white/10">
-                          <Clock className="h-3.5 w-3.5" />
+                          <Clock className="size-3.5" />
                           {res.responseTime}ms
                         </div>
                       )}
@@ -375,14 +379,14 @@ export default function GlobalLookupPage() {
                   <div className="mt-4">
                     {res.loading ? (
                       <div className="flex h-60 flex-col items-center justify-center gap-4 text-white/20">
-                        <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                        <Loader2 className="size-10 animate-spin text-cyan-500" />
                         <p className="animate-pulse">
                           Synthesizing response from {apiItem.name}...
                         </p>
                       </div>
                     ) : res.error ? (
                       <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-red-500/10 bg-red-500/5 p-8 text-red-400/70">
-                        <XCircle className="h-10 w-10" />
+                        <XCircle className="size-10" />
                         <p className="text-center font-bold">{res.error}</p>
                         {res.error.toLowerCase().includes('key') ||
                         res.error.toLowerCase().includes('configure') ? (
@@ -397,7 +401,7 @@ export default function GlobalLookupPage() {
                               className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
                               onClick={() => setApiKeysModalOpen(true)}
                             >
-                              <Settings2 className="mr-2 h-3.5 w-3.5" />
+                              <Settings2 className="mr-2 size-3.5" />
                               Open API Settings
                             </Button>
                           </div>
@@ -436,7 +440,7 @@ export default function GlobalLookupPage() {
                       </div>
                     ) : (
                       <div className="flex h-60 flex-col items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/[0.02] p-8 text-white/10">
-                        <Database className="h-10 w-10 opacity-20" />
+                        <Database className="size-10 opacity-20" />
                         <p>
                           Enter a barcode above to trigger the lookup sequence
                         </p>

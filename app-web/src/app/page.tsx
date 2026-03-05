@@ -52,7 +52,7 @@ const FeatureCard = ({
     <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     <div className="relative z-10">
       <div className="mb-4 inline-flex rounded-2xl bg-cyan-500/10 p-3 text-cyan-400 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-        <Icon className="h-6 w-6" />
+        <Icon className="size-6" />
       </div>
       <h3 className="mb-3 text-xl font-bold text-white">{title}</h3>
       <p className="leading-relaxed text-white/60">{description}</p>
@@ -90,7 +90,7 @@ export default function LandingPage() {
               scale: [1, 1.2, 1],
             }}
             transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            className="absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full bg-cyan-500/10 blur-[120px]"
+            className="absolute -top-[10%] -left-[10%] size-1/2 rounded-full bg-cyan-500/10 blur-[120px]"
           />
           <motion.div
             animate={{
@@ -99,9 +99,9 @@ export default function LandingPage() {
               scale: [1, 1.1, 1],
             }}
             transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-            className="absolute top-[20%] -right-[10%] h-[40%] w-[40%] rounded-full bg-blue-600/10 blur-[120px]"
+            className="absolute top-[20%] -right-[10%] size-[40%] rounded-full bg-blue-600/10 blur-[120px]"
           />
-          <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 size-full -translate-x-1/2 -translate-y-1/2 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
         </div>
 
         {/* Hero Section */}
@@ -173,8 +173,8 @@ export default function LandingPage() {
           >
             <div className="animate-scan-line absolute top-0 left-0 h-1 w-full bg-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.5)]" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex h-64 w-64 items-center justify-center rounded-2xl border border-cyan-500/20">
-                <Camera className="h-12 w-12 animate-pulse text-cyan-500/30" />
+              <div className="flex size-64 items-center justify-center rounded-2xl border border-cyan-500/20">
+                <Camera className="size-12 animate-pulse text-cyan-500/30" />
               </div>
             </div>
           </motion.div>
@@ -268,7 +268,7 @@ export default function LandingPage() {
                     className="flex items-center gap-4 text-white/80"
                   >
                     <div className="rounded-lg bg-cyan-500/10 p-2 text-cyan-400">
-                      <item.icon className="h-5 w-5" />
+                      <item.icon className="size-5" />
                     </div>
                     <span className="font-medium">{item.text}</span>
                   </motion.li>
@@ -286,14 +286,14 @@ export default function LandingPage() {
               {/* Mock App UI */}
               <div className="relative h-[90%] w-[80%] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0a0a0a] shadow-2xl">
                 <div className="flex h-12 items-center justify-between border-b border-white/5 px-6">
-                  <div className="h-3 w-3 rounded-full bg-red-500/50" />
+                  <div className="size-3 rounded-full bg-red-500/50" />
                   <div className="flex gap-1.5">
                     <div className="h-2 w-12 rounded-full bg-white/10" />
                   </div>
                 </div>
                 <div className="space-y-4 p-6">
                   <div className="flex h-32 w-full flex-col items-center justify-center space-y-2 rounded-xl border border-cyan-500/20 bg-cyan-500/5">
-                    <Camera className="h-6 w-6 text-cyan-400" />
+                    <Camera className="size-6 text-cyan-400" />
                     <div className="h-1.5 w-24 overflow-hidden rounded-full bg-cyan-400/20">
                       <motion.div
                         animate={{ x: [-100, 100] }}
@@ -308,14 +308,14 @@ export default function LandingPage() {
                   </div>
                   <div className="space-y-3">
                     <div className="flex h-20 w-full gap-4 rounded-xl border border-white/10 bg-white/5 p-4">
-                      <div className="h-12 w-12 rounded-lg bg-white/5" />
+                      <div className="size-12 rounded-lg bg-white/5" />
                       <div className="flex-1 space-y-2 pt-1">
                         <div className="h-2 w-3/4 rounded-full bg-white/20" />
                         <div className="h-1.5 w-1/2 rounded-full bg-white/10" />
                       </div>
                     </div>
                     <div className="flex h-20 w-full gap-4 rounded-xl border border-white/10 bg-white/5 p-4">
-                      <div className="h-12 w-12 rounded-lg bg-white/5" />
+                      <div className="size-12 rounded-lg bg-white/5" />
                       <div className="flex-1 space-y-2 pt-1">
                         <div className="h-2 w-2/3 rounded-full bg-white/20" />
                         <div className="h-1.5 w-1/3 rounded-full bg-white/10" />
@@ -326,8 +326,8 @@ export default function LandingPage() {
               </div>
 
               {/* Floating Orbs in Background */}
-              <div className="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl" />
-              <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl" />
+              <div className="absolute -right-10 -bottom-10 size-40 rounded-full bg-purple-500/20 blur-3xl" />
+              <div className="absolute -top-10 -left-10 size-40 rounded-full bg-cyan-500/20 blur-3xl" />
             </motion.div>
           </div>
         </section>

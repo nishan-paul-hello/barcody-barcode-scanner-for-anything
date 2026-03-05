@@ -60,7 +60,7 @@ export function LoadingScreen() {
                   repeat: Infinity,
                   delay: i * 0.2,
                 }}
-                className="h-1.5 w-1.5 rounded-full bg-cyan-400/50"
+                className="size-1.5 rounded-full bg-cyan-400/50"
               />
             ))}
           </div>

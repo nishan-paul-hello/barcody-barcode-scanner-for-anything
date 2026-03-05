@@ -34,7 +34,7 @@ export default function ComparePage() {
   if (isLoading) {
     return (
       <div className="container mx-auto flex h-[60vh] flex-col items-center justify-center space-y-4 py-8">
-        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        <Loader2 className="text-primary size-8 animate-spin" />
         <p className="text-lg font-medium">Generating comparison...</p>
       </div>
     );
@@ -83,7 +83,7 @@ export default function ComparePage() {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild className="-ml-2">
               <Link href="/history">
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="mr-2 size-4" />
                 History
               </Link>
             </Button>
@@ -97,7 +97,7 @@ export default function ComparePage() {
           </p>
         </div>
         <Button onClick={handleShare} variant="outline" className="sm:w-auto">
-          <Share2 className="mr-2 h-4 w-4" />
+          <Share2 className="mr-2 size-4" />
           Share Results
         </Button>
       </div>

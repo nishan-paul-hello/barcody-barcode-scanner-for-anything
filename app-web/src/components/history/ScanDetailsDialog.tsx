@@ -80,7 +80,7 @@ export function ScanDetailsDialog({
                   <img
                     src={scan.product.images[0]}
                     alt={scan.product.name}
-                    className="mt-2 h-20 w-20 rounded-md border object-contain text-xs"
+                    className="mt-2 size-20 rounded-md border object-contain text-xs"
                   />
                 )}
               </div>

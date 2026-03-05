@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
             className="group flex items-center gap-2 text-sm font-bold text-white/60"
           >
             <span>Built with</span>
-            <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+            <Heart className="size-4 fill-red-500 text-red-500" />
             <span>by</span>
             <Link
               href="https://kaiverse.vercel.app/"
@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
               rel="noopener noreferrer"
               className="group/kai flex items-center gap-2 transition-all"
             >
-              <div className="relative h-8 w-8 transition-transform duration-300 group-hover/kai:scale-110">
+              <div className="relative size-8 transition-transform duration-300 group-hover/kai:scale-110">
                 <Image
                   src="/company-logo.svg"
                   alt="KAI Logo"

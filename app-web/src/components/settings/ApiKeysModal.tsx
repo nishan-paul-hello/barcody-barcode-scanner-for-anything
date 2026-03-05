@@ -127,7 +127,7 @@ const ApiKeyInput = ({
       <div className="flex items-center justify-between gap-6">
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <div className="flex shrink-0 items-center justify-center transition-transform group-hover:scale-110">
-            <Icon className={cn('h-5 w-5', color)} />
+            <Icon className={cn('size-5', color)} />
           </div>
           <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -150,7 +150,7 @@ const ApiKeyInput = ({
                 target="_blank"
                 className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-[10px] font-bold tracking-wide whitespace-nowrap text-white/40 transition-all hover:bg-white/10 hover:text-white"
               >
-                GET KEY <ExternalLink className="h-3 w-3" />
+                GET KEY <ExternalLink className="size-3" />
               </Link>
             )}
           </div>
@@ -183,22 +183,22 @@ const ApiKeyInput = ({
                 <button
                   type="button"
                   onClick={() => onCopy(value, fieldId)}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-white"
+                  className="flex size-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-white"
                   title="Copy entry"
                 >
                   {copiedField === fieldId ? (
-                    <Check className="h-4 w-4 text-green-400" />
+                    <Check className="size-4 text-green-400" />
                   ) : (
-                    <Copy className="h-4 w-4" />
+                    <Copy className="size-4" />
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={() => onClear(setter)}
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-red-400"
+                  className="flex size-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-red-400"
                   title="Clear field"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="size-4" />
                 </button>
               </motion.div>
             ) : (
@@ -210,10 +210,10 @@ const ApiKeyInput = ({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
                 onClick={handlePaste}
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl text-white/30 transition-colors hover:text-white"
+                className="flex size-9 cursor-pointer items-center justify-center rounded-xl text-white/30 transition-colors hover:text-white"
                 title="Paste from clipboard"
               >
-                <ClipboardPaste className="h-4 w-4" />
+                <ClipboardPaste className="size-4" />
               </motion.button>
             )}
           </AnimatePresence>
@@ -288,15 +288,15 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
         showCloseButton={false}
         className="overflow-hidden border-white/5 bg-[#0a0a0a] p-0 shadow-[0_0_100px_rgba(0,0,0,0.5)] sm:max-w-2xl sm:rounded-3xl"
       >
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-violet-600/10 blur-[120px]" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-cyan-600/10 blur-[120px]" />
+        <div className="absolute -top-40 -right-40 size-80 rounded-full bg-violet-600/10 blur-[120px]" />
+        <div className="absolute -bottom-40 -left-40 size-80 rounded-full bg-cyan-600/10 blur-[120px]" />
 
         <div className="relative flex h-[85vh] flex-col sm:h-auto sm:max-h-[85vh]">
           {/* Header */}
           <div className="flex items-start justify-between p-6 pb-4 sm:p-7 sm:pb-5">
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all hover:scale-110">
-                <KeyRound className="h-5 w-5 text-violet-400" />
+              <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all hover:scale-110">
+                <KeyRound className="size-5 text-violet-400" />
               </div>
               <div className="flex flex-col gap-0.5">
                 <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -311,9 +311,9 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="group flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
+              className="group flex size-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
             >
-              <X className="h-5 w-5 text-white/40 transition-colors group-hover:text-white" />
+              <X className="size-5 text-white/40 transition-colors group-hover:text-white" />
             </button>
           </div>
 
@@ -400,11 +400,11 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               )}
             >
               {updateMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
                 <Zap
                   className={cn(
-                    'h-3.5 w-3.5 transition-transform duration-300',
+                    'size-[3.5] transition-transform duration-300',
                     hasChanges && 'group-hover:scale-125 group-hover:rotate-12'
                   )}
                 />

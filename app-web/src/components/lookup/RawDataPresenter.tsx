@@ -116,7 +116,7 @@ const renderValue = (val: any): React.ReactNode => {
           rel="noreferrer"
           className="flex items-center gap-1 text-cyan-400 hover:underline"
         >
-          <ImageIcon className="h-3 w-3" /> Link
+          <ImageIcon className="size-3" /> Link
         </a>
       );
     }
@@ -201,7 +201,7 @@ const DataCard = ({
       )}
     >
       <div className="flex items-center gap-2 border-b border-white/10 bg-white/5 px-4 py-3 backdrop-blur-md">
-        <Layers className="h-4 w-4 text-cyan-400" />
+        <Layers className="size-4 text-cyan-400" />
         <h3 className="text-sm font-bold tracking-wider text-white uppercase">
           {title}
         </h3>
@@ -259,17 +259,17 @@ export function RawDataPresenter({ data }: RawDataPresenterProps) {
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-start">
             {images && images.length > 0 ? (
-              <div className="relative h-48 w-48 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/50">
+              <div className="relative size-48 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/50">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={images[0]}
                   alt={title || 'Product Image'}
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 />
               </div>
             ) : (
-              <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-black/50">
-                <Box className="h-10 w-10 text-white/20" />
+              <div className="flex size-32 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-black/50">
+                <Box className="size-10 text-white/20" />
               </div>
             )}
 

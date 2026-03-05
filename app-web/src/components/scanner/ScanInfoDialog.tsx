@@ -46,7 +46,7 @@ function Label({
 }) {
   return (
     <div className="flex items-center gap-1.5">
-      <Icon className={`h-3 w-3 ${iconCls}`} />
+      <Icon className={`size-3 ${iconCls}`} />
       <span className="text-[10px] font-black tracking-widest text-white/30 uppercase">
         {children}
       </span>
@@ -113,9 +113,9 @@ export const ScanInfoDialog: React.FC = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="group relative h-10 w-10 cursor-pointer rounded-full border border-white/5 bg-white/5 transition-all duration-300 hover:border-cyan-500/50 hover:bg-cyan-500/10"
+            className="group relative size-10 cursor-pointer rounded-full border border-white/5 bg-white/5 transition-all duration-300 hover:border-cyan-500/50 hover:bg-cyan-500/10"
           >
-            <Info className="h-4 w-4 text-white/40 transition-colors group-hover:text-cyan-400" />
+            <Info className="size-4 text-white/40 transition-colors group-hover:text-cyan-400" />
           </Button>
         </DialogTrigger>
       </div>
@@ -131,14 +131,14 @@ export const ScanInfoDialog: React.FC = () => {
         <div className="relative px-7 pt-7 pb-6">
           {/* Close */}
           <DialogClose className="absolute top-5 right-5 z-50 cursor-pointer rounded-full p-1.5 text-white/30 transition-all hover:bg-white/8 hover:text-white/80">
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </DialogClose>
 
           {/* Header */}
           <DialogHeader className="mb-6">
             <div className="flex items-center gap-3">
-              <div className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-white/5">
-                <Info className="h-4 w-4 text-white/40" />
+              <div className="group flex size-10 items-center justify-center rounded-full border border-white/5 bg-white/5">
+                <Info className="size-4 text-white/40" />
               </div>
               <div>
                 <DialogTitle className="text-lg font-black tracking-tight text-white">

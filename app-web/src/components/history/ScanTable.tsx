@@ -64,7 +64,7 @@ export function ScanTable({
           <TableHeader>
             <TableRow>
               <TableHead className="w-[50px]">
-                <Skeleton className="h-4 w-4" />
+                <Skeleton className="size-4" />
               </TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Type</TableHead>
@@ -79,11 +79,11 @@ export function ScanTable({
             {['sr1', 'sr2', 'sr3', 'sr4', 'sr5'].map((id) => (
               <TableRow key={id}>
                 <TableCell>
-                  <Skeleton className="h-4 w-4" />
+                  <Skeleton className="size-4" />
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Skeleton className="h-6 w-6 rounded-sm" />
+                    <Skeleton className="size-6 rounded-sm" />
                     <Skeleton className="h-4 w-32" />
                   </div>
                 </TableCell>
@@ -103,7 +103,7 @@ export function ScanTable({
                   <Skeleton className="h-4 w-16" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-8 w-8" />
+                  <Skeleton className="size-8" />
                 </TableCell>
               </TableRow>
             ))}
@@ -117,7 +117,7 @@ export function ScanTable({
     return (
       <div className="bg-card/30 flex flex-col items-center justify-center rounded-lg border py-12 text-center">
         <div className="bg-muted/50 mb-4 rounded-full p-4">
-          <Smartphone className="text-muted-foreground h-8 w-8" />
+          <Smartphone className="text-muted-foreground size-8" />
         </div>
         <h3 className="text-lg font-medium">No scans found</h3>
         <p className="text-muted-foreground mt-1 mb-4 max-w-sm">
@@ -195,15 +195,15 @@ export function ScanTable({
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <div className="bg-muted/20 h-10 w-10 flex-shrink-0 overflow-hidden rounded-md border">
+                  <div className="bg-muted/20 size-10 flex-shrink-0 overflow-hidden rounded-md border">
                     {scan.product?.images && scan.product.images.length > 0 ? (
                       <img
                         src={scan.product.images[0]}
                         alt=""
-                        className="h-full w-full object-contain p-1"
+                        className="size-full object-contain p-1"
                       />
                     ) : (
-                      <div className="text-muted-foreground flex h-full w-full items-center justify-center text-[10px] uppercase">
+                      <div className="text-muted-foreground flex size-full items-center justify-center text-[10px] uppercase">
                         No Img
                       </div>
                     )}
@@ -261,7 +261,7 @@ export function ScanTable({
                 <TableCell>
                   <div className="bg-muted h-1.5 w-12 overflow-hidden rounded-full">
                     <div
-                      className="bg-primary h-full"
+                      className="bg-primary size-full h-auto"
                       style={{
                         width: `${Math.min(100, Math.max(0, (scan.relevance || 0) * 100))}%`,
                       }}
@@ -282,9 +282,9 @@ export function ScanTable({
               <TableCell>
                 <div className="text-muted-foreground flex items-center gap-1 text-[11px] capitalize">
                   {scan.deviceType === 'mobile' ? (
-                    <Smartphone className="h-3 w-3" />
+                    <Smartphone className="size-3" />
                   ) : (
-                    <Monitor className="h-3 w-3" />
+                    <Monitor className="size-3" />
                   )}
                   {scan.deviceType}
                 </div>
@@ -292,9 +292,9 @@ export function ScanTable({
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" className="size-8 p-0">
                       <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
+                      <MoreHorizontal className="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -305,7 +305,7 @@ export function ScanTable({
                       onClick={() => onDelete(scan.id)}
                       className="text-destructive focus:text-destructive"
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
+                      <Trash2 className="mr-2 size-4" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>

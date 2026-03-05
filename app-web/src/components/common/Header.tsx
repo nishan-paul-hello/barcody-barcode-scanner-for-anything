@@ -87,14 +87,14 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
               hover: { scale: 1.1 },
             }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-            className="relative flex h-9 w-9 items-center justify-center"
+            className="relative flex size-9 items-center justify-center"
           >
             <Image
               src="/brand-logo.svg"
               alt="Barcody Logo"
               width={36}
               height={36}
-              className="h-full w-full object-contain"
+              className="size-full object-contain"
             />
           </motion.div>
           <span
@@ -125,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                 {item.icon && (
                   <item.icon
                     className={cn(
-                      'h-4 w-4 transition-transform',
+                      'size-4 transition-transform',
                       isActive && 'text-cyan-400'
                     )}
                   />
@@ -154,17 +154,17 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full p-0 ring-1 ring-white/10 transition-all hover:ring-cyan-400/50 data-[state=open]:ring-cyan-400"
+                    className="relative size-9 cursor-pointer overflow-hidden rounded-full p-0 ring-1 ring-white/10 transition-all hover:ring-cyan-400/50 data-[state=open]:ring-cyan-400"
                   >
                     {user.picture ? (
                       <Image
                         src={user.picture}
                         alt={user.name || 'User Profile'}
                         fill
-                        className="h-full w-full object-cover"
+                        className="size-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
+                      <div className="flex size-full items-center justify-center bg-gradient-to-br from-cyan-500/20 to-blue-600/20">
                         <span className="text-xs font-bold text-cyan-400">
                           {(user.name || user.email).charAt(0).toUpperCase()}
                         </span>
@@ -186,7 +186,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                         {user.email}
                       </p>
                     </div>
-                    <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-cyan-500/10 blur-2xl" />
+                    <div className="absolute -top-4 -right-4 size-16 rounded-full bg-cyan-500/10 blur-2xl" />
                   </div>
 
                   <div className="flex flex-col gap-1">
@@ -194,8 +194,8 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                       onClick={() => setApiKeysModalOpen(true)}
                       className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-white/10 focus:bg-white/10"
                     >
-                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-violet-400/50">
-                        <KeyRound className="h-5 w-5 text-violet-400 transition-transform duration-300" />
+                      <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-violet-400/50">
+                        <KeyRound className="size-5 text-violet-400 transition-transform duration-300" />
                         <div className="absolute inset-0 bg-violet-400 opacity-0 blur-xl transition-opacity group-hover:opacity-20" />
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -206,8 +206,8 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                     </DropdownMenuItem>
 
                     <DropdownMenuItem className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-red-500/5 focus:bg-red-500/5">
-                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-red-400/50">
-                        <Trash2 className="h-5 w-5 text-red-400 transition-transform duration-300" />
+                      <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-red-500/30 to-rose-500/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-red-400/50">
+                        <Trash2 className="size-5 text-red-400 transition-transform duration-300" />
                         <div className="absolute inset-0 bg-red-400 opacity-0 blur-xl transition-opacity group-hover:opacity-30" />
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -221,8 +221,8 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
                       onClick={handleLogout}
                       className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-white/10 focus:bg-white/10"
                     >
-                      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-blue-400/50">
-                        <LogOut className="h-5 w-5 text-blue-400 transition-transform duration-300" />
+                      <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-blue-400/50">
+                        <LogOut className="size-5 text-blue-400 transition-transform duration-300" />
                         <div className="absolute inset-0 bg-blue-400 opacity-0 blur-xl transition-opacity group-hover:opacity-10" />
                       </div>
                       <div className="flex flex-col gap-0.5">
@@ -244,7 +244,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
               onClick={() => openLoginModal()}
               className="group relative flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400 active:scale-95"
             >
-              <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
+              <Fingerprint className="size-4 transition-transform group-hover:scale-110" />
               <span className="text-sm">Get Started</span>
               <div className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
             </Button>
