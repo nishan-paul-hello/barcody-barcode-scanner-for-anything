@@ -1,63 +1,40 @@
-# Compiled output
+*.d.ts.map
+*.db
+*.js.map
+*.log
+*.sqlite
+*.swo
+*.swp
+*.temp
+*.tmp
+*.tsbuildinfo
+*~
+.DS_Store
+.cache
+.env
+.env.*.local
+.env.development
+.env.local
+.env.production
+.env.test
+.idea
+.pnpm-store
+.vscode/
+.yarn/cache
+.yarn/install-state.gz
+/.nyc_output
+/build
+/coverage
 /dist
 /node_modules
-/build
-*.tsbuildinfo
-
-# Logs
+/playwright-report
+/prisma/migrations/dev.db
+/test-results
+Thumbs.db
+docker-compose.override.yml
+lerna-debug.log*
 logs
-*.log
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Tests
-/coverage
-/.nyc_output
-/test-results
-/playwright-report
-
-# IDE
-.vscode/
-.idea
-*.swp
-*.swo
-*~
-
-# Environment variables
-.env
-.env.local
-.env.development
-.env.test
-.env.production
-.env.*.local
-
-# Temp files
-*.tmp
-*.temp
-.cache
-
-# Docker
-docker-compose.override.yml
-
-# Database
-*.sqlite
-*.db
-
-# Package managers
-.pnpm-store
-.yarn/cache
-.yarn/install-state.gz
-
-# Prisma (if using)
-/prisma/migrations/dev.db
-
-# Build artifacts
-*.js.map
-*.d.ts.map

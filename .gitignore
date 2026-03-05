@@ -1,85 +1,56 @@
-# Dependencies
-node_modules/
-jspm_packages/
-
-# Build Outputs & Artifacts
-dist/
-build/
-out/
-*.tsbuildinfo
-
-# Environment & Secrets
-.env
-.env.local
-.env.*.local
-.env.production
-.env.development
-.env.test
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# OS Generated Files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-
-# VSCode
-.vscode/
-
-# JetBrains IDEs (WebStorm, IntelliJ, etc.)
-.idea/
 *.iml
 *.iws
-
-# Sublime Text
+*.lcov
+*.log
+*.pid
+*.pid.lock
+*.seed
 *.sublime-project
 *.sublime-workspace
-
-# Vim
-*.swp
 *.swo
+*.swp
+*.temp
+*.tmp
+*.tsbuildinfo
 *~
-
-# Testing & Coverage
-coverage/
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+._*
+.cache/
+.env
+.env.*.local
+.env.development
+.env.local
+.env.production
+.env.test
+.idea/
+.next/
+.npm
+.nuxt/
 .nyc_output/
-*.lcov
-
-# Yarn
-.yarn/
+.parcel-cache/
 .pnp.*
-
-# pnpm
 .pnpm-debug.log
 .pnpm-store/
-
-# npm
-.npm
-
-# Temporary & Cache Files
-*.tmp
-*.temp
-.cache/
-.parcel-cache/
-.next/
-.nuxt/
-.vuepress/dist
 .serverless/
-
-# Miscellaneous
-*.pid
-*.seed
-*.pid.lock
+.vscode/
+.vuepress/dist
+.yarn/
+Desktop.ini
+Thumbs.db
+build/
+coverage/
+dist/
+ehthumbs.db
 envs/
+jspm_packages/
+lerna-debug.log*
+logs/
+node_modules/
+npm-debug.log*
+out/
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
