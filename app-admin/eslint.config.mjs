@@ -55,23 +55,47 @@ const eslintConfig = [
       'no-shadow': 'off',
       'no-use-before-define': 'off',
 
-      // TypeScript
+      // Typescript
       ...typescriptEslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/consistent-type-imports': [
-        'warn',
+        'error',
         {
           prefer: 'type-imports',
           fixStyle: 'inline-type-imports',
         },
       ],
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/no-empty-interface': 'error',
+      '@typescript-eslint/no-inferrable-types': 'error',
+      '@typescript-eslint/prefer-as-const': 'error',
+      '@typescript-eslint/prefer-for-of': 'error',
+      '@typescript-eslint/prefer-function-type': 'error',
+      '@typescript-eslint/no-empty-function': 'error',
+      '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: {
+            attributes: false,
+          },
+        },
+      ],
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      '@typescript-eslint/restrict-template-expressions': ['warn', { allowNumber: true }],
 
       // React
       ...reactPlugin.configs.recommended.rules,
