@@ -152,7 +152,7 @@ export default function AnalyticsPage() {
   }, [formattedHourly]);
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -171,7 +171,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Summary stat cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<Barcode className="h-4 w-4" />}
           label="Scans in Range"
@@ -334,7 +334,7 @@ export default function AnalyticsPage() {
       </Card>
 
       {/* Barcode types + Device breakdown side by side */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Barcode type donut */}
         <Card>
           <CardHeader>

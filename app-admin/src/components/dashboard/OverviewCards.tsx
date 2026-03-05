@@ -36,7 +36,7 @@ export function OverviewCards({ dateRange: _dateRange }: OverviewCardsProps) {
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -87,7 +87,7 @@ export function OverviewCards({ dateRange: _dateRange }: OverviewCardsProps) {
   ] as const;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
         <Card key={stat.title}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -98,13 +98,13 @@ export function OverviewCards({ dateRange: _dateRange }: OverviewCardsProps) {
             <div className="text-2xl font-bold">{stat.value}</div>
             <div className="text-muted-foreground flex items-center text-xs">
               {stat.trend === 'up' && (
-                <TrendingUp className="mr-1 h-3 w-3 text-green-500" />
+                <TrendingUp className="mr-1 size-3 text-green-500" />
               )}
               {stat.trend === 'down' && (
-                <TrendingDown className="mr-1 h-3 w-3 text-red-400" />
+                <TrendingDown className="mr-1 size-3 text-red-400" />
               )}
               {stat.trend === 'neutral' && (
-                <Minus className="mr-1 h-3 w-3 text-zinc-500" />
+                <Minus className="mr-1 size-3 text-zinc-500" />
               )}
               {stat.description}
             </div>

@@ -23,6 +23,7 @@ import {
   Calendar,
   Mail,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { format, formatDistanceToNow, subDays, isAfter } from 'date-fns';
 
 const PAGE_SIZE = 20;
@@ -89,7 +90,7 @@ export default function UsersPage() {
   const total = users?.total ?? 0;
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-cyan-400">
@@ -101,7 +102,7 @@ export default function UsersPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<Users className="h-4 w-4" />}
           label="Total Users"
@@ -148,7 +149,10 @@ export default function UsersPage() {
                   placeholder="Search by email or ID…"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className="h-9 w-64 rounded-md border border-zinc-800 bg-zinc-950 pr-3 pl-8 text-sm text-zinc-100 placeholder-zinc-600 ring-0 transition outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-700"
+                  className={cn(
+                    'h-9 w-64 rounded-md border border-zinc-800 bg-zinc-950 pr-3 pl-8 text-sm text-zinc-100',
+                    'placeholder-zinc-600 ring-0 transition outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-700'
+                  )}
                 />
               </div>
               <button
@@ -259,11 +263,12 @@ export default function UsersPage() {
                           key={`page-${p}`}
                           type="button"
                           onClick={() => setPage(p)}
-                          className={`h-7 min-w-7 rounded px-2 text-xs font-medium transition ${
+                          className={cn(
+                            'h-7 min-w-7 rounded px-2 text-xs font-medium transition',
                             p === page
                               ? 'bg-cyan-500/20 text-cyan-400 ring-1 ring-cyan-500/50'
                               : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
-                          }`}
+                          )}
                         >
                           {p}
                         </button>
@@ -416,7 +421,11 @@ function PagBtn({
       title={title}
       onClick={onClick}
       disabled={disabled}
-      className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-30"
+      className={cn(
+        'flex size-7 items-center justify-center rounded text-zinc-400 transition',
+        'hover:bg-zinc-800 hover:text-zinc-200',
+        'disabled:cursor-not-allowed disabled:opacity-30'
+      )}
     >
       {children}
     </button>

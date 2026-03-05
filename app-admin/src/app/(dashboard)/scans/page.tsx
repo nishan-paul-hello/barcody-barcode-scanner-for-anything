@@ -5,6 +5,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { useScans } from '@/hooks/useAnalytics';
 import { DateRangeSelector } from '@/components/dashboard/DateRangeSelector';
+import { cn } from '@/lib/utils';
 import {
   Card,
   CardContent,
@@ -126,7 +127,7 @@ export default function ScansPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -144,7 +145,7 @@ export default function ScansPage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<ScanLine className="h-4 w-4" />}
           label="Total Scans"
@@ -194,7 +195,10 @@ export default function ScansPage() {
                   placeholder="Barcode data or email…"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className="h-9 w-60 rounded-md border border-zinc-800 bg-zinc-950 pr-3 pl-8 text-sm text-zinc-100 placeholder-zinc-600 ring-0 transition outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-700"
+                  className={cn(
+                    'h-9 w-60 rounded-md border border-zinc-800 bg-zinc-950 pr-3 pl-8 text-sm text-zinc-100',
+                    'placeholder-zinc-600 ring-0 transition outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-700'
+                  )}
                 />
               </div>
               <button
@@ -207,7 +211,7 @@ export default function ScansPage() {
                 <button
                   type="button"
                   onClick={clearSearch}
-                  className="flex h-9 items-center gap-1.5 rounded-md px-3 text-sm text-zinc-400 transition hover:text-zinc-200"
+                  className="flex h-9 items-center justify-center gap-1.5 rounded-md px-3 text-sm text-zinc-400 transition hover:text-zinc-200"
                 >
                   <X className="h-3 w-3" />
                   Clear
@@ -365,7 +369,7 @@ function ScanRow({ scan }: { scan: Scan }) {
 
       {/* Barcode type badge */}
       <td className="py-3 pr-4">
-        <Badge className={`border-0 text-xs ${typeClass}`}>
+        <Badge className={cn('border-0 text-xs', typeClass)}>
           {scan.barcodeType}
         </Badge>
       </td>
@@ -385,7 +389,7 @@ function ScanRow({ scan }: { scan: Scan }) {
           <span className="text-xs text-zinc-600 italic">—</span>
         )}
         {scan.nutritionGrade && (
-          <Badge className={`mt-0.5 border-0 px-1.5 text-xs ${nutClass}`}>
+          <Badge className={cn('mt-0.5 border-0 px-1.5 text-xs', nutClass)}>
             Nutri-{scan.nutritionGrade.toUpperCase()}
           </Badge>
         )}

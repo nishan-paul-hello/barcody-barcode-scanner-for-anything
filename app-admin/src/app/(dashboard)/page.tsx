@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { useRef } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
@@ -65,7 +66,7 @@ export default function LandingPage() {
       <section className="relative z-10 flex min-h-[75vh] flex-col items-center justify-start px-4 pt-[88px] text-center">
         <motion.div
           style={{ opacity, scale }}
-          className="flex flex-col items-center space-y-8"
+          className="flex flex-col items-center gap-8"
         >
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -98,7 +99,10 @@ export default function LandingPage() {
             <Button
               size="lg"
               onClick={handleLaunchDashboard}
-              className="group h-14 overflow-hidden rounded-full bg-[#00ffe7] px-8 font-bold text-black shadow-[0_0_20px_rgba(0,255,231,0.3)] transition-all hover:bg-[#00ffe7]/90 hover:ring-4 hover:ring-[#00ffe7]/20"
+              className={cn(
+                'group relative h-14 overflow-hidden rounded-full bg-[#00ffe7] px-8 font-bold text-black shadow-[0_0_20px_rgba(0,255,231,0.3)]',
+                'transition-all hover:bg-[#00ffe7]/90 hover:ring-4 hover:ring-[#00ffe7]/20'
+              )}
             >
               Initialize Dashboard
               <motion.span
@@ -109,7 +113,10 @@ export default function LandingPage() {
             <Button
               size="lg"
               variant="outline"
-              className="h-14 rounded-full border border-zinc-700 bg-zinc-900/50 px-8 font-bold text-zinc-300 backdrop-blur-xl transition-all hover:border-[#00ffe7]/50 hover:bg-[#00ffe7]/5 hover:text-white"
+              className={cn(
+                'h-14 rounded-full border border-zinc-700 bg-zinc-900/50 px-8 font-bold text-zinc-300 backdrop-blur-xl',
+                'transition-all hover:border-[#00ffe7]/50 hover:bg-[#00ffe7]/5 hover:text-white'
+              )}
               asChild
             >
               <Link href="#overview">System Overview</Link>
@@ -167,7 +174,10 @@ export default function LandingPage() {
               <motion.div
                 key={item.title}
                 variants={fadeIn}
-                className="group relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/30 p-8 backdrop-blur-sm transition-colors hover:border-[#00ffe7]/20 hover:bg-zinc-900/60"
+                className={cn(
+                  'group relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/30 p-8 backdrop-blur-sm',
+                  'transition-colors hover:border-[#00ffe7]/20 hover:bg-zinc-900/60'
+                )}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#00ffe7]/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="relative z-10">
@@ -207,7 +217,7 @@ export default function LandingPage() {
                 beautiful visualizations. Track user engagement, scan velocity,
                 and system health instantly.
               </p>
-              <ul className="space-y-4 text-zinc-300">
+              <ul className="flex flex-col gap-4 text-zinc-300">
                 <li className="flex items-center gap-3">
                   <Zap className="h-5 w-5 text-[#00ffe7]" /> Real-time data
                   streams
@@ -325,7 +335,10 @@ export default function LandingPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <motion.div
               style={{ y: y2 }}
-              className="relative order-2 flex aspect-square w-full flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl backdrop-blur-xl transition-colors hover:border-[#00ffe7]/10 lg:order-1"
+              className={cn(
+                'relative flex aspect-square w-full flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-2xl backdrop-blur-xl lg:order-1',
+                'transition-colors hover:border-[#00ffe7]/10'
+              )}
             >
               <div className="mb-6 flex items-center justify-between border-b border-white/5 pb-4">
                 <div>
@@ -392,7 +405,10 @@ export default function LandingPage() {
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    className="group flex items-center justify-between rounded-xl border border-white/5 bg-black/40 p-3 transition-colors hover:border-white/10 hover:bg-black/60"
+                    className={cn(
+                      'group flex items-center justify-between rounded-xl border border-white/5 bg-black/40 p-3',
+                      'transition-colors hover:border-white/10 hover:bg-black/60'
+                    )}
                   >
                     <div className="flex items-center gap-4">
                       <div className="relative">
@@ -441,7 +457,7 @@ export default function LandingPage() {
                 modify user permissions instantly. Enforce security policies
                 across teams and geographical locations with absolute precision.
               </p>
-              <ul className="space-y-4 text-zinc-300">
+              <ul className="flex flex-col gap-4 text-zinc-300">
                 <li className="flex items-center gap-3">
                   <Lock className="h-5 w-5 text-[#00ffe7]" /> Role-Based Access
                   Control

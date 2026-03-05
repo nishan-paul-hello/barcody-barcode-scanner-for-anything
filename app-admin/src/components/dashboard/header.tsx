@@ -66,7 +66,7 @@ export function Header() {
     >
       <Link href="/" className="outline-none">
         <motion.div
-          className="group flex cursor-pointer items-center space-x-3 transition-all"
+          className="group flex cursor-pointer items-center gap-3 transition-all"
           whileHover="hover"
           initial="initial"
         >
@@ -76,7 +76,7 @@ export function Header() {
               hover: { scale: 1.1 },
             }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-            className="relative flex h-9 w-9 items-center justify-center"
+            className="relative flex size-9 items-center justify-center"
           >
             <Image
               src="/brand-logo.svg"
@@ -107,7 +107,8 @@ export function Header() {
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
                 className={cn(
-                  'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all hover:text-white',
+                  'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all',
+                  'hover:text-white',
                   isActive ? 'text-white' : 'text-white/40'
                 )}
               >
@@ -140,7 +141,10 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full p-0 ring-1 ring-white/10 transition-all hover:ring-[#ee4b2b]/50 data-[state=open]:ring-[#ee4b2b]"
+                  className={cn(
+                    'relative size-9 cursor-pointer overflow-hidden rounded-full p-0 ring-1 ring-white/10 transition-all',
+                    'hover:ring-[#ee4b2b]/50 data-[state=open]:ring-[#ee4b2b]'
+                  )}
                 >
                   {user.picture ? (
                     <Image
@@ -159,7 +163,10 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="mt-4 w-72 overflow-hidden rounded-[2rem] border border-white/10 bg-black/60 p-2 text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/10 backdrop-blur-3xl"
+                className={cn(
+                  'mt-4 w-72 overflow-hidden rounded-[2rem] border border-white/10 bg-black/60 p-2 text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)]',
+                  'ring-1 ring-white/10 backdrop-blur-3xl'
+                )}
                 align="end"
               >
                 <div className="relative mb-2 overflow-hidden rounded-2xl bg-white/5 p-4">

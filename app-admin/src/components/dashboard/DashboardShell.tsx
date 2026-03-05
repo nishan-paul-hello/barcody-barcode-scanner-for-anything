@@ -5,6 +5,7 @@ import { Footer } from '@/components/dashboard/footer';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 /**
  * Thin client wrapper for the dashboard shell.
@@ -49,11 +50,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <Header />
         <div className="flex flex-1 flex-col">
           <main
-            className={
-              isHomePage
-                ? 'flex-1 pt-12'
-                : 'container mx-auto flex-1 px-4 pt-12 pb-8 sm:px-6 lg:px-8'
-            }
+            className={cn(
+              'flex-1 pt-12',
+              !isHomePage && 'container mx-auto px-4 pb-8 sm:px-6 lg:px-8'
+            )}
           >
             {isHomePage ? (
               children
