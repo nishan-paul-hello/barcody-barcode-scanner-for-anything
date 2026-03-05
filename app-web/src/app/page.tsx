@@ -261,7 +261,7 @@ export default function LandingPage() {
                   { icon: Zap, text: 'Real-time pricing comparison' },
                 ].map((item, i) => (
                   <motion.li
-                    key={i}
+                    key={item.text}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}

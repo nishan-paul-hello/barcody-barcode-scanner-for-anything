@@ -63,8 +63,12 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [startRetryTrigger, setStartRetryTrigger] = useState(0);
   const startRetryCountRef = useRef(0);
-  const playBeepRef = useRef<() => void>(() => {});
-  const drawFeedbackRef = useRef<(result: Result) => void>(() => {});
+  const playBeepRef = useRef<() => void>(() => {
+    /* no-op */
+  });
+  const drawFeedbackRef = useRef<(result: Result) => void>(() => {
+    /* no-op */
+  });
   const onScanSuccessRef = useRef(onScanSuccess);
   const onScanErrorRef = useRef(onScanError);
   const createScanMutation = useCreateScan();
@@ -261,10 +265,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
 
     const listDevices = async () => {
       try {
-        if (
-          !navigator.mediaDevices ||
-          !navigator.mediaDevices.enumerateDevices
-        ) {
+        if (!navigator.mediaDevices?.enumerateDevices) {
           if (!window.isSecureContext) {
             setError(
               'Camera access requires a secure connection (HTTPS). Please ensure you are using HTTPS or localhost.'
@@ -309,7 +310,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       }
     };
 
-    listDevices();
+    void listDevices();
   }, []);
 
   // Main scanner lifecycle effect
@@ -411,7 +412,9 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           controls = newControls;
           // Ensure video is playing (some browsers need explicit play after stream attach)
           requestAnimationFrame(() => {
-            videoRef.current?.play().catch(() => {});
+            void videoRef.current?.play().catch(() => {
+              /* ignore play error */
+            });
           });
         }
       } catch (err) {
@@ -425,7 +428,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
       }
     }
 
-    start();
+    void start();
 
     return () => {
       isMounted = false;

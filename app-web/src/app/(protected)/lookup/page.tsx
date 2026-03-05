@@ -89,8 +89,8 @@ export default function GlobalLookupPage() {
 
   const [results, setResults] = useState<ResultsMap>(() => {
     const initial: ResultsMap = {};
-    APIS.forEach((api) => {
-      initial[api.id] = {
+    APIS.forEach((apiItem) => {
+      initial[apiItem.id] = {
         data: null,
         loading: false,
         error: null,
@@ -156,7 +156,9 @@ export default function GlobalLookupPage() {
   const handleLookup = () => {
     const cleanBarcode = barcode.trim();
     if (!cleanBarcode) return;
-    APIS.forEach((api) => fetchApi(api.id, cleanBarcode));
+    APIS.forEach((apiItem) => {
+      void fetchApi(apiItem.id, cleanBarcode);
+    });
   };
 
   const handlePaste = async () => {
@@ -275,8 +277,8 @@ export default function GlobalLookupPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="mb-12">
             <TabsList className="grid h-auto w-full grid-cols-2 gap-4 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-6">
-              {APIS.map((api) => {
-                const res = results[api.id] || {
+              {APIS.map((apiItem) => {
+                const res = results[apiItem.id] || {
                   loading: false,
                   data: null,
                   error: null,
@@ -284,20 +286,20 @@ export default function GlobalLookupPage() {
                 };
                 return (
                   <TabsTrigger
-                    key={api.id}
-                    value={api.id}
+                    key={apiItem.id}
+                    value={apiItem.id}
                     style={
-                      activeTab === api.id
-                        ? { borderColor: COLOR_HEX[api.color] }
+                      activeTab === apiItem.id
+                        ? { borderColor: COLOR_HEX[apiItem.color] }
                         : {}
                     }
                     className="group relative flex h-16 w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-white/5 bg-white/5 p-2 text-white/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.08] hover:text-white data-[state=active]:scale-[1.05] data-[state=active]:bg-white/5 data-[state=active]:text-white"
                   >
-                    <api.icon
-                      className={`h-6 w-6 transition-transform group-hover:scale-110 ${api.color}`}
+                    <apiItem.icon
+                      className={`h-6 w-6 transition-transform group-hover:scale-110 ${apiItem.color}`}
                     />
                     <span className="text-center text-xs font-black tracking-tight">
-                      {api.name}
+                      {apiItem.name}
                     </span>
 
                     <div className="absolute top-3 right-3 flex gap-1.5">

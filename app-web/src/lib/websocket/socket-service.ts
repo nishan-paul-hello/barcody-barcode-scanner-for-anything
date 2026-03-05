@@ -106,13 +106,13 @@ class SocketService {
 
     // Invalidate the scans list to trigger a refetch
     // This ensures consistency even if we don't manually update the cache
-    queryClient.invalidateQueries({ queryKey: ['scans'] });
+    void queryClient.invalidateQueries({ queryKey: ['scans'] });
 
     // Add to cache if this is a list view or update existing items
     queryClient.setQueryData(
       ['scans'],
       (oldData: PaginatedResponse<ScanResponseDto> | undefined) => {
-        if (!oldData || !oldData.items) return oldData;
+        if (!oldData?.items) return oldData;
         return {
           ...oldData,
           items: [scan, ...oldData.items].slice(0, oldData.meta.limit || 50),
@@ -127,12 +127,12 @@ class SocketService {
 
   private handleScanDeleted(id: string) {
     console.warn('Real-time: Scan deleted', id);
-    queryClient.invalidateQueries({ queryKey: ['scans'] });
+    void queryClient.invalidateQueries({ queryKey: ['scans'] });
 
     queryClient.setQueryData(
       ['scans'],
       (oldData: PaginatedResponse<ScanResponseDto> | undefined) => {
-        if (!oldData || !oldData.items) return oldData;
+        if (!oldData?.items) return oldData;
         return {
           ...oldData,
           items: oldData.items.filter(

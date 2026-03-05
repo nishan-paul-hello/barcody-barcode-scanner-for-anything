@@ -52,7 +52,7 @@ export const ScanMetadata: React.FC<ScanMetadataProps> = ({
 
   const handleCopy = () => {
     if (result) {
-      navigator.clipboard.writeText(result);
+      void navigator.clipboard.writeText(result);
       setCopied(true);
     }
   };

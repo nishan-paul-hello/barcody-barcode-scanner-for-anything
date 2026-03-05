@@ -240,7 +240,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
 
   const handleCopy = (text: string, fieldId: string) => {
     if (!text) return;
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
     setCopiedField(fieldId);
     setTimeout(() => setCopiedField(null), 2000);
   };

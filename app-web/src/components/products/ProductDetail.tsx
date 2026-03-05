@@ -265,10 +265,10 @@ function IngredientList({ value }: { value: string | number }) {
   }
   return (
     <div className="flex flex-wrap gap-2">
-      {parts.map((p, i) => (
+      {parts.map((p) => (
         <span
-          key={i}
-          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium text-white/60"
+          key={p}
+          className="rounded-lg border border-white/5 bg-white/5 px-3 py-1 text-xs font-medium text-white/50 transition-colors hover:border-emerald-500/20 hover:bg-emerald-500/10 hover:text-emerald-300/60"
         >
           {p}
         </span>
@@ -284,7 +284,7 @@ function FoodLayout({
   nutrition: ProductResponseDto['nutrition'];
   groupedAttrs: Record<string, ProductAttribute[]>;
 }) {
-  const grade = nutrition?.grade as keyof typeof NUTRITION_GRADES | undefined;
+  const grade = nutrition?.grade;
   const gradeInfo = grade ? NUTRITION_GRADES[grade] : null;
 
   const nutriAttrs = groupedAttrs['Nutrition'] ?? [];
@@ -474,8 +474,8 @@ function FoodLayout({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            {allergens.map((a, i) => (
-              <AllergenPill key={i} name={a} />
+            {allergens.map((a) => (
+              <AllergenPill key={a} name={a} />
             ))}
           </div>
         </motion.div>
@@ -565,10 +565,10 @@ function RenderChips({
         {label}
       </span>
       <div className="flex flex-wrap gap-2">
-        {parts.map((p, i) => (
+        {parts.map((p) => (
           <span
-            key={i}
-            className="rounded-full border border-white/8 bg-white/5 px-3 py-1 text-[11px] font-medium text-white/60"
+            key={p}
+            className="rounded-lg border border-white/5 bg-white/5 px-3 py-1 text-xs font-medium text-white/40"
           >
             {p}
           </span>
@@ -729,8 +729,8 @@ function UniversalGroupCard({
         {statGrid ? (
           /* Numeric-only group → 2-column stat grid */
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/5">
-            {attrs.map((attr, i) => (
-              <div key={i} className="bg-black/50 p-4">
+            {attrs.map((attr) => (
+              <div key={attr.label} className="bg-black/50 p-4">
                 <RenderStat
                   value={attr.value}
                   unit={attr.unit}
@@ -742,7 +742,7 @@ function UniversalGroupCard({
         ) : (
           /* Mixed group → render each attribute by shape */
           <div className="space-y-5">
-            {attrs.map((attr, i) => {
+            {attrs.map((attr) => {
               const shape = detectValueShape(attr.value);
               // Prose and chips get their own block; label rows are inline
               const needsBlock =
@@ -752,7 +752,7 @@ function UniversalGroupCard({
                 shape === 'grade';
               return (
                 <div
-                  key={i}
+                  key={attr.label}
                   className={cn(
                     needsBlock &&
                       'rounded-2xl border border-white/5 bg-white/[0.02] p-4'
@@ -888,14 +888,14 @@ function HeroCard({
 
           {hasMultipleImages && (
             <div className="absolute right-3 bottom-3 left-3 flex gap-1.5 overflow-x-auto rounded-2xl border border-white/10 bg-black/70 p-2 backdrop-blur-xl">
-              {displayImages.map((src, i) => (
+              {displayImages.map((src) => (
                 <button
-                  key={i}
+                  key={src}
                   type="button"
-                  onClick={() => setSelectedIndex(i)}
+                  onClick={() => setSelectedIndex(displayImages.indexOf(src))}
                   className={cn(
                     'relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all',
-                    selectedIndex === i
+                    selectedIndex === displayImages.indexOf(src)
                       ? 'scale-105 border-white/60'
                       : 'border-transparent opacity-50 hover:opacity-80'
                   )}
@@ -934,9 +934,9 @@ function HeroCard({
                 category
                   .split(',')
                   .slice(0, 3)
-                  .map((c, i) => (
+                  .map((c) => (
                     <Badge
-                      key={i}
+                      key={c.trim()}
                       className="rounded-full border-white/5 bg-white/5 px-3 py-1 text-[10px] font-black tracking-widest text-white/35 uppercase"
                     >
                       {c.trim()}

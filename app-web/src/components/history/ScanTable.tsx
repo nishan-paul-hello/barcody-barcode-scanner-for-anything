@@ -74,8 +74,8 @@ export function ScanTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <TableRow key={i}>
+            {['sr1', 'sr2', 'sr3', 'sr4', 'sr5'].map((id) => (
+              <TableRow key={id}>
                 <TableCell>
                   <Skeleton className="h-4 w-4" />
                 </TableCell>

@@ -26,7 +26,7 @@ export function useTrackEvent() {
     mutationFn: (dto: TrackEventDto) => api.analytics.trackEvent(dto),
     onSuccess: () => {
       // Invalidate analytics cache after event tracking as required
-      queryClient.invalidateQueries({ queryKey: analyticsKeys.all });
+      void queryClient.invalidateQueries({ queryKey: analyticsKeys.all });
     },
   });
 }

@@ -25,7 +25,7 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (data: Record<string, unknown>) => Promise.resolve(data), // Replace with real API call
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authKeys.me() });
+      void queryClient.invalidateQueries({ queryKey: authKeys.me() });
     },
   });
 }

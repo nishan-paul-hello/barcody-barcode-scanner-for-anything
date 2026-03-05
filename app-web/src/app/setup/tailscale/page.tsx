@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { api } from '@/lib/api/client';
 import { type TailscaleInfoDto } from '@/lib/api/types';
@@ -26,11 +26,7 @@ export default function TailscaleSetupPage() {
   } | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  useEffect(() => {
-    fetchInfo();
-  }, []);
-
-  const fetchInfo = async () => {
+  const fetchInfo = useCallback(async () => {
     try {
       setLoading(true);
       const data = await api.setup.getTailscaleInfo();
@@ -49,7 +45,11 @@ export default function TailscaleSetupPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    void fetchInfo();
+  }, [fetchInfo]);
 
   const handleTestConnection = async () => {
     if (!info?.backendUrl) return;
@@ -102,7 +102,7 @@ export default function TailscaleSetupPage() {
 
   const copyToClipboard = () => {
     if (info?.backendUrl) {
-      navigator.clipboard.writeText(info.backendUrl);
+      void navigator.clipboard.writeText(info.backendUrl);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     }
@@ -133,7 +133,9 @@ export default function TailscaleSetupPage() {
           </h3>
           <p className="mb-6 text-gray-500">{error}</p>
           <button
-            onClick={fetchInfo}
+            onClick={() => {
+              void fetchInfo();
+            }}
             className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
@@ -166,7 +168,7 @@ export default function TailscaleSetupPage() {
                 value={info?.backendUrl || ''}
                 size={250}
                 level="H"
-                includeMargin={true}
+                includeMargin
               />
             </div>
 
@@ -179,7 +181,7 @@ export default function TailscaleSetupPage() {
                 <input
                   type="text"
                   readOnly
-                  value={info?.backendUrl}
+                  value={info?.backendUrl || ''}
                   className="w-full truncate border-none bg-transparent pr-8 text-sm text-indigo-50 focus:ring-0"
                 />
                 <button
@@ -198,7 +200,9 @@ export default function TailscaleSetupPage() {
 
             <div className="mt-8 w-full">
               <button
-                onClick={handleTestConnection}
+                onClick={() => {
+                  void handleTestConnection();
+                }}
                 disabled={testing}
                 className={`flex w-full items-center justify-center rounded-lg border border-transparent bg-white px-4 py-3 text-sm font-medium text-indigo-600 shadow-md transition-all hover:bg-gray-50 ${
                   testing ? 'cursor-wait opacity-75' : ''

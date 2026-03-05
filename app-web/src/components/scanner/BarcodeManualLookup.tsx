@@ -50,7 +50,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
 
   const handleCopy = () => {
     if (!barcode) return;
-    navigator.clipboard.writeText(barcode);
+    void navigator.clipboard.writeText(barcode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

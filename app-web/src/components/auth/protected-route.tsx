@@ -19,7 +19,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     // Re-check auth status on mount/navigation if not already authenticated
     if (!isAuthenticated && !isLoading) {
-      checkAuthStatus();
+      void checkAuthStatus();
     }
   }, [isAuthenticated, isLoading, checkAuthStatus]);
 

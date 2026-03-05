@@ -147,7 +147,7 @@ const ScoreBadge = ({
 const CategoryPath = ({ path }: { path: string[] }) => (
   <div className="flex flex-wrap items-center gap-1.5">
     {path.map((segment, i) => (
-      <span key={i} className="flex items-center gap-1.5">
+      <span key={segment} className="flex items-center gap-1.5">
         {i > 0 && (
           <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
         )}
@@ -400,9 +400,9 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
                 </h3>
               </div>
               <div className="flex flex-wrap gap-2">
-                {ingredientList.map((ingredient: string, i: number) => (
+                {ingredientList.map((ingredient: string) => (
                   <div
-                    key={i}
+                    key={ingredient}
                     className="group rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-1.5 transition-all hover:border-emerald-500/30 hover:bg-emerald-500/10"
                   >
                     <span className="text-xs font-semibold tracking-tight text-slate-300 uppercase tabular-nums transition-colors group-hover:text-emerald-100">
@@ -512,9 +512,9 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
                       Allergens
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {allergenList.map((a: string, i: number) => (
+                      {allergenList.map((a: string) => (
                         <span
-                          key={i}
+                          key={a}
                           className="rounded-md border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-200/70"
                         >
                           {a}
@@ -530,9 +530,9 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
                       Additives
                     </span>
                     <div className="flex flex-wrap gap-1.5">
-                      {additives.map((a: string, i: number) => (
+                      {additives.map((a: string) => (
                         <span
-                          key={i}
+                          key={a}
                           className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] text-amber-200/70"
                         >
                           {a}
@@ -620,9 +620,9 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
 
                 {labels && (
                   <div className="flex flex-wrap gap-1.5">
-                    {labels.split(',').map((l: string, i: number) => (
+                    {labels.split(',').map((l: string) => (
                       <span
-                        key={i}
+                        key={l.trim()}
                         className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold text-emerald-300/60 uppercase"
                       >
                         {l.trim()}
@@ -648,9 +648,9 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
               <div className="space-y-3">
                 {countries && (
                   <div className="flex flex-wrap gap-1.5">
-                    {countries.split(',').map((c: string, i: number) => (
+                    {countries.split(',').map((c: string) => (
                       <span
-                        key={i}
+                        key={c.trim()}
                         className="rounded border border-white/5 bg-white/5 px-2 py-0.5 text-xs font-medium text-slate-400"
                       >
                         {c.trim()}

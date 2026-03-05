@@ -35,11 +35,15 @@ export const LoginModal = () => {
         throw new Error('No credential received from Google');
       }
 
-      const { accessToken, refreshToken, user } = await api.auth.login({
+      const {
+        accessToken,
+        refreshToken,
+        user: loggedInUser,
+      } = await api.auth.login({
         token: credentialResponse.credential,
       });
 
-      login(user, accessToken, refreshToken);
+      login(loggedInUser, accessToken, refreshToken);
 
       if (pendingRedirectPath) {
         router.push(pendingRedirectPath);

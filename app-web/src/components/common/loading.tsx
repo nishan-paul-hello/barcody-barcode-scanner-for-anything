@@ -20,8 +20,8 @@ export function PageSkeleton() {
         <Skeleton className="h-4 w-[350px]" />
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-32 w-full" />
+        {['sr1', 'sr2', 'sr3', 'sr4', 'sr5'].map((id) => (
+          <Skeleton key={id} className="h-32 w-full" />
         ))}
       </div>
       <Skeleton className="h-[400px] w-full" />

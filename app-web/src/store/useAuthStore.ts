@@ -58,7 +58,9 @@ export const useAuthStore = create<AuthStore>()(
                   headers: { Authorization: `Bearer ${token}` },
                 }
               )
-              .catch(() => {}); // user doesn't care if this fails
+              .catch(() => {
+                /* user doesn't care if this fails */
+              });
           }
         } catch {
           // ignore

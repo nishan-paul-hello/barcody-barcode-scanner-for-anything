@@ -83,10 +83,9 @@ export function useCreateScan() {
         queryClient.setQueryData(firstPageKey, context.previousScans);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: scanKeys.all });
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {},
   });
 }
 
@@ -125,10 +124,9 @@ export function useDeleteScan() {
         queryClient.setQueryData(firstPageKey, context.previousScans);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: scanKeys.all });
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {},
   });
 }
 
@@ -137,8 +135,8 @@ export function useBulkCreateScans() {
 
   return useMutation({
     mutationFn: (dto: BulkCreateScansDto) => api.scans.bulkCreateScans(dto),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: scanKeys.lists() });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: scanKeys.lists() });
     },
   });
 }
@@ -147,9 +145,8 @@ export function useBulkDeleteScans() {
 
   return useMutation({
     mutationFn: (ids: string[]) => api.scans.bulkDeleteScans(ids),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: scanKeys.all });
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: scanKeys.all });
     },
-    onSuccess: () => {},
   });
 }

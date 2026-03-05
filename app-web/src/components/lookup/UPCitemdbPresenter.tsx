@@ -385,52 +385,51 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
             </h3>
             <div className="space-y-3">
               {offers && offers.length > 0 ? (
-                offers.slice(0, 6).map(
-                  (
-                    offer: {
+                offers
+                  .slice(0, 6)
+                  .map(
+                    (offer: {
                       link: string;
                       merchant: string;
                       condition?: string;
                       currency?: string;
                       price: number | string;
-                    },
-                    idx: number
-                  ) => (
-                    <a
-                      key={idx}
-                      href={offer.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/20 group-hover:text-cyan-400">
-                          <DollarSign className="h-5 w-5" />
+                    }) => (
+                      <a
+                        key={offer.link}
+                        href={offer.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/20 group-hover:text-cyan-400">
+                            <DollarSign className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-white/90">
+                              {offer.merchant}
+                            </p>
+                            <p className="text-xs text-white/40">
+                              {offer.condition || 'New'}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-bold text-white/90">
-                            {offer.merchant}
-                          </p>
-                          <p className="text-xs text-white/40">
-                            {offer.condition || 'New'}
-                          </p>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="text-sm font-black text-white">
+                              {offer.currency || currency || '$'}
+                              {offer.price}
+                            </p>
+                            <p className="text-[10px] tracking-tighter text-white/20 uppercase">
+                              View Store
+                            </p>
+                          </div>
+                          <ArrowUpRight className="h-4 w-4 text-white/10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
                         </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <p className="text-sm font-black text-white">
-                            {offer.currency || currency || '$'}
-                            {offer.price}
-                          </p>
-                          <p className="text-[10px] tracking-tighter text-white/20 uppercase">
-                            View Store
-                          </p>
-                        </div>
-                        <ArrowUpRight className="h-4 w-4 text-white/10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-cyan-400" />
-                      </div>
-                    </a>
+                      </a>
+                    )
                   )
-                )
               ) : (
                 <div className="flex h-40 flex-col items-center justify-center gap-2 text-center text-white/10">
                   <ExternalLink className="h-8 w-8 opacity-20" />

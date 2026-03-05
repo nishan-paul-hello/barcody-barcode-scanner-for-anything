@@ -187,7 +187,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             resolve();
           };
           img.onerror = () => reject(new Error('Failed to load preview image'));
-          img.src = processableUrl!;
+          img.src = processableUrl || '';
         });
 
         await scanImage(processableUrl, file.name);
@@ -205,12 +205,11 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
       const items = e.clipboardData.items;
       if (!items) return;
 
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
+      for (const item of items) {
         if (item && item.type.indexOf('image') !== -1) {
           const file = item.getAsFile();
           if (file) {
-            handleFile(file);
+            void handleFile(file);
             break;
           }
         }
@@ -346,7 +345,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   accept={ALLOWED_TYPES.join(',')}
                   onChange={(e) => {
                     const selectedFile = e.target.files?.[0];
-                    if (selectedFile) handleFile(selectedFile);
+                    if (selectedFile) void handleFile(selectedFile);
                   }}
                 />
                 <label

@@ -67,10 +67,12 @@ export default function ComparePage() {
         })
         .catch(console.error);
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      void navigator.clipboard.writeText(window.location.href);
       alert('Link copied to clipboard!');
     }
   };
+
+  if (!data) return null;
 
   return (
     <div className="container mx-auto max-w-7xl space-y-8 pt-0 pb-12">
@@ -88,7 +90,7 @@ export default function ComparePage() {
             Product Comparison
           </h1>
           <p className="text-muted-foreground">
-            Comparing {data?.products.length} products to help you make a better
+            Comparing {data.products.length} products to help you make a better
             choice.
           </p>
         </div>
@@ -100,7 +102,7 @@ export default function ComparePage() {
 
       <div className="grid gap-8">
         {/* Product Summary Grid */}
-        <CompareTable products={data!.products} comparison={data!.comparison} />
+        <CompareTable products={data.products} comparison={data.comparison} />
 
         {/* Visual Charts */}
         <div className="grid gap-6 lg:grid-cols-2">
@@ -110,8 +112,8 @@ export default function ComparePage() {
             </CardHeader>
             <CardContent className="h-[400px]">
               <ComparisonCharts
-                data={data!.comparison}
-                products={data!.products}
+                data={data.comparison}
+                products={data.products}
               />
             </CardContent>
           </Card>
@@ -121,10 +123,7 @@ export default function ComparePage() {
               <CardTitle>Allergen Matrix</CardTitle>
             </CardHeader>
             <CardContent>
-              <AllergenMatrix
-                data={data!.comparison}
-                products={data!.products}
-              />
+              <AllergenMatrix data={data.comparison} products={data.products} />
             </CardContent>
           </Card>
         </div>

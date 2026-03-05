@@ -19,7 +19,7 @@ export function useUpdateApiKeys() {
   return useMutation({
     mutationFn: api.settings.updateApiKeys,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: API_KEYS_QUERY_KEY });
+      void queryClient.invalidateQueries({ queryKey: API_KEYS_QUERY_KEY });
     },
   });
 }

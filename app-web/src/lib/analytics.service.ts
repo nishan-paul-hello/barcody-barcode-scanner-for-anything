@@ -19,7 +19,9 @@ class AnalyticsService {
   private constructor() {
     // Start processing loop
     if (typeof window !== 'undefined') {
-      setInterval(() => this.processQueue(), this.PROCESS_INTERVAL);
+      setInterval(() => {
+        void this.processQueue();
+      }, this.PROCESS_INTERVAL);
     }
   }
 
@@ -48,7 +50,7 @@ class AnalyticsService {
 
     // Trigger processing immediately if queue is full enough
     if (this.queue.length >= this.BATCH_SIZE) {
-      this.processQueue();
+      void this.processQueue();
     }
   }
 
@@ -170,7 +172,9 @@ class AnalyticsService {
       this.isProcessing = false;
       // If items remain, process again shortly
       if (this.queue.length > 0) {
-        setTimeout(() => this.processQueue(), 1000);
+        setTimeout(() => {
+          void this.processQueue();
+        }, 1000);
       }
     }
   }

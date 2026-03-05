@@ -117,9 +117,9 @@ const renderValue = (val: any): React.ReactNode => {
     if (typeof val[0] !== 'object') {
       return (
         <div className="flex flex-wrap gap-1.5">
-          {val.slice(0, 10).map((item, idx) => (
+          {val.slice(0, 10).map((item) => (
             <span
-              key={idx}
+              key={String(item)}
               className="rounded-md border border-white/5 bg-white/5 px-2 py-0.5 text-xs text-white/70"
             >
               {String(item)}
@@ -244,7 +244,7 @@ export function RawDataPresenter({ data }: RawDataPresenterProps) {
               <div className="relative h-48 w-48 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/50">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={images[0]!}
+                  src={images[0]}
                   alt={title || 'Product Image'}
                   className="h-full w-full object-cover"
                 />

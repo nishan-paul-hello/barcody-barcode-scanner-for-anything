@@ -55,7 +55,7 @@ const SpecCell = ({ label, value }: { label: string; value: string }) => (
 const CategoryPath = ({ path }: { path: string[] }) => (
   <div className="flex flex-wrap items-center gap-1.5">
     {path.map((segment, i) => (
-      <span key={i} className="flex items-center gap-1.5">
+      <span key={segment} className="flex items-center gap-1.5">
         {i > 0 && (
           <ChevronRight className="h-2.5 w-2.5 shrink-0 text-white/15" />
         )}
@@ -349,9 +349,9 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                 </h3>
               </div>
               <div className="flex flex-wrap gap-2">
-                {ingredientList.map((ingredient, i) => (
+                {ingredientList.map((ingredient) => (
                   <div
-                    key={i}
+                    key={ingredient}
                     className="group flex items-center gap-2 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-1.5 transition-all hover:border-emerald-500/30 hover:bg-emerald-500/10"
                   >
                     <span className="text-xs font-semibold text-slate-300 transition-colors group-hover:text-emerald-100">
@@ -402,7 +402,7 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   {filteredSpecs.map(
                     ([label, value]: [string, string], i: number) => (
                       <motion.div
-                        key={label + i}
+                        key={label}
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
