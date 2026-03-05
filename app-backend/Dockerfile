@@ -17,9 +17,9 @@ RUN apk add --no-cache \
     util-linux-dev
 WORKDIR /app
 COPY package.json package-lock.json ./
-COPY backend/package.json ./backend/
-COPY web-app/package.json ./web-app/
-COPY admin-dashboard/package.json ./admin-dashboard/
+COPY app-backend/package.json ./app-backend/
+COPY app-web/package.json ./app-web/
+COPY app-admin/package.json ./app-admin/
 COPY mobile-app/package.json ./mobile-app/
 
 # Configure npm to be more robust against network timeouts
@@ -35,7 +35,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-WORKDIR /app/backend
+WORKDIR /app/app-backend
 RUN npm run build
 
 # 3. Production runner
@@ -52,7 +52,7 @@ RUN apk add --no-cache \
     util-linux \
     libstdc++ \
     libgcc
-WORKDIR /app/backend
+WORKDIR /app/app-backend
 
 ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
@@ -61,11 +61,11 @@ RUN adduser --system --uid 1001 nestjs
 # Copy root node_modules (hoisted)
 COPY --from=deps --chown=nestjs:nodejs /app/node_modules /app/node_modules
 # Copy workspace node_modules (non-hoisted, if any)
-COPY --from=deps --chown=nestjs:nodejs /app/backend/node_modules /app/backend/node_modules
+COPY --from=deps --chown=nestjs:nodejs /app/app-backend/node_modules /app/app-backend/node_modules
 # Copy built dist
-COPY --from=builder --chown=nestjs:nodejs /app/backend/dist ./dist
-COPY --from=builder --chown=nestjs:nodejs /app/backend/package.json ./package.json
-COPY --from=builder --chown=nestjs:nodejs /app/backend/docker-entrypoint.sh /usr/local/bin/
+COPY --from=builder --chown=nestjs:nodejs /app/app-backend/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/app-backend/package.json ./package.json
+COPY --from=builder --chown=nestjs:nodejs /app/app-backend/docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

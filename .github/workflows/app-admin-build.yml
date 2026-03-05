@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'admin-dashboard/**'
+      - 'app-admin/**'
   workflow_dispatch:
 
 # Required GitHub Secrets:
@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: admin-dashboard/Dockerfile
+          file: app-admin/Dockerfile
           push: true
           platforms: linux/amd64
           build-args: |

@@ -8,7 +8,7 @@
     "barcody.tamarin-ph.ts.net:443": {
       "Handlers": {
         "/": {
-          "Proxy": "http://web:3000"
+          "Proxy": "http://app-web:3000"
         }
       }
     }

@@ -2,7 +2,7 @@
 set -e
 
 # Load environment variables if needed (handled by Docker/Nest but safe to have)
-# . /app/backend/.env # Not strictly needed if using env_file in compose
+# . /app/app-backend/.env # Not strictly needed if using env_file in compose
 
 echo "--- Barcody Backend Entrypoint ---"
 

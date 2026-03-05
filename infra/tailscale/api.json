@@ -8,7 +8,7 @@
     "api-barcody.tamarin-ph.ts.net:443": {
       "Handlers": {
         "/": {
-          "Proxy": "http://backend:3002"
+          "Proxy": "http://app-backend:3002"
         }
       }
     }

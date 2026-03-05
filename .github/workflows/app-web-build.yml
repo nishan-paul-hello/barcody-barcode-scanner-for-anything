@@ -1,41 +1,22 @@
-name: Backend Docker Build
+name: Web App Docker Build
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'backend/**'
+      - 'app-web/**'
   workflow_dispatch:
 
 # Required GitHub Secrets:
 # DOCKERHUB_USERNAME - Your Docker Hub username
 # DOCKERHUB_TOKEN - Your Docker Hub personal access token (PAT)
-# The image will be pushed to: ${{ secrets.DOCKERHUB_USERNAME }}/barcody-backend
+# NEXT_PUBLIC_API_URL - Production API URL for the backend
+# The image will be pushed to: ${{ secrets.DOCKERHUB_USERNAME }}/barcody-web
 
 jobs:
-  test:
-    name: Run Backend Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run Tests
-        run: npm test --workspace=backend
-
   build-and-push:
-    name: Build & Publish Backend Image
-    needs: test
+    name: Build & Publish Web Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -57,7 +38,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/barcody-backend
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/barcody-web
           tags: |
             type=sha,format=short,prefix=sha-
             type=ref,event=branch
@@ -67,9 +48,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: backend/Dockerfile
+          file: app-web/Dockerfile
           push: true
           platforms: linux/amd64
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

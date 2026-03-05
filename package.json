@@ -8,31 +8,32 @@
   "type": "commonjs",
   "scripts": {
     "prepare": "husky",
-    "lint": "npm run lint --workspace=backend && npm run lint --workspace=web-app && npm run lint --workspace=mobile-app && npm run lint --workspace=admin-dashboard",
-    "format": "npm run format --workspace=backend && npm run format --workspace=web-app && npm run format --workspace=mobile-app && npm run format --workspace=admin-dashboard",
-    "format-check": "npm run format-check --workspace=backend && npm run format-check --workspace=web-app && npm run format-check --workspace=mobile-app && npm run format-check --workspace=admin-dashboard",
+    "audit:check": "npx audit-ci --config ./audit-ci.json",
+    "lint": "npm run lint --workspace=app-backend && npm run lint --workspace=app-web && npm run lint --workspace=mobile-app && npm run lint --workspace=app-admin",
+    "format": "npm run format --workspace=app-backend && npm run format --workspace=app-web && npm run format --workspace=mobile-app && npm run format --workspace=app-admin",
+    "format-check": "npm run format-check --workspace=app-backend && npm run format-check --workspace=app-web && npm run format-check --workspace=mobile-app && npm run format-check --workspace=app-admin",
     "format-root": "npx prettier --write \"./*.{json,md,yml}\" \"./docs/**/*.{json,md,yml}\"",
-    "type-check": "npm run type-check --workspace=backend && npm run type-check --workspace=web-app && npm run type-check --workspace=mobile-app && npm run type-check --workspace=admin-dashboard",
-    "test": "npm run test --workspace=backend && npm run test --workspace=web-app && npm run test --workspace=mobile-app && npm run test --workspace=admin-dashboard",
-    "build": "npm run build --workspace=backend && npm run build --workspace=web-app && npm run build --workspace=mobile-app && npm run build --workspace=admin-dashboard",
-    "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"npm run start:dev --workspace=backend\" \"npm run dev --workspace=web-app -- -p 3000\" \"npm run dev --workspace=admin-dashboard -- -p 3001\"",
-    "audit:check": "audit-ci --config ./audit-ci.json --package-manager npm"
+    "format-staged": "prettier --write",
+    "type-check": "npm run type-check --workspace=app-backend && npm run type-check --workspace=app-web && npm run type-check --workspace=mobile-app && npm run type-check --workspace=app-admin",
+    "test": "npm run test --workspace=app-backend && npm run test --workspace=app-web && npm run test --workspace=mobile-app && npm run test --workspace=app-admin",
+    "build": "npm run build --workspace=app-backend && npm run build --workspace=app-web && npm run build --workspace=mobile-app && npm run build --workspace=app-admin",
+    "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"npm run start:dev --workspace=app-backend\" \"npm run dev --workspace=app-web -- -p 3000\" \"npm run dev --workspace=app-admin -- -p 3001\""
   },
   "workspaces": [
-    "backend",
-    "web-app",
+    "app-backend",
+    "app-web",
     "mobile-app",
-    "admin-dashboard"
+    "app-admin"
   ],
   "lint-staged": {
-    "backend/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=backend",
-    "web-app/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=web-app",
+    "app-backend/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-backend",
+    "app-web/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-web",
     "mobile-app/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=mobile-app",
-    "admin-dashboard/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=admin-dashboard",
-    "backend/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=backend",
-    "web-app/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=web-app",
+    "app-admin/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-admin",
+    "app-backend/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-backend",
+    "app-web/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-web",
     "mobile-app/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=mobile-app",
-    "admin-dashboard/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=admin-dashboard"
+    "app-admin/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-admin"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",

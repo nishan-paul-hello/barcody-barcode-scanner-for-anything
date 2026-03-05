@@ -33,7 +33,7 @@
     "incremental": true,
     // Skip Lib Check (Performance)
     "skipLibCheck": true,
-    // Paths - Tailored to your admin-dashboard structure
+    // Paths - Tailored to your app-admin structure
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],

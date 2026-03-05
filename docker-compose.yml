@@ -42,16 +42,16 @@ services:
       start_period: 5s
     restart: unless-stopped
 
-  backend:
+  app-backend:
     build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: app-backend/Dockerfile
       target: runner
     container_name: barcody_backend
     ports:
       - '3002:3002'
     env_file:
-      - ./backend/.env
+      - ./app-backend/.env
     environment:
       DATABASE_URL: postgresql://${DB_USERNAME:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_DATABASE:-barcody}
       REDIS_URL: redis://redis:6379
@@ -72,10 +72,10 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  web:
+  app-web:
     build:
       context: .
-      dockerfile: web-app/Dockerfile
+      dockerfile: app-web/Dockerfile
       target: runner
       args:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
@@ -86,7 +86,7 @@ services:
       PORT: 3000
       NODE_ENV: production
     depends_on:
-      backend:
+      app-backend:
         condition: service_healthy
     networks:
       - barcody-network
@@ -98,10 +98,10 @@ services:
       start_period: 60s
     restart: unless-stopped
 
-  admin-dashboard:
+  app-admin:
     build:
       context: .
-      dockerfile: admin-dashboard/Dockerfile
+      dockerfile: app-admin/Dockerfile
       target: runner
       args:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
@@ -112,7 +112,7 @@ services:
       PORT: 3001
       NODE_ENV: production
     depends_on:
-      backend:
+      app-backend:
         condition: service_healthy
     networks:
       - barcody-network
