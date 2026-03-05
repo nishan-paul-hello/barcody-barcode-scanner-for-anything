@@ -78,7 +78,7 @@ Add your generated key to the root `.env` file of the project:
 
 ```bash
 # /.env
-TS_AUTHKEY=tskey-auth-khmwV9L4Uu11CNTRL-gxUG9SDVPiZ6u1n84Wg8iZSW2pSZNEBs
+TS_AUTHKEY=tskey-auth-your-key-here
 ```
 
 ### 2. Sidecar Serve Definitions (`infra/tailscale/`)
