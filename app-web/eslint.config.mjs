@@ -124,6 +124,13 @@ const eslintConfig = [
       // Next.js
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
+      '@next/next/no-img-element': 'error',
+      '@next/next/no-html-link-for-pages': 'error',
+      '@next/next/no-typos': 'error',
+      '@next/next/no-duplicate-head': 'error',
+      '@next/next/no-sync-scripts': 'error',
+      '@next/next/google-font-display': 'error',
+      '@next/next/inline-script-id': 'error',
     },
     settings: {
       react: {
