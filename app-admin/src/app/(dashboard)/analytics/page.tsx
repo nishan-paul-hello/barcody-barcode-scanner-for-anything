@@ -503,7 +503,7 @@ export default function AnalyticsPage() {
                     const pct = Math.round((item.count / maxCount) * 100);
                     return (
                       <tr
-                        key={item.barcodeData}
+                        key={`${item.barcodeData}-${item.barcodeType}-${item.count}`}
                         className="group border-b border-zinc-800/50 transition-colors hover:bg-zinc-900/40"
                       >
                         <td className="py-3 pr-4 text-zinc-500">{idx + 1}</td>

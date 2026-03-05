@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -22,13 +23,27 @@ interface CohortRow {
 export function RetentionCohort() {
   const { data, isLoading } = useRetentionCohorts();
 
-  const cohorts: CohortRow[] = data?.cohorts ?? [];
+  const cohorts: CohortRow[] = useMemo(() => data?.cohorts ?? [], [data]);
 
   // Determine the maximum number of retention weeks shown across all cohorts
   const maxWeeks = cohorts.reduce(
     (max, c) => Math.max(max, c.retention.length),
     0
   );
+
+  const entries = useMemo(() => {
+    return cohorts.map((c) => ({
+      ...c,
+      items: c.retention.map((pct, i) => ({
+        pct,
+        id: `week-${i}`,
+      })),
+      emptyWeeks: Array.from(
+        { length: Math.max(0, maxWeeks - c.retention.length) },
+        (_, i) => `empty-${i + c.retention.length}`
+      ),
+    }));
+  }, [cohorts, maxWeeks]);
 
   if (isLoading) {
     return (
@@ -78,31 +93,23 @@ export function RetentionCohort() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cohorts.map((cohort) => (
+            {entries.map((cohort: (typeof entries)[number]) => (
               <TableRow key={cohort.weekStart}>
                 <TableCell className="font-medium">
                   {format(new Date(cohort.weekStart), 'MMM d, yyyy')}
                 </TableCell>
                 <TableCell>{cohort.newUsers}</TableCell>
-                {cohort.retention.map((pct, i) => {
-                  const weekId = `week-${i}`;
-                  return (
-                    <TableCell
-                      key={`${cohort.weekStart}-${weekId}`}
-                      className={getRetentionColor(pct)}
-                    >
-                      {pct}%
-                    </TableCell>
-                  );
-                })}
-                {Array.from(
-                  {
-                    length: Math.max(0, maxWeeks - cohort.retention.length),
-                  },
-                  (_, i) => i + cohort.retention.length
-                ).map((weekIdx) => (
+                {cohort.items.map((item: { pct: number; id: string }) => (
                   <TableCell
-                    key={`${cohort.weekStart}-empty-${weekIdx}`}
+                    key={`${cohort.weekStart}-${item.id}`}
+                    className={getRetentionColor(item.pct)}
+                  >
+                    {item.pct}%
+                  </TableCell>
+                ))}
+                {cohort.emptyWeeks.map((emptyId: string) => (
+                  <TableCell
+                    key={`${cohort.weekStart}-${emptyId}`}
                     className="text-muted-foreground text-xs"
                   >
                     —
