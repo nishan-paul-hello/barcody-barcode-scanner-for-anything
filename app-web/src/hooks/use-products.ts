@@ -5,6 +5,8 @@ export const productKeys = {
   all: ['products'] as const,
   details: () => [...productKeys.all, 'detail'] as const,
   detail: (barcode: string) => [...productKeys.details(), barcode] as const,
+  compare: (barcodes: string[]) =>
+    [...productKeys.all, 'compare', barcodes] as const,
 };
 
 export function useProduct(barcode: string) {
@@ -18,7 +20,7 @@ export function useProduct(barcode: string) {
 
 export function useCompareProducts(barcodes: string[]) {
   return useQuery({
-    queryKey: ['products', 'compare', barcodes.join(',')],
+    queryKey: productKeys.compare(barcodes),
     queryFn: () => api.products.compareProducts(barcodes),
     enabled: barcodes.length >= 2,
     staleTime: 1000 * 60 * 30, // 30 minutes
