@@ -1,9 +1,11 @@
 'use client';
 
 import { BarcodeScanner } from '@/components/scanner/BarcodeScanner';
+import { useCallback } from 'react';
 import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
 import { BarcodeManualLookup } from '@/components/scanner/BarcodeManualLookup';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { Result } from '@zxing/library';
 import { Camera, FileUp, PackageSearch, Search } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
@@ -45,6 +47,72 @@ export default function ScanPage() {
 
   const { data: productData, isLoading } = useProduct(lastResult);
 
+  const handleTabChange = useCallback(
+    (v: string) => {
+      setActiveTab(v as 'camera' | 'file' | 'lookup');
+    },
+    [setActiveTab]
+  );
+
+  const handleCameraScanSuccess = useCallback(
+    (result: Result, fileName?: string) => {
+      setLastResult(result.getText());
+      setHasError(false);
+      setScanMetadata({
+        format: mapZxingFormatToReadable(result.getBarcodeFormat()),
+        source: 'Camera',
+        timestamp: new Date().toISOString(),
+        fileName,
+      });
+    },
+    [setLastResult, setHasError, setScanMetadata]
+  );
+
+  const handleCameraScanError = useCallback(() => {
+    setHasError(true);
+    setLastResult(null);
+    setScanMetadata(null);
+  }, [setHasError, setLastResult, setScanMetadata]);
+
+  const handleClear = useCallback(() => {
+    setLastResult(null);
+    setHasError(false);
+    setScanMetadata(null);
+  }, [setLastResult, setHasError, setScanMetadata]);
+
+  const handleFileScanSuccess = useCallback(
+    (result: Result, fileName?: string) => {
+      setLastResult(result.getText());
+      setHasError(false);
+      setScanMetadata({
+        format: mapZxingFormatToReadable(result.getBarcodeFormat()),
+        source: 'Upload',
+        timestamp: new Date().toISOString(),
+        fileName,
+      });
+    },
+    [setLastResult, setHasError, setScanMetadata]
+  );
+
+  const handleFileScanError = useCallback(() => {
+    setHasError(true);
+    setLastResult(null);
+    setScanMetadata(null);
+  }, [setHasError, setLastResult, setScanMetadata]);
+
+  const handleLookupSuccess = useCallback(
+    (barcode: string) => {
+      setLastResult(barcode);
+      setHasError(false);
+      setScanMetadata({
+        format: 'Manual Entry',
+        source: 'Manual entry',
+        timestamp: new Date().toISOString(),
+      });
+    },
+    [setLastResult, setHasError, setScanMetadata]
+  );
+
   return (
     <motion.div
       variants={containerVariants}
@@ -71,9 +139,7 @@ export default function ScanPage() {
           <motion.div variants={itemVariants} className="relative">
             <Tabs
               value={activeTab}
-              onValueChange={(v) =>
-                setActiveTab(v as 'camera' | 'file' | 'lookup')
-              }
+              onValueChange={handleTabChange}
               className="w-full"
             >
               <div className="relative mb-8 flex items-center justify-center">
@@ -108,72 +174,22 @@ export default function ScanPage() {
               <TabsContent value="camera" className="m-0 outline-none">
                 <BarcodeScanner
                   active={activeTab === 'camera'}
-                  onScanSuccess={(result, fileName) => {
-                    setLastResult(result.getText());
-                    setHasError(false);
-                    setScanMetadata({
-                      format: mapZxingFormatToReadable(
-                        result.getBarcodeFormat()
-                      ),
-                      source: 'Camera',
-                      timestamp: new Date().toISOString(),
-                      fileName,
-                    });
-                  }}
-                  onScanError={() => {
-                    setHasError(true);
-                    setLastResult(null);
-                    setScanMetadata(null);
-                  }}
-                  onClear={() => {
-                    setLastResult(null);
-                    setHasError(false);
-                    setScanMetadata(null);
-                  }}
+                  onScanSuccess={handleCameraScanSuccess}
+                  onScanError={handleCameraScanError}
+                  onClear={handleClear}
                 />
               </TabsContent>
               <TabsContent value="file" className="m-0 outline-none">
                 <BarcodeFileScanner
-                  onScanSuccess={(result, fileName) => {
-                    setLastResult(result.getText());
-                    setHasError(false);
-                    setScanMetadata({
-                      format: mapZxingFormatToReadable(
-                        result.getBarcodeFormat()
-                      ),
-                      source: 'Upload',
-                      timestamp: new Date().toISOString(),
-                      fileName,
-                    });
-                  }}
-                  onScanError={() => {
-                    setHasError(true);
-                    setLastResult(null);
-                    setScanMetadata(null);
-                  }}
-                  onClear={() => {
-                    setLastResult(null);
-                    setHasError(false);
-                    setScanMetadata(null);
-                  }}
+                  onScanSuccess={handleFileScanSuccess}
+                  onScanError={handleFileScanError}
+                  onClear={handleClear}
                 />
               </TabsContent>
               <TabsContent value="lookup" className="m-0 outline-none">
                 <BarcodeManualLookup
-                  onLookupSuccess={(barcode) => {
-                    setLastResult(barcode);
-                    setHasError(false);
-                    setScanMetadata({
-                      format: 'Manual Entry',
-                      source: 'Manual entry',
-                      timestamp: new Date().toISOString(),
-                    });
-                  }}
-                  onClear={() => {
-                    setLastResult(null);
-                    setHasError(false);
-                    setScanMetadata(null);
-                  }}
+                  onLookupSuccess={handleLookupSuccess}
+                  onClear={handleClear}
                 />
               </TabsContent>
             </Tabs>

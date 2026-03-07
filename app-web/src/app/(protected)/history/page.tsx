@@ -151,7 +151,7 @@ export default function HistoryPage() {
       .finally(() => setStatsLoading(false));
   }, []);
 
-  const formatActivity = (scan: ScanResponseDto | null) => {
+  const formatActivity = useCallback((scan: ScanResponseDto | null) => {
     if (!scan) {
       return 'No recent activity';
     }
@@ -175,8 +175,7 @@ export default function HistoryPage() {
     }
 
     return `Scanned "${scan.product?.name || scan.barcodeData}" ${timeAgo}`;
-  };
-
+  }, []);
   // Reset page when filters change
   const handleFilterChange = useCallback(
     (key: keyof PaginationParams, value: unknown) => {

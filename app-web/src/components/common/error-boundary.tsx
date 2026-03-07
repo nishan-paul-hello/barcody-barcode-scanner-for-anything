@@ -34,6 +34,10 @@ export class ErrorBoundary extends Component<Props, State> {
     window.location.reload();
   };
 
+  private handleReturnHome = () => {
+    window.location.href = '/';
+  };
+
   public override render() {
     const { hasError, error } = this.state;
     const { fallback, children } = this.props;
@@ -60,10 +64,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <RefreshCw className="mr-2 size-4" />
               Try Again
             </Button>
-            <Button
-              variant="default"
-              onClick={() => (window.location.href = '/')}
-            >
+            <Button variant="default" onClick={this.handleReturnHome}>
               Return Home
             </Button>
           </div>

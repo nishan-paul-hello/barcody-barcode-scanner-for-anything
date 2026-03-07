@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -39,37 +39,75 @@ export function ScanFilters({
 }: ScanFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const activeFilterCount = Object.entries(filters).filter(
-    ([key, value]) =>
-      value !== undefined &&
-      value !== '' &&
-      !['page', 'limit', 'sortBy', 'order'].includes(key)
-  ).length;
+  const activeFilterCount = useMemo(
+    () =>
+      Object.entries(filters).filter(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== '' &&
+          !['page', 'limit', 'sortBy', 'order'].includes(key)
+      ).length,
+    [filters]
+  );
 
-  const renderFilterChip = (key: keyof PaginationParams, label: string) => {
-    const value = filters[key];
-    if (!value) {
-      return null;
-    }
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onFilterChange('search', e.target.value);
+    },
+    [onFilterChange]
+  );
 
-    return (
-      <Badge
-        key={key}
-        variant="secondary"
-        className="flex items-center gap-1 px-2 py-1"
-      >
-        <span className="text-muted-foreground font-normal">{label}:</span>
-        <span>{String(value)}</span>
-        <button
-          type="button"
-          onClick={() => onFilterChange(key, undefined)}
-          className="hover:bg-muted ml-1 rounded-full p-0.5"
-        >
-          <X className="size-3" />
-        </button>
-      </Badge>
-    );
-  };
+  const handleBarcodeTypeChange = useCallback(
+    (val: string) => {
+      onFilterChange('barcodeType', val === 'ALL' ? undefined : val);
+    },
+    [onFilterChange]
+  );
+
+  const handleCategoryChange = useCallback(
+    (val: string) => {
+      onFilterChange('category', val === 'ALL' ? undefined : val);
+    },
+    [onFilterChange]
+  );
+
+  const handleNutritionGradeChange = useCallback(
+    (val: string) => {
+      onFilterChange('nutritionGrade', val === 'ALL' ? undefined : val);
+    },
+    [onFilterChange]
+  );
+
+  const handleDeviceTypeChange = useCallback(
+    (val: string) => {
+      onFilterChange('deviceType', val === 'ALL' ? undefined : val);
+    },
+    [onFilterChange]
+  );
+
+  const handleStartDateChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onFilterChange(
+        'startDate',
+        e.target.value ? new Date(e.target.value).toISOString() : undefined
+      );
+    },
+    [onFilterChange]
+  );
+
+  const handleEndDateChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onFilterChange(
+        'endDate',
+        e.target.value ? new Date(e.target.value).toISOString() : undefined
+      );
+    },
+    [onFilterChange]
+  );
+
+  const handleApply = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -82,7 +120,7 @@ export function ScanFilters({
               placeholder="Search by barcode or product name"
               className="h-10 pl-10"
               value={filters.search || ''}
-              onChange={(e) => onFilterChange('search', e.target.value)}
+              onChange={handleSearchChange}
             />
             {recentSearches.length > 0 && !filters.search && (
               <div className="bg-popover absolute top-11 left-0 z-10 hidden w-full rounded-md border p-2 shadow-md group-focus-within:block">
@@ -90,15 +128,11 @@ export function ScanFilters({
                   Recent Searches
                 </p>
                 {recentSearches.map((term) => (
-                  <button
+                  <RecentSearchItem
                     key={term}
-                    type="button"
-                    className="hover:bg-accent flex w-full items-center rounded-sm px-2 py-1.5 text-sm"
-                    onClick={() => onFilterChange('search', term)}
-                  >
-                    <Search className="text-muted-foreground mr-2 size-[3.5]" />
-                    {term}
-                  </button>
+                    term={term}
+                    onClick={onFilterChange}
+                  />
                 ))}
               </div>
             )}
@@ -147,12 +181,7 @@ export function ScanFilters({
                 </label>
                 <Select
                   value={filters.barcodeType || 'ALL'}
-                  onValueChange={(val) =>
-                    onFilterChange(
-                      'barcodeType',
-                      val === 'ALL' ? undefined : val
-                    )
-                  }
+                  onValueChange={handleBarcodeTypeChange}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Types" />
@@ -175,9 +204,7 @@ export function ScanFilters({
                 </label>
                 <Select
                   value={filters.category || 'ALL'}
-                  onValueChange={(val) =>
-                    onFilterChange('category', val === 'ALL' ? undefined : val)
-                  }
+                  onValueChange={handleCategoryChange}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Categories" />
@@ -200,12 +227,7 @@ export function ScanFilters({
                 </label>
                 <Select
                   value={filters.nutritionGrade || 'ALL'}
-                  onValueChange={(val) =>
-                    onFilterChange(
-                      'nutritionGrade',
-                      val === 'ALL' ? undefined : val
-                    )
-                  }
+                  onValueChange={handleNutritionGradeChange}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Grades" />
@@ -228,12 +250,7 @@ export function ScanFilters({
                 </label>
                 <Select
                   value={filters.deviceType || 'ALL'}
-                  onValueChange={(val) =>
-                    onFilterChange(
-                      'deviceType',
-                      val === 'ALL' ? undefined : val
-                    )
-                  }
+                  onValueChange={handleDeviceTypeChange}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Devices" />
@@ -266,33 +283,19 @@ export function ScanFilters({
                     value={
                       filters.startDate ? filters.startDate.split('T')[0] : ''
                     }
-                    onChange={(e) =>
-                      onFilterChange(
-                        'startDate',
-                        e.target.value
-                          ? new Date(e.target.value).toISOString()
-                          : undefined
-                      )
-                    }
+                    onChange={handleStartDateChange}
                   />
                   <span className="text-muted-foreground">to</span>
                   <Input
                     type="date"
                     className="flex-1"
                     value={filters.endDate ? filters.endDate.split('T')[0] : ''}
-                    onChange={(e) =>
-                      onFilterChange(
-                        'endDate',
-                        e.target.value
-                          ? new Date(e.target.value).toISOString()
-                          : undefined
-                      )
-                    }
+                    onChange={handleEndDateChange}
                   />
                 </div>
               </div>
               <div className="sm:w-32">
-                <Button className="w-full" onClick={() => setIsOpen(false)}>
+                <Button className="w-full" onClick={handleApply}>
                   Apply
                 </Button>
               </div>
@@ -307,44 +310,96 @@ export function ScanFilters({
           <span className="text-muted-foreground mr-1 text-xs font-medium">
             Active:
           </span>
-          {renderFilterChip('barcodeType', 'Type')}
-          {renderFilterChip('category', 'Category')}
-          {renderFilterChip('nutritionGrade', 'Grade')}
-          {renderFilterChip('deviceType', 'Device')}
+          {Object.entries({
+            barcodeType: 'Type',
+            category: 'Category',
+            nutritionGrade: 'Grade',
+            deviceType: 'Device',
+          }).map(([key, label]) => {
+            const val = filters[key as keyof PaginationParams];
+            if (!val) {
+              return null;
+            }
+            return (
+              <FilterChip
+                key={key}
+                filterKey={key as keyof PaginationParams}
+                label={label}
+                value={String(val)}
+                onRemove={onFilterChange}
+              />
+            );
+          })}
           {filters.startDate && (
-            <Badge
-              variant="secondary"
-              className="flex items-center gap-1 px-2 py-1"
-            >
-              <span className="text-muted-foreground font-normal">From:</span>
-              <span>{filters.startDate.split('T')[0]}</span>
-              <button
-                type="button"
-                onClick={() => onFilterChange('startDate', undefined)}
-                className="hover:bg-muted ml-1 rounded-full p-0.5"
-              >
-                <X className="size-3" />
-              </button>
-            </Badge>
+            <FilterChip
+              filterKey="startDate"
+              label="From"
+              value={(filters.startDate ?? '').split('T')[0] || ''}
+              onRemove={onFilterChange}
+            />
           )}
           {filters.endDate && (
-            <Badge
-              variant="secondary"
-              className="flex items-center gap-1 px-2 py-1"
-            >
-              <span className="text-muted-foreground font-normal">To:</span>
-              <span>{filters.endDate.split('T')[0]}</span>
-              <button
-                type="button"
-                onClick={() => onFilterChange('endDate', undefined)}
-                className="hover:bg-muted ml-1 rounded-full p-0.5"
-              >
-                <X className="size-3" />
-              </button>
-            </Badge>
+            <FilterChip
+              filterKey="endDate"
+              label="To"
+              value={(filters.endDate ?? '').split('T')[0] || ''}
+              onRemove={onFilterChange}
+            />
           )}
         </div>
       )}
     </div>
+  );
+}
+function RecentSearchItem({
+  term,
+  onClick,
+}: {
+  term: string;
+  onClick: (k: 'search', v: string) => void;
+}) {
+  const handleClick = useCallback(
+    () => onClick('search', term),
+    [onClick, term]
+  );
+  return (
+    <button
+      type="button"
+      className="hover:bg-accent flex w-full items-center rounded-sm px-2 py-1.5 text-sm"
+      onClick={handleClick}
+    >
+      <Search className="text-muted-foreground mr-2 size-4" />
+      {term}
+    </button>
+  );
+}
+
+function FilterChip({
+  filterKey,
+  label,
+  value,
+  onRemove,
+}: {
+  filterKey: keyof PaginationParams;
+  label: string;
+  value: string;
+  onRemove: (k: keyof PaginationParams, v: undefined) => void;
+}) {
+  const handleRemove = useCallback(
+    () => onRemove(filterKey, undefined),
+    [onRemove, filterKey]
+  );
+  return (
+    <Badge variant="secondary" className="flex items-center gap-1 px-2 py-1">
+      <span className="text-muted-foreground font-normal">{label}:</span>
+      <span>{value}</span>
+      <button
+        type="button"
+        onClick={handleRemove}
+        className="hover:bg-muted ml-1 rounded-full p-0.5"
+      >
+        <X className="size-3" />
+      </button>
+    </Badge>
   );
 }

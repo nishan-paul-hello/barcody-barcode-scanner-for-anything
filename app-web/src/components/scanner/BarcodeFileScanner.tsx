@@ -229,7 +229,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     return () => window.removeEventListener('paste', onPaste);
   }, [onPaste]);
 
-  const downloadImage = () => {
+  const downloadImage = useCallback(() => {
     if (!previewUrl) {
       return;
     }
@@ -239,7 +239,13 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, [previewUrl]);
+
+  const handleViewInNewTab = useCallback(() => {
+    if (previewUrl) {
+      window.open(previewUrl, '_blank');
+    }
+  }, [previewUrl]);
 
   const clearFile = useCallback(() => {
     setPreviewUrl(null);
@@ -506,7 +512,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => window.open(previewUrl, '_blank')}
+                  onClick={handleViewInNewTab}
                   className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
                   <ExternalLink className="size-4" />

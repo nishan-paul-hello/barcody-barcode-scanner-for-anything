@@ -38,17 +38,20 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
     return !!apiKeys.upcDatabaseApiKey;
   }, [apiKeys]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (barcode.trim()) {
-      onLookupSuccess?.(barcode.trim());
-    }
-  };
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (barcode.trim()) {
+        onLookupSuccess?.(barcode.trim());
+      }
+    },
+    [barcode, onLookupSuccess]
+  );
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setBarcode('');
     onClear?.();
-  };
+  }, [onClear]);
 
   const handleCopy = useCallback(() => {
     if (!barcode) {

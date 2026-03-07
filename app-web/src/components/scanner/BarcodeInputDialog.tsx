@@ -26,16 +26,19 @@ export function BarcodeInputDialog({
 }: BarcodeInputDialogProps) {
   const [value, setValue] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return;
-    }
-    onLookup(trimmed);
-    setValue('');
-    onOpenChange(false);
-  };
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return;
+      }
+      onLookup(trimmed);
+      setValue('');
+      onOpenChange(false);
+    },
+    [value, onLookup, onOpenChange]
+  );
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value),

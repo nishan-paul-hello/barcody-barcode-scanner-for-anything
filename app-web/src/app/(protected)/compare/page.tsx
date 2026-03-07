@@ -1,6 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
 import { useCompareProducts } from '@/hooks/use-products';
 import { CompareTable } from '@/components/compare/CompareTable';
 import { ComparisonCharts } from '@/components/compare/ComparisonCharts';
@@ -16,6 +17,19 @@ export default function ComparePage() {
   const barcodes = barcodesParam ? barcodesParam.split(',') : [];
 
   const { data, isLoading, isError, error } = useCompareProducts(barcodes);
+  const handleShare = useCallback(() => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'Product Comparison - Barcody',
+          url: window.location.href,
+        })
+        .catch(console.error);
+    } else {
+      void navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  }, []);
 
   if (!barcodesParam || barcodes.length < 2) {
     return (
@@ -57,20 +71,6 @@ export default function ComparePage() {
       </div>
     );
   }
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: 'Product Comparison - Barcody',
-          url: window.location.href,
-        })
-        .catch(console.error);
-    } else {
-      void navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
-    }
-  };
 
   if (!data) {
     return null;

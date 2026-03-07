@@ -74,7 +74,11 @@ export function ExportModal({
 
   const exportMutation = useExportData();
 
-  const handleExport = () => {
+  const handleFormatChange = React.useCallback((value: ExportFormat) => {
+    setFormat(value);
+  }, []);
+
+  const handleExport = React.useCallback(() => {
     // Validate dates
     if (filters.startDate && filters.endDate) {
       if (new Date(filters.startDate) > new Date(filters.endDate)) {
@@ -117,9 +121,9 @@ export function ExportModal({
         setProgress(null);
       },
     });
-  };
+  }, [format, filters, exportMutation, onClose]);
 
-  const handlePredefinedRange = (days: number | 'all') => {
+  const handlePredefinedRange = React.useCallback((days: number | 'all') => {
     if (days === 'all') {
       setFilters((prev) => ({
         ...prev,
@@ -140,10 +144,55 @@ export function ExportModal({
       startDate: startDateStr,
       endDate: endDateStr,
     }));
-  };
+  }, []);
+
+  const handleStartDateChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilters((prev) => ({ ...prev, startDate: e.target.value }));
+    },
+    []
+  );
+
+  const handleEndDateChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilters((prev) => ({ ...prev, endDate: e.target.value }));
+    },
+    []
+  );
+
+  const handleBarcodeTypeChange = React.useCallback((val: string) => {
+    setFilters((prev) => ({ ...prev, barcodeType: val }));
+  }, []);
+
+  const handleDeviceTypeChange = React.useCallback((val: string) => {
+    setFilters((prev) => ({ ...prev, deviceType: val }));
+  }, []);
+
+  const handleCategoryChange = React.useCallback((val: string) => {
+    setFilters((prev) => ({ ...prev, category: val }));
+  }, []);
+
+  const handleNutritionGradeChange = React.useCallback((val: string) => {
+    setFilters((prev) => ({ ...prev, nutritionGrade: val }));
+  }, []);
+
+  const handleSearchChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilters((prev) => ({ ...prev, search: e.target.value }));
+    },
+    []
+  );
+
+  const handleResetMutation = React.useCallback(() => {
+    exportMutation.reset();
+  }, [exportMutation]);
+
+  const handleOnClose = React.useCallback(() => {
+    onClose();
+  }, [onClose]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleOnClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -163,15 +212,13 @@ export function ExportModal({
             </label>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {Object.entries(ExportFormat).map(([key, value]) => (
-                <Button
+                <FormatButton
                   key={value}
-                  type="button"
-                  variant={format === value ? 'default' : 'outline'}
-                  className="w-full"
-                  onClick={() => setFormat(value)}
-                >
-                  {key}
-                </Button>
+                  label={key}
+                  value={value}
+                  isActive={format === value}
+                  onClick={handleFormatChange}
+                />
               ))}
             </div>
           </div>
@@ -189,30 +236,21 @@ export function ExportModal({
                   Date Range
                 </label>
                 <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 px-2 text-[10px]"
-                    onClick={() => handlePredefinedRange(7)}
-                  >
-                    7d
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 px-2 text-[10px]"
-                    onClick={() => handlePredefinedRange(30)}
-                  >
-                    30d
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 px-2 text-[10px]"
-                    onClick={() => handlePredefinedRange('all')}
-                  >
-                    All
-                  </Button>
+                  <RangeButton
+                    label="7d"
+                    days={7}
+                    onClick={handlePredefinedRange}
+                  />
+                  <RangeButton
+                    label="30d"
+                    days={30}
+                    onClick={handlePredefinedRange}
+                  />
+                  <RangeButton
+                    label="All"
+                    days="all"
+                    onClick={handlePredefinedRange}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -223,9 +261,7 @@ export function ExportModal({
                   <Input
                     type="date"
                     value={filters.startDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, startDate: e.target.value })
-                    }
+                    onChange={handleStartDateChange}
                     className="h-9"
                   />
                 </div>
@@ -236,9 +272,7 @@ export function ExportModal({
                   <Input
                     type="date"
                     value={filters.endDate}
-                    onChange={(e) =>
-                      setFilters({ ...filters, endDate: e.target.value })
-                    }
+                    onChange={handleEndDateChange}
                     className="h-9"
                   />
                 </div>
@@ -253,9 +287,7 @@ export function ExportModal({
                 </label>
                 <Select
                   value={filters.barcodeType}
-                  onValueChange={(val) =>
-                    setFilters({ ...filters, barcodeType: val })
-                  }
+                  onValueChange={handleBarcodeTypeChange}
                 >
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="All Types" />
@@ -276,9 +308,7 @@ export function ExportModal({
                 </label>
                 <Select
                   value={filters.deviceType}
-                  onValueChange={(val) =>
-                    setFilters({ ...filters, deviceType: val })
-                  }
+                  onValueChange={handleDeviceTypeChange}
                 >
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="All Devices" />
@@ -304,9 +334,7 @@ export function ExportModal({
                 </label>
                 <Select
                   value={filters.category}
-                  onValueChange={(val) =>
-                    setFilters({ ...filters, category: val })
-                  }
+                  onValueChange={handleCategoryChange}
                 >
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="All Categories" />
@@ -333,9 +361,7 @@ export function ExportModal({
                 </label>
                 <Select
                   value={filters.nutritionGrade}
-                  onValueChange={(val) =>
-                    setFilters({ ...filters, nutritionGrade: val })
-                  }
+                  onValueChange={handleNutritionGradeChange}
                 >
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="All Grades" />
@@ -359,9 +385,7 @@ export function ExportModal({
               <Input
                 placeholder="Find in barcode data"
                 value={filters.search}
-                onChange={(e) =>
-                  setFilters({ ...filters, search: e.target.value })
-                }
+                onChange={handleSearchChange}
                 className="h-9"
               />
             </div>
@@ -381,7 +405,7 @@ export function ExportModal({
         <DialogFooter className="gap-2 sm:gap-0">
           <Button
             variant="outline"
-            onClick={onClose}
+            onClick={handleOnClose}
             disabled={exportMutation.isPending}
           >
             Cancel
@@ -417,11 +441,7 @@ export function ExportModal({
                     : 'This may take a moment for large datasets.'}
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => exportMutation.reset()}
-              >
+              <Button variant="outline" size="sm" onClick={handleResetMutation}>
                 Cancel
               </Button>
             </div>
@@ -429,5 +449,50 @@ export function ExportModal({
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+function FormatButton({
+  label,
+  value,
+  isActive,
+  onClick,
+}: {
+  label: string;
+  value: ExportFormat;
+  isActive: boolean;
+  onClick: (v: ExportFormat) => void;
+}) {
+  const handleClick = React.useCallback(() => onClick(value), [onClick, value]);
+  return (
+    <Button
+      type="button"
+      variant={isActive ? 'default' : 'outline'}
+      className="w-full"
+      onClick={handleClick}
+    >
+      {label}
+    </Button>
+  );
+}
+
+function RangeButton({
+  label,
+  days,
+  onClick,
+}: {
+  label: string;
+  days: number | 'all';
+  onClick: (d: number | 'all') => void;
+}) {
+  const handleClick = React.useCallback(() => onClick(days), [onClick, days]);
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-7 px-2 text-[10px]"
+      onClick={handleClick}
+    >
+      {label}
+    </Button>
   );
 }

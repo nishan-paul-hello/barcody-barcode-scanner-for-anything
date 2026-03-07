@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { api } from '@/lib/api/client';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -27,47 +27,65 @@ export const LoginModal = () => {
 
   const MIN_SPINNER_MS = 500;
 
-  const handleSuccess = async (credentialResponse: CredentialResponse) => {
-    setIsLoading(true);
-    const spinnerStartedAt = Date.now();
-    try {
-      if (!credentialResponse.credential) {
-        throw new Error('No credential received from Google');
+  const handleSuccess = useCallback(
+    async (credentialResponse: CredentialResponse) => {
+      setIsLoading(true);
+      const spinnerStartedAt = Date.now();
+      try {
+        if (!credentialResponse.credential) {
+          throw new Error('No credential received from Google');
+        }
+
+        const {
+          accessToken,
+          refreshToken,
+          user: loggedInUser,
+        } = await api.auth.login({
+          token: credentialResponse.credential,
+        });
+
+        login(loggedInUser, accessToken, refreshToken);
+
+        if (pendingRedirectPath) {
+          router.push(pendingRedirectPath);
+        } else if (window.location.search.includes('login=true')) {
+          router.replace(window.location.pathname);
+        }
+
+        closeLoginModal();
+      } catch (error: unknown) {
+        console.error('Login Error:', error);
+      } finally {
+        const elapsed = Date.now() - spinnerStartedAt;
+        const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
+        if (remaining > 0) {
+          await new Promise((r) => setTimeout(r, remaining));
+        }
+        setIsLoading(false);
       }
+    },
+    [login, pendingRedirectPath, router, closeLoginModal]
+  );
 
-      const {
-        accessToken,
-        refreshToken,
-        user: loggedInUser,
-      } = await api.auth.login({
-        token: credentialResponse.credential,
-      });
-
-      login(loggedInUser, accessToken, refreshToken);
-
-      if (pendingRedirectPath) {
-        router.push(pendingRedirectPath);
-      } else if (window.location.search.includes('login=true')) {
-        router.replace(window.location.pathname);
-      }
-
-      closeLoginModal();
-    } catch (error: unknown) {
-      console.error('Login Error:', error);
-    } finally {
-      const elapsed = Date.now() - spinnerStartedAt;
-      const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
-      if (remaining > 0) {
-        await new Promise((r) => setTimeout(r, remaining));
-      }
-      setIsLoading(false);
-    }
-  };
-
-  const handleError = () => {
+  const handleError = useCallback(() => {
     console.error('Google Login Authentication Failed');
     setIsLoading(false);
-  };
+  }, []);
+
+  const handleClose = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeLoginModal();
+    },
+    [closeLoginModal]
+  );
+
+  const handleDismissSuggested = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsSuggestedDismissed(true);
+  }, []);
 
   return (
     <Dialog open={isLoginModalOpen} onOpenChange={closeLoginModal}>
@@ -79,11 +97,7 @@ export const LoginModal = () => {
           {/* Close Button */}
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              closeLoginModal();
-            }}
+            onClick={handleClose}
             className="absolute top-8 right-8 z-[100] cursor-pointer p-2 text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
             aria-label="Close"
           >
@@ -158,11 +172,7 @@ export const LoginModal = () => {
                       {/* Intercepting Dismiss Button (z-[100]) */}
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setIsSuggestedDismissed(true);
-                        }}
+                        onClick={handleDismissSuggested}
                         className="absolute right-6 z-[100] cursor-pointer p-3 text-white/30 transition-all hover:scale-110 hover:text-white active:scale-90"
                         aria-label="Dismiss"
                       >
