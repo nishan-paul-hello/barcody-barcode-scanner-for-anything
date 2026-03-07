@@ -60,7 +60,7 @@ const APIS = [
   { id: 'searchUpc', name: 'Search UPC', icon: Key, color: 'text-yellow-400' },
   {
     id: 'usda',
-    name: 'FoodData Central',
+    name: 'USDA FoodData Central',
     icon: FlaskConical,
     color: 'text-green-400',
   },

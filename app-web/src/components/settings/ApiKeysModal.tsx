@@ -391,13 +391,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               />
 
               <ApiKeyInput
-                label="FoodData Central"
+                label="USDA FoodData Central"
                 value={usdaKey}
                 setter={setUsdaKey}
                 fieldId="usda"
                 icon={FlaskConical}
                 color="text-green-400"
-                placeholder="Enter FoodData Central Key"
+                placeholder="Enter USDA FoodData Central Key"
                 link="https://fdc.nal.usda.gov/api-key-signup.html"
                 onCopy={handleCopy}
                 copiedField={copiedField}
