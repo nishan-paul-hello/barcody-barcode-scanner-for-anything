@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { AuthStore, User } from '@/types/auth'; // @ alias assumes path mapping in tsconfig
+import type { AuthResponseDto } from '@/lib/api/types';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
@@ -83,7 +84,7 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           // Use raw axios to avoid interceptor loop
-          const response = await axios.post(
+          const response = await axios.post<AuthResponseDto>(
             `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
             {
               refreshToken,

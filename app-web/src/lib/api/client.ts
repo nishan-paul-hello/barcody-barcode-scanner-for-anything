@@ -13,6 +13,7 @@ import type {
   CreateScanDto,
   BulkCreateScansDto,
   ScanResponseDto,
+  ScanStatsResponse,
   ProductLookupResponse,
   TrackEventDto,
   PaginatedResponse,
@@ -23,6 +24,7 @@ import type {
   ApiErrorResponse,
   TailscaleInfoDto,
   ProductComparisonResponse,
+  AnalyticsDashboardResponse,
 } from '@/lib/api/types';
 
 // Define custom property for retry in request config
@@ -170,13 +172,14 @@ export const api = {
       apiClient.post<AuthResponseDto>('/auth/google', dto).then((r) => r.data),
     refresh: (dto: RefreshTokenDto) =>
       apiClient.post<AuthResponseDto>('/auth/refresh', dto).then((r) => r.data),
-    logout: () => apiClient.post('/auth/logout').then((r) => r.data),
+    logout: () => apiClient.post<void>('/auth/logout').then((r) => r.data),
     getMe: () => apiClient.get<User>('/auth/me').then((r) => r.data),
   },
 
   // Scans
   scans: {
-    getStats: () => apiClient.get('/scans/stats').then((r) => r.data),
+    getStats: () =>
+      apiClient.get<ScanStatsResponse>('/scans/stats').then((r) => r.data),
     createScan: (dto: CreateScanDto) =>
       apiClient.post<ScanResponseDto>('/scans', dto).then((r) => r.data),
     getScans: (params?: PaginationParams) =>
@@ -186,9 +189,11 @@ export const api = {
     getScan: (id: string) =>
       apiClient.get<ScanResponseDto>(`/scans/${id}`).then((r) => r.data),
     deleteScan: (id: string) =>
-      apiClient.delete(`/scans/${id}`).then((r) => r.data),
+      apiClient.delete<void>(`/scans/${id}`).then((r) => r.data),
     bulkDeleteScans: (ids: string[]) =>
-      apiClient.delete('/scans/batch', { data: { ids } }).then((r) => r.data),
+      apiClient
+        .delete<void>('/scans/batch', { data: { ids } })
+        .then((r) => r.data),
     bulkCreateScans: (dto: BulkCreateScansDto) =>
       apiClient.post<ScanResponseDto[]>('/scans/bulk', dto).then((r) => r.data),
     getScansSince: (timestamp: string) =>
@@ -210,7 +215,9 @@ export const api = {
         .post<ProductComparisonResponse>('/products/compare', { barcodes })
         .then((r) => r.data),
     getRawLookup: (barcode: string, source: string) =>
-      apiClient.get(`/products/${barcode}/raw/${source}`).then((r) => r.data),
+      apiClient
+        .get<unknown>(`/products/${barcode}/raw/${source}`)
+        .then((r) => r.data),
   },
 
   // User settings
@@ -251,7 +258,7 @@ export const api = {
             }
           },
         })
-        .then((r) => r.data),
+        .then((r) => r.data as Blob),
     exportJSON: (params?: PaginationParams, onProgress?: (p: number) => void) =>
       apiClient
         .get('/export/json', {
@@ -266,7 +273,7 @@ export const api = {
             }
           },
         })
-        .then((r) => r.data),
+        .then((r) => r.data as Blob),
     exportPDF: (params?: PaginationParams, onProgress?: (p: number) => void) =>
       apiClient
         .get('/export/pdf', {
@@ -281,7 +288,7 @@ export const api = {
             }
           },
         })
-        .then((r) => r.data),
+        .then((r) => r.data as Blob),
     exportExcel: (
       params?: PaginationParams,
       onProgress?: (p: number) => void
@@ -299,15 +306,17 @@ export const api = {
             }
           },
         })
-        .then((r) => r.data),
+        .then((r) => r.data as Blob),
   },
 
   // Analytics
   analytics: {
     trackEvent: (dto: TrackEventDto) =>
-      apiClient.post('/analytics/event', dto).then((r) => r.data),
+      apiClient.post<void>('/analytics/event', dto).then((r) => r.data),
     getAnalytics: (params?: { startDate?: string; endDate?: string }) =>
-      apiClient.get('/analytics/dashboard', { params }).then((r) => r.data),
+      apiClient
+        .get<AnalyticsDashboardResponse>('/analytics/dashboard', { params })
+        .then((r) => r.data),
   },
 
   // Helper for generic file upload

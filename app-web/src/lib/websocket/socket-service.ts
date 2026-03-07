@@ -87,7 +87,7 @@ class SocketService {
       }
     });
 
-    this.socket.on('reconnect_attempt', (attempt) => {
+    this.socket.on('reconnect_attempt', (attempt: number) => {
       console.warn(`WebSocket reconnection attempt #${attempt}`);
       setStatus('reconnecting');
       this.reconnectionAttempts = attempt;
