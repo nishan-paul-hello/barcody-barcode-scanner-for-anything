@@ -17,8 +17,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(isExpanded);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isObject = (item: any) => item && typeof item === 'object';
+  const isObject = (item: unknown) => item !== null && typeof item === 'object';
   const isArray = Array.isArray(data);
 
   if (!isObject(data)) {
@@ -78,7 +77,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({
             <JsonViewer
               key={key}
               name={isArray ? undefined : key}
-              data={data[key as keyof typeof data]}
+              data={(data as Record<string, unknown>)[key]}
               isExpanded={false}
             />
           ))}

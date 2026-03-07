@@ -241,14 +241,52 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
     document.body.removeChild(link);
   };
 
-  const clearFile = () => {
+  const clearFile = useCallback(() => {
     setPreviewUrl(null);
     setError(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
     onClear?.();
-  };
+  }, [onClear, setPreviewUrl]);
+
+  const handleClearFileClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      clearFile();
+    },
+    [clearFile]
+  );
+
+  const handleClearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0];
+      if (selectedFile) {
+        void handleFile(selectedFile);
+      }
+    },
+    [handleFile]
+  );
+
+  const handleOpenApiKeys = useCallback(() => {
+    setApiKeysModalOpen(true);
+  }, [setApiKeysModalOpen]);
+
+  const handleClosePreview = useCallback(() => {
+    setIsPreviewOpen(false);
+  }, []);
+
+  const handlePreviewClick = useCallback(() => {
+    setIsPreviewOpen(true);
+  }, []);
+
+  const handleStopPropagation = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -277,7 +315,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
               >
                 <div
                   className="group/img relative h-full w-full cursor-pointer overflow-hidden rounded-[2.5rem]"
-                  onClick={() => setIsPreviewOpen(true)}
+                  onClick={handlePreviewClick}
                 >
                   <Image
                     src={previewUrl}
@@ -303,10 +341,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    clearFile();
-                  }}
+                  onClick={handleClearFileClick}
                   className="absolute top-6 right-6 size-10 cursor-pointer rounded-full border border-white/10 bg-black/40 text-white/70 opacity-0 backdrop-blur-md transition-all group-hover:opacity-100 hover:bg-red-500 hover:text-white"
                 >
                   <X className="size-5" />
@@ -333,7 +368,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 </div>
                 <button
                   type="button"
-                  onClick={() => setError(null)}
+                  onClick={handleClearError}
                   className="mt-1 flex cursor-pointer items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-bold text-white/50 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white/80"
                 >
                   <X className="size-3" />
@@ -354,12 +389,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                   ref={fileInputRef}
                   className="hidden"
                   accept={ALLOWED_TYPES.join(',')}
-                  onChange={(e) => {
-                    const selectedFile = e.target.files?.[0];
-                    if (selectedFile) {
-                      void handleFile(selectedFile);
-                    }
-                  }}
+                  onChange={handleFileChange}
                 />
                 <label
                   htmlFor="barcode-image-upload"
@@ -428,7 +458,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
                 </div>
 
                 <Button
-                  onClick={() => setApiKeysModalOpen(true)}
+                  onClick={handleOpenApiKeys}
                   className="h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] hover:bg-amber-400 active:scale-95 sm:ml-auto"
                 >
                   <span className="font-bold">Set API Keys</span>
@@ -448,7 +478,7 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md md:p-8"
-            onClick={() => setIsPreviewOpen(false)}
+            onClick={handleClosePreview}
           >
             <motion.div
               key="preview-content"
@@ -457,12 +487,12 @@ export const BarcodeFileScanner: React.FC<BarcodeFileScannerProps> = ({
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="relative flex max-h-[85vh] w-full max-w-4xl flex-col items-center justify-center"
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleStopPropagation}
             >
               <div className="mb-4 flex items-center gap-1 rounded-full border border-white/10 bg-black/50 p-1.5 backdrop-blur-xl">
                 <button
                   type="button"
-                  onClick={() => setIsPreviewOpen(false)}
+                  onClick={handleClosePreview}
                   className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-all hover:bg-white/10 hover:text-cyan-400"
                 >
                   <X className="size-5" />

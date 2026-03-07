@@ -481,6 +481,14 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
     onClear?.();
   }, [onClear, setPreviewUrl]);
 
+  const handleRestoreConnection = useCallback(() => {
+    window.location.reload();
+  }, []);
+
+  const handleToggleCameraThunk = useCallback(() => {
+    handleToggleCamera();
+  }, [handleToggleCamera]);
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
       <motion.div
@@ -578,7 +586,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
               </p>
               <Button
                 variant="outline"
-                onClick={() => window.location.reload()}
+                onClick={handleRestoreConnection}
                 className="h-12 rounded-full border-white/10 bg-white/5 px-8 text-white transition-all hover:bg-white/10 hover:ring-2 hover:ring-white/20"
               >
                 Restore Connection
@@ -596,7 +604,7 @@ export const BarcodeScanner: React.FC<BarcodeScannerProps> = ({
           >
             <button
               type="button"
-              onClick={() => handleToggleCamera()}
+              onClick={handleToggleCameraThunk}
               className="flex size-10 cursor-pointer items-center justify-center rounded-full text-white/70 transition-colors hover:text-cyan-400 focus:outline-none"
             >
               {isCameraActive ? (

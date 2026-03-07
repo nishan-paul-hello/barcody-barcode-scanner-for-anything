@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -17,9 +17,39 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
+export interface UPCitemdbItem {
+  title: string;
+  brand?: string;
+  description?: string;
+  category?: string;
+  upc?: string;
+  ean?: string;
+  model?: string;
+  color?: string;
+  size?: string;
+  dimension?: string;
+  weight?: string;
+  asin?: string;
+  mpn?: string;
+  currency?: string;
+  lowest_recorded_price?: number;
+  highest_recorded_price?: number;
+  images?: string[];
+  offers?: Array<{
+    link: string;
+    merchant: string;
+    condition?: string;
+    currency?: string;
+    price: number | string;
+  }>;
+}
+
+export interface UPCitemdbData {
+  items?: UPCitemdbItem[];
+}
+
 interface UPCitemdbPresenterProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: UPCitemdbData;
 }
 
 const ProductPlaceholder = () => (
@@ -59,6 +89,25 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   const [confirmedThumbnails, setConfirmedThumbnails] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  const handleMainLoad = useCallback(() => setMainReady(true), []);
+  const handleMarkBroken = useCallback((url: string) => {
+    setBrokenImages((prev) => {
+      const next = new Set(prev);
+      next.add(url);
+      return next;
+    });
+  }, []);
+
+  const handleConfirmThumbnail = useCallback((url: string) => {
+    setConfirmedThumbnails((prev) =>
+      prev.includes(url) ? prev : [...prev, url]
+    );
+  }, []);
+
+  const handleSelectImage = useCallback((url: string) => {
+    setSelectedImage(url);
+  }, []);
+
   const item = data?.items?.[0];
 
   if (!item) {
@@ -91,24 +140,12 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
     offers = [],
   } = item;
 
-  const markBroken = (url: string) => {
-    setBrokenImages((prev) => {
-      const next = new Set(prev);
-      next.add(url);
-      return next;
-    });
-  };
-
-  const confirmThumbnail = (url: string) => {
-    setConfirmedThumbnails((prev) =>
-      prev.includes(url) ? prev : [...prev, url]
-    );
-  };
+  // Handlers moved above for useCallback stability
 
   // All unique, non-empty, non-broken image URLs from the API
   const allImages: string[] = Array.from(
     new Set(
-      (images as string[]).filter(
+      images.filter(
         (url) =>
           typeof url === 'string' && url.trim() !== '' && !brokenImages.has(url)
       )
@@ -171,8 +208,8 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     alt=""
                     aria-hidden
                     style={{ display: 'none' }}
-                    onLoad={() => setMainReady(true)}
-                    onError={() => markBroken(mainImage)}
+                    onLoad={handleMainLoad}
+                    onError={() => handleMarkBroken(mainImage)}
                   />
 
                   {/* Placeholder until main image confirmed */}
@@ -224,8 +261,8 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                   key={`pre-${img}`}
                   src={img}
                   alt=""
-                  onLoad={() => confirmThumbnail(img)}
-                  onError={() => markBroken(img)}
+                  onLoad={() => handleConfirmThumbnail(img)}
+                  onError={() => handleMarkBroken(img)}
                 />
               ))}
             </div>
@@ -239,7 +276,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                   <button
                     key={mainImage}
                     type="button"
-                    onClick={() => setSelectedImage(mainImage)}
+                    onClick={() => handleSelectImage(mainImage)}
                     className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                       (selectedImage ?? mainImage) === mainImage
                         ? 'outline outline-1 outline-white/30'
@@ -262,7 +299,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                     <button
                       key={img}
                       type="button"
-                      onClick={() => setSelectedImage(img)}
+                      onClick={() => handleSelectImage(img)}
                       className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
                         selectedImage === img
                           ? 'outline outline-1 outline-white/30'
@@ -274,7 +311,7 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
                         src={img}
                         alt={title}
                         className="size-full object-cover"
-                        onError={() => markBroken(img)}
+                        onError={() => handleMarkBroken(img)}
                       />
                     </button>
                   ))}
