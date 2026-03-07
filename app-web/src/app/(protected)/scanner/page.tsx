@@ -6,7 +6,7 @@ import { BarcodeFileScanner } from '@/components/scanner/BarcodeFileScanner';
 import { BarcodeManualLookup } from '@/components/scanner/BarcodeManualLookup';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Result } from '@zxing/library';
-import { Camera, FileUp, PackageSearch, Search } from 'lucide-react';
+import { ScanBarcode, ImagePlus, Keyboard, PackageSearch } from 'lucide-react';
 import { useProduct } from '@/hooks/use-product';
 import { ProductDetail } from '@/components/products/ProductDetail';
 import { ProductSkeleton } from '@/components/products/ProductSkeleton';
@@ -148,21 +148,21 @@ export default function ScanPage() {
                     value="camera"
                     className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
-                    <Camera className="mr-2 size-[3.5]" />
+                    <ScanBarcode className="mr-2 size-4" />
                     Live
                   </TabsTrigger>
                   <TabsTrigger
                     value="file"
                     className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
-                    <FileUp className="mr-2 size-[3.5]" />
+                    <ImagePlus className="mr-2 size-4" />
                     Upload
                   </TabsTrigger>
                   <TabsTrigger
                     value="lookup"
                     className="h-11 w-full cursor-pointer rounded-full px-0 text-xs font-bold tracking-widest text-white/40 uppercase transition-all hover:!bg-transparent hover:!text-white data-[state=active]:bg-white/5 data-[state=active]:!text-white data-[state=active]:ring-1 data-[state=active]:ring-white/10 hover:[&_svg]:text-white data-[state=active]:[&_svg]:text-cyan-400"
                   >
-                    <Search className="mr-2 size-[3.5]" />
+                    <Keyboard className="mr-2 size-4" />
                     Lookup
                   </TabsTrigger>
                 </TabsList>
