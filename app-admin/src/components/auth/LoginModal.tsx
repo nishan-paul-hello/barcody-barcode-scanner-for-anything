@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
@@ -72,6 +72,24 @@ export const LoginModal = () => {
     setError('Google authentication failed.');
   };
 
+  const handleDismissSuggested = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsSuggestedDismissed(true);
+  }, []);
+
+  const handleCloseModal = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeLoginModal();
+    },
+    [closeLoginModal]
+  );
+
+  const handleSuccessCallback = useCallback(handleSuccess, [handleSuccess]);
+  const handleErrorCallback = useCallback(handleError, [handleError]);
+
   return (
     <Dialog open={isLoginModalOpen} onOpenChange={closeLoginModal}>
       <DialogContent
@@ -82,11 +100,7 @@ export const LoginModal = () => {
           {/* Close Button */}
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              closeLoginModal();
-            }}
+            onClick={handleCloseModal}
             className="absolute top-8 right-8 z-[100] cursor-pointer p-2 text-white/40 transition-all hover:scale-110 hover:text-white active:scale-90"
             aria-label="Close"
           >
@@ -136,8 +150,8 @@ export const LoginModal = () => {
                       {/* Google Login Overlay (z-20) */}
                       <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.001] mix-blend-multiply">
                         <GoogleLogin
-                          onSuccess={handleSuccess}
-                          onError={handleError}
+                          onSuccess={handleSuccessCallback}
+                          onError={handleErrorCallback}
                           width="400"
                         />
                       </div>
@@ -163,11 +177,7 @@ export const LoginModal = () => {
                       {/* Intercepting Dismiss Button (z-[100]) */}
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setIsSuggestedDismissed(true);
-                        }}
+                        onClick={handleDismissSuggested}
                         className="absolute right-6 z-[100] cursor-pointer p-3 text-white/30 transition-all hover:scale-110 hover:text-white active:scale-90"
                         aria-label="Dismiss"
                       >
@@ -188,8 +198,8 @@ export const LoginModal = () => {
                     <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
                       <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.001] mix-blend-multiply">
                         <GoogleLogin
-                          onSuccess={handleSuccess}
-                          onError={handleError}
+                          onSuccess={handleSuccessCallback}
+                          onError={handleErrorCallback}
                           width="400"
                         />
                       </div>
@@ -223,8 +233,8 @@ export const LoginModal = () => {
                   <div className="group relative w-full cursor-pointer overflow-hidden rounded-full border border-white/20 bg-white/[0.05] transition-all hover:bg-white/[0.1] active:scale-[0.98]">
                     <div className="absolute inset-0 z-20 flex scale-[8] cursor-pointer items-center justify-center opacity-[0.001] mix-blend-multiply">
                       <GoogleLogin
-                        onSuccess={handleSuccess}
-                        onError={handleError}
+                        onSuccess={handleSuccessCallback}
+                        onError={handleErrorCallback}
                         width="400"
                       />
                     </div>

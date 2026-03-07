@@ -22,7 +22,7 @@ import {
   Legend,
 } from 'recharts';
 import { format } from 'date-fns';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 interface AnalyticsChartsProps {
   dateRange: DateRange | undefined;
@@ -46,6 +46,14 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
       dateFormatted: format(new Date(item.date), 'MMM d'),
     }));
   }, [trendData]);
+
+  const tickFormatter = useCallback((value: string | number) => `${value}`, []);
+
+  const renderPieLabel = useCallback(
+    ({ name, percent }: { name?: string | number; percent?: number }) =>
+      `${name} ${((percent ?? 0) * 100).toFixed(0)}%`,
+    []
+  );
 
   if (isLoadingTrends || isLoadingBarcodes || isLoadingDevices) {
     return <ChartsSkeleton />;
@@ -74,7 +82,7 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value) => `${value}`}
+                  tickFormatter={tickFormatter}
                 />
                 <Tooltip
                   contentStyle={{
@@ -114,13 +122,7 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
                   paddingAngle={5}
                   dataKey="count"
                   nameKey="type"
-                  label={({
-                    name,
-                    percent,
-                  }: {
-                    name?: string | number;
-                    percent?: number;
-                  }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+                  label={renderPieLabel}
                 >
                   {barcodeData?.map(
                     (entry: { type: string }, index: number) => (
@@ -156,13 +158,7 @@ export function AnalyticsCharts({ dateRange }: AnalyticsChartsProps) {
                   fill="#8884d8"
                   dataKey="count"
                   nameKey="device"
-                  label={({
-                    name,
-                    percent,
-                  }: {
-                    name?: string | number;
-                    percent?: number;
-                  }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+                  label={renderPieLabel}
                 >
                   {deviceData?.map(
                     (entry: { device: string }, index: number) => (

@@ -36,6 +36,12 @@ import {
   Legend,
 } from 'recharts';
 import { Barcode, Clock, TrendingUp, BarChart2 } from 'lucide-react';
+import type {
+  AnalyticsTrend,
+  HourlyActivity,
+  BarcodeTypeDistribution,
+  DeviceBreakdown,
+} from '@/lib/api/types';
 
 const PALETTE = [
   '#06b6d4', // cyan-500
@@ -96,7 +102,7 @@ export default function AnalyticsPage() {
     if (!trendData?.data) {
       return [];
     }
-    return trendData.data.map((item: { date: string; count: number }) => ({
+    return trendData.data.map((item: AnalyticsTrend) => ({
       ...item,
       label: format(new Date(item.date), 'MMM d'),
     }));
@@ -106,7 +112,7 @@ export default function AnalyticsPage() {
     if (!hourlyData) {
       return [];
     }
-    return (hourlyData as { hour: number; count: number }[]).map((item) => ({
+    return hourlyData.map((item: HourlyActivity) => ({
       ...item,
       label: HOUR_LABELS[item.hour] ?? `${item.hour}h`,
     }));
@@ -115,7 +121,7 @@ export default function AnalyticsPage() {
   const totalInRange = useMemo(
     () =>
       formattedTrends.reduce(
-        (sum: number, d: { count: number }) => sum + d.count,
+        (sum: number, d: AnalyticsTrend) => sum + d.count,
         0
       ),
     [formattedTrends]
@@ -360,13 +366,14 @@ export default function AnalyticsPage() {
                       dataKey="count"
                       nameKey="type"
                     >
-                      {((barcodeData as { type: string }[]) ?? []).map(
-                        (item) => (
+                      {((barcodeData as BarcodeTypeDistribution[]) ?? []).map(
+                        (item: BarcodeTypeDistribution) => (
                           <Cell
                             key={`bc-${item.type}`}
                             fill={
                               PALETTE[
-                                barcodeData.indexOf(item) % PALETTE.length
+                                (barcodeData ?? []).indexOf(item) %
+                                  PALETTE.length
                               ]
                             }
                           />
@@ -430,12 +437,15 @@ export default function AnalyticsPage() {
                       cursor={{ fill: '#27272a55' }}
                     />
                     <Bar dataKey="count" name="Scans" radius={[0, 4, 4, 0]}>
-                      {((deviceData as { device: string }[]) ?? []).map(
-                        (item) => (
+                      {((deviceData as DeviceBreakdown[]) ?? []).map(
+                        (item: DeviceBreakdown) => (
                           <Cell
                             key={`dev-${item.device}`}
                             fill={
-                              PALETTE[deviceData.indexOf(item) % PALETTE.length]
+                              PALETTE[
+                                (deviceData ?? []).indexOf(item) %
+                                  PALETTE.length
+                              ]
                             }
                           />
                         )
@@ -491,14 +501,7 @@ export default function AnalyticsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(
-                    topBarcodes as {
-                      barcodeData: string;
-                      barcodeType: string;
-                      productName: string | null;
-                      count: number;
-                    }[]
-                  ).map((item, idx) => {
+                  {topBarcodes?.map((item, idx) => {
                     const maxCount = topBarcodes[0]?.count ?? 1;
                     const pct = Math.round((item.count / maxCount) * 100);
                     return (

@@ -15,7 +15,7 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useRef } from 'react';
+import { useRef, useCallback } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
 import { useRouter } from 'next/navigation';
@@ -52,13 +52,13 @@ export default function LandingPage() {
   const { openLoginModal } = useUIStore();
   const router = useRouter();
 
-  const handleLaunchDashboard = () => {
+  const handleLaunchDashboard = useCallback(() => {
     if (isAuthenticated && isAdmin) {
       router.push('/dashboard');
     } else {
       openLoginModal('/dashboard');
     }
-  };
+  }, [isAuthenticated, isAdmin, router, openLoginModal]);
 
   return (
     <div ref={containerRef} className="relative w-full">

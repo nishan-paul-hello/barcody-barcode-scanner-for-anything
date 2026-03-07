@@ -4,13 +4,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-  picture?: string;
-}
+import type { User, AuthResponse } from '@/lib/api/types';
 
 interface DecodedToken {
   exp: number;
@@ -113,11 +107,14 @@ export const useAuthStore = create<AuthState>()(
         try {
           // Use a raw axios instance — NOT the apiClient — to avoid triggering
           // the response interceptor and creating an infinite retry loop.
-          const response = await axios.post(`${API_URL}/auth/refresh`, {
-            refreshToken,
-          });
+          const response = await axios.post<AuthResponse>(
+            `${API_URL}/auth/refresh`,
+            {
+              refreshToken,
+            }
+          );
 
-          const data = response.data;
+          const { data } = response;
           // data shape: AuthResponseDto { accessToken, refreshToken, user, isAdmin }
 
           set({
@@ -128,7 +125,7 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
           });
 
-          return data.accessToken as string;
+          return data.accessToken;
         } catch (error) {
           if (axios.isAxiosError(error) && error.response) {
             const status = error.response.status;
