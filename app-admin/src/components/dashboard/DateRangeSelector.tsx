@@ -43,8 +43,7 @@ export function DateRangeSelector({
     if (!dateRange && selectedPreset) {
       handlePresetChange(selectedPreset);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dateRange, selectedPreset, handlePresetChange]);
 
   return (
     <div className="flex items-center gap-2">

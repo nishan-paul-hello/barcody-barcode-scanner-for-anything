@@ -280,28 +280,42 @@ export default function LandingPage() {
 
                   {/* Visual Centerpiece: Dynamic Activity Ring */}
                   <div className="relative flex h-32 w-full items-end justify-center gap-[3px] px-10">
-                    {[35, 60, 45, 85, 70, 95, 50, 100, 75, 55, 80, 40].map(
-                      (h, i) => (
-                        <motion.div
-                          // eslint-disable-next-line react/no-array-index-key
-                          key={i}
-                          animate={{
-                            height: [`${h * 0.7}%`, `${h}%`, `${h * 0.8}%`],
-                            opacity: [0.4, 0.8, 0.4],
-                          }}
-                          transition={{
-                            duration: 3 + (i % 5) * 0.6,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
-                          }}
-                          className="w-full rounded-full bg-gradient-to-t from-[#00ffe7] to-[#00ffe7]/20"
-                          style={{
-                            minWidth: '4px',
-                            willChange: 'height, opacity',
-                          }}
-                        />
-                      )
-                    )}
+                    {[
+                      { h: 35, id: 'band-1' },
+                      { h: 60, id: 'band-2' },
+                      { h: 45, id: 'band-3' },
+                      { h: 85, id: 'band-4' },
+                      { h: 70, id: 'band-5' },
+                      { h: 95, id: 'band-6' },
+                      { h: 50, id: 'band-7' },
+                      { h: 100, id: 'band-8' },
+                      { h: 75, id: 'band-9' },
+                      { h: 55, id: 'band-10' },
+                      { h: 80, id: 'band-11' },
+                      { h: 40, id: 'band-12' },
+                    ].map((band, i) => (
+                      <motion.div
+                        key={band.id}
+                        animate={{
+                          height: [
+                            `${band.h * 0.7}%`,
+                            `${band.h}%`,
+                            `${band.h * 0.8}%`,
+                          ],
+                          opacity: [0.4, 0.8, 0.4],
+                        }}
+                        transition={{
+                          duration: 3 + (i % 5) * 0.6,
+                          repeat: Infinity,
+                          ease: 'easeInOut',
+                        }}
+                        className="w-full rounded-full bg-gradient-to-t from-[#00ffe7] to-[#00ffe7]/20"
+                        style={{
+                          minWidth: '4px',
+                          willChange: 'height, opacity',
+                        }}
+                      />
+                    ))}
                   </div>
 
                   {/* Bottom Stats & Status */}
