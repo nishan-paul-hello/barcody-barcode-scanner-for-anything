@@ -83,6 +83,92 @@ const SpecCell = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
+// ─── Image Preloader ────────────────────────────────────────────────────────
+const ImagePreloader = ({
+  src,
+  data,
+  onLoad,
+  onError,
+}: {
+  src: string;
+  data?: string;
+  onLoad?: (() => void) | ((data: string) => void);
+  onError?: (url: string) => void;
+}) => {
+  const handleLoad = useCallback(() => {
+    if (onLoad) {
+      if (data !== undefined) {
+        (onLoad as (data: string) => void)(data);
+      } else {
+        (onLoad as () => void)();
+      }
+    }
+  }, [onLoad, data]);
+
+  const handleError = useCallback(() => {
+    onError?.(src);
+  }, [onError, src]);
+
+  return (
+    <Image
+      src={src}
+      alt=""
+      width={1}
+      height={1}
+      aria-hidden
+      style={{ display: 'none' }}
+      onLoad={handleLoad}
+      onError={handleError}
+      unoptimized
+    />
+  );
+};
+
+// ─── Thumbnail Button ────────────────────────────────────────────────────────
+const ThumbnailButton = ({
+  src,
+  title,
+  isSelected,
+  onClick,
+  onError,
+}: {
+  src: string;
+  title: string;
+  isSelected: boolean;
+  onClick: (url: string) => void;
+  onError?: (url: string) => void;
+}) => {
+  const handleClick = useCallback(() => {
+    onClick(src);
+  }, [onClick, src]);
+
+  const handleError = useCallback(() => {
+    onError?.(src);
+  }, [onError, src]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
+        isSelected
+          ? 'outline outline-1 outline-white/30'
+          : 'opacity-50 hover:opacity-80'
+      }`}
+    >
+      <Image
+        src={src}
+        alt={title}
+        width={56}
+        height={56}
+        className="size-full object-cover"
+        onError={handleError}
+        unoptimized
+      />
+    </button>
+  );
+};
+
 export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
   const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
   const [mainReady, setMainReady] = useState(false);
@@ -202,14 +288,10 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
               {mainImage ? (
                 <>
                   {/* Silent preloader for main image */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <ImagePreloader
                     src={mainImage}
-                    alt=""
-                    aria-hidden
-                    style={{ display: 'none' }}
                     onLoad={handleMainLoad}
-                    onError={() => handleMarkBroken(mainImage)}
+                    onError={handleMarkBroken}
                   />
 
                   {/* Placeholder until main image confirmed */}
@@ -256,13 +338,12 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
             {/* Silent preloaders — fully outside the visible layout */}
             <div aria-hidden style={{ display: 'none' }}>
               {thumbnailCandidates.map((img) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <ImagePreloader
                   key={`pre-${img}`}
                   src={img}
-                  alt=""
-                  onLoad={() => handleConfirmThumbnail(img)}
-                  onError={() => handleMarkBroken(img)}
+                  data={img}
+                  onLoad={handleConfirmThumbnail}
+                  onError={handleMarkBroken}
                 />
               ))}
             </div>
@@ -273,47 +354,26 @@ export function UPCitemdbPresenter({ data }: UPCitemdbPresenterProps) {
               <div className="scrollbar-none flex w-full gap-2 overflow-x-auto">
                 {/* First tile: always show the mainImage so user can return to it */}
                 {mainImage && mainReady && (
-                  <button
-                    key={mainImage}
-                    type="button"
-                    onClick={() => handleSelectImage(mainImage)}
-                    className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
-                      (selectedImage ?? mainImage) === mainImage
-                        ? 'outline outline-1 outline-white/30'
-                        : 'opacity-50 hover:opacity-80'
-                    }`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={mainImage}
-                      alt={title}
-                      className="size-full object-cover"
-                    />
-                  </button>
+                  <ThumbnailButton
+                    src={mainImage}
+                    title={title}
+                    isSelected={(selectedImage ?? mainImage) === mainImage}
+                    onClick={handleSelectImage}
+                  />
                 )}
 
                 {/* Rest of confirmed thumbnails */}
                 {confirmedThumbnails
                   .filter((img) => !brokenImages.has(img))
                   .map((img) => (
-                    <button
+                    <ThumbnailButton
                       key={img}
-                      type="button"
-                      onClick={() => handleSelectImage(img)}
-                      className={`size-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-200 focus:outline-none ${
-                        selectedImage === img
-                          ? 'outline outline-1 outline-white/30'
-                          : 'opacity-50 hover:opacity-80'
-                      }`}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={img}
-                        alt={title}
-                        className="size-full object-cover"
-                        onError={() => handleMarkBroken(img)}
-                      />
-                    </button>
+                      src={img}
+                      title={title}
+                      isSelected={selectedImage === img}
+                      onClick={handleSelectImage}
+                      onError={handleMarkBroken}
+                    />
                   ))}
               </div>
             )}

@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
 interface JsonViewerProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: unknown;
   name?: string;
   isExpanded?: boolean;
 }
