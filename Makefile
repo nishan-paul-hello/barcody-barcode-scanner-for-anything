@@ -20,6 +20,7 @@ switch-env:
 dev-lh:
 	@$(MAKE) switch-env BACKEND=localhost
 	docker compose -f docker-compose.yml up -d postgres redis
+	docker compose stop app-backend app-web app-admin 2>/dev/null || true
 	npm run dev
 
 build-lh:
@@ -37,6 +38,7 @@ refresh-lh:
 dev-ts:
 	@$(MAKE) switch-env BACKEND=tailscale
 	docker compose -f docker-compose.yml -f docker-compose.ts.yml -f docker-compose.local-proxy.yml up -d postgres redis ts-web ts-admin ts-api
+	docker compose stop app-backend app-web app-admin 2>/dev/null || true
 	npm run dev
 
 build-ts:
