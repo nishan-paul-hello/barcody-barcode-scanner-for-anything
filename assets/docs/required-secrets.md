@@ -2,16 +2,6 @@
 
 To enable the automated CI/CD pipelines, the following secrets must be configured in your GitHub repository settings (**Settings > Secrets and variables > Actions**).
 
-## Docker Hub Secrets
-
-These are required for building and pushing Docker images to Docker Hub.
-
-| Secret Name           | Description                                                                                                                    |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `DOCKERHUB_USERNAME`  | Your Docker Hub username.                                                                                                      |
-| `DOCKERHUB_TOKEN`     | Your Docker Hub Personal Access Token (PAT). It is recommended to use a token with read/write access instead of your password. |
-| `NEXT_PUBLIC_API_URL` | The production API URL for the app-backend (used during web and app-admin builds).                                           |
-
 ## Expo Secrets (Mobile)
 
 Required for building and releasing the mobile application via EAS.
@@ -26,7 +16,9 @@ Required for building and releasing the mobile application via EAS.
 
 The workflows are configured to use these secrets automatically:
 
-- **Backend Build**: Uses `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
-- **Web Build**: Uses `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, and `NEXT_PUBLIC_API_URL`.
-- **Admin Dashboard Build**: Uses `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, and `NEXT_PUBLIC_API_URL`.
+- **Backend Tests**: No secrets required.
 - **Mobile Build**: Uses `EXPO_TOKEN`.
+
+---
+
+> **Note:** Docker image publishing (Docker Hub) has been removed. Registry publishing will be re-added via GHCR in a future update.
