@@ -1,7 +1,7 @@
 {
   "name": "barcody-barcode-scanner-for-anything",
   "version": "1.0.0",
-  "description": "Monorepo for Barcody with web, mobile, and admin dashboard",
+  "description": "Monorepo for Barcody with web and admin dashboard",
   "author": "Nishan Paul",
   "private": true,
   "license": "MIT",
@@ -9,30 +9,27 @@
   "scripts": {
     "prepare": "husky",
     "audit:check": "npx audit-ci --config ./audit-ci.json",
-    "lint": "npm run lint --workspace=app-backend && npm run lint --workspace=app-web && npm run lint --workspace=app-mobile && npm run lint --workspace=app-admin",
-    "format": "npm run format --workspace=app-backend && npm run format --workspace=app-web && npm run format --workspace=app-mobile && npm run format --workspace=app-admin",
-    "format-check": "npm run format-check --workspace=app-backend && npm run format-check --workspace=app-web && npm run format-check --workspace=app-mobile && npm run format-check --workspace=app-admin",
+    "lint": "npm run lint --workspace=app-backend && npm run lint --workspace=app-web && npm run lint --workspace=app-admin",
+    "format": "npm run format --workspace=app-backend && npm run format --workspace=app-web && npm run format --workspace=app-admin",
+    "format-check": "npm run format-check --workspace=app-backend && npm run format-check --workspace=app-web && npm run format-check --workspace=app-admin",
     "format-root": "npx prettier --write \"./*.{json,md,yml}\" \"./assets/**/*.{json,md,yml}\"",
     "format-staged": "prettier --write",
-    "type-check": "npm run type-check --workspace=app-backend && npm run type-check --workspace=app-web && npm run type-check --workspace=app-mobile && npm run type-check --workspace=app-admin",
-    "test": "npm run test --workspace=app-backend && npm run test --workspace=app-web && npm run test --workspace=app-mobile && npm run test --workspace=app-admin",
-    "build": "npm run build --workspace=app-backend && npm run build --workspace=app-web && npm run build --workspace=app-mobile && npm run build --workspace=app-admin",
+    "type-check": "npm run type-check --workspace=app-backend && npm run type-check --workspace=app-web && npm run type-check --workspace=app-admin",
+    "test": "npm run test --workspace=app-backend && npm run test --workspace=app-web && npm run test --workspace=app-admin",
+    "build": "npm run build --workspace=app-backend && npm run build --workspace=app-web && npm run build --workspace=app-admin",
     "dev": "concurrently -n \"api,web,admin\" -c \"magenta,cyan,yellow\" \"PORT=$BACKEND_PORT npm run start:dev --workspace=app-backend\" \"npm run dev --workspace=app-web -- -p $WEB_PORT\" \"npm run dev --workspace=app-admin -- -p $ADMIN_PORT\""
   },
   "workspaces": [
     "app-backend",
     "app-web",
-    "app-mobile",
     "app-admin"
   ],
   "lint-staged": {
     "app-backend/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-backend",
     "app-web/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-web",
-    "app-mobile/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-mobile",
     "app-admin/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-admin",
     "app-backend/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-backend",
     "app-web/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-web",
-    "app-mobile/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-mobile",
     "app-admin/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-admin"
   },
   "devDependencies": {
@@ -46,7 +43,6 @@
     "eslint": "^9.18.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "react-native": "0.81.5",
     "typescript-eslint": "^8.18.0"
   },
   "repository": {

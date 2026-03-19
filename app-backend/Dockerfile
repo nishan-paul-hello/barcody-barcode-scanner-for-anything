@@ -19,7 +19,7 @@ COPY package.json package-lock.json ./
 COPY app-backend/package.json ./app-backend/
 COPY app-web/package.json ./app-web/
 COPY app-admin/package.json ./app-admin/
-COPY app-mobile/package.json ./app-mobile/
+
 
 # Configure npm to be more robust against network timeouts
 RUN npm config set fetch-retries 5 \
