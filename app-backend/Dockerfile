@@ -68,13 +68,12 @@ COPY --from=builder --chown=nestjs:nodejs /app/app-backend/docker-entrypoint.sh 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nestjs
-EXPOSE 3002
-ENV PORT=3002
+EXPOSE 3006
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Health check using the correct endpoint
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
-  CMD wget --spider -q http://127.0.0.1:3002/api/v1/health || exit 1
+  CMD wget --spider -q http://127.0.0.1:$PORT/api/v1/health || exit 1
 
 CMD ["node", "dist/main"]

@@ -14,8 +14,7 @@ import type {
   User,
 } from './types';
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const apiClient = axios.create({
   baseURL: API_URL,

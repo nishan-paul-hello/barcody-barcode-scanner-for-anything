@@ -59,11 +59,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/app-admin/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/app-admin/.next/static ./app-admin/.next/static
 
 USER nextjs
-EXPOSE 3001
-ENV PORT=3001
+EXPOSE 3005
 ENV HOSTNAME=0.0.0.0
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
-  CMD wget --spider -q http://localhost:3001/api/health || exit 1
+  CMD wget --spider -q http://localhost:$PORT/api/health || exit 1
 
 CMD ["node", "app-admin/server.js"]

@@ -10,11 +10,7 @@ import { queryClient } from '@/lib/query-client';
  * Includes React Query and Google OAuth.
  */
 export function Providers({ children }: { children: React.ReactNode }) {
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-
-  if (!clientId) {
-    console.warn('NEXT_PUBLIC_GOOGLE_CLIENT_ID is not defined');
-  }
+  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string;
 
   return (
     <GoogleOAuthProvider clientId={clientId}>

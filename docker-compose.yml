@@ -49,13 +49,13 @@ services:
       target: runner
     container_name: app-backend
     ports:
-      - '3002:3002'
+      - '${BACKEND_PORT}:${BACKEND_PORT}'
     env_file:
       - ./app-backend/.env
     environment:
       DATABASE_URL: postgresql://${DB_USERNAME:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_DATABASE:-barcody}
       REDIS_URL: redis://redis:6379
-      PORT: 3002
+      PORT: ${BACKEND_PORT}
       NODE_ENV: production
     depends_on:
       postgres:
@@ -65,7 +65,7 @@ services:
     networks:
       - barcody-network
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:3002/api/v1/health']
+      test: ['CMD-SHELL', 'wget --spider -q http://127.0.0.1:$$PORT/api/v1/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -81,9 +81,9 @@ services:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     container_name: app-web
     ports:
-      - '3000:3000'
+      - '${WEB_PORT}:${WEB_PORT}'
     environment:
-      PORT: 3000
+      PORT: ${WEB_PORT}
       NODE_ENV: production
     depends_on:
       app-backend:
@@ -91,7 +91,7 @@ services:
     networks:
       - barcody-network
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/api/health']
+      test: ['CMD-SHELL', 'wget --spider -q http://localhost:$$PORT/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -107,9 +107,9 @@ services:
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     container_name: app-admin
     ports:
-      - '3001:3001'
+      - '${ADMIN_PORT}:${ADMIN_PORT}'
     environment:
-      PORT: 3001
+      PORT: ${ADMIN_PORT}
       NODE_ENV: production
     depends_on:
       app-backend:
@@ -117,7 +117,7 @@ services:
     networks:
       - barcody-network
     healthcheck:
-      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3001/api/health']
+      test: ['CMD-SHELL', 'wget --spider -q http://localhost:$$PORT/api/health']
       interval: 30s
       timeout: 10s
       retries: 3

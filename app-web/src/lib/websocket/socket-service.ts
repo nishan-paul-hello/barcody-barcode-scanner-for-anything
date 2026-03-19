@@ -30,7 +30,7 @@ class SocketService {
 
     const backendUrl =
       process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') ||
-      'http://localhost:3002';
+      'http://localhost:3006';
 
     // Connect to the 'scans' namespace as defined in the backend gateway
     this.socket = io(`${backendUrl}/scans`, {

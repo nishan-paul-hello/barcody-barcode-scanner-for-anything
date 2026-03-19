@@ -8,9 +8,15 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-WEB_PORT ?= 3000
-ADMIN_PORT ?= 3001
-BACKEND_PORT ?= 3002
+ifndef WEB_PORT
+$(error WEB_PORT is not set. Please define it in the root .env file.)
+endif
+ifndef ADMIN_PORT
+$(error ADMIN_PORT is not set. Please define it in the root .env file.)
+endif
+ifndef BACKEND_PORT
+$(error BACKEND_PORT is not set. Please define it in the root .env file.)
+endif
 
 switch-env:
 	@cat envs/app-web/.env.base envs/app-web/.env.$(BACKEND) > app-web/.env

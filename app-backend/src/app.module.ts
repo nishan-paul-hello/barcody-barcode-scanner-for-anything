@@ -28,7 +28,7 @@ import redisConfig from '@config/redis.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
       load: [redisConfig],
       validationSchema: envSchema,
       validationOptions: {
