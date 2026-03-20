@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_DATABASE:-barcody}
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - /var/lib/barcody/postgres_data:/var/lib/postgresql/data
     networks:
@@ -29,7 +29,7 @@ services:
     # a full clean-slate dev environment is still achievable on demand.
     command: redis-server --save 60 1 --loglevel warning
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
     volumes:
       - /var/lib/barcody/redis_data:/data
     networks:
