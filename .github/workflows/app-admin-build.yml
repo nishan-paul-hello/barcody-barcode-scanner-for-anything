@@ -1,30 +1,15 @@
-name: Backend CI/CD
+name: Admin Dashboard CI/CD
 
 on:
   push:
     branches: [main]
     paths:
-      - 'app-backend/**'
+      - 'app-admin/**'
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - name: Install Dependencies
-        run: npm ci
-      - name: Run Tests
-        run: npm test --workspace=app-backend
-
   build-and-push:
     name: Build & Push to GHCR
-    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/barcody-backend
+          images: ghcr.io/${{ github.repository_owner }}/barcody-admin
           tags: |
             type=sha,format=short
             type=raw,value=latest
@@ -51,8 +36,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: app-backend/Dockerfile
+          file: app-admin/Dockerfile
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -70,5 +57,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/barcody-barcode-scanner-for-anything
-            docker compose pull app-backend
-            docker compose up -d --remove-orphans app-backend
+            docker compose pull app-admin
+            docker compose up -d --remove-orphans app-admin

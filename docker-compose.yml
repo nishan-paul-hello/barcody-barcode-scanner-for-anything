@@ -9,7 +9,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - /var/lib/barcody/postgres_data:/var/lib/postgresql/data
     networks:
       - barcody-network
     healthcheck:
@@ -31,7 +31,7 @@ services:
     ports:
       - '6379:6379'
     volumes:
-      - redis_data:/data
+      - /var/lib/barcody/redis_data:/data
     networks:
       - barcody-network
     healthcheck:
@@ -43,6 +43,7 @@ services:
     restart: unless-stopped
 
   app-backend:
+    image: ghcr.io/nishan-paul-2022/barcody-backend:latest
     build:
       context: .
       dockerfile: app-backend/Dockerfile
@@ -73,6 +74,7 @@ services:
     restart: unless-stopped
 
   app-web:
+    image: ghcr.io/nishan-paul-2022/barcody-web:latest
     build:
       context: .
       dockerfile: app-web/Dockerfile
@@ -99,6 +101,7 @@ services:
     restart: unless-stopped
 
   app-admin:
+    image: ghcr.io/nishan-paul-2022/barcody-admin:latest
     build:
       context: .
       dockerfile: app-admin/Dockerfile
@@ -127,7 +130,3 @@ services:
 networks:
   barcody-network:
     driver: bridge
-
-volumes:
-  postgres_data:
-  redis_data:
