@@ -7,6 +7,28 @@ import { AppModule } from '@/app.module';
 import { HttpExceptionFilter } from '@common/filters/http-exception.filter';
 import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
 
+function isAllowedOrigin(origin: string): boolean {
+  const url = new URL(origin);
+  const hostname = url.hostname;
+
+  if (hostname.endsWith('.kaiofficial.xyz') || hostname === 'kaiofficial.xyz') {
+    return true;
+  }
+
+  if (hostname.endsWith('.ts.net')) {
+    return true;
+  }
+
+  if (hostname.startsWith('100.')) {
+    const parts = hostname.split('.').map(Number);
+    if (parts[0] === 100 && parts[1] !== undefined && parts[1] >= 64 && parts[1] <= 127) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('Bootstrap');
@@ -27,31 +49,9 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // Allow localhost
-      if (!origin || origin.startsWith('http://localhost:')) {
+      if (!origin || origin.startsWith('http://localhost:') || isAllowedOrigin(origin)) {
         return callback(null, true);
       }
-
-      // Parse the origin URL
-      const url = new URL(origin);
-      const hostname = url.hostname;
-
-      // Allow Tailscale MagicDNS hostnames (*.ts.net)
-      if (hostname.endsWith('.ts.net')) {
-        return callback(null, true);
-      }
-
-      // Allow Tailscale IPs (100.64.0.0/10)
-      // Range: 100.64.0.0 - 100.127.255.255
-      if (hostname.startsWith('100.')) {
-        // Simple prefix check for 100.x.x.x which covers the Class A-ish block
-        // For more precision we could parse the IP parts
-        const parts = hostname.split('.').map(Number);
-        if (parts[0] === 100 && parts[1] !== undefined && parts[1] >= 64 && parts[1] <= 127) {
-          return callback(null, true);
-        }
-      }
-
       callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
