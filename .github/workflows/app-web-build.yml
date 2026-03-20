@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Executing remote ssh commands
+      - name: Deploy web app to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -60,3 +60,4 @@ jobs:
             cd /var/www/barcody-barcode-scanner-for-anything
             docker compose pull app-web
             docker compose up -d --remove-orphans app-web
+
