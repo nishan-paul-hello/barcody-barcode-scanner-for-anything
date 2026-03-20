@@ -129,7 +129,6 @@ export default function LandingPage() {
               className="mb-8 text-5xl leading-[0.9] font-black tracking-tighter md:text-8xl"
             >
               SCAN <span className="text-cyan-400">EVERYTHING</span> <br />
-              MANAGE ANYTHING
             </motion.h1>
 
             <motion.p
