@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react'],
     serverActions: {
-      allowedOrigins: ['admin-barcody.tamarin-ph.ts.net', 'localhost:3001'],
+      allowedOrigins: [
+        'admin-barcody.tamarin-ph.ts.net',
+        `localhost:${process.env.PORT}`,
+      ],
     },
   },
   images: {

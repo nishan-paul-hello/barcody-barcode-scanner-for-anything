@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -26,16 +26,26 @@ export function BarcodeInputDialog({
 }: BarcodeInputDialogProps) {
   const [value, setValue] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return;
-    }
-    onLookup(trimmed);
-    setValue('');
-    onOpenChange(false);
-  };
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return;
+      }
+      onLookup(trimmed);
+      setValue('');
+      onOpenChange(false);
+    },
+    [value, onLookup, onOpenChange]
+  );
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value),
+    []
+  );
+
+  const handleCancel = useCallback(() => onOpenChange(false), [onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -58,7 +68,7 @@ export function BarcodeInputDialog({
             autoComplete="off"
             placeholder="e.g. 012345678905"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={handleInputChange}
             className="h-11 rounded-xl border-white/10 bg-white/5 font-mono text-white placeholder:text-white/30 focus-visible:ring-cyan-500/50"
             aria-label="Barcode number"
           />
@@ -66,7 +76,7 @@ export function BarcodeInputDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={handleCancel}
               className="rounded-xl border-white/10 text-white/80 hover:bg-white/10"
             >
               Cancel

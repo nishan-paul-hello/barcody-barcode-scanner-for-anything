@@ -1,8 +1,20 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/authStore';
+import type {
+  AnalyticsOverview,
+  AnalyticsTrendResponse,
+  AuthResponse,
+  BarcodeTypeDistribution,
+  DeviceBreakdown,
+  HourlyActivity,
+  PaginatedResponse,
+  RetentionResponse,
+  Scan,
+  TopBarcode,
+  User,
+} from './types';
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -45,7 +57,10 @@ apiClient.interceptors.response.use(
           return Promise.reject(error);
         }
 
-        const response = await axios.post(`${API_URL}/auth/refresh`, {
+        const response = await axios.post<{
+          accessToken: string;
+          refreshToken: string;
+        }>(`${API_URL}/auth/refresh`, {
           refreshToken,
         });
 
@@ -72,16 +87,18 @@ apiClient.interceptors.response.use(
 );
 
 export const authApi = {
-  loginWithGoogle: async (token: string) => {
-    const response = await apiClient.post('/auth/google', { token });
+  loginWithGoogle: async (token: string): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>('/auth/google', {
+      token,
+    });
     return response.data;
   },
-  logout: async () => {
-    const response = await apiClient.post('/auth/logout');
+  logout: async (): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>('/auth/logout');
     return response.data;
   },
-  getMe: async () => {
-    const response = await apiClient.get('/auth/me');
+  getMe: async (): Promise<User> => {
+    const response = await apiClient.get<User>('/auth/me');
     return response.data;
   },
 };
@@ -90,58 +107,87 @@ export const adminApi = {
   getAnalyticsOverview: async (params?: {
     startDate?: string;
     endDate?: string;
-  }) => {
-    const response = await apiClient.get('/admin/analytics/overview', {
-      params,
-    });
+  }): Promise<AnalyticsOverview> => {
+    const response = await apiClient.get<AnalyticsOverview>(
+      '/admin/analytics/overview',
+      {
+        params,
+      }
+    );
     return response.data;
   },
   getAnalyticsTrends: async (params?: {
     startDate?: string;
     endDate?: string;
     metric?: string;
-  }) => {
-    const response = await apiClient.get('/admin/analytics/trends', { params });
+  }): Promise<AnalyticsTrendResponse> => {
+    const response = await apiClient.get<AnalyticsTrendResponse>(
+      '/admin/analytics/trends',
+      { params }
+    );
     return response.data;
   },
-  getBarcodeTypes: async () => {
-    const response = await apiClient.get('/admin/analytics/barcode-types');
+  getBarcodeTypes: async (): Promise<BarcodeTypeDistribution[]> => {
+    const response = await apiClient.get<BarcodeTypeDistribution[]>(
+      '/admin/analytics/barcode-types'
+    );
     return response.data;
   },
-  getDeviceBreakdown: async () => {
-    const response = await apiClient.get('/admin/analytics/devices');
+  getDeviceBreakdown: async (): Promise<DeviceBreakdown[]> => {
+    const response = await apiClient.get<DeviceBreakdown[]>(
+      '/admin/analytics/devices'
+    );
     return response.data;
   },
-  getRetentionCohorts: async () => {
-    const response = await apiClient.get('/admin/analytics/retention');
+  getRetentionCohorts: async (): Promise<RetentionResponse> => {
+    const response = await apiClient.get<RetentionResponse>(
+      '/admin/analytics/retention'
+    );
     return response.data;
   },
-  getTopBarcodes: async (params?: { startDate?: string; endDate?: string }) => {
-    const response = await apiClient.get('/admin/analytics/top-barcodes', {
-      params,
-    });
+  getTopBarcodes: async (params?: {
+    startDate?: string;
+    endDate?: string;
+  }): Promise<TopBarcode[]> => {
+    const response = await apiClient.get<TopBarcode[]>(
+      '/admin/analytics/top-barcodes',
+      {
+        params,
+      }
+    );
     return response.data;
   },
   getHourlyActivity: async (params?: {
     startDate?: string;
     endDate?: string;
-  }) => {
-    const response = await apiClient.get('/admin/analytics/hourly', { params });
+  }): Promise<HourlyActivity[]> => {
+    const response = await apiClient.get<HourlyActivity[]>(
+      '/admin/analytics/hourly',
+      { params }
+    );
     return response.data;
   },
   getUsers: async ({
     page = 1,
     limit = 10,
-  }: { page?: number; limit?: number } = {}) => {
-    const response = await apiClient.get('/admin/users', {
-      params: { page, limit },
-    });
+  }: { page?: number; limit?: number } = {}): Promise<
+    PaginatedResponse<User>
+  > => {
+    const response = await apiClient.get<PaginatedResponse<User>>(
+      '/admin/users',
+      {
+        params: { page, limit },
+      }
+    );
     return response.data;
   },
   getScans: async (
     params: Record<string, string | number | boolean | string[] | undefined>
-  ) => {
-    const response = await apiClient.get('/admin/scans', { params });
+  ): Promise<PaginatedResponse<Scan>> => {
+    const response = await apiClient.get<PaginatedResponse<Scan>>(
+      '/admin/scans',
+      { params }
+    );
     return response.data;
   },
 };

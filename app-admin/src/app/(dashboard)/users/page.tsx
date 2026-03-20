@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useUsers } from '@/hooks/useAnalytics';
 import {
   Card,
@@ -25,23 +25,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, formatDistanceToNow, subDays, isAfter } from 'date-fns';
+import type { User } from '@/lib/api/types';
 
 const PAGE_SIZE = 20;
-
-interface User {
-  id: string;
-  email: string;
-  createdAt: string;
-  lastLogin?: string | null;
-}
-
-interface UserListResponse {
-  items: User[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
 
 function isActive(lastLogin?: string | null): boolean {
   if (!lastLogin) {
@@ -55,9 +41,12 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
 
-  const { data, isLoading, isFetching } = useUsers({ page, limit: PAGE_SIZE });
-  const users = data as UserListResponse | undefined;
-  const items = useMemo(() => users?.items ?? [], [users?.items]);
+  const {
+    data: users,
+    isLoading,
+    isFetching,
+  } = useUsers({ page, limit: PAGE_SIZE });
+  const items = useMemo(() => users?.data ?? [], [users?.data]);
 
   // Client-side search filter (backend doesn't support search on users endpoint)
   const filtered = useMemo(() => {
@@ -80,14 +69,36 @@ export default function UsersPage() {
     [items]
   );
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSearch(searchInput);
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setSearch(searchInput);
+      setPage(1);
+    },
+    [searchInput]
+  );
+
+  const clearSearch = useCallback(() => {
+    setSearch('');
+    setSearchInput('');
     setPage(1);
-  };
+  }, []);
 
   const totalPages = users?.totalPages ?? 1;
   const total = users?.total ?? 0;
+
+  const goToFirstPage = useCallback(() => setPage(1), []);
+  const goToPrevPage = useCallback(
+    () => setPage((p) => Math.max(1, p - 1)),
+    []
+  );
+  const goToNextPage = useCallback(
+    () => setPage((p) => Math.min(totalPages, p + 1)),
+    [totalPages]
+  );
+  const goToLastPage = useCallback(() => setPage(totalPages), [totalPages]);
+
+  const goToPage = useCallback((p: number) => setPage(p), []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -113,7 +124,7 @@ export default function UsersPage() {
           icon={<UserCheck className="h-4 w-4" />}
           label="Active (30d)"
           value={isLoading ? null : activeCount.toLocaleString()}
-          sub={`${total > 0 ? ((activeCount / Math.max(users?.items?.length ?? 1, 1)) * 100).toFixed(0) : 0}% of current page`}
+          sub={`${total > 0 ? ((activeCount / Math.max(users?.data?.length ?? 1, 1)) * 100).toFixed(0) : 0}% of current page`}
           highlight
         />
         <StatCard
@@ -164,10 +175,7 @@ export default function UsersPage() {
               {search && (
                 <button
                   type="button"
-                  onClick={() => {
-                    setSearch('');
-                    setSearchInput('');
-                  }}
+                  onClick={clearSearch}
                   className="h-9 rounded-md px-3 text-sm text-zinc-400 transition hover:text-zinc-200"
                 >
                   Clear
@@ -237,14 +245,14 @@ export default function UsersPage() {
                   </p>
                   <div className="flex items-center gap-1">
                     <PagBtn
-                      onClick={() => setPage(1)}
+                      onClick={goToFirstPage}
                       disabled={page === 1}
                       title="First"
                     >
                       <ChevronsLeft className="h-3.5 w-3.5" />
                     </PagBtn>
                     <PagBtn
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      onClick={goToPrevPage}
                       disabled={page === 1}
                       title="Previous"
                     >
@@ -259,33 +267,24 @@ export default function UsersPage() {
                       );
                       const p = start + i;
                       return (
-                        <button
+                        <UserPageNumberBtn
                           key={`page-${p}`}
-                          type="button"
-                          onClick={() => setPage(p)}
-                          className={cn(
-                            'h-7 min-w-7 rounded px-2 text-xs font-medium transition',
-                            p === page
-                              ? 'bg-cyan-500/20 text-cyan-400 ring-1 ring-cyan-500/50'
-                              : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
-                          )}
-                        >
-                          {p}
-                        </button>
+                          page={p}
+                          isCurrent={p === page}
+                          onClick={goToPage}
+                        />
                       );
                     })}
 
                     <PagBtn
-                      onClick={() =>
-                        setPage((p) => Math.min(totalPages, p + 1))
-                      }
+                      onClick={goToNextPage}
                       disabled={page === totalPages}
                       title="Next"
                     >
                       <ChevronRight className="h-3.5 w-3.5" />
                     </PagBtn>
                     <PagBtn
-                      onClick={() => setPage(totalPages)}
+                      onClick={goToLastPage}
                       disabled={page === totalPages}
                       title="Last"
                     >
@@ -428,6 +427,33 @@ function PagBtn({
       )}
     >
       {children}
+    </button>
+  );
+}
+
+function UserPageNumberBtn({
+  page,
+  isCurrent,
+  onClick,
+}: {
+  page: number;
+  isCurrent: boolean;
+  onClick: (p: number) => void;
+}) {
+  const handleClick = useCallback(() => onClick(page), [onClick, page]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={cn(
+        'h-7 min-w-7 rounded px-2 text-xs font-medium transition',
+        isCurrent
+          ? 'bg-cyan-500/20 text-cyan-400 ring-1 ring-cyan-500/50'
+          : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+      )}
+    >
+      {page}
     </button>
   );
 }

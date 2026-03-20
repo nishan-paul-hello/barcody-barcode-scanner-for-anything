@@ -11,6 +11,7 @@ import type {
   DeviceType,
   ScanResponseDto,
   PaginationParams,
+  ScanStatsResponse,
 } from '@/lib/api/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,12 +33,6 @@ import { ExportModal } from '@/components/export/ExportModal';
 import { motion } from 'framer-motion';
 import { analytics } from '@/lib/analytics.service';
 import { api } from '@/lib/api/client';
-
-interface DashboardStats {
-  totalScans: number;
-  activeProducts: number;
-  recentActivity: ScanResponseDto | null;
-}
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -76,7 +71,7 @@ export default function HistoryPage() {
       const saved = localStorage.getItem('recentSearches');
       if (saved) {
         try {
-          return JSON.parse(saved);
+          return JSON.parse(saved) as string[];
         } catch {
           return [];
         }
@@ -107,7 +102,7 @@ export default function HistoryPage() {
   const [showExportModal, setShowExportModal] = useState(false);
 
   // Stats State
-  const [stats, setStats] = useState<DashboardStats>({
+  const [stats, setStats] = useState<ScanStatsResponse>({
     totalScans: 0,
     activeProducts: 0,
     recentActivity: null,
@@ -156,7 +151,7 @@ export default function HistoryPage() {
       .finally(() => setStatsLoading(false));
   }, []);
 
-  const formatActivity = (scan: ScanResponseDto | null) => {
+  const formatActivity = useCallback((scan: ScanResponseDto | null) => {
     if (!scan) {
       return 'No recent activity';
     }
@@ -180,19 +175,21 @@ export default function HistoryPage() {
     }
 
     return `Scanned "${scan.product?.name || scan.barcodeData}" ${timeAgo}`;
-  };
-
+  }, []);
   // Reset page when filters change
-  const handleFilterChange = (key: keyof PaginationParams, value: unknown) => {
-    if (key === 'search') {
-      setSearchValue(value as string);
-      return;
-    }
-    analytics.trackFilter(key, String(value));
-    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
-  };
+  const handleFilterChange = useCallback(
+    (key: keyof PaginationParams, value: unknown) => {
+      if (key === 'search') {
+        setSearchValue(value as string);
+        return;
+      }
+      analytics.trackFilter(key, String(value));
+      setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
+    },
+    []
+  );
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSearchValue('');
     setFilters({
       page: 1,
@@ -200,19 +197,19 @@ export default function HistoryPage() {
       sortBy: 'scannedAt',
       order: 'DESC',
     });
-  };
+  }, []);
 
-  const handleSortChange = (column: string) => {
+  const handleSortChange = useCallback((column: string) => {
     setFilters((prev) => ({
       ...prev,
       sortBy: column,
       order: prev.sortBy === column && prev.order === 'DESC' ? 'ASC' : 'DESC',
     }));
-  };
+  }, []);
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = useCallback((newPage: number) => {
     setFilters((prev) => ({ ...prev, page: newPage }));
-  };
+  }, []);
 
   // Data fetching
   const { data, isLoading, isError, refetch } = useScans({
@@ -223,33 +220,39 @@ export default function HistoryPage() {
   const bulkDeleteMutation = useBulkDeleteScans();
 
   // Handlers
-  const handleSelectAll = (checked: boolean) => {
-    if (checked && data?.items) {
-      setSelectedIds(data.items.map((s) => s.id));
-    } else {
-      setSelectedIds([]);
-    }
-  };
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      if (checked && data?.items) {
+        setSelectedIds(data.items.map((s) => s.id));
+      } else {
+        setSelectedIds([]);
+      }
+    },
+    [data]
+  );
 
-  const handleSelectOne = (id: string, checked: boolean) => {
+  const handleSelectOne = useCallback((id: string, checked: boolean) => {
     if (checked) {
       setSelectedIds((prev) => [...prev, id]);
     } else {
       setSelectedIds((prev) => prev.filter((i) => i !== id));
     }
-  };
+  }, []);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this scan?')) {
-      deleteScanMutation.mutate(id, {
-        onSuccess: () => {
-          analytics.trackScanDeleted(1);
-        },
-      });
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: string) => {
+      if (window.confirm('Are you sure you want to delete this scan?')) {
+        deleteScanMutation.mutate(id, {
+          onSuccess: () => {
+            analytics.trackScanDeleted(1);
+          },
+        });
+      }
+    },
+    [deleteScanMutation]
+  );
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = useCallback(() => {
     const count = selectedIds.length;
     bulkDeleteMutation.mutate(selectedIds, {
       onSuccess: () => {
@@ -258,9 +261,9 @@ export default function HistoryPage() {
         setShowBulkDeleteConfirm(false);
       },
     });
-  };
+  }, [bulkDeleteMutation, selectedIds]);
 
-  const handleCompare = () => {
+  const handleCompare = useCallback(() => {
     if (data?.items) {
       const selectedBarcodes = data.items
         .filter((s) => selectedIds.includes(s.id))
@@ -280,7 +283,38 @@ export default function HistoryPage() {
 
       router.push(`/compare?barcodes=${uniqueBarcodes.join(',')}`);
     }
-  };
+  }, [data, selectedIds, router]);
+
+  const handleOpenExportModal = useCallback(() => setShowExportModal(true), []);
+  const handleCloseExportModal = useCallback(
+    () => setShowExportModal(false),
+    []
+  );
+  const handleOpenBulkDeleteConfirm = useCallback(
+    () => setShowBulkDeleteConfirm(true),
+    []
+  );
+  const handleCancelSelection = useCallback(() => setSelectedIds([]), []);
+  const handleCloseViewScan = useCallback(() => setViewScan(null), []);
+  const handleSetViewScan = useCallback(
+    (scan: ScanResponseDto) => setViewScan(scan),
+    []
+  );
+  const handleCloseBulkDeleteConfirm = useCallback(
+    () => setShowBulkDeleteConfirm(false),
+    []
+  );
+  const handlePrevPage = useCallback(
+    () => handlePageChange((filters.page || 1) - 1),
+    [filters.page, handlePageChange]
+  );
+  const handleNextPage = useCallback(
+    () => handlePageChange((filters.page || 1) + 1),
+    [filters.page, handlePageChange]
+  );
+  const handleRetry = useCallback(() => {
+    void refetch();
+  }, [refetch]);
 
   return (
     <div className="container mx-auto max-w-7xl space-y-6 pt-0 pb-12">
@@ -297,7 +331,7 @@ export default function HistoryPage() {
         </p>
         <div className="mt-8 flex justify-center">
           <Button
-            onClick={() => setShowExportModal(true)}
+            onClick={handleOpenExportModal}
             className="group cursor-pointer rounded-full bg-white/5 px-8 font-bold text-white transition-all hover:bg-white/10"
           >
             <Download className="mr-2 size-4 transition-transform group-hover:-translate-y-1" />
@@ -359,7 +393,7 @@ export default function HistoryPage() {
           <Button
             variant="destructive"
             size="sm"
-            onClick={() => setShowBulkDeleteConfirm(true)}
+            onClick={handleOpenBulkDeleteConfirm}
             disabled={bulkDeleteMutation.isPending}
           >
             <Trash2 className="mr-2 size-4" />
@@ -374,7 +408,7 @@ export default function HistoryPage() {
             Compare Selected
           </Button>
           <div className="flex-1" />
-          <Button variant="ghost" size="sm" onClick={() => setSelectedIds([])}>
+          <Button variant="ghost" size="sm" onClick={handleCancelSelection}>
             Cancel Selection
           </Button>
         </div>
@@ -385,7 +419,7 @@ export default function HistoryPage() {
           <p>Failed to load scans.</p>
           <Button
             variant="outline"
-            onClick={() => refetch()}
+            onClick={handleRetry}
             className="border-destructive/50 hover:bg-destructive/10 mt-4"
           >
             Retry
@@ -399,7 +433,7 @@ export default function HistoryPage() {
           onSelectAll={handleSelectAll}
           onSelectOne={handleSelectOne}
           onDelete={handleDelete}
-          onView={(scan) => setViewScan(scan)}
+          onView={handleSetViewScan}
           sortBy={filters.sortBy || 'scannedAt'}
           sortOrder={filters.order || 'DESC'}
           onSortChange={handleSortChange}
@@ -416,7 +450,7 @@ export default function HistoryPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handlePageChange((filters.page || 1) - 1)}
+              onClick={handlePrevPage}
               disabled={data.meta.page <= 1}
             >
               <ChevronLeft className="mr-1 size-4" /> Previous
@@ -424,7 +458,7 @@ export default function HistoryPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handlePageChange((filters.page || 1) + 1)}
+              onClick={handleNextPage}
               disabled={data.meta.page >= data.meta.totalPages}
             >
               Next <ChevronRight className="ml-1 size-4" />
@@ -436,7 +470,7 @@ export default function HistoryPage() {
       <ScanDetailsDialog
         scan={viewScan}
         isOpen={!!viewScan}
-        onClose={() => setViewScan(null)}
+        onClose={handleCloseViewScan}
       />
 
       <Dialog
@@ -454,7 +488,7 @@ export default function HistoryPage() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowBulkDeleteConfirm(false)}
+              onClick={handleCloseBulkDeleteConfirm}
               disabled={bulkDeleteMutation.isPending}
             >
               Cancel
@@ -474,7 +508,7 @@ export default function HistoryPage() {
       </Dialog>
       <ExportModal
         isOpen={showExportModal}
-        onClose={() => setShowExportModal(false)}
+        onClose={handleCloseExportModal}
         defaultFilters={{
           ...filters,
           search: searchValue,

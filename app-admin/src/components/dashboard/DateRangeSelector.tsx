@@ -23,25 +23,27 @@ export function DateRangeSelector({
 }: checkDateRangeSelectorProps) {
   const [selectedPreset, setSelectedPreset] = React.useState<string>('30');
 
-  const handlePresetChange = (value: string) => {
-    setSelectedPreset(value);
-    const today = new Date();
-    const days = parseInt(value, 10);
+  const handlePresetChange = React.useCallback(
+    (value: string) => {
+      setSelectedPreset(value);
+      const today = new Date();
+      const days = parseInt(value, 10);
 
-    if (!isNaN(days)) {
-      onDateRangeChange({
-        from: subDays(today, days),
-        to: today,
-      });
-    }
-  };
+      if (!isNaN(days)) {
+        onDateRangeChange({
+          from: subDays(today, days),
+          to: today,
+        });
+      }
+    },
+    [onDateRangeChange]
+  );
 
   React.useEffect(() => {
     if (!dateRange && selectedPreset) {
       handlePresetChange(selectedPreset);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dateRange, selectedPreset, handlePresetChange]);
 
   return (
     <div className="flex items-center gap-2">

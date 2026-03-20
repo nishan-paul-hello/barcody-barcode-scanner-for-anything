@@ -107,6 +107,6 @@ async function bootstrap() {
   }
 
   // Bind to all interfaces for Tailscale access
-  await app.listen(process.env.PORT ?? 3002, '0.0.0.0');
+  await app.listen(process.env.PORT as string, '0.0.0.0');
 }
 void bootstrap();

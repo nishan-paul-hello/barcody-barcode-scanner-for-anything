@@ -7,13 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 interface RawDataPresenterProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: unknown;
 }
 
-// Helper to determine if a value is a string URL to an image
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isImageUrl = (val: any) => {
+const isImageUrl = (val: unknown): val is string => {
   if (typeof val !== 'string') {
     return false;
   }
@@ -26,59 +23,79 @@ const isImageUrl = (val: any) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const extractCommon = (data: any) => {
+const extractCommon = (data: unknown) => {
   if (!data || typeof data !== 'object') {
     return { images: [] };
   }
 
+  const d = data as Record<string, unknown>;
+
   // Try to find common fields across varying API response formats
   // OpenFoodFacts, UPC Database, GoUPC, etc.
-  const title =
-    data.product_name ||
-    data.name ||
-    data.title ||
-    data.item_name ||
-    data.product?.title ||
-    data.product?.name ||
-    data.items?.[0]?.title;
+  const title = (
+    d.product_name ||
+    d.name ||
+    d.title ||
+    d.item_name ||
+    (d.product as Record<string, unknown>)?.title ||
+    (d.product as Record<string, unknown>)?.name ||
+    (d.items as unknown[])?.[0]
+      ? ((d.items as unknown[])[0] as Record<string, unknown>).title
+      : undefined
+  ) as string | undefined;
 
-  const brand =
-    data.brands ||
-    data.brand ||
-    data.brand_name ||
-    data.manufacturer ||
-    data.product?.brand ||
-    data.items?.[0]?.brand;
+  const brand = (
+    d.brands ||
+    d.brand ||
+    d.brand_name ||
+    d.manufacturer ||
+    (d.product as Record<string, unknown>)?.brand ||
+    (d.items as unknown[])?.[0]
+      ? ((d.items as unknown[])[0] as Record<string, unknown>).brand
+      : undefined
+  ) as string | undefined;
 
-  const description =
-    data.description ||
-    data.ingredients_text ||
-    data.product?.description ||
-    data.items?.[0]?.description;
+  const description = (
+    d.description ||
+    d.ingredients_text ||
+    (d.product as Record<string, unknown>)?.description ||
+    (d.items as unknown[])?.[0]
+      ? ((d.items as unknown[])[0] as Record<string, unknown>).description
+      : undefined
+  ) as string | undefined;
 
-  const category =
-    data.categories ||
-    data.category ||
-    data.product?.category ||
-    data.items?.[0]?.category;
+  const category = (
+    d.categories ||
+    d.category ||
+    (d.product as Record<string, unknown>)?.category ||
+    (d.items as unknown[])?.[0]
+      ? ((d.items as unknown[])[0] as Record<string, unknown>).category
+      : undefined
+  ) as string | undefined;
 
-  const barcode =
-    data.code || data.barcode || data.upc || data.ean || data.product?.upc;
+  const barcode = (d.code ||
+    d.barcode ||
+    d.upc ||
+    d.ean ||
+    (d.product as Record<string, unknown>)?.upc) as string | undefined;
 
   // Extract images
   let images: string[] = [];
-  if (data.image_url) {
-    images.push(data.image_url);
+  if (typeof d.image_url === 'string') {
+    images.push(d.image_url);
   }
-  if (data.images && Array.isArray(data.images)) {
-    images = [...images, ...data.images.filter(isImageUrl)];
+  if (Array.isArray(d.images)) {
+    images = [...images, ...(d.images as unknown[]).filter(isImageUrl)];
   }
-  if (data.product?.imageUrl) {
-    images.push(data.product.imageUrl);
+  const productImageUrl = (d.product as Record<string, unknown>)?.imageUrl;
+  if (typeof productImageUrl === 'string') {
+    images.push(productImageUrl);
   }
-  if (data.items?.[0]?.images && Array.isArray(data.items[0].images)) {
-    images = [...images, ...data.items[0].images.filter(isImageUrl)];
+  const firstItem = (d.items as unknown[])?.[0] as
+    | Record<string, unknown>
+    | undefined;
+  if (firstItem?.images && Array.isArray(firstItem.images)) {
+    images = [...images, ...(firstItem.images as unknown[]).filter(isImageUrl)];
   }
 
   // Deduplicate images
@@ -87,8 +104,7 @@ const extractCommon = (data: any) => {
   return { title, brand, description, category, barcode, images };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderValue = (val: any): React.ReactNode => {
+const renderValue = (val: unknown): React.ReactNode => {
   if (val === null || val === undefined) {
     return <span className="text-white/20">N/A</span>;
   }
@@ -159,24 +175,22 @@ const renderValue = (val: any): React.ReactNode => {
   return <span className="text-white/50">{String(val)}</span>;
 };
 
-// Recursive card renderer
 const DataCard = ({
   title,
   data,
   depth = 0,
 }: {
   title: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: unknown;
   depth?: number;
 }) => {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
     return null;
   }
 
-  const keys = Object.keys(data).filter(
-    (k) =>
-      typeof data[k] !== 'function' && data[k] !== null && data[k] !== undefined
+  const d = data as Record<string, unknown>;
+  const keys = Object.keys(d).filter(
+    (k) => typeof d[k] !== 'function' && d[k] !== null && d[k] !== undefined
   );
 
   if (keys.length === 0) {
@@ -184,11 +198,10 @@ const DataCard = ({
   }
 
   const primitives = keys.filter(
-    (k) => typeof data[k] !== 'object' || Array.isArray(data[k])
+    (k) => typeof d[k] !== 'object' || Array.isArray(d[k])
   );
   const objects = keys.filter(
-    (k) =>
-      typeof data[k] === 'object' && !Array.isArray(data[k]) && data[k] !== null
+    (k) => typeof d[k] === 'object' && !Array.isArray(d[k]) && d[k] !== null
   );
 
   return (
@@ -217,7 +230,7 @@ const DataCard = ({
                 <span className="text-[10px] font-black tracking-widest text-white/30 uppercase">
                   {key.replace(/_/g, ' ')}
                 </span>
-                <div className="text-sm">{renderValue(data[key])}</div>
+                <div className="text-sm">{renderValue(d[key])}</div>
               </div>
             ))}
           </div>
@@ -229,7 +242,7 @@ const DataCard = ({
               <DataCard
                 key={key}
                 title={key.replace(/_/g, ' ')}
-                data={data[key]}
+                data={d[key]}
                 depth={depth + 1}
               />
             ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useCallback } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import {
@@ -76,6 +77,14 @@ export default function LandingPage() {
 
   const smoothY = useSpring(y, { stiffness: 100, damping: 30 });
 
+  const handleLaunchScanner = useCallback(() => {
+    if (isAuthenticated) {
+      router.push('/scanner');
+    } else {
+      openLoginModal('/scanner');
+    }
+  }, [isAuthenticated, router, openLoginModal]);
+
   return (
     <div className="min-h-screen bg-[#050505] pb-8 text-white selection:bg-cyan-500/30">
       <Header />
@@ -142,13 +151,7 @@ export default function LandingPage() {
             >
               <Button
                 size="lg"
-                onClick={() => {
-                  if (isAuthenticated) {
-                    router.push('/scanner');
-                  } else {
-                    openLoginModal('/scanner');
-                  }
-                }}
+                onClick={handleLaunchScanner}
                 className="group h-14 cursor-pointer rounded-full bg-cyan-500 px-10 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400"
               >
                 Launch Scanner

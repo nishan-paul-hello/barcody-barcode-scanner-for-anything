@@ -210,3 +210,28 @@ export interface TailscaleInfoDto {
   magicDNS?: string;
   nodeName?: string;
 }
+
+// --- Scan Stats ---
+
+/** Matches the shape returned by GET /scans/stats */
+export interface ScanStatsResponse {
+  totalScans: number;
+  activeProducts: number;
+  recentActivity: ScanResponseDto | null;
+}
+
+// --- Analytics Dashboard ---
+
+/** Matches the shape returned by GET /analytics/dashboard */
+export interface AnalyticsDashboardResponse {
+  totalScans: number;
+  totalUsers: number;
+  scansByDay: Array<{ date: string; count: number }>;
+  scansByType: Array<{ type: string; count: number }>;
+  topProducts: Array<{ barcode: string; name?: string; count: number }>;
+  recentEvents: Array<{
+    event_type: string;
+    timestamp: string;
+    metadata?: Record<string, unknown>;
+  }>;
+}
