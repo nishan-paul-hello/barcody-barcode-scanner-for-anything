@@ -1,7 +1,6 @@
 .PHONY: switch-env \
         dev-lh build-lh up-lh refresh-lh \
         dev-ts build-ts up-ts refresh-ts cert-ts funnel-on-ts funnel-off-ts \
-        build-kai up-kai refresh-kai \
         down restart logs help
 
 ifneq (,$(wildcard ./.env))
@@ -60,18 +59,6 @@ refresh-ts:
 	@$(MAKE) switch-env BACKEND=tailscale
 	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml -f docker-compose.ts.yml up -d --build --force-recreate -V --remove-orphans
 
-build-kai:
-	@$(MAKE) switch-env BACKEND=kaiofficial
-	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml up -d --build --remove-orphans --force-recreate
-
-up-kai:
-	@$(MAKE) switch-env BACKEND=kaiofficial
-	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml up -d
-
-refresh-kai:
-	@$(MAKE) switch-env BACKEND=kaiofficial
-	@set -a && . ./app-web/.env && docker compose -f docker-compose.yml up -d --build --force-recreate -V --remove-orphans
-
 cert-ts:
 	@docker exec barcody-barcode-scanner-for-anything-ts-web-1 tailscale cert barcody.tamarin-ph.ts.net 2>/dev/null || true
 	@docker exec barcody-barcode-scanner-for-anything-ts-api-1 tailscale cert api-barcody.tamarin-ph.ts.net 2>/dev/null || true
@@ -110,11 +97,6 @@ help:
 	@echo "    make cert-ts          - Provision Tailscale TLS certs (run once)"
 	@echo "    make funnel-on-ts     - Enable public access via Tailscale Funnel"
 	@echo "    make funnel-off-ts    - Disable public access (Tailnet only)"
-	@echo ""
-	@echo "  Kaiofficial VPS (kai)"
-	@echo "    make build-kai        - Build production image for kaiofficial.xyz VPS"
-	@echo "    make up-kai           - Start production containers (kaiofficial.xyz)"
-	@echo "    make refresh-kai      - Deep rebuild for kaiofficial.xyz (use if deps change)"
 	@echo ""
 	@echo "  Shared"
 	@echo "    make down             - Stop all containers"
