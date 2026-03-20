@@ -2,6 +2,9 @@
   <img src="app-web/public/brand-logo.svg" alt="Barcody Logo" width="120" height="120" />
   <h1>Barcody</h1>
   <p>Universal Barcode Intelligence &amp; Scanning Suite</p>
+  <a href="https://barcody.kaiofficial.xyz" target="_blank">
+    <img src="https://img.shields.io/badge/Live_App-barcody.kaiofficial.xyz-0070f3?style=for-the-badge&logo=next.js&logoColor=white" alt="Live App" />
+  </a>
 </div>
 
 Barcody is a professional, high-performance monorepo designed for scanning, managing, and analyzing barcodes at scale. Built with **Next.js 16**, **NestJS 11**, and **Tailwind CSS v4**, it provides a seamless cross-platform experience with real-time data synchronization and advanced analytics.
@@ -414,6 +417,19 @@ Each app is paired with a dedicated Tailscale **sidecar container** that:
 - Registers a unique hostname on the Tailnet (e.g., `barcody`, `admin-barcody`, `api-barcody`)
 - Manages SSL certificate issuance automatically via Let's Encrypt
 - Acts as a reverse proxy, forwarding HTTPS traffic to the app container on the internal Docker network
+
+---
+
+## 🔄 CI/CD & Automated Deployment
+
+Barcody is engineered for continuous reliability. Every update to the codebase undergoes an automated deployment journey:
+
+- **Continuous Integration**: GitHub Actions automatically run quality checks and security audits on every push to the repository.
+- **Automated Builds**: Upon merging to the `main` branch, production-optimized Docker images are automatically built and pushed to the **GitHub Container Registry (GHCR)**.
+- **Seamless Deployment**: A secure, automated pipeline triggers the production server to pull the latest images and refresh the services instantly, ensuring zero-downtime-ready updates.
+- **Reliable Persistence**: The deployment architecture is designed to handle database migrations and persist critical data safely across automated updates.
+
+This automated pipeline guarantees that the production environment always reflects the latest stable version of the application.
 
 ---
 
