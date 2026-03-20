@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   KeyRound,
   Scan,
@@ -38,26 +38,40 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
     return !!apiKeys.upcDatabaseApiKey;
   }, [apiKeys]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (barcode.trim()) {
-      onLookupSuccess?.(barcode.trim());
-    }
-  };
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (barcode.trim()) {
+        onLookupSuccess?.(barcode.trim());
+      }
+    },
+    [barcode, onLookupSuccess]
+  );
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setBarcode('');
     onClear?.();
-  };
+  }, [onClear]);
 
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     if (!barcode) {
       return;
     }
     void navigator.clipboard.writeText(barcode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+  }, [barcode]);
+
+  const handleBarcodeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setBarcode(e.target.value);
+    },
+    []
+  );
+
+  const handleOpenApiKeys = useCallback(() => {
+    setApiKeysModalOpen(true);
+  }, [setApiKeysModalOpen]);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center space-y-6">
@@ -105,7 +119,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                     type="text"
                     placeholder="ENTER BARCODE"
                     value={barcode}
-                    onChange={(e) => setBarcode(e.target.value)}
+                    onChange={handleBarcodeChange}
                     className="h-14 border-white/5 bg-white/5 pr-24 pl-12 font-mono text-lg font-bold tracking-[0.2em] text-cyan-400 transition-all placeholder:font-sans placeholder:text-xs placeholder:tracking-widest placeholder:text-white/20 focus-visible:ring-1 focus-visible:ring-cyan-500/30"
                   />
                   <div className="absolute top-1/2 left-4 -translate-y-1/2 text-white/20">
@@ -195,7 +209,7 @@ export const BarcodeManualLookup: React.FC<BarcodeManualLookupProps> = ({
                 </div>
 
                 <Button
-                  onClick={() => setApiKeysModalOpen(true)}
+                  onClick={handleOpenApiKeys}
                   className="h-11 cursor-pointer items-center gap-2 rounded-xl bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] hover:bg-amber-400 active:scale-95 sm:ml-auto"
                 >
                   <span className="border-black font-bold">Set API Keys</span>

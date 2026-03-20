@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -17,9 +17,31 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
+export interface GoUpcProduct {
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  brand?: string;
+  category?: string;
+  categoryPath?: string[];
+  specs?: [string, string][];
+  ingredients?: {
+    text?: string;
+  };
+  upc?: string;
+  ean?: string;
+}
+
+export interface GoUpcData {
+  product?: GoUpcProduct;
+  code?: string;
+  codeType?: string;
+  barcodeUrl?: string;
+  inferred?: boolean;
+}
+
 interface GoUpcPresenterProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: GoUpcData;
 }
 
 // ─── Placeholder when no image is available ────────────────────────────────────
@@ -85,6 +107,9 @@ const card = {
 export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
   const [imgBroken, setImgBroken] = useState(false);
   const [imgReady, setImgReady] = useState(false);
+
+  const handleImageLoad = useCallback(() => setImgReady(true), []);
+  const handleImageError = useCallback(() => setImgBroken(true), []);
 
   const product = data?.product;
 
@@ -192,8 +217,8 @@ export function GoUpcPresenter({ data }: GoUpcPresenterProps) {
                   alt=""
                   aria-hidden
                   style={{ display: 'none' }}
-                  onLoad={() => setImgReady(true)}
-                  onError={() => setImgBroken(true)}
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
                 />
                 <AnimatePresence>
                   {!imgReady && (

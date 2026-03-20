@@ -62,7 +62,7 @@ const ApiKeyInput = ({
 }: ApiKeyInputProps) => {
   const isSet = value.length > 0;
 
-  const handlePaste = async () => {
+  const handlePaste = React.useCallback(async () => {
     try {
       const text = await navigator.clipboard.readText();
       if (text) {
@@ -71,7 +71,22 @@ const ApiKeyInput = ({
     } catch {
       // Clipboard access denied — silently ignore
     }
-  };
+  }, [setter]);
+
+  const handleChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+    },
+    [setter]
+  );
+
+  const handleCopyClick = React.useCallback(() => {
+    onCopy(value, fieldId);
+  }, [onCopy, value, fieldId]);
+
+  const handleClearClick = React.useCallback(() => {
+    onClear(setter);
+  }, [onClear, setter]);
 
   // Tailwind JIT only includes statically-written class strings.
   // Template literals like `ring-${base}/30` are stripped at build time.
@@ -167,7 +182,7 @@ const ApiKeyInput = ({
             iconStyle.focusBorder
           )}
           value={value}
-          onChange={(e) => setter(e.target.value)}
+          onChange={handleChange}
         />
         <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
           <AnimatePresence mode="wait">
@@ -182,7 +197,7 @@ const ApiKeyInput = ({
               >
                 <button
                   type="button"
-                  onClick={() => onCopy(value, fieldId)}
+                  onClick={handleCopyClick}
                   className="flex size-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-white"
                   title="Copy entry"
                 >
@@ -194,7 +209,7 @@ const ApiKeyInput = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => onClear(setter)}
+                  onClick={handleClearClick}
                   className="flex size-9 cursor-pointer items-center justify-center rounded-xl text-white/40 transition-colors hover:text-red-400"
                   title="Clear field"
                 >
@@ -242,20 +257,25 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     }
   }, [open, data, isLoading]);
 
-  const handleCopy = (text: string, fieldId: string) => {
+  const handleCopy = React.useCallback((text: string, fieldId: string) => {
     if (!text) {
       return;
     }
     void navigator.clipboard.writeText(text);
     setCopiedField(fieldId);
     setTimeout(() => setCopiedField(null), 2000);
-  };
+  }, []);
 
-  const handleClear = (
-    setter: React.Dispatch<React.SetStateAction<string>>
-  ) => {
-    setter('');
-  };
+  const handleClear = React.useCallback(
+    (setter: React.Dispatch<React.SetStateAction<string>>) => {
+      setter('');
+    },
+    []
+  );
+
+  const handleDismiss = React.useCallback(() => {
+    onOpenChange(false);
+  }, [onOpenChange]);
 
   const hasChanges =
     upcKey !== (data?.upcDatabaseApiKey || '') ||
@@ -263,7 +283,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
     goUpcKey !== (data?.goUpcApiKey || '') ||
     searchUpcKey !== (data?.searchUpcApiKey || '');
 
-  const handleSave = () => {
+  const handleSave = React.useCallback(() => {
     if (!hasChanges) {
       return;
     }
@@ -280,7 +300,15 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
         },
       }
     );
-  };
+  }, [
+    hasChanges,
+    updateMutation,
+    upcKey,
+    usdaKey,
+    goUpcKey,
+    searchUpcKey,
+    onOpenChange,
+  ]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -310,7 +338,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
             </div>
             <button
               type="button"
-              onClick={() => onOpenChange(false)}
+              onClick={handleDismiss}
               className="group flex size-10 cursor-pointer items-center justify-center rounded-xl bg-white/5 transition-all hover:bg-white/10"
             >
               <X className="size-5 text-white/40 transition-colors group-hover:text-white" />
@@ -363,13 +391,13 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
               />
 
               <ApiKeyInput
-                label="FoodData Central"
+                label="USDA FoodData Central"
                 value={usdaKey}
                 setter={setUsdaKey}
                 fieldId="usda"
                 icon={FlaskConical}
                 color="text-green-400"
-                placeholder="Enter FoodData Central Key"
+                placeholder="Enter USDA FoodData Central Key"
                 link="https://fdc.nal.usda.gov/api-key-signup.html"
                 onCopy={handleCopy}
                 copiedField={copiedField}
@@ -382,7 +410,7 @@ export function ApiKeysModal({ open, onOpenChange }: ApiKeysModalProps) {
           <div className="flex items-center justify-between border-t border-white/5 bg-white/[0.02] px-8 py-4 sm:px-10">
             <button
               type="button"
-              onClick={() => onOpenChange(false)}
+              onClick={handleDismiss}
               className="cursor-pointer text-[10px] font-bold tracking-[0.2em] text-white/20 uppercase transition-all hover:text-white"
             >
               Dismiss

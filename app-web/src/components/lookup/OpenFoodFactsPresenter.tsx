@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -20,9 +20,38 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
+export interface OFFProduct {
+  product_name?: string;
+  brands?: string;
+  ingredients_text?: string;
+  image_url?: string;
+  image_front_url?: string;
+  categories?: string;
+  categories_hierarchy?: string[];
+  nutriments?: Record<string, number | string>;
+  nutriscore_grade?: string;
+  nova_group?: number | string;
+  ecoscore_grade?: string;
+  serving_size?: string;
+  quantity?: string;
+  packaging?: string;
+  lc?: string;
+  code: string;
+  allergens?: string;
+  traces?: string;
+  additives_tags?: string[];
+  labels?: string;
+  ingredients_analysis_tags?: string[];
+  stores?: string;
+  countries?: string;
+}
+
+export interface OpenFoodFactsData {
+  product?: OFFProduct;
+}
+
 interface OpenFoodFactsPresenterProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: OpenFoodFactsData;
 }
 
 // ─── Placeholder when no image is available ────────────────────────────────────
@@ -178,6 +207,9 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
   const [imgBroken, setImgBroken] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
+  const handleImageLoad = useCallback(() => setImgReady(true), []);
+  const handleImageError = useCallback(() => setImgBroken(true), []);
+
   const product = data?.product;
 
   if (!product) {
@@ -236,13 +268,13 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
     );
   };
 
-  // Parse ingredients into a clean list for the UI
-  const ingredientList = !isDataEmpty(ingredients_text)
-    ? ingredients_text
-        .split(/[,;:]+/) // Split by comma, semicolon or colon
-        .map((item: string) => item.replace(/[*\-_()[\]]/g, '').trim()) // Cleanup marks
-        .filter((item: string) => item.length > 1 && !/^\d+$/.test(item)) // Remove tiny/numeric stuff
-    : [];
+  const ingredientList =
+    ingredients_text && !isDataEmpty(ingredients_text)
+      ? ingredients_text
+          .split(/[,;:]+/) // Split by comma, semicolon or colon
+          .map((item: string) => item.replace(/[*\-_()[\]]/g, '').trim()) // Cleanup marks
+          .filter((item: string) => item.length > 1 && !/^\d+$/.test(item)) // Remove tiny/numeric stuff
+      : [];
 
   // Format categories hierarchy
   const catPath = categories_hierarchy
@@ -298,8 +330,8 @@ export function OpenFoodFactsPresenter({ data }: OpenFoodFactsPresenterProps) {
                   src={imageUrl}
                   alt=""
                   style={{ display: 'none' }}
-                  onLoad={() => setImgReady(true)}
-                  onError={() => setImgBroken(true)}
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
                 />
                 <AnimatePresence>
                   {!imgReady && (

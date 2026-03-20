@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,6 +37,58 @@ interface HeaderProps {
   navItems?: NavItem[];
 }
 
+const HeaderNavItem: React.FC<{
+  item: NavItem;
+  isActive: boolean;
+  isAuthenticated: boolean;
+  router: ReturnType<typeof useRouter>;
+  openLoginModal: (redirect?: string) => void;
+}> = ({ item, isActive, isAuthenticated, router, openLoginModal }) => {
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (isAuthenticated) {
+        router.push(item.href);
+      } else {
+        openLoginModal(item.href);
+      }
+    },
+    [isAuthenticated, router, openLoginModal, item.href]
+  );
+
+  return (
+    <Link
+      href={item.href}
+      onClick={handleClick}
+      className={cn(
+        'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all hover:text-white',
+        isActive ? 'text-white' : 'text-white/40'
+      )}
+    >
+      {item.icon && (
+        <item.icon
+          className={cn(
+            'size-4 transition-transform',
+            isActive && 'text-cyan-400'
+          )}
+        />
+      )}
+      {item.label}
+      {isActive && (
+        <motion.div
+          layoutId="activeNav"
+          className="absolute inset-0 -z-10 rounded-full bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.05)] ring-1 ring-white/10"
+          transition={{
+            type: 'spring',
+            bounce: 0.2,
+            duration: 0.6,
+          }}
+        />
+      )}
+    </Link>
+  );
+};
+
 export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const { user, logout, isAuthenticated } = useAuthStore();
   const { openLoginModal, isApiKeysModalOpen, setApiKeysModalOpen } =
@@ -43,26 +96,28 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
-    if (isAuthenticated) {
-      router.push(href);
-    } else {
-      openLoginModal(href);
-    }
-  };
-
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     sessionStorage.setItem('is_logout_redirect', 'true');
     logout();
     router.push('/');
-  };
+  }, [logout, router]);
 
-  const defaultNavItems = [
-    { href: '/history', label: 'History', icon: History },
-    { href: '/scanner', label: 'Scanner', icon: Camera },
-    { href: '/lookup', label: 'Lookup', icon: Search },
-  ];
+  const handleOpenApiKeys = useCallback(() => {
+    setApiKeysModalOpen(true);
+  }, [setApiKeysModalOpen]);
+
+  const handleLogin = useCallback(() => {
+    openLoginModal();
+  }, [openLoginModal]);
+
+  const defaultNavItems = useMemo(
+    () => [
+      { href: '/history', label: 'History', icon: History },
+      { href: '/scanner', label: 'Scanner', icon: Camera },
+      { href: '/lookup', label: 'Lookup', icon: Search },
+    ],
+    []
+  );
 
   const navItems = customNavItems || defaultNavItems;
 
@@ -110,41 +165,16 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
 
       <div className="flex items-center gap-4 sm:gap-8">
         <nav className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                className={cn(
-                  'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all hover:text-white',
-                  isActive ? 'text-white' : 'text-white/40'
-                )}
-              >
-                {item.icon && (
-                  <item.icon
-                    className={cn(
-                      'size-4 transition-transform',
-                      isActive && 'text-cyan-400'
-                    )}
-                  />
-                )}
-                {item.label}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute inset-0 -z-10 rounded-full bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.05)] ring-1 ring-white/10"
-                    transition={{
-                      type: 'spring',
-                      bounce: 0.2,
-                      duration: 0.6,
-                    }}
-                  />
-                )}
-              </Link>
-            );
-          })}
+          {navItems.map((item) => (
+            <HeaderNavItem
+              key={item.href}
+              item={item}
+              isActive={pathname === item.href}
+              isAuthenticated={isAuthenticated}
+              router={router}
+              openLoginModal={openLoginModal}
+            />
+          ))}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -191,7 +221,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
 
                   <div className="flex flex-col gap-1">
                     <DropdownMenuItem
-                      onClick={() => setApiKeysModalOpen(true)}
+                      onClick={handleOpenApiKeys}
                       className="group relative flex cursor-pointer items-center gap-4 overflow-hidden rounded-xl p-3 text-sm transition-all duration-300 hover:bg-white/10 focus:bg-white/10"
                     >
                       <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-600/20 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:ring-violet-400/50">
@@ -241,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({ navItems: customNavItems }) => {
             </>
           ) : (
             <Button
-              onClick={() => openLoginModal()}
+              onClick={handleLogin}
               className="group relative flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400 active:scale-95"
             >
               <Fingerprint className="size-4 transition-transform group-hover:scale-110" />

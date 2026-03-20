@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { useScans } from '@/hooks/useAnalytics';
 import { DateRangeSelector } from '@/components/dashboard/DateRangeSelector';
 import { cn } from '@/lib/utils';
+import type { Scan } from '@/lib/api/types';
 import {
   Card,
   CardContent,
@@ -30,32 +31,6 @@ import {
 } from 'lucide-react';
 
 const PAGE_SIZE = 25;
-
-interface ScanUser {
-  id: string;
-  email: string;
-}
-interface Scan {
-  id: string;
-  userId: string;
-  user?: ScanUser;
-  barcodeData: string;
-  barcodeType: string;
-  scannedAt: string;
-  deviceType: string;
-  productName?: string | null;
-  brand?: string | null;
-  category?: string | null;
-  nutritionGrade?: string | null;
-}
-
-interface ScanListResponse {
-  items: Scan[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
 
 const BARCODE_COLOR: Record<string, string> = {
   QR: 'bg-violet-500/10 text-violet-400',
@@ -95,9 +70,8 @@ export default function ScansPage() {
     [page, dateRange, query]
   );
 
-  const { data, isLoading, isFetching } = useScans(params);
-  const scans = data as ScanListResponse | undefined;
-  const items = useMemo(() => scans?.items ?? [], [scans?.items]);
+  const { data: scans, isLoading, isFetching } = useScans(params);
+  const items = useMemo(() => scans?.data ?? [], [scans?.data]);
 
   const total = scans?.total ?? 0;
   const totalPages = scans?.totalPages ?? 1;
@@ -109,22 +83,38 @@ export default function ScansPage() {
   const successRate =
     items.length > 0 ? ((identified / items.length) * 100).toFixed(0) : '—';
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setQuery(searchInput);
-    setPage(1);
-  };
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setQuery(searchInput);
+      setPage(1);
+    },
+    [searchInput]
+  );
 
-  const clearSearch = () => {
+  const clearSearch = useCallback(() => {
     setSearchInput('');
     setQuery('');
     setPage(1);
-  };
+  }, []);
 
-  const handleDateChange = (range: DateRange | undefined) => {
+  const handleDateChange = useCallback((range: DateRange | undefined) => {
     setDateRange(range);
     setPage(1);
-  };
+  }, []);
+
+  const goToFirstPage = useCallback(() => setPage(1), []);
+  const goToPrevPage = useCallback(
+    () => setPage((p) => Math.max(1, p - 1)),
+    []
+  );
+  const goToNextPage = useCallback(
+    () => setPage((p) => Math.min(totalPages, p + 1)),
+    [totalPages]
+  );
+  const goToLastPage = useCallback(() => setPage(totalPages), [totalPages]);
+
+  const goToPage = useCallback((p: number) => setPage(p), []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -279,14 +269,14 @@ export default function ScansPage() {
                   </p>
                   <div className="flex items-center gap-1">
                     <PagBtn
-                      onClick={() => setPage(1)}
+                      onClick={goToFirstPage}
                       disabled={page === 1}
                       title="First"
                     >
                       <ChevronsLeft className="h-3.5 w-3.5" />
                     </PagBtn>
                     <PagBtn
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      onClick={goToPrevPage}
                       disabled={page === 1}
                       title="Previous"
                     >
@@ -301,32 +291,24 @@ export default function ScansPage() {
                       );
                       const p = start + i;
                       return (
-                        <button
+                        <PageNumberBtn
                           key={`page-btn-${p}`}
-                          type="button"
-                          onClick={() => setPage(p)}
-                          className={`h-7 min-w-7 rounded px-2 text-xs font-medium transition ${
-                            p === page
-                              ? 'bg-cyan-500/20 text-cyan-400 ring-1 ring-cyan-500/50'
-                              : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
-                          }`}
-                        >
-                          {p}
-                        </button>
+                          page={p}
+                          isActive={p === page}
+                          onClick={goToPage}
+                        />
                       );
                     })}
 
                     <PagBtn
-                      onClick={() =>
-                        setPage((p) => Math.min(totalPages, p + 1))
-                      }
+                      onClick={goToNextPage}
                       disabled={page === totalPages}
                       title="Next"
                     >
                       <ChevronRight className="h-3.5 w-3.5" />
                     </PagBtn>
                     <PagBtn
-                      onClick={() => setPage(totalPages)}
+                      onClick={goToLastPage}
                       disabled={page === totalPages}
                       title="Last"
                     >
@@ -482,6 +464,32 @@ function PagBtn({
       className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-30"
     >
       {children}
+    </button>
+  );
+}
+
+function PageNumberBtn({
+  page,
+  isActive,
+  onClick,
+}: {
+  page: number;
+  isActive: boolean;
+  onClick: (p: number) => void;
+}) {
+  const handleClick = useCallback(() => onClick(page), [onClick, page]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`h-7 min-w-7 rounded px-2 text-xs font-medium transition ${
+        isActive
+          ? 'bg-cyan-500/20 text-cyan-400 ring-1 ring-cyan-500/50'
+          : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+      }`}
+    >
+      {page}
     </button>
   );
 }

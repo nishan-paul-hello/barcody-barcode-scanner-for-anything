@@ -8,7 +8,7 @@
     "admin-barcody.tamarin-ph.ts.net:443": {
       "Handlers": {
         "/": {
-          "Proxy": "http://app-admin:3001"
+          "Proxy": "http://app-admin:3005"
         }
       }
     }

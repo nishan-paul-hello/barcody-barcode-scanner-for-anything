@@ -30,7 +30,7 @@ class SocketService {
 
     const backendUrl =
       process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') ||
-      'http://localhost:3002';
+      'http://localhost:3006';
 
     // Connect to the 'scans' namespace as defined in the backend gateway
     this.socket = io(`${backendUrl}/scans`, {
@@ -87,7 +87,7 @@ class SocketService {
       }
     });
 
-    this.socket.on('reconnect_attempt', (attempt) => {
+    this.socket.on('reconnect_attempt', (attempt: number) => {
       console.warn(`WebSocket reconnection attempt #${attempt}`);
       setStatus('reconnecting');
       this.reconnectionAttempts = attempt;

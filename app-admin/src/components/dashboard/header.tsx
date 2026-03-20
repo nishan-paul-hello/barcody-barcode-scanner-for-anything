@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,21 +33,29 @@ export function Header() {
   const router = useRouter();
   const isHomePage = pathname === '/';
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
-    if (isAuthenticated && isAdmin) {
-      router.push(href);
-    } else {
-      openLoginModal(href);
-    }
-  };
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent, href: string) => {
+      e.preventDefault();
+      if (isAuthenticated && isAdmin) {
+        router.push(href);
+      } else {
+        openLoginModal(href);
+      }
+    },
+    [isAuthenticated, isAdmin, router, openLoginModal]
+  );
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     sessionStorage.setItem('is_logout_redirect', 'true');
     googleLogout();
     logout();
     router.push('/');
-  };
+  }, [logout, router]);
+
+  const handleLoginClick = useCallback(
+    () => openLoginModal(),
+    [openLoginModal]
+  );
 
   const navItems = [
     { title: 'Dashboard', href: '/dashboard', icon: Shield },
@@ -99,40 +108,16 @@ export function Header() {
 
       <div className="flex items-center gap-4 sm:gap-8">
         <nav className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                className={cn(
-                  'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all',
-                  'hover:text-white',
-                  isActive ? 'text-white' : 'text-white/40'
-                )}
-              >
-                <item.icon
-                  className={cn(
-                    'h-4 w-4 transition-transform',
-                    isActive && 'text-cyan-400'
-                  )}
-                />
-                {item.title}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute inset-0 -z-10 rounded-full bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.05)] ring-1 ring-white/10"
-                    transition={{
-                      type: 'spring',
-                      bounce: 0.2,
-                      duration: 0.6,
-                    }}
-                  />
-                )}
-              </Link>
-            );
-          })}
+          {navItems.map((item) => (
+            <NavLink
+              key={item.href}
+              title={item.title}
+              href={item.href}
+              icon={item.icon}
+              isActive={pathname === item.href}
+              onClick={handleNavClick}
+            />
+          ))}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -213,7 +198,7 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <Button
-              onClick={() => openLoginModal()}
+              onClick={handleLoginClick}
               className="group relative flex h-9 cursor-pointer items-center gap-2 overflow-hidden rounded-full bg-cyan-500 px-6 font-bold text-black transition-all hover:scale-105 hover:bg-cyan-400 active:scale-95"
             >
               <Fingerprint className="h-4 w-4 transition-transform group-hover:scale-110" />
@@ -224,5 +209,55 @@ export function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+function NavLink({
+  title,
+  href,
+  icon: Icon,
+  isActive,
+  onClick,
+}: {
+  title: string;
+  href: string;
+  icon: React.ElementType;
+  isActive: boolean;
+  onClick: (e: React.MouseEvent, href: string) => void;
+}) {
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => onClick(e, href),
+    [onClick, href]
+  );
+
+  return (
+    <Link
+      href={href}
+      onClick={handleClick}
+      className={cn(
+        'relative flex h-9 cursor-pointer items-center gap-2 rounded-full px-4 text-[13px] font-bold tracking-widest uppercase transition-all',
+        'hover:text-white',
+        isActive ? 'text-white' : 'text-white/40'
+      )}
+    >
+      <Icon
+        className={cn(
+          'h-4 w-4 transition-transform',
+          isActive && 'text-cyan-400'
+        )}
+      />
+      {title}
+      {isActive && (
+        <motion.div
+          layoutId="activeNav"
+          className="absolute inset-0 -z-10 rounded-full bg-white/5 shadow-[0_0_20px_rgba(255,255,255,0.05)] ring-1 ring-white/10"
+          transition={{
+            type: 'spring',
+            bounce: 0.2,
+            duration: 0.6,
+          }}
+        />
+      )}
+    </Link>
   );
 }

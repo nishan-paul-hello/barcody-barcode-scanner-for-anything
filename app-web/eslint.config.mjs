@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
+import tanstackQueryPlugin from '@tanstack/eslint-plugin-query';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import nextPlugin from '@next/eslint-plugin-next';
@@ -38,6 +39,7 @@ const eslintConfig = [
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
       '@next/next': nextPlugin,
+      '@tanstack/query': tanstackQueryPlugin,
     },
     rules: {
       // General
@@ -54,8 +56,8 @@ const eslintConfig = [
       'no-unused-vars': 'off',
       'no-shadow': 'off',
       'no-use-before-define': 'off',
-  
-      // Typescript
+
+      // TypeScript
       ...typescriptEslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': [
         'error',
@@ -116,13 +118,23 @@ const eslintConfig = [
       'react/jsx-fragments': ['error', 'syntax'],
       'react/destructuring-assignment': ['warn', 'always'],
       'react/no-unknown-property': 'error',
-      
-      // React Hooks
+      'react/jsx-no-bind': [
+        'warn',
+        {
+          allowArrowFunctions: false,
+          allowFunctions: false,
+          allowBind: false,
+          ignoreRefs: true,
+          ignoreDOMComponents: true,
+        },
+      ],
+
+      // React Hooks 
       ...reactHooksPlugin.configs.recommended.rules,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'error',
 
-      // Next.js
+      // Next.js─
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
       '@next/next/no-img-element': 'error',
@@ -132,6 +144,17 @@ const eslintConfig = [
       '@next/next/no-sync-scripts': 'error',
       '@next/next/google-font-display': 'error',
       '@next/next/inline-script-id': 'error',
+
+      // TanStack Query 
+      '@tanstack/query/exhaustive-deps': 'error',
+      '@tanstack/query/stable-query-client': 'error',
+      '@tanstack/query/no-rest-destructuring': 'warn',
+
+      // Zustand
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-unsafe-return': 'warn',
+      '@typescript-eslint/no-unsafe-call': 'warn',
     },
     settings: {
       react: {

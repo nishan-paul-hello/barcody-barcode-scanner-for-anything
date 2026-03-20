@@ -100,12 +100,10 @@ export function RetentionCohort() {
                 </TableCell>
                 <TableCell>{cohort.newUsers}</TableCell>
                 {cohort.items.map((item: { pct: number; id: string }) => (
-                  <TableCell
+                  <RetentionCell
                     key={`${cohort.weekStart}-${item.id}`}
-                    className={getRetentionColor(item.pct)}
-                  >
-                    {item.pct}%
-                  </TableCell>
+                    pct={item.pct}
+                  />
                 ))}
                 {cohort.emptyWeeks.map((emptyId: string) => (
                   <TableCell
@@ -122,6 +120,11 @@ export function RetentionCohort() {
       </CardContent>
     </Card>
   );
+}
+
+function RetentionCell({ pct }: { pct: number }) {
+  const color = getRetentionColor(pct);
+  return <TableCell className={color}>{pct}%</TableCell>;
 }
 
 function getRetentionColor(percentage: number): string {

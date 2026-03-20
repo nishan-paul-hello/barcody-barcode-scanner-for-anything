@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -33,11 +33,13 @@ import { GoUpcPresenter } from '@/components/lookup/GoUpcPresenter';
 import { OpenFoodFactsPresenter } from '@/components/lookup/OpenFoodFactsPresenter';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import type { UPCitemdbData } from '@/components/lookup/UPCitemdbPresenter';
+import type { GoUpcData } from '@/components/lookup/GoUpcPresenter';
+import type { OpenFoodFactsData } from '@/components/lookup/OpenFoodFactsPresenter';
 
 // Simple internal interfaces to satisfy TS without complexity
 interface ApiResultState {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: unknown;
   loading: boolean;
   error: string | null;
   responseTime: number | null;
@@ -58,7 +60,7 @@ const APIS = [
   { id: 'searchUpc', name: 'Search UPC', icon: Key, color: 'text-yellow-400' },
   {
     id: 'usda',
-    name: 'FoodData Central',
+    name: 'USDA FoodData Central',
     icon: FlaskConical,
     color: 'text-green-400',
   },
@@ -101,7 +103,14 @@ export default function GlobalLookupPage() {
     return initial;
   });
 
-  const fetchApi = async (id: string, barcodeInput: string) => {
+  const handleBarcodeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setBarcode(e.target.value);
+    },
+    []
+  );
+
+  const fetchApi = useCallback(async (id: string, barcodeInput: string) => {
     const startTime = performance.now();
     setResults((prev) => ({
       ...prev,
@@ -152,9 +161,9 @@ export default function GlobalLookupPage() {
         },
       }));
     }
-  };
+  }, []);
 
-  const handleLookup = () => {
+  const handleLookup = useCallback(() => {
     const cleanBarcode = barcode.trim();
     if (!cleanBarcode) {
       return;
@@ -162,9 +171,9 @@ export default function GlobalLookupPage() {
     APIS.forEach((apiItem) => {
       void fetchApi(apiItem.id, cleanBarcode);
     });
-  };
+  }, [barcode, fetchApi]);
 
-  const handlePaste = async () => {
+  const handlePaste = useCallback(async () => {
     try {
       const text = await navigator.clipboard.readText();
       if (text) {
@@ -174,9 +183,9 @@ export default function GlobalLookupPage() {
     } catch (err) {
       toast.error('Failed to paste: ' + err);
     }
-  };
+  }, []);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     if (!barcode) {
       return;
     }
@@ -188,11 +197,24 @@ export default function GlobalLookupPage() {
     } catch (err) {
       toast.error('Failed to copy: ' + err);
     }
-  };
+  }, [barcode]);
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setBarcode('');
-  };
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        handleLookup();
+      }
+    },
+    [handleLookup]
+  );
+
+  const handleOpenApiSettings = useCallback(() => {
+    setApiKeysModalOpen(true);
+  }, [setApiKeysModalOpen]);
 
   return (
     <main className="container mx-auto max-w-6xl px-4 pt-0 pb-24">
@@ -218,10 +240,10 @@ export default function GlobalLookupPage() {
           <Search className="absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/30" />
           <Input
             value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
+            onChange={handleBarcodeChange}
             placeholder="Enter Barcode"
             className="h-14 border-white/10 bg-white/5 pr-28 pl-12 text-lg text-white placeholder:text-white/20 focus:border-cyan-400 focus-visible:border-cyan-400 focus-visible:ring-0"
-            onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
+            onKeyDown={handleKeyDown}
           />
           <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
             <AnimatePresence mode="popLayout">
@@ -313,10 +335,10 @@ export default function GlobalLookupPage() {
                     {res.loading && (
                       <Loader2 className="size-4 animate-spin text-cyan-500/50" />
                     )}
-                    {res.data && !res.error && (
+                    {!!res.data && !res.error && (
                       <CheckCircle2 className="size-4 text-green-500/50" />
                     )}
-                    {res.error && (
+                    {!!res.error && (
                       <XCircle className="size-4 text-red-500/50" />
                     )}
                   </div>
@@ -357,18 +379,18 @@ export default function GlobalLookupPage() {
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                      {res.responseTime && (
+                      {!!res.responseTime && (
                         <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 text-xs font-medium text-white/60 ring-1 ring-white/10">
                           <Clock className="size-3.5" />
                           {res.responseTime}ms
                         </div>
                       )}
-                      {res.data && (
+                      {!!res.data && (
                         <Badge className="border-green-500/20 bg-green-500/10 px-3 py-1 font-bold text-green-400">
                           Success
                         </Badge>
                       )}
-                      {res.error && (
+                      {!!res.error && (
                         <Badge className="border-red-500/20 bg-red-500/10 px-3 py-1 font-bold text-red-400">
                           Error
                         </Badge>
@@ -399,7 +421,7 @@ export default function GlobalLookupPage() {
                               variant="outline"
                               size="sm"
                               className="cursor-pointer border-white/10 bg-white/5 hover:bg-white/10"
-                              onClick={() => setApiKeysModalOpen(true)}
+                              onClick={handleOpenApiSettings}
                             >
                               <Settings2 className="mr-2 size-3.5" />
                               Open API Settings
@@ -416,23 +438,30 @@ export default function GlobalLookupPage() {
                     ) : res.data ? (
                       <div className="leading-relaxed selection:bg-cyan-500/30">
                         {apiItem.id === 'upcitemdb' ? (
-                          <UPCitemdbPresenter
-                            key={
-                              res.data?.items?.[0]?.upc ||
-                              res.data?.items?.[0]?.ean ||
-                              'upcitemdb'
-                            }
-                            data={res.data}
-                          />
+                          (() => {
+                            const upcData = res.data as UPCitemdbData;
+                            const upcItem = upcData?.items?.[0];
+                            return (
+                              <UPCitemdbPresenter
+                                key={
+                                  upcItem?.upc || upcItem?.ean || 'upcitemdb'
+                                }
+                                data={upcData}
+                              />
+                            );
+                          })()
                         ) : apiItem.id === 'goUpc' ? (
                           <GoUpcPresenter
-                            key={res.data?.code ?? 'goupc'}
-                            data={res.data}
+                            key={(res.data as GoUpcData)?.code ?? 'goupc'}
+                            data={res.data as GoUpcData}
                           />
                         ) : apiItem.id === 'off' || apiItem.id === 'obf' ? (
                           <OpenFoodFactsPresenter
-                            key={res.data?.code ?? 'off'}
-                            data={res.data}
+                            key={
+                              (res.data as OpenFoodFactsData)?.product?.code ??
+                              'off'
+                            }
+                            data={res.data as OpenFoodFactsData}
                           />
                         ) : (
                           <RawDataPresenter data={res.data} />
