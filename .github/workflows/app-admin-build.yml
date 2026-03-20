@@ -39,8 +39,8 @@ jobs:
           file: app-admin/Dockerfile
           push: true
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+            NEXT_PUBLIC_API_URL=https://api-barcody.kaiofficial.xyz/api/v1
+            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -60,4 +60,3 @@ jobs:
             cd /var/www/barcody-barcode-scanner-for-anything
             docker compose pull app-admin
             docker compose up -d --remove-orphans app-admin
-

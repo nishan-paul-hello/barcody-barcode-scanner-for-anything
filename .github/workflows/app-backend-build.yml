@@ -69,8 +69,19 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            printf '%s' '${{ secrets.BACKEND_ENV_FILE }}' > /var/www/barcody-barcode-scanner-for-anything/app-backend/.env
+            cat > /var/www/barcody-barcode-scanner-for-anything/app-backend/.env << 'ENVEOF'
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            NODE_ENV=production
+            API_VERSION=v1
+            LOG_LEVEL=info
+            ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+            ANALYTICS_HASH_SECRET=${{ secrets.ANALYTICS_HASH_SECRET }}
+            REDIS_TTL=3600
+            REDIS_MAX=100
+            GOOGLE_REDIRECT_URI=https://api-barcody.kaiofficial.xyz/api/v1/auth/google/callback
+            ENVEOF
             cd /var/www/barcody-barcode-scanner-for-anything
             docker compose pull app-backend
             docker compose up -d --remove-orphans app-backend
-
