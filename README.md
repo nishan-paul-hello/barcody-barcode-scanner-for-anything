@@ -451,5 +451,5 @@ This automated pipeline guarantees that the production environment always reflec
 
 <div align="center">
   <img src="app-web/public/company-logo.svg" alt="KAI Logo" width="80" height="80" />
-  <p>Built with ❤️ by <a href="https://kaiverse.vercel.app/" target="_blank"><b>KAI</b></a></p>
+  <p>Built with ❤️ by <a href="http://kaiofficial.xyz/" target="_blank"><b>KAI</b></a></p>
 </div>
