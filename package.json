@@ -13,7 +13,6 @@
     "format": "npm run format --workspace=app-backend && npm run format --workspace=app-web && npm run format --workspace=app-admin",
     "format-check": "npm run format-check --workspace=app-backend && npm run format-check --workspace=app-web && npm run format-check --workspace=app-admin",
     "format-root": "npx prettier --write \"./*.{json,md,yml}\" \"./assets/**/*.{json,md,yml}\"",
-    "format-staged": "prettier --write",
     "type-check": "npm run type-check --workspace=app-backend && npm run type-check --workspace=app-web && npm run type-check --workspace=app-admin",
     "test": "npm run test --workspace=app-backend && npm run test --workspace=app-web && npm run test --workspace=app-admin",
     "build": "npm run build --workspace=app-backend && npm run build --workspace=app-web && npm run build --workspace=app-admin",
@@ -28,9 +27,9 @@
     "app-backend/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-backend",
     "app-web/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-web",
     "app-admin/**/*.{js,jsx,ts,tsx}": "npm run lint --workspace=app-admin",
-    "app-backend/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-backend",
-    "app-web/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-web",
-    "app-admin/**/*.{ts,tsx,js,jsx,json,css,md}": "npm run format-staged --workspace=app-admin"
+    "app-backend/**/*.{ts,tsx,js,jsx,json,css,md}": "prettier --write",
+    "app-web/**/*.{ts,tsx,js,jsx,json,css,md}": "prettier --write",
+    "app-admin/**/*.{ts,tsx,js,jsx,json,css,md}": "prettier --write"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
