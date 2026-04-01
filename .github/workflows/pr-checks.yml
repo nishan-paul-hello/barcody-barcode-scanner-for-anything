@@ -27,6 +27,23 @@ jobs:
       - name: Run Lint
         run: npm run lint --workspace=${{ matrix.project }}
 
+  format-check:
+    name: Format Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [app-backend, app-web, app-admin]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Format Check
+        run: npm run format-check --workspace=${{ matrix.project }}
+
   type-check:
     name: Type Check
     runs-on: ubuntu-latest
